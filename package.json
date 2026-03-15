@@ -1,0 +1,86 @@
+{
+  "name": "rust-plus",
+  "version": "1.0.0",
+  "description": "Rust 工具箱 - Rust+ 智能设备管理平台",
+  "author": {
+    "name": "Ante",
+    "email": "support@rustplus.tools"
+  },
+  "main": "electron/main.js",
+  "scripts": {
+    "start":        "node src/index.js",
+    "start:web":    "node web/server.js",
+    "start:gui":    "electron .",
+    "electron":     "electron .",
+    "electron:dev": "NODE_ENV=development electron .",
+    "pair":         "node src/index.js pair",
+    "status":       "node src/index.js status",
+    "test":         "node --test test/**/*.test.js",
+    "update:item-catalog": "node src/tools/update-item-catalog.js",
+    "update:cctv-codes": "node src/tools/update-cctv-codes.js",
+    "download:item-icons": "node src/tools/download-item-icons.js",
+    "test:ihuyi-vm": "node src/tools/test-ihuyi-vm.js",
+    "install:deps": "npm install",
+    "build":        "electron-builder",
+    "build:win":    "electron-builder --win",
+    "build:mac":    "electron-builder --mac --arm64",
+    "build:mac:dir":"electron-builder --mac dir --arm64",
+    "build:mac:signed": "electron-builder --mac --arm64 --publish never",
+    "dev":          "nodemon src/index.js"
+  },
+  "dependencies": {
+    "@liamcottle/rustplus.js": "^2.5.0",
+    "chalk":         "^4.1.2",
+    "cli-table3":    "^0.6.3",
+    "dotenv":        "^16.0.0",
+    "express":       "^4.21.2",
+    "node-notifier": "^10.0.1",
+    "ws":            "^8.18.3",
+    "winston":       "^3.8.0"
+  },
+  "devDependencies": {
+    "electron":         "^28.0.0",
+    "electron-builder": "^24.0.0",
+    "nodemon":          "^2.0.20"
+  },
+  "overrides": {
+    "request": {
+      "form-data": "^2.5.4",
+      "qs": "^6.14.1",
+      "tough-cookie": "^4.1.3"
+    },
+    "request-promise": {
+      "tough-cookie": "^4.1.3"
+    },
+    "tough-cookie": "^4.1.3"
+  },
+  "engines": { "node": ">=18.0.0" },
+  "build": {
+    "appId":       "com.rust.toolbox",
+    "productName": "Rust 工具箱",
+    "directories": { "output": "dist" },
+    "files": ["electron/**/*","src/**/*","assets/","config/item-catalog.json","config/cctv-codes.json","package.json"],
+    "win": {
+      "target": [{ "target": "nsis", "arch": ["x64"] }],
+      "icon": "assets/icon.ico"
+    },
+    "mac": {
+      "icon": "assets/icon.icns",
+      "target": ["dmg", "zip"],
+      "category": "public.app-category.utilities",
+      "artifactName": "${productName}-${version}-${arch}.${ext}",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.inherit.plist",
+      "notarize": true
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "installerLanguages": ["zh_CN"],
+      "language": "2052"
+    }
+  },
+  "license": "MIT"
+}

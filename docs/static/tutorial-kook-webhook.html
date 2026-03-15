@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KOOK 配置教程</title>
+<style>
+:root {
+  --bg:#070b14;
+  --panel:#101726;
+  --panel2:#131d31;
+  --border:#32466f;
+  --text:#edf2ff;
+  --muted:#9eacd2;
+  --dim:#6f7ea7;
+  --accent:#9a8cff;
+  --accent2:#4f59d8;
+  --green:#3dd598;
+  --warn:#ffb454;
+}
+* { box-sizing:border-box; }
+html,body { margin:0; padding:0; background:radial-gradient(circle at top left, rgba(154,140,255,.18), transparent 28%), radial-gradient(circle at bottom right, rgba(79,89,216,.18), transparent 26%), var(--bg); color:var(--text); font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+body { padding:32px 18px 64px; }
+.main { max-width:980px; margin:0 auto; }
+.hero,.card { background:linear-gradient(180deg, rgba(19,29,49,.92), rgba(13,20,35,.96)); border:1px solid rgba(130,151,206,.28); border-radius:22px; box-shadow:0 20px 50px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.05); }
+.hero { padding:28px; margin-bottom:18px; }
+.card { padding:22px; margin-top:16px; }
+.badge { display:inline-flex; padding:6px 12px; border-radius:999px; background:rgba(154,140,255,.14); border:1px solid rgba(154,140,255,.45); color:#ddd4ff; font-size:13px; font-weight:700; }
+h1,h2,h3 { margin:0 0 12px; line-height:1.25; }
+h1 { font-size:34px; }
+h2 { font-size:22px; margin-top:2px; }
+h3 { font-size:17px; color:#f3f5ff; }
+p,li { color:var(--muted); }
+ul,ol { margin:10px 0 0 20px; padding:0; }
+li + li { margin-top:8px; }
+code { background:rgba(255,255,255,.06); border:1px solid rgba(140,160,220,.2); border-radius:8px; padding:2px 7px; color:#f5f7ff; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; }
+.step { counter-increment: step; position:relative; padding-left:54px; }
+.step::before { content:counter(step); position:absolute; left:0; top:0; width:36px; height:36px; border-radius:50%; display:grid; place-items:center; font-weight:800; color:#fff; background:linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow:0 8px 18px rgba(82,94,220,.35); }
+.steps { counter-reset: step; display:grid; gap:16px; }
+.note { border-left:3px solid var(--green); padding:12px 14px; background:rgba(61,213,152,.08); border-radius:12px; color:#dffcef; }
+.warn { border-left-color:var(--warn); background:rgba(255,180,84,.08); color:#ffe9c7; }
+.kv { display:grid; grid-template-columns:160px 1fr; gap:10px; font-size:15px; }
+.kv div:nth-child(odd) { color:var(--dim); }
+.footer-links a { color:#c9d1ff; }
+@media (max-width:640px) {
+  body { padding:18px 12px 48px; }
+  h1 { font-size:28px; }
+  .hero,.card { padding:18px; border-radius:18px; }
+  .step { padding-left:46px; }
+  .step::before { width:32px; height:32px; }
+  .kv { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+  <main class="main">
+    <section class="hero">
+      <div class="badge">呼叫组教程 · KOOK</div>
+      <h1>KOOK 配置流程</h1>
+      <p>当前 Rust 工具箱的 <strong>KOOK 通道</strong> 同样使用的是 <strong>Webhook 推送</strong>。你最终需要的是一条 KOOK Webhook 地址，粘贴到呼叫组配置即可。</p>
+      <div class="note">这里不是 KOOK Bot Token 登录流程，不需要 App Secret，也不需要写机器人代码。你要找的是频道或服务器里的 Webhook / 消息推送入口。</div>
+    </section>
+
+    <section class="card">
+      <h2>你最终要拿到的东西</h2>
+      <div class="kv">
+        <div>需要复制的内容</div><div>一条完整的 KOOK Webhook URL</div>
+        <div>常见格式</div><div><code>https://www.kookapp.cn/api/webhook/...</code></div>
+        <div>填到哪里</div><div>Rust 工具箱 → 呼叫组 → 新建呼叫组 / 编辑呼叫组 → 勾选 <code>KOOK 配置</code> → 粘贴到 <code>KOOK Webhook</code> 输入框</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>详细步骤</h2>
+      <div class="steps">
+        <div class="step">
+          <h3>先准备一个专门接收通知的文字频道</h3>
+          <ol>
+            <li>打开 KOOK 桌面版或网页版。</li>
+            <li>进入你的服务器。</li>
+            <li>建议新建一个通知专用文字频道，例如 <code>rust-提醒</code>。</li>
+          </ol>
+        </div>
+        <div class="step">
+          <h3>确认你有足够权限</h3>
+          <ol>
+            <li>你至少需要能够管理频道集成、机器人、Webhook 或消息推送相关功能。</li>
+            <li>如果你看不到对应入口，先联系服务器管理员。</li>
+          </ol>
+        </div>
+        <div class="step">
+          <h3>找到 KOOK 的 Webhook / 消息推送入口</h3>
+          <ol>
+            <li>优先在目标文字频道的设置里查找 <code>Webhook</code>、<code>机器人</code>、<code>消息推送</code>、<code>Webhook 机器人</code>、<code>管道</code> 这类入口。</li>
+            <li>如果频道设置里没有，就去服务器设置里查找同类入口。</li>
+            <li>你要找到的是“生成一条可以 POST 消息的 URL”，而不是 OAuth 授权链接。</li>
+          </ol>
+          <p>这里的具体文案会因 KOOK 客户端版本变化而有差异，但核心目标不变：创建一个入站 Webhook 地址。</p>
+        </div>
+        <div class="step">
+          <h3>创建 Webhook 并绑定到频道</h3>
+          <ol>
+            <li>新建一个 Webhook。</li>
+            <li>名称建议填写 <code>Rust 工具箱</code>。</li>
+            <li>发送目标频道选择你刚才准备的通知频道。</li>
+            <li>保存配置。</li>
+          </ol>
+        </div>
+        <div class="step">
+          <h3>复制 Webhook URL</h3>
+          <ol>
+            <li>创建成功后，找到 <code>复制 Webhook URL</code> 或类似按钮。</li>
+            <li>复制出来的内容通常是以 <code>https://www.kookapp.cn/api/webhook/</code> 开头的完整地址。</li>
+          </ol>
+          <div class="note warn">这条 URL 属于敏感凭据。不要公开，不要发群，不要提交到 Git 仓库。</div>
+        </div>
+        <div class="step">
+          <h3>回到 Rust 工具箱填写</h3>
+          <ol>
+            <li>打开 Rust 工具箱。</li>
+            <li>进入 <code>呼叫组</code>。</li>
+            <li>点击 <code>新建呼叫组</code> 或编辑已有呼叫组。</li>
+            <li>勾选 <code>KOOK 配置</code>。</li>
+            <li>把刚才复制的 URL 粘贴到 <code>KOOK Webhook</code> 输入框。</li>
+            <li>点击 <code>保存</code>。</li>
+          </ol>
+        </div>
+        <div class="step">
+          <h3>在程序里验证是否可用</h3>
+          <ol>
+            <li>保存后，点击呼叫组卡片上的 <code>测试呼叫</code>。</li>
+            <li>如果配置正确，KOOK 指定频道会收到一条文本消息。</li>
+            <li>如果没有收到，优先检查 URL 是否复制完整、频道是否选对、Webhook 是否被删除。</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>常见错误排查</h2>
+      <div class="grid">
+        <div>
+          <h3>1. 保存后发不出去</h3>
+          <ul>
+            <li>复制的是管理页地址，不是 Webhook 地址。</li>
+            <li>Webhook 已经被删或被重置。</li>
+            <li>目标频道权限变更，Webhook 不能发言。</li>
+          </ul>
+        </div>
+        <div>
+          <h3>2. 找不到 Webhook 入口</h3>
+          <ul>
+            <li>大概率是权限不够。</li>
+            <li>其次是客户端版本不同，入口被放在频道设置或服务器设置的不同位置。</li>
+            <li>可直接搜索“Webhook”“消息推送”“机器人”“管道”等关键词。</li>
+          </ul>
+        </div>
+        <div>
+          <h3>3. 想做真正的 KOOK 机器人</h3>
+          <ul>
+            <li>那是另一条开发路线，需要 Bot Token、事件订阅和消息处理逻辑。</li>
+            <li>当前 Rust 工具箱呼叫组模块不需要这些。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="card footer-links">
+      <h2>参考链接</h2>
+      <ul>
+        <li><a href="https://developer.kookapp.cn/doc/http/gateway" target="_blank" rel="noreferrer noopener">KOOK 开发者文档</a></li>
+        <li><a href="https://help.kookapp.cn/doc/3r4biitqg8k8h2ln" target="_blank" rel="noreferrer noopener">KOOK 帮助中心</a></li>
+      </ul>
+      <p>说明：KOOK 官方公开文档对“入站 Webhook 创建入口”的页面说明不如 Discord 完整，教程中的“频道/服务器设置里创建 Webhook 并复制 URL”是基于 KOOK 当前产品形态、现有 URL 格式和官方文档能力边界整理的操作路径。</p>
+    </section>
+  </main>
+</body>
+</html>

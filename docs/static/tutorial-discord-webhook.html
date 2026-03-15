@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Discord 配置教程</title>
+<style>
+:root {
+  --bg:#070b14;
+  --panel:#101726;
+  --panel2:#131d31;
+  --border:#32466f;
+  --text:#edf2ff;
+  --muted:#9eacd2;
+  --dim:#6f7ea7;
+  --accent:#9a8cff;
+  --accent2:#4f59d8;
+  --green:#3dd598;
+  --warn:#ffb454;
+}
+* { box-sizing:border-box; }
+html,body { margin:0; padding:0; background:radial-gradient(circle at top left, rgba(154,140,255,.18), transparent 28%), radial-gradient(circle at bottom right, rgba(79,89,216,.18), transparent 26%), var(--bg); color:var(--text); font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+body { padding:32px 18px 64px; }
+.main { max-width:980px; margin:0 auto; }
+.hero,.card { background:linear-gradient(180deg, rgba(19,29,49,.92), rgba(13,20,35,.96)); border:1px solid rgba(130,151,206,.28); border-radius:22px; box-shadow:0 20px 50px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.05); }
+.hero { padding:28px; margin-bottom:18px; }
+.card { padding:22px; margin-top:16px; }
+.badge { display:inline-flex; padding:6px 12px; border-radius:999px; background:rgba(154,140,255,.14); border:1px solid rgba(154,140,255,.45); color:#ddd4ff; font-size:13px; font-weight:700; }
+h1,h2,h3 { margin:0 0 12px; line-height:1.25; }
+h1 { font-size:34px; }
+h2 { font-size:22px; margin-top:2px; }
+h3 { font-size:17px; color:#f3f5ff; }
+p,li { color:var(--muted); }
+ul,ol { margin:10px 0 0 20px; padding:0; }
+li + li { margin-top:8px; }
+code { background:rgba(255,255,255,.06); border:1px solid rgba(140,160,220,.2); border-radius:8px; padding:2px 7px; color:#f5f7ff; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; }
+.step { counter-increment: step; position:relative; padding-left:54px; }
+.step::before { content:counter(step); position:absolute; left:0; top:0; width:36px; height:36px; border-radius:50%; display:grid; place-items:center; font-weight:800; color:#fff; background:linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow:0 8px 18px rgba(82,94,220,.35); }
+.steps { counter-reset: step; display:grid; gap:16px; }
+.note { border-left:3px solid var(--green); padding:12px 14px; background:rgba(61,213,152,.08); border-radius:12px; color:#dffcef; }
+.warn { border-left-color:var(--warn); background:rgba(255,180,84,.08); color:#ffe9c7; }
+.kv { display:grid; grid-template-columns:160px 1fr; gap:10px; font-size:15px; }
+.kv div:nth-child(odd) { color:var(--dim); }
+.footer-links a { color:#c9d1ff; }
+@media (max-width:640px) {
+  body { padding:18px 12px 48px; }
+  h1 { font-size:28px; }
+  .hero,.card { padding:18px; border-radius:18px; }
+  .step { padding-left:46px; }
+  .step::before { width:32px; height:32px; }
+  .kv { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+  <main class="main">
+    <section class="hero">
+      <div class="badge">呼叫组教程 · Discord</div>
+      <h1>Discord 配置流程</h1>
+      <p>当前 Rust 工具箱的 <strong>Discord 通道</strong> 使用的是 <strong>Webhook 推送</strong>，不是 Bot Token / OAuth2 / Gateway 机器人模式。你只需要把 Discord 生成的 Webhook 地址粘贴到呼叫组配置中即可。</p>
+      <div class="note">如果你现在在 Discord 后台里到处找 Bot Token、Application ID、Privileged Gateway Intents，那是走错方向了。本项目这里不需要这些。</div>
+    </section>
+
+    <section class="card">
+      <h2>你最终要拿到的东西</h2>
+      <div class="kv">
+        <div>需要复制的内容</div><div>一条完整的 Discord Webhook URL</div>
+        <div>长什么样</div><div><code>https://discord.com/api/webhooks/数字/一长串令牌</code></div>
+        <div>填到哪里</div><div>Rust 工具箱 → 呼叫组 → 新建呼叫组 / 编辑呼叫组 → 勾选 <code>Discord 配置</code> → 粘贴到 <code>Discord Webhook</code> 输入框</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>详细步骤</h2>
+      <div class="steps">
+        <div class="step">
+          <h3>准备一个接收消息的 Discord 服务器和文字频道</h3>
+          <ol>
+            <li>打开 Discord 桌面版或网页版。</li>
+            <li>进入你准备接收 Rust 通知的服务器。</li>
+            <li>建议单独新建一个文字频道，例如 <code>#rust-告警</code> 或 <code>#rust-callgroup</code>，避免把提醒发到聊天主频道里。</li>
+          </ol>
+        </div>
+        <div class="step">
+          <h3>确认你有管理 Webhook 的权限</h3>
+          <ol>
+            <li>点击服务器名称。</li>
+            <li>进入 <code>服务器设置</code>。</li>
+            <li>如果你能看到 <code>整合 / Integrations</code>，通常就可以继续。</li>
+            <li>如果看不到或无法创建 Webhook，说明你的账号权限不够，需要服务器管理员给你相应权限，或者由管理员代为创建。</li>
+          </ol>
+        </div>
+        <div class="step">
+          <h3>进入 Webhook 页面</h3>
+          <ol>
+            <li>在左侧菜单点击 <code>整合 / Integrations</code>。</li>
+            <li>点击 <code>Webhooks</code>。</li>
+            <li>点击 <code>New Webhook / 创建 Webhook</code>。</li>
+          </ol>
+          <p>有些客户端会把入口写成“整合 → Webhooks”，有些会写成“服务器设置 → 整合 → Webhooks”。核心是进入 Webhook 管理页。</p>
+        </div>
+        <div class="step">
+          <h3>配置这个 Webhook</h3>
+          <ol>
+            <li>给 Webhook 起一个容易识别的名字，例如 <code>Rust 工具箱</code>。</li>
+            <li>头像可以不改；如果要改，建议使用 Rust 相关图标。</li>
+            <li>在 <code>Channel / 频道</code> 下拉框中，选择刚才准备好的通知频道。</li>
+            <li>点击保存。</li>
+          </ol>
+        </div>
+        <div class="step">
+          <h3>复制 Webhook URL</h3>
+          <ol>
+            <li>在 Webhook 详情页点击 <code>Copy Webhook URL</code> 或 <code>复制 Webhook URL</code>。</li>
+            <li>复制后先不要发给别人，这条地址本质上就是一个可直接投递消息的密钥。</li>
+          </ol>
+          <div class="note warn">谁拿到这条 URL，谁就能向你的频道发消息。不要截图公开、不要发群、不要提交到仓库。</div>
+        </div>
+        <div class="step">
+          <h3>回到 Rust 工具箱填写</h3>
+          <ol>
+            <li>打开 Rust 工具箱。</li>
+            <li>进入 <code>呼叫组</code>。</li>
+            <li>点击 <code>新建呼叫组</code>，或编辑已有呼叫组。</li>
+            <li>勾选 <code>Discord 配置</code>。</li>
+            <li>把刚才复制的 URL 粘贴到 <code>Discord Webhook</code> 输入框。</li>
+            <li>点击 <code>保存</code>。</li>
+          </ol>
+        </div>
+        <div class="step">
+          <h3>在程序里做一次验证</h3>
+          <ol>
+            <li>保存成功后，在呼叫组卡片里点击 <code>测试呼叫</code>。</li>
+            <li>正常情况下，Discord 指定频道会立刻收到一条测试消息。</li>
+            <li>如果没有收到，优先检查是不是把 URL 复制不完整，或者频道选错了。</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>常见错误排查</h2>
+      <div class="grid">
+        <div>
+          <h3>1. 保存了但测试没消息</h3>
+          <ul>
+            <li>Webhook URL 复制不完整。</li>
+            <li>频道被改了权限，Webhook 无法发言。</li>
+            <li>Webhook 被删掉了，但 Rust 工具箱里还是旧地址。</li>
+          </ul>
+        </div>
+        <div>
+          <h3>2. 提示 HTTP 401 / 404</h3>
+          <ul>
+            <li>URL 已失效。</li>
+            <li>复制了错误的链接，不是 Webhook 地址。</li>
+            <li>Webhook 被 Discord 后台删除或重置。</li>
+          </ul>
+        </div>
+        <div>
+          <h3>3. 想用真正的机器人账号</h3>
+          <ul>
+            <li>当前这个模块不是 Bot Token 模式。</li>
+            <li>如果你后续要做 slash command、频道读取、成员管理，那才需要单独开发 Discord Bot。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="card footer-links">
+      <h2>参考链接</h2>
+      <ul>
+        <li><a href="https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks" target="_blank" rel="noreferrer noopener">Discord 官方: Intro to Webhooks</a></li>
+        <li><a href="https://discord.com/developers/docs/resources/webhook" target="_blank" rel="noreferrer noopener">Discord Developer Docs: Webhook</a></li>
+      </ul>
+      <p>上面的“服务器设置 → 整合 → Webhooks → 创建 → 复制 URL”流程基于 Discord 官方 Webhook 文档和当前客户端界面整理。</p>
+    </section>
+  </main>
+</body>
+</html>

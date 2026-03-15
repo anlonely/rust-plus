@@ -1,0 +1,7205 @@
+{
+  "meta": {
+    "source": {
+      "enItemsUrl": "https://rusthelp.com/downloads/admin-item-list-public.json",
+      "zhItemsPageUrl": "https://rusthelp.com/zh-Hans/tools/admin/item-list"
+    },
+    "generatedAt": "2026-02-28T14:41:53.572Z",
+    "counts": {
+      "enItems": 1198,
+      "zhRows": 1044,
+      "mergedItems": 1198,
+      "zhMatchedItems": 1044
+    }
+  },
+  "items": [
+    {
+      "id": -1478212975,
+      "shortName": "hat.wolf",
+      "nameEn": "Wolf Headdress",
+      "nameZh": "狼头饰"
+    },
+    {
+      "id": 1494014226,
+      "shortName": "discord.trophy",
+      "nameEn": "Discord Trophy",
+      "nameZh": "Discord奖杯"
+    },
+    {
+      "id": -1973785141,
+      "shortName": "fogmachine",
+      "nameEn": "Fogger-3000",
+      "nameZh": "造雾机"
+    },
+    {
+      "id": 2104517339,
+      "shortName": "strobelight",
+      "nameEn": "Strobe Light",
+      "nameZh": "频闪灯"
+    },
+    {
+      "id": 1113514903,
+      "shortName": "attackhelicopter",
+      "nameEn": "Attack Helicopter",
+      "nameZh": ""
+    },
+    {
+      "id": 405904531,
+      "shortName": "ball",
+      "nameEn": "Soccer Ball",
+      "nameZh": ""
+    },
+    {
+      "id": -1417478274,
+      "shortName": "motorbike",
+      "nameEn": "Motorbike",
+      "nameZh": ""
+    },
+    {
+      "id": 1869224826,
+      "shortName": "motorbike_sidecar",
+      "nameEn": "Motorbike With Sidecar",
+      "nameZh": ""
+    },
+    {
+      "id": 821588319,
+      "shortName": "bicycle",
+      "nameEn": "Bicycle",
+      "nameZh": ""
+    },
+    {
+      "id": 1991794121,
+      "shortName": "trike",
+      "nameEn": "Trike",
+      "nameZh": ""
+    },
+    {
+      "id": 190184021,
+      "shortName": "kayak",
+      "nameEn": "Kayak",
+      "nameZh": "木舟"
+    },
+    {
+      "id": 1933140008,
+      "shortName": "ptboat",
+      "nameEn": "PT Boat",
+      "nameZh": ""
+    },
+    {
+      "id": 162882477,
+      "shortName": "50cal.mounted",
+      "nameEn": "#50cal",
+      "nameZh": ""
+    },
+    {
+      "id": -1467876094,
+      "shortName": "50cal.mounted.left",
+      "nameEn": "#50cal",
+      "nameZh": ""
+    },
+    {
+      "id": 1248383659,
+      "shortName": "50cal.mounted.right",
+      "nameEn": "#50cal",
+      "nameZh": ""
+    },
+    {
+      "id": 1394042569,
+      "shortName": "rhib",
+      "nameEn": "RHIB",
+      "nameZh": ""
+    },
+    {
+      "id": 1878053256,
+      "shortName": "rowboat",
+      "nameEn": "Rowboat",
+      "nameZh": ""
+    },
+    {
+      "id": -561148628,
+      "shortName": "tugboat",
+      "nameEn": "Tugboat",
+      "nameZh": ""
+    },
+    {
+      "id": -1056824343,
+      "shortName": "skidoo",
+      "nameEn": "Diver propulsion vehicle",
+      "nameZh": "潜水推进器"
+    },
+    {
+      "id": 82772055,
+      "shortName": "horse",
+      "nameEn": "Horse",
+      "nameZh": ""
+    },
+    {
+      "id": 60528587,
+      "shortName": "horse.armor.roadsign",
+      "nameEn": "Roadsign Horse Armor",
+      "nameZh": "路标马甲"
+    },
+    {
+      "id": 1659447559,
+      "shortName": "horse.armor.wood",
+      "nameEn": "Wooden Horse Armor",
+      "nameZh": "木制马甲"
+    },
+    {
+      "id": -2068194497,
+      "shortName": "horse.armor.lny26",
+      "nameEn": "Lunar New Year Horse Armor",
+      "nameZh": "horse.armor.lny26.name"
+    },
+    {
+      "id": -1323101799,
+      "shortName": "horse.saddle.double",
+      "nameEn": "Double Horse Saddle",
+      "nameZh": "双人马鞍"
+    },
+    {
+      "id": -1997543660,
+      "shortName": "horse.saddle",
+      "nameEn": "Horse Saddle",
+      "nameZh": ""
+    },
+    {
+      "id": 1559915778,
+      "shortName": "horse.saddle.single",
+      "nameEn": "Single Horse Saddle",
+      "nameZh": "单人马鞍"
+    },
+    {
+      "id": 1400460850,
+      "shortName": "horse.saddlebag",
+      "nameEn": "Saddle bag",
+      "nameZh": "马鞍包"
+    },
+    {
+      "id": 1989785143,
+      "shortName": "horse.shoes.advanced",
+      "nameEn": "High Quality Horse Shoes",
+      "nameZh": "优质马蹄铁"
+    },
+    {
+      "id": -1211268013,
+      "shortName": "horse.shoes.basic",
+      "nameEn": "Basic Horse Shoes",
+      "nameZh": "普通马蹄铁"
+    },
+    {
+      "id": -1334255764,
+      "shortName": "minicopter",
+      "nameEn": "Minicopter",
+      "nameZh": ""
+    },
+    {
+      "id": 1426574435,
+      "shortName": "minihelicopter.repair",
+      "nameEn": "Minicopter",
+      "nameZh": ""
+    },
+    {
+      "id": 343045591,
+      "shortName": "aiming.module.mlrs",
+      "nameEn": "MLRS Aiming Module",
+      "nameZh": "MLRS Aiming Module"
+    },
+    {
+      "id": -1449152644,
+      "shortName": "mlrs",
+      "nameEn": "MLRS",
+      "nameZh": ""
+    },
+    {
+      "id": -1843426638,
+      "shortName": "ammo.rocket.mlrs",
+      "nameEn": "MLRS Rocket",
+      "nameZh": "多管火箭弹"
+    },
+    {
+      "id": -866121090,
+      "shortName": "2module car",
+      "nameEn": "2 Module Car",
+      "nameZh": ""
+    },
+    {
+      "id": -831725027,
+      "shortName": "3module car",
+      "nameEn": "3 Module Car",
+      "nameZh": ""
+    },
+    {
+      "id": -935322684,
+      "shortName": "4module car",
+      "nameEn": "4 Module Car",
+      "nameZh": ""
+    },
+    {
+      "id": -226151558,
+      "shortName": "2module car chassis",
+      "nameEn": "2 Module Car Chassis",
+      "nameZh": ""
+    },
+    {
+      "id": 1482871705,
+      "shortName": "3module car chassis",
+      "nameEn": "3 Module Car Chassis",
+      "nameZh": ""
+    },
+    {
+      "id": 385099196,
+      "shortName": "4module car chassis",
+      "nameEn": "4 Module Car Chassis",
+      "nameZh": ""
+    },
+    {
+      "id": 375473148,
+      "shortName": "scraptransportheli",
+      "nameEn": "Scrap Transport Helicopter",
+      "nameZh": ""
+    },
+    {
+      "id": -374457631,
+      "shortName": "sedan",
+      "nameEn": "Sedan",
+      "nameZh": ""
+    },
+    {
+      "id": -19318653,
+      "shortName": "ballista.bolt.hammerhead",
+      "nameEn": "Hammerhead Bolt",
+      "nameZh": "锤头弩箭"
+    },
+    {
+      "id": -1987565603,
+      "shortName": "ballista.bolt.incendiary",
+      "nameEn": "Incendiary Bolt",
+      "nameZh": "燃烧弩箭"
+    },
+    {
+      "id": -1127003365,
+      "shortName": "ballista.bolt.piercer",
+      "nameEn": "Piercer Bolt",
+      "nameZh": "穿甲弩箭"
+    },
+    {
+      "id": -357442017,
+      "shortName": "ballista.bolt.pitchfork",
+      "nameEn": "Pitchfork Bolt",
+      "nameZh": "岔子弩箭"
+    },
+    {
+      "id": -759279626,
+      "shortName": "ballista.mounted",
+      "nameEn": "Mounted Ballista",
+      "nameZh": "装载弩炮"
+    },
+    {
+      "id": 1714509152,
+      "shortName": "ballista.static",
+      "nameEn": "Ballista",
+      "nameZh": "弩炮"
+    },
+    {
+      "id": -187304968,
+      "shortName": "batteringram",
+      "nameEn": "Battering Ram",
+      "nameZh": "攻城锤"
+    },
+    {
+      "id": -479314201,
+      "shortName": "batteringram.head.repair",
+      "nameEn": "Battering Ram Head",
+      "nameZh": ""
+    },
+    {
+      "id": 1954597876,
+      "shortName": "catapult.ammo.bee",
+      "nameEn": "Bee Catapult Bomb",
+      "nameZh": "蜜蜂弹"
+    },
+    {
+      "id": -1827561369,
+      "shortName": "catapult.ammo.explosive",
+      "nameEn": "Propane Explosive Bomb",
+      "nameZh": "爆炸弹"
+    },
+    {
+      "id": -484006286,
+      "shortName": "catapult.ammo.incendiary",
+      "nameEn": "Firebomb",
+      "nameZh": "火焰弹"
+    },
+    {
+      "id": 1831249347,
+      "shortName": "catapult.ammo.boulder",
+      "nameEn": "Scattershot",
+      "nameZh": "散射弹"
+    },
+    {
+      "id": 1145722690,
+      "shortName": "catapult",
+      "nameEn": "Catapult",
+      "nameZh": "投石车"
+    },
+    {
+      "id": -1290278434,
+      "shortName": "siegetower",
+      "nameEn": "Siege Tower",
+      "nameZh": "攻城塔"
+    },
+    {
+      "id": -1364246987,
+      "shortName": "snowmobile",
+      "nameEn": "Snowmobile",
+      "nameZh": ""
+    },
+    {
+      "id": 1768112091,
+      "shortName": "snowmobiletomaha",
+      "nameEn": "Tomaha Snowmobile",
+      "nameZh": ""
+    },
+    {
+      "id": 1015352446,
+      "shortName": "submarineduo",
+      "nameEn": "Duo Submarine",
+      "nameZh": ""
+    },
+    {
+      "id": -187031121,
+      "shortName": "submarinesolo",
+      "nameEn": "Solo Submarine",
+      "nameZh": ""
+    },
+    {
+      "id": 1732236518,
+      "shortName": "caboose",
+      "nameEn": "Caboose",
+      "nameZh": ""
+    },
+    {
+      "id": -2027988285,
+      "shortName": "locomotive",
+      "nameEn": "Locomotive",
+      "nameZh": ""
+    },
+    {
+      "id": 996757362,
+      "shortName": "wagon",
+      "nameEn": "Wagon",
+      "nameZh": ""
+    },
+    {
+      "id": -810326667,
+      "shortName": "workcart",
+      "nameEn": "Work Cart",
+      "nameZh": ""
+    },
+    {
+      "id": 1055319033,
+      "shortName": "ammo.grenadelauncher.buckshot",
+      "nameEn": "40mm Shotgun Round",
+      "nameZh": "40mm Shotgun Round"
+    },
+    {
+      "id": 349762871,
+      "shortName": "ammo.grenadelauncher.he",
+      "nameEn": "40mm HE Grenade",
+      "nameZh": "40mm HE Grenade"
+    },
+    {
+      "id": 915408809,
+      "shortName": "ammo.grenadelauncher.smoke",
+      "nameEn": "40mm Smoke Grenade",
+      "nameZh": "40mm Smoke Grenade"
+    },
+    {
+      "id": -1023065463,
+      "shortName": "arrow.hv",
+      "nameEn": "High Velocity Arrow",
+      "nameZh": "高速箭矢"
+    },
+    {
+      "id": -1234735557,
+      "shortName": "arrow.wooden",
+      "nameEn": "Wooden Arrow",
+      "nameZh": "木制箭矢"
+    },
+    {
+      "id": 215754713,
+      "shortName": "arrow.bone",
+      "nameEn": "Bone Arrow",
+      "nameZh": "骨箭"
+    },
+    {
+      "id": 14241751,
+      "shortName": "arrow.fire",
+      "nameEn": "Fire Arrow",
+      "nameZh": "燃烧箭矢"
+    },
+    {
+      "id": -963819285,
+      "shortName": "dart.incapacitate",
+      "nameEn": "Incapacitate Dart",
+      "nameZh": "麻醉飞镖"
+    },
+    {
+      "id": -594596146,
+      "shortName": "dart.radiation",
+      "nameEn": "Radiation Dart",
+      "nameZh": "辐射飞镖"
+    },
+    {
+      "id": 2036395619,
+      "shortName": "dart.scatter",
+      "nameEn": "Scatter Dart",
+      "nameZh": "散射飞镖"
+    },
+    {
+      "id": -274709858,
+      "shortName": "dart.wood",
+      "nameEn": "Wood Dart",
+      "nameZh": "木制飞镖"
+    },
+    {
+      "id": 588596902,
+      "shortName": "ammo.handmade.shell",
+      "nameEn": "Handmade Shell",
+      "nameZh": "Handmade Shell"
+    },
+    {
+      "id": -2097376851,
+      "shortName": "ammo.nailgun.nails",
+      "nameEn": "Nailgun Nails",
+      "nameZh": "Nailgun Nails"
+    },
+    {
+      "id": 385645417,
+      "shortName": "ammo.paintball",
+      "nameEn": "Paintball",
+      "nameZh": "Paintball"
+    },
+    {
+      "id": 785728077,
+      "shortName": "ammo.pistol",
+      "nameEn": "Pistol Bullet",
+      "nameZh": "Pistol Bullet"
+    },
+    {
+      "id": 51984655,
+      "shortName": "ammo.pistol.fire",
+      "nameEn": "Incendiary Pistol Bullet",
+      "nameZh": "Incendiary Pistol Bullet"
+    },
+    {
+      "id": -1691396643,
+      "shortName": "ammo.pistol.hv",
+      "nameEn": "HV Pistol Ammo",
+      "nameZh": "HV Pistol Ammo"
+    },
+    {
+      "id": -1211166256,
+      "shortName": "ammo.rifle",
+      "nameEn": "5.56 Rifle Ammo",
+      "nameZh": "5.56 Rifle Ammo"
+    },
+    {
+      "id": -1321651331,
+      "shortName": "ammo.rifle.explosive",
+      "nameEn": "Explosive 5.56 Rifle Ammo",
+      "nameZh": "Explosive 5.56 Rifle Ammo"
+    },
+    {
+      "id": 605467368,
+      "shortName": "ammo.rifle.incendiary",
+      "nameEn": "Incendiary 5.56 Rifle Ammo",
+      "nameZh": "Incendiary 5.56 Rifle Ammo"
+    },
+    {
+      "id": 1712070256,
+      "shortName": "ammo.rifle.hv",
+      "nameEn": "HV 5.56 Rifle Ammo",
+      "nameZh": "HV 5.56 Rifle Ammo"
+    },
+    {
+      "id": -742865266,
+      "shortName": "ammo.rocket.basic",
+      "nameEn": "Rocket",
+      "nameZh": "火箭弹"
+    },
+    {
+      "id": 1638322904,
+      "shortName": "ammo.rocket.fire",
+      "nameEn": "Incendiary Rocket",
+      "nameZh": "燃烧火箭弹"
+    },
+    {
+      "id": -1841918730,
+      "shortName": "ammo.rocket.hv",
+      "nameEn": "High Velocity Rocket",
+      "nameZh": "高速火箭弹"
+    },
+    {
+      "id": 1296788329,
+      "shortName": "ammo.rocket.seeker",
+      "nameEn": "Homing Missile",
+      "nameZh": "跟踪导弹"
+    },
+    {
+      "id": -17123659,
+      "shortName": "ammo.rocket.smoke",
+      "nameEn": "Smoke Rocket WIP!!!!",
+      "nameZh": ""
+    },
+    {
+      "id": -1685290200,
+      "shortName": "ammo.shotgun",
+      "nameEn": "12 Gauge Buckshot",
+      "nameZh": "12号霰弹"
+    },
+    {
+      "id": -1036635990,
+      "shortName": "ammo.shotgun.fire",
+      "nameEn": "12 Gauge Incendiary Shell",
+      "nameZh": "12号可燃霰弹"
+    },
+    {
+      "id": -727717969,
+      "shortName": "ammo.shotgun.slug",
+      "nameEn": "12 Gauge Slug",
+      "nameZh": "12号铅弹"
+    },
+    {
+      "id": -1800345240,
+      "shortName": "speargun.spear",
+      "nameEn": "Speargun Spear",
+      "nameZh": "鱼叉弹药"
+    },
+    {
+      "id": -1671551935,
+      "shortName": "submarine.torpedo.straight",
+      "nameEn": "Torpedo",
+      "nameZh": "鱼雷"
+    },
+    {
+      "id": 255305250,
+      "shortName": "ladder.wooden.boat",
+      "nameEn": "Wooden Boat Ladder",
+      "nameZh": ""
+    },
+    {
+      "id": 1390353317,
+      "shortName": "door.double.hinged.metal",
+      "nameEn": "Sheet Metal Double Door",
+      "nameZh": "双扇金属门"
+    },
+    {
+      "id": 1221063409,
+      "shortName": "door.double.hinged.toptier",
+      "nameEn": "Armored Double Door",
+      "nameZh": "双扇钢铁门"
+    },
+    {
+      "id": -1336109173,
+      "shortName": "door.double.hinged.wood",
+      "nameEn": "Wood Double Door",
+      "nameZh": "双扇木门"
+    },
+    {
+      "id": -1063073030,
+      "shortName": "door.hinged.boat.wood",
+      "nameEn": "Wooden Boat Door",
+      "nameZh": ""
+    },
+    {
+      "id": -2067472972,
+      "shortName": "door.hinged.metal",
+      "nameEn": "Sheet Metal Door",
+      "nameZh": "金属门"
+    },
+    {
+      "id": 1353298668,
+      "shortName": "door.hinged.toptier",
+      "nameEn": "Armored Door",
+      "nameZh": "钢铁门"
+    },
+    {
+      "id": 1729120840,
+      "shortName": "door.hinged.wood",
+      "nameEn": "Wooden Door",
+      "nameZh": "木头门"
+    },
+    {
+      "id": 936496778,
+      "shortName": "floor.grill",
+      "nameEn": "Floor grill",
+      "nameZh": "铁网地板"
+    },
+    {
+      "id": 1948067030,
+      "shortName": "floor.ladder.hatch",
+      "nameEn": "Ladder Hatch",
+      "nameZh": "折叠梯"
+    },
+    {
+      "id": 1983621560,
+      "shortName": "floor.triangle.grill",
+      "nameEn": "Floor triangle grill",
+      "nameZh": "三角形铁网地板"
+    },
+    {
+      "id": 2041899972,
+      "shortName": "floor.triangle.ladder.hatch",
+      "nameEn": "Triangle Ladder Hatch",
+      "nameZh": "三角形折叠梯"
+    },
+    {
+      "id": -401905610,
+      "shortName": "gates.external.high.adobe",
+      "nameEn": "High External Adobe Gate",
+      "nameZh": "泥砖高门"
+    },
+    {
+      "id": -1442339204,
+      "shortName": "gates.external.high.legacy",
+      "nameEn": "High External Legacy Gate",
+      "nameZh": "传统木头高门"
+    },
+    {
+      "id": -691113464,
+      "shortName": "gates.external.high.stone",
+      "nameEn": "High External Stone Gate",
+      "nameZh": "石头高门"
+    },
+    {
+      "id": -335089230,
+      "shortName": "gates.external.high.wood",
+      "nameEn": "High External Wooden Gate",
+      "nameZh": "木头高门"
+    },
+    {
+      "id": -316250604,
+      "shortName": "ladder.wooden.wall",
+      "nameEn": "Wooden Ladder",
+      "nameZh": "木质梯子"
+    },
+    {
+      "id": 607400343,
+      "shortName": "legacy.shelter.wood",
+      "nameEn": "Legacy Wood Shelter",
+      "nameZh": "传统木屋"
+    },
+    {
+      "id": 756890702,
+      "shortName": "wall.external.high.adobe",
+      "nameEn": "High External Adobe Wall",
+      "nameZh": "泥砖高墙"
+    },
+    {
+      "id": -1993883724,
+      "shortName": "wall.external.high.legacy",
+      "nameEn": "High External Legacy Wall",
+      "nameZh": "传统木头高墙"
+    },
+    {
+      "id": -967648160,
+      "shortName": "wall.external.high.stone",
+      "nameEn": "High External Stone Wall",
+      "nameZh": "石头高墙"
+    },
+    {
+      "id": 99588025,
+      "shortName": "wall.external.high",
+      "nameEn": "High External Wooden Wall",
+      "nameZh": "木头高墙"
+    },
+    {
+      "id": -956706906,
+      "shortName": "wall.frame.cell.gate",
+      "nameEn": "Prison Cell Gate",
+      "nameZh": "监牢铁门"
+    },
+    {
+      "id": -1429456799,
+      "shortName": "wall.frame.cell",
+      "nameEn": "Prison Cell Wall",
+      "nameZh": "监牢铁栏"
+    },
+    {
+      "id": 1451568081,
+      "shortName": "wall.frame.fence.gate",
+      "nameEn": "Chainlink Fence Gate",
+      "nameZh": "铁网栅栏门"
+    },
+    {
+      "id": -1117626326,
+      "shortName": "wall.frame.fence",
+      "nameEn": "Chainlink Fence",
+      "nameZh": "铁网栅栏"
+    },
+    {
+      "id": -148794216,
+      "shortName": "wall.frame.garagedoor",
+      "nameEn": "Garage Door",
+      "nameZh": "卷帘门"
+    },
+    {
+      "id": 1516985844,
+      "shortName": "wall.frame.netting",
+      "nameEn": "Netting",
+      "nameZh": "绳网"
+    },
+    {
+      "id": -796583652,
+      "shortName": "wall.frame.shopfront",
+      "nameEn": "Shop Front",
+      "nameZh": "木质售货窗口"
+    },
+    {
+      "id": -148229307,
+      "shortName": "wall.frame.shopfront.metal",
+      "nameEn": "Metal Shop Front",
+      "nameZh": "金属售货窗口"
+    },
+    {
+      "id": -819720157,
+      "shortName": "wall.window.bars.metal",
+      "nameEn": "Metal Window Bars",
+      "nameZh": "金属护栏"
+    },
+    {
+      "id": 671706427,
+      "shortName": "wall.window.bars.toptier",
+      "nameEn": "Reinforced Glass Window",
+      "nameZh": "钢化玻璃窗"
+    },
+    {
+      "id": -1183726687,
+      "shortName": "wall.window.bars.wood",
+      "nameEn": "Wooden Window Bars",
+      "nameZh": "木质护栏"
+    },
+    {
+      "id": -1199897169,
+      "shortName": "shutter.metal.embrasure.a",
+      "nameEn": "Metal horizontal embrasure",
+      "nameZh": "横向金属炮孔"
+    },
+    {
+      "id": -1199897172,
+      "shortName": "shutter.metal.embrasure.b",
+      "nameEn": "Metal Vertical embrasure",
+      "nameZh": "纵向金属炮孔"
+    },
+    {
+      "id": -1614955425,
+      "shortName": "wall.window.glass.reinforced",
+      "nameEn": "Strengthened Glass Window",
+      "nameZh": "强化玻璃窗"
+    },
+    {
+      "id": -1023374709,
+      "shortName": "shutter.wood.a",
+      "nameEn": "Wood Shutters",
+      "nameZh": "实木百叶窗"
+    },
+    {
+      "id": -463122489,
+      "shortName": "watchtower.wood",
+      "nameEn": "Watch Tower",
+      "nameZh": "瞭望塔"
+    },
+    {
+      "id": -874650016,
+      "shortName": "kriegbackpack",
+      "nameEn": "Krieg Large Backpack",
+      "nameZh": "克里格大型背包"
+    },
+    {
+      "id": 1873004466,
+      "shortName": "cocoknight.armor.gloves",
+      "nameEn": "Coconut Armor Gloves",
+      "nameZh": "椰子盔甲手套"
+    },
+    {
+      "id": -582467439,
+      "shortName": "cocoknight.armor.helmet",
+      "nameEn": "Coconut Armor Helmet",
+      "nameZh": "椰子盔甲头盔"
+    },
+    {
+      "id": 507284030,
+      "shortName": "cocoknight.armor.pants",
+      "nameEn": "Coconut Armor Pants",
+      "nameZh": "椰子盔甲腿甲"
+    },
+    {
+      "id": 1426097945,
+      "shortName": "cocoknight.armor.torso",
+      "nameEn": "Coconut Armor Chestplate",
+      "nameZh": "椰子盔甲胸甲"
+    },
+    {
+      "id": 296519935,
+      "shortName": "diving.fins",
+      "nameEn": "Diving Fins",
+      "nameZh": "潜水脚蹼"
+    },
+    {
+      "id": -113413047,
+      "shortName": "diving.mask",
+      "nameEn": "Diving Mask",
+      "nameZh": "潜水面罩"
+    },
+    {
+      "id": -1559420426,
+      "shortName": "diving.tank.double",
+      "nameEn": "Double Diving Tank",
+      "nameZh": "Double Diving Tank"
+    },
+    {
+      "id": -2022172587,
+      "shortName": "diving.tank",
+      "nameEn": "Diving Tank",
+      "nameZh": "氧气瓶"
+    },
+    {
+      "id": -1101924344,
+      "shortName": "diving.wetsuit",
+      "nameEn": "Wetsuit",
+      "nameZh": "潜水服"
+    },
+    {
+      "id": -1000573653,
+      "shortName": "boots.frog",
+      "nameEn": "Frog Boots",
+      "nameZh": "青蛙靴"
+    },
+    {
+      "id": -1215166612,
+      "shortName": "barrelcostume",
+      "nameEn": "A Barrel Costume",
+      "nameZh": "水桶服"
+    },
+    {
+      "id": 1189981699,
+      "shortName": "cratecostume",
+      "nameEn": "Crate Costume",
+      "nameZh": "板条箱服"
+    },
+    {
+      "id": 1659114910,
+      "shortName": "hat.gas.mask",
+      "nameEn": "Gas Mask",
+      "nameZh": "防毒面具"
+    },
+    {
+      "id": 21402876,
+      "shortName": "burlap.gloves.new",
+      "nameEn": "Burlap Gloves",
+      "nameZh": "麻布手套"
+    },
+    {
+      "id": 1366282552,
+      "shortName": "burlap.gloves",
+      "nameEn": "Leather Gloves",
+      "nameZh": "皮革手套"
+    },
+    {
+      "id": -699558439,
+      "shortName": "roadsign.gloves",
+      "nameEn": "Road Sign Gloves",
+      "nameZh": "路标手套"
+    },
+    {
+      "id": -1108136649,
+      "shortName": "tactical.gloves",
+      "nameEn": "Tactical Gloves",
+      "nameZh": "战术手套"
+    },
+    {
+      "id": -459159118,
+      "shortName": "woodarmor.gloves",
+      "nameEn": "Wood Armor Gloves",
+      "nameZh": "木制手套"
+    },
+    {
+      "id": -258574361,
+      "shortName": "draculacape",
+      "nameEn": "Dracula Cape",
+      "nameZh": "吸血鬼斗篷"
+    },
+    {
+      "id": 1865253052,
+      "shortName": "draculamask",
+      "nameEn": "Dracula Mask",
+      "nameZh": "吸血鬼面具"
+    },
+    {
+      "id": -1647389398,
+      "shortName": "frankensteinmask",
+      "nameEn": "Frankenstein Mask",
+      "nameZh": "科学怪人面具"
+    },
+    {
+      "id": -1043618880,
+      "shortName": "ghostsheet",
+      "nameEn": "Ghost Costume",
+      "nameZh": "幽灵装"
+    },
+    {
+      "id": 277730763,
+      "shortName": "halloween.mummysuit",
+      "nameEn": "Mummy Suit",
+      "nameZh": "木乃伊套装"
+    },
+    {
+      "id": 809689733,
+      "shortName": "mummymask",
+      "nameEn": "Mummy Mask",
+      "nameZh": "木乃伊面具"
+    },
+    {
+      "id": 273951840,
+      "shortName": "scarecrow.suit",
+      "nameEn": "Scarecrow Suit",
+      "nameZh": "稻草人套装"
+    },
+    {
+      "id": 809942731,
+      "shortName": "scarecrowhead",
+      "nameEn": "Scarecrow Wrap",
+      "nameZh": "稻草人头套"
+    },
+    {
+      "id": -1334569149,
+      "shortName": "metal.facemask.hockey",
+      "nameEn": "Hockey Mask",
+      "nameZh": "杰森面具"
+    },
+    {
+      "id": 3222790,
+      "shortName": "attire.hide.helterneck",
+      "nameEn": "Hide Halterneck",
+      "nameZh": "抹胸"
+    },
+    {
+      "id": 1675639563,
+      "shortName": "hat.beenie",
+      "nameEn": "Beenie Hat",
+      "nameZh": "包头帽"
+    },
+    {
+      "id": -23994173,
+      "shortName": "hat.boonie",
+      "nameEn": "Boonie Hat",
+      "nameZh": "圆边帽"
+    },
+    {
+      "id": 850280505,
+      "shortName": "bucket.helmet",
+      "nameEn": "Bucket Helmet",
+      "nameZh": "铁桶头盔"
+    },
+    {
+      "id": 1877339384,
+      "shortName": "burlap.headwrap",
+      "nameEn": "Burlap Headwrap",
+      "nameZh": "麻布头巾"
+    },
+    {
+      "id": 1714496074,
+      "shortName": "hat.candle",
+      "nameEn": "Candle Hat",
+      "nameZh": "蜡烛帽"
+    },
+    {
+      "id": 1633553557,
+      "shortName": "hat.candle.birthday",
+      "nameEn": "Birthday Candle Hat",
+      "nameZh": "生日蜡烛帽"
+    },
+    {
+      "id": -1022661119,
+      "shortName": "hat.cap",
+      "nameEn": "Baseball Cap",
+      "nameZh": "棒球帽"
+    },
+    {
+      "id": 968019378,
+      "shortName": "clatter.helmet",
+      "nameEn": "Clatter Helmet",
+      "nameZh": "咔哒头盔"
+    },
+    {
+      "id": -803263829,
+      "shortName": "coffeecan.helmet",
+      "nameEn": "Coffee Can Helmet",
+      "nameZh": "咖啡罐头盔"
+    },
+    {
+      "id": -1903165497,
+      "shortName": "deer.skull.mask",
+      "nameEn": "Bone Helmet",
+      "nameZh": "兽骨头盔"
+    },
+    {
+      "id": 1181207482,
+      "shortName": "heavy.plate.helmet",
+      "nameEn": "Heavy Plate Helmet",
+      "nameZh": "重型头盔"
+    },
+    {
+      "id": -427072335,
+      "shortName": "knightsarmour.helmet",
+      "nameEn": "Knights armour helmet",
+      "nameZh": ""
+    },
+    {
+      "id": -1539025626,
+      "shortName": "hat.miner",
+      "nameEn": "Miners Hat",
+      "nameZh": "矿工帽"
+    },
+    {
+      "id": -575744869,
+      "shortName": "partyhat",
+      "nameEn": "Party Hat",
+      "nameZh": "派对帽"
+    },
+    {
+      "id": -892718768,
+      "shortName": "prisonerhood",
+      "nameEn": "Prisoner Hood",
+      "nameZh": "头罩"
+    },
+    {
+      "id": 671063303,
+      "shortName": "riot.helmet",
+      "nameEn": "Riot Helmet",
+      "nameZh": "防暴头盔"
+    },
+    {
+      "id": -507248640,
+      "shortName": "hat.wellipets",
+      "nameEn": "Wellipets Hat",
+      "nameZh": "Wellipets帽子"
+    },
+    {
+      "id": -2094954543,
+      "shortName": "wood.armor.helmet",
+      "nameEn": "Wood Armor Helmet",
+      "nameZh": "木制头盔"
+    },
+    {
+      "id": 1751045826,
+      "shortName": "hoodie",
+      "nameEn": "Hoodie",
+      "nameZh": "连帽衫"
+    },
+    {
+      "id": 1746956556,
+      "shortName": "bone.armor.suit",
+      "nameEn": "Bone Armor",
+      "nameZh": "兽骨盔甲"
+    },
+    {
+      "id": -1102429027,
+      "shortName": "heavy.plate.jacket",
+      "nameEn": "Heavy Plate Jacket",
+      "nameZh": "重型板甲"
+    },
+    {
+      "id": -48090175,
+      "shortName": "jacket.snow",
+      "nameEn": "Snow Jacket",
+      "nameZh": "雪地夹克"
+    },
+    {
+      "id": -1163532624,
+      "shortName": "jacket",
+      "nameEn": "Jacket",
+      "nameZh": "夹克"
+    },
+    {
+      "id": 418081930,
+      "shortName": "wood.armor.jacket",
+      "nameEn": "Wood Chestplate",
+      "nameZh": "木制胸甲"
+    },
+    {
+      "id": -763071910,
+      "shortName": "lumberjack hoodie",
+      "nameEn": "Lumberjack Hoodie",
+      "nameZh": "伐木工连帽衫"
+    },
+    {
+      "id": -2012470695,
+      "shortName": "mask.balaclava",
+      "nameEn": "Improvised Balaclava",
+      "nameZh": "简易头套"
+    },
+    {
+      "id": -702051347,
+      "shortName": "mask.bandana",
+      "nameEn": "Bandana Mask",
+      "nameZh": "面罩"
+    },
+    {
+      "id": -194953424,
+      "shortName": "metal.facemask",
+      "nameEn": "Metal Facemask",
+      "nameZh": "金属面罩"
+    },
+    {
+      "id": 110116923,
+      "shortName": "metal.facemask.icemask",
+      "nameEn": "Ice Metal Facemask",
+      "nameZh": ""
+    },
+    {
+      "id": 355877490,
+      "shortName": "minigunammopack",
+      "nameEn": "Minigun Ammo Pack",
+      "nameZh": ""
+    },
+    {
+      "id": -1518883088,
+      "shortName": "nightvisiongoggles",
+      "nameEn": "Night Vision Goggles",
+      "nameZh": "夜视仪"
+    },
+    {
+      "id": -1506417026,
+      "shortName": "attire.ninja.suit",
+      "nameEn": "Ninja Suit",
+      "nameZh": "忍者服"
+    },
+    {
+      "id": -1014934560,
+      "shortName": "paintballoveralls.suit",
+      "nameEn": "Paintball Overalls",
+      "nameZh": "Paintball Overalls"
+    },
+    {
+      "id": 1992974553,
+      "shortName": "burlap.trousers",
+      "nameEn": "Burlap Trousers",
+      "nameZh": "麻布裤子"
+    },
+    {
+      "id": -1778159885,
+      "shortName": "heavy.plate.pants",
+      "nameEn": "Heavy Plate Pants",
+      "nameZh": "重型腿甲"
+    },
+    {
+      "id": 1722154847,
+      "shortName": "attire.hide.pants",
+      "nameEn": "Hide Pants",
+      "nameZh": "兽皮裤"
+    },
+    {
+      "id": -945708533,
+      "shortName": "knightsarmour.skirt",
+      "nameEn": "Knights armour skirt plates",
+      "nameZh": ""
+    },
+    {
+      "id": 1850456855,
+      "shortName": "roadsign.kilt",
+      "nameEn": "Road Sign Kilt",
+      "nameZh": "路标护裙"
+    },
+    {
+      "id": -1695367501,
+      "shortName": "pants.shorts",
+      "nameEn": "Shorts",
+      "nameZh": "短裤"
+    },
+    {
+      "id": 832133926,
+      "shortName": "wood.armor.pants",
+      "nameEn": "Wood Armor Pants",
+      "nameZh": "木制腿甲"
+    },
+    {
+      "id": 237239288,
+      "shortName": "pants",
+      "nameEn": "Pants",
+      "nameZh": "裤子"
+    },
+    {
+      "id": 980333378,
+      "shortName": "attire.hide.poncho",
+      "nameEn": "Hide Poncho",
+      "nameZh": "兽皮披风"
+    },
+    {
+      "id": 602741290,
+      "shortName": "burlap.shirt",
+      "nameEn": "Burlap Shirt",
+      "nameZh": "麻布衬衫"
+    },
+    {
+      "id": -2025184684,
+      "shortName": "shirt.collared",
+      "nameEn": "Shirt",
+      "nameZh": "衬衫"
+    },
+    {
+      "id": 196700171,
+      "shortName": "attire.hide.vest",
+      "nameEn": "Hide Vest",
+      "nameZh": "兽皮背心"
+    },
+    {
+      "id": 1608640313,
+      "shortName": "shirt.tanktop",
+      "nameEn": "Tank Top",
+      "nameZh": "背心"
+    },
+    {
+      "id": -1549739227,
+      "shortName": "shoes.boots",
+      "nameEn": "Boots",
+      "nameZh": "靴子"
+    },
+    {
+      "id": -761829530,
+      "shortName": "burlap.shoes",
+      "nameEn": "Burlap Shoes",
+      "nameZh": "麻布鞋"
+    },
+    {
+      "id": 794356786,
+      "shortName": "attire.hide.boots",
+      "nameEn": "Hide Boots",
+      "nameZh": "兽皮靴"
+    },
+    {
+      "id": 1849409072,
+      "shortName": "silly.horse.mask",
+      "nameEn": "Silly Horse Mask",
+      "nameZh": "Silly Horse Mask"
+    },
+    {
+      "id": -1773144852,
+      "shortName": "attire.hide.skirt",
+      "nameEn": "Hide Skirt",
+      "nameZh": "布裙"
+    },
+    {
+      "id": -1622110948,
+      "shortName": "attire.banditguard",
+      "nameEn": "Bandit Guard Gear",
+      "nameZh": "强盗警卫服装"
+    },
+    {
+      "id": -470439097,
+      "shortName": "hazmatsuit.arcticsuit",
+      "nameEn": "Arctic Suit",
+      "nameZh": "极地装"
+    },
+    {
+      "id": -606898372,
+      "shortName": "clothing.mannequin",
+      "nameEn": "#clothingmannequin",
+      "nameZh": ""
+    },
+    {
+      "id": -797592358,
+      "shortName": "hazmatsuit.diver",
+      "nameEn": "Abyss Pack",
+      "nameZh": ""
+    },
+    {
+      "id": -105415879,
+      "shortName": "hazmatsuit.frontier",
+      "nameEn": "Frontier Suit",
+      "nameZh": ""
+    },
+    {
+      "id": 1266491000,
+      "shortName": "hazmatsuit",
+      "nameEn": "Hazmat Suit",
+      "nameZh": "防化服"
+    },
+    {
+      "id": 972302244,
+      "shortName": "hazmatsuit.kick",
+      "nameEn": "Kick Hazmat",
+      "nameZh": "Kick防护服"
+    },
+    {
+      "id": 861513346,
+      "shortName": "hazmatsuit.lumberjack",
+      "nameEn": "Lumberjack Suit",
+      "nameZh": ""
+    },
+    {
+      "id": 491263800,
+      "shortName": "hazmatsuit.nomadsuit",
+      "nameEn": "Nomad Suit",
+      "nameZh": ""
+    },
+    {
+      "id": 1065594600,
+      "shortName": "hazmatsuit.pilot",
+      "nameEn": "Pilot Hazmat",
+      "nameZh": "飞行员防化服"
+    },
+    {
+      "id": -253079493,
+      "shortName": "hazmatsuit_scientist",
+      "nameEn": "Scientist Suit",
+      "nameZh": "科学家防化服"
+    },
+    {
+      "id": 1107575710,
+      "shortName": "hazmatsuit_scientist_arctic",
+      "nameEn": "Arctic Scientist Suit",
+      "nameZh": "极地科学家套装"
+    },
+    {
+      "id": -1937799374,
+      "shortName": "hazmatsuit_scientist_naval",
+      "nameEn": "Naval Scientist Suit",
+      "nameZh": "Naval Scientist Suit"
+    },
+    {
+      "id": 86840834,
+      "shortName": "hazmatsuit_scientist_nvgm",
+      "nameEn": "NVGM Scientist Suit",
+      "nameZh": "夜视科学家防化服"
+    },
+    {
+      "id": -1958316066,
+      "shortName": "hazmatsuit_scientist_peacekeeper",
+      "nameEn": "Scientist Suit",
+      "nameZh": "维和科学家防化服"
+    },
+    {
+      "id": -560304835,
+      "shortName": "hazmatsuit.spacesuit",
+      "nameEn": "Space Suit",
+      "nameZh": ""
+    },
+    {
+      "id": 468313189,
+      "shortName": "hazmatsuittwitch",
+      "nameEn": "Twitch Rivals Hazmat Suit",
+      "nameZh": ""
+    },
+    {
+      "id": -902423513,
+      "shortName": "hazmat.krieg",
+      "nameEn": "Krieg Hazmat",
+      "nameZh": "克里格防护服"
+    },
+    {
+      "id": -1772746857,
+      "shortName": "scientistsuit_heavy",
+      "nameEn": "Heavy Scientist Suit",
+      "nameZh": "重型科学家防化服"
+    },
+    {
+      "id": 1601468620,
+      "shortName": "jumpsuit.suit.blue",
+      "nameEn": "Blue Jumpsuit",
+      "nameZh": "蓝色连衣裤"
+    },
+    {
+      "id": -97459906,
+      "shortName": "jumpsuit.suit",
+      "nameEn": "Jumpsuit",
+      "nameZh": "连衣裤"
+    },
+    {
+      "id": -874908751,
+      "shortName": "jumpsuit.waterwellnpc",
+      "nameEn": "Waterwell NPC Jumpsuit",
+      "nameZh": "水井NPC装"
+    },
+    {
+      "id": -2133781216,
+      "shortName": "oubreak_scientist",
+      "nameEn": "Outbreak Scientist Suit",
+      "nameZh": "疫情科学家套装"
+    },
+    {
+      "id": 935692442,
+      "shortName": "tshirt.long",
+      "nameEn": "Longsleeve T-Shirt",
+      "nameZh": "长袖衫"
+    },
+    {
+      "id": 223891266,
+      "shortName": "tshirt",
+      "nameEn": "T-Shirt",
+      "nameZh": "T恤"
+    },
+    {
+      "id": 547862680,
+      "shortName": "knighttorso.armour",
+      "nameEn": "Knights armour cuirass",
+      "nameZh": ""
+    },
+    {
+      "id": 1110385766,
+      "shortName": "metal.plate.torso",
+      "nameEn": "Metal Chest Plate",
+      "nameZh": "金属胸甲"
+    },
+    {
+      "id": -1478855279,
+      "shortName": "metal.plate.torso.icevest",
+      "nameEn": "Ice Metal Chest Plate",
+      "nameZh": ""
+    },
+    {
+      "id": -2002277461,
+      "shortName": "roadsign.jacket",
+      "nameEn": "Road Sign Jacket",
+      "nameZh": "路标夹克"
+    },
+    {
+      "id": -903796529,
+      "shortName": "clothing.mod.armorinsert_asbestos",
+      "nameEn": "Asbestos Armor Insert",
+      "nameZh": "石棉护甲插片"
+    },
+    {
+      "id": 2047789913,
+      "shortName": "clothing.mod.armorinsert_lead",
+      "nameEn": "Lead Armor Insert",
+      "nameZh": "铅质护甲插片"
+    },
+    {
+      "id": 1099611828,
+      "shortName": "clothing.mod.armorinsert_metal",
+      "nameEn": "Metal Armor Insert",
+      "nameZh": "金属护甲插片"
+    },
+    {
+      "id": -593892112,
+      "shortName": "clothing.mod.armorinsert_wood",
+      "nameEn": "Wooden Armor Insert",
+      "nameZh": "木制护甲插片"
+    },
+    {
+      "id": 1553078977,
+      "shortName": "bleach",
+      "nameEn": "Bleach",
+      "nameZh": "漂白剂"
+    },
+    {
+      "id": 1401987718,
+      "shortName": "ducttape",
+      "nameEn": "Duct Tape",
+      "nameZh": "强力胶带"
+    },
+    {
+      "id": 656371028,
+      "shortName": "carburetor1",
+      "nameEn": "Low Quality Carburetor",
+      "nameZh": "低级化油器"
+    },
+    {
+      "id": 656371027,
+      "shortName": "carburetor2",
+      "nameEn": "Medium Quality Carburetor",
+      "nameZh": "中级化油器"
+    },
+    {
+      "id": 656371026,
+      "shortName": "carburetor3",
+      "nameEn": "High Quality Carburetor",
+      "nameZh": "高级化油器"
+    },
+    {
+      "id": 1158340334,
+      "shortName": "crankshaft1",
+      "nameEn": "Low Quality Crankshaft",
+      "nameZh": "低级曲轴"
+    },
+    {
+      "id": 1158340331,
+      "shortName": "crankshaft2",
+      "nameEn": "Medium Quality Crankshaft",
+      "nameZh": "中级曲轴"
+    },
+    {
+      "id": 1158340332,
+      "shortName": "crankshaft3",
+      "nameEn": "High Quality Crankshaft",
+      "nameZh": "高级曲轴"
+    },
+    {
+      "id": 1883981798,
+      "shortName": "piston1",
+      "nameEn": "Low Quality Pistons",
+      "nameZh": "低级活塞"
+    },
+    {
+      "id": 1883981801,
+      "shortName": "piston2",
+      "nameEn": "Medium Quality Pistons",
+      "nameZh": "中级活塞"
+    },
+    {
+      "id": 1883981800,
+      "shortName": "piston3",
+      "nameEn": "High Quality Pistons",
+      "nameZh": "高级活塞"
+    },
+    {
+      "id": -89874794,
+      "shortName": "sparkplug1",
+      "nameEn": "Low Quality Spark Plugs",
+      "nameZh": "低级火花塞"
+    },
+    {
+      "id": -493159321,
+      "shortName": "sparkplug2",
+      "nameEn": "Medium Quality Spark Plugs",
+      "nameZh": "中级火花塞"
+    },
+    {
+      "id": 1072924620,
+      "shortName": "sparkplug3",
+      "nameEn": "High Quality Spark Plugs",
+      "nameZh": "高级火花塞"
+    },
+    {
+      "id": 1330084809,
+      "shortName": "valve1",
+      "nameEn": "Low Quality Valves",
+      "nameZh": "低级气阀"
+    },
+    {
+      "id": 926800282,
+      "shortName": "valve2",
+      "nameEn": "Medium Quality Valves",
+      "nameZh": "中级气阀"
+    },
+    {
+      "id": -1802083073,
+      "shortName": "valve3",
+      "nameEn": "High Quality Valves",
+      "nameZh": "高级气阀"
+    },
+    {
+      "id": -629028935,
+      "shortName": "fuse",
+      "nameEn": "Electric Fuse",
+      "nameZh": "保险丝"
+    },
+    {
+      "id": 479143914,
+      "shortName": "gears",
+      "nameEn": "Gears",
+      "nameZh": "齿轮"
+    },
+    {
+      "id": -1899491405,
+      "shortName": "glue",
+      "nameEn": "Glue",
+      "nameZh": "胶水"
+    },
+    {
+      "id": 1882709339,
+      "shortName": "metalblade",
+      "nameEn": "Metal Blade",
+      "nameZh": "金属刀刃"
+    },
+    {
+      "id": 95950017,
+      "shortName": "metalpipe",
+      "nameEn": "Metal Pipe",
+      "nameZh": "金属管"
+    },
+    {
+      "id": -1673693549,
+      "shortName": "propanetank",
+      "nameEn": "Empty Propane Tank",
+      "nameZh": "空煤气罐"
+    },
+    {
+      "id": 1199391518,
+      "shortName": "roadsigns",
+      "nameEn": "Road Signs",
+      "nameZh": "路标"
+    },
+    {
+      "id": 1414245522,
+      "shortName": "rope",
+      "nameEn": "Rope",
+      "nameZh": "绳子"
+    },
+    {
+      "id": 1234880403,
+      "shortName": "sewingkit",
+      "nameEn": "Sewing Kit",
+      "nameZh": "针线包"
+    },
+    {
+      "id": -1994909036,
+      "shortName": "sheetmetal",
+      "nameEn": "Sheet Metal",
+      "nameZh": "金属板"
+    },
+    {
+      "id": -1021495308,
+      "shortName": "metalspring",
+      "nameEn": "Metal Spring",
+      "nameZh": "金属弹簧"
+    },
+    {
+      "id": 642482233,
+      "shortName": "sticks",
+      "nameEn": "Sticks",
+      "nameZh": "木棍"
+    },
+    {
+      "id": 2019042823,
+      "shortName": "tarp",
+      "nameEn": "Tarp",
+      "nameZh": "篷布"
+    },
+    {
+      "id": 73681876,
+      "shortName": "techparts",
+      "nameEn": "Tech Trash",
+      "nameZh": "电子零件"
+    },
+    {
+      "id": 176787552,
+      "shortName": "riflebody",
+      "nameEn": "Rifle Body",
+      "nameZh": "步枪枪体"
+    },
+    {
+      "id": 573926264,
+      "shortName": "semibody",
+      "nameEn": "Semi Automatic Body",
+      "nameZh": "半自动枪体"
+    },
+    {
+      "id": 1230323789,
+      "shortName": "smgbody",
+      "nameEn": "SMG Body",
+      "nameZh": "冲锋枪枪体"
+    },
+    {
+      "id": -1950721390,
+      "shortName": "barricade.concrete",
+      "nameEn": "Concrete Barricade",
+      "nameZh": "混凝土路障"
+    },
+    {
+      "id": 1373240771,
+      "shortName": "barricade.wood.cover",
+      "nameEn": "Wooden Barricade Cover",
+      "nameZh": "木制立障"
+    },
+    {
+      "id": -424687710,
+      "shortName": "barricade.medieval",
+      "nameEn": "Medieval Barricade",
+      "nameZh": "中世纪路障"
+    },
+    {
+      "id": 1655650836,
+      "shortName": "barricade.metal",
+      "nameEn": "Metal Barricade",
+      "nameZh": "金属路障"
+    },
+    {
+      "id": -559599960,
+      "shortName": "barricade.sandbags",
+      "nameEn": "Sandbag Barricade",
+      "nameZh": "沙袋路障"
+    },
+    {
+      "id": 15388698,
+      "shortName": "barricade.stone",
+      "nameEn": "Stone Barricade",
+      "nameZh": "石头路障"
+    },
+    {
+      "id": 866889860,
+      "shortName": "barricade.wood",
+      "nameEn": "Wooden Barricade",
+      "nameZh": "木制路障"
+    },
+    {
+      "id": 1382263453,
+      "shortName": "barricade.woodwire",
+      "nameEn": "Barbed Wooden Barricade",
+      "nameZh": "木制尖刺路障"
+    },
+    {
+      "id": 1099314009,
+      "shortName": "bbq",
+      "nameEn": "Barbeque",
+      "nameZh": "烧烤架"
+    },
+    {
+      "id": -582782051,
+      "shortName": "trap.bear",
+      "nameEn": "Snap Trap",
+      "nameZh": "捕兽夹"
+    },
+    {
+      "id": -1273339005,
+      "shortName": "bed",
+      "nameEn": "Bed",
+      "nameZh": "床"
+    },
+    {
+      "id": 184516676,
+      "shortName": "beehive",
+      "nameEn": "Beehive",
+      "nameZh": "蜂巢"
+    },
+    {
+      "id": 1993693904,
+      "shortName": "boatbuildingstation",
+      "nameEn": "Boat Building Station",
+      "nameZh": "船只建造站"
+    },
+    {
+      "id": 829641693,
+      "shortName": "anchor",
+      "nameEn": "Anchor",
+      "nameZh": "船锚"
+    },
+    {
+      "id": -34498533,
+      "shortName": "cannon",
+      "nameEn": "Cannon",
+      "nameZh": "加农炮"
+    },
+    {
+      "id": -411735114,
+      "shortName": "cannonball",
+      "nameEn": "Cannonball",
+      "nameZh": "炮弹"
+    },
+    {
+      "id": -952411326,
+      "shortName": "plank",
+      "nameEn": "Plank",
+      "nameZh": "木板"
+    },
+    {
+      "id": 405905095,
+      "shortName": "sail",
+      "nameEn": "Sail",
+      "nameZh": "船帆"
+    },
+    {
+      "id": -158718378,
+      "shortName": "small_ramp",
+      "nameEn": "Small Ramp",
+      "nameZh": "小型坡道"
+    },
+    {
+      "id": -2115299615,
+      "shortName": "smallengine",
+      "nameEn": "Small Boat Engine",
+      "nameZh": "小型船只引擎"
+    },
+    {
+      "id": -1866909924,
+      "shortName": "steeringwheel.boat",
+      "nameEn": "Steering Wheel",
+      "nameZh": "舵轮"
+    },
+    {
+      "id": 1946219319,
+      "shortName": "campfire",
+      "nameEn": "Camp Fire",
+      "nameZh": "营火"
+    },
+    {
+      "id": 1081921512,
+      "shortName": "cardtable",
+      "nameEn": "Card Table",
+      "nameZh": ""
+    },
+    {
+      "id": 1142993169,
+      "shortName": "ceilinglight",
+      "nameEn": "Ceiling Light",
+      "nameZh": "吊顶灯"
+    },
+    {
+      "id": 1534542921,
+      "shortName": "chair",
+      "nameEn": "Chair",
+      "nameZh": "椅子"
+    },
+    {
+      "id": -1944704288,
+      "shortName": "chair.icethrone",
+      "nameEn": "Ice Throne",
+      "nameZh": "冰封王座"
+    },
+    {
+      "id": -576866254,
+      "shortName": "beanbagseatfabric",
+      "nameEn": "Fabric Beanbag Seat",
+      "nameZh": "布艺懒人沙发"
+    },
+    {
+      "id": -1220928936,
+      "shortName": "beanbagseatleather",
+      "nameEn": "Leather Beanbag Seat",
+      "nameZh": "皮革懒人沙发"
+    },
+    {
+      "id": -463012608,
+      "shortName": "chair.ejector.seat",
+      "nameEn": "Salvaged Ejector Seat",
+      "nameZh": "废弃弹射座椅"
+    },
+    {
+      "id": 2130820932,
+      "shortName": "charity.plushy.01",
+      "nameEn": "Cancer Research UK Plushie",
+      "nameZh": "英国癌症研究院毛绒玩具"
+    },
+    {
+      "id": 2130820933,
+      "shortName": "charity.plushy.02",
+      "nameEn": "Ronald McDonald House UK Plushie",
+      "nameZh": "英国麦当劳叔叔之家毛绒玩具"
+    },
+    {
+      "id": -2018158920,
+      "shortName": "chickencoop",
+      "nameEn": "Chicken Coop",
+      "nameZh": "鸡舍"
+    },
+    {
+      "id": 486661382,
+      "shortName": "clantable",
+      "nameEn": "Clan Table",
+      "nameZh": "战队桌"
+    },
+    {
+      "id": -1488398114,
+      "shortName": "composter",
+      "nameEn": "Composter",
+      "nameZh": "堆肥机"
+    },
+    {
+      "id": -1588628467,
+      "shortName": "computerstation",
+      "nameEn": "Computer Station",
+      "nameZh": "电脑站"
+    },
+    {
+      "id": 1456143403,
+      "shortName": "cookingworkbench",
+      "nameEn": "Cooking Workbench",
+      "nameZh": "烹饪工作台"
+    },
+    {
+      "id": 1588492232,
+      "shortName": "drone",
+      "nameEn": "Drone",
+      "nameZh": "无人机"
+    },
+    {
+      "id": -1519126340,
+      "shortName": "dropbox",
+      "nameEn": "Drop Box",
+      "nameZh": "投递箱"
+    },
+    {
+      "id": -1779203452,
+      "shortName": "easel",
+      "nameEn": "Portable Easel",
+      "nameZh": "Portable Easel"
+    },
+    {
+      "id": 1177596584,
+      "shortName": "elevator",
+      "nameEn": "Elevator",
+      "nameZh": "电梯"
+    },
+    {
+      "id": -1535621066,
+      "shortName": "fireplace.stone",
+      "nameEn": "Stone Fireplace",
+      "nameZh": "壁炉"
+    },
+    {
+      "id": 1744298439,
+      "shortName": "firework.boomer.blue",
+      "nameEn": "Blue Boomer",
+      "nameZh": "蓝色烟花"
+    },
+    {
+      "id": 1324203999,
+      "shortName": "firework.boomer.champagne",
+      "nameEn": "Champagne Boomer",
+      "nameZh": "香槟烟花"
+    },
+    {
+      "id": -656349006,
+      "shortName": "firework.boomer.green",
+      "nameEn": "Green Boomer",
+      "nameZh": "绿色烟花"
+    },
+    {
+      "id": -7270019,
+      "shortName": "firework.boomer.orange",
+      "nameEn": "Orange Boomer",
+      "nameZh": "橙色烟花"
+    },
+    {
+      "id": -379734527,
+      "shortName": "firework.boomer.pattern",
+      "nameEn": "Pattern Boomer",
+      "nameZh": "图案烟花"
+    },
+    {
+      "id": -1553999294,
+      "shortName": "firework.boomer.red",
+      "nameEn": "Red Boomer",
+      "nameZh": "红色烟花"
+    },
+    {
+      "id": -280223496,
+      "shortName": "firework.boomer.violet",
+      "nameEn": "Violet Boomer",
+      "nameZh": "紫色烟花"
+    },
+    {
+      "id": -515830359,
+      "shortName": "firework.romancandle.blue",
+      "nameEn": "Blue Roman Candle",
+      "nameZh": "蓝色罗马烟花"
+    },
+    {
+      "id": -1306288356,
+      "shortName": "firework.romancandle.green",
+      "nameEn": "Green Roman Candle",
+      "nameZh": "绿色罗马烟花"
+    },
+    {
+      "id": -1486461488,
+      "shortName": "firework.romancandle.red",
+      "nameEn": "Red Roman Candle",
+      "nameZh": "红色罗马烟花"
+    },
+    {
+      "id": -99886070,
+      "shortName": "firework.romancandle.violet",
+      "nameEn": "Violet Roman Candle",
+      "nameZh": "紫色罗马烟花"
+    },
+    {
+      "id": 261913429,
+      "shortName": "firework.volcano",
+      "nameEn": "White Volcano Firework",
+      "nameZh": "白色火山烟花"
+    },
+    {
+      "id": -454370658,
+      "shortName": "firework.volcano.red",
+      "nameEn": "Red Volcano Firework",
+      "nameZh": "红色火山烟花"
+    },
+    {
+      "id": -1538109120,
+      "shortName": "firework.volcano.violet",
+      "nameEn": "Violet Volcano Firework",
+      "nameZh": "紫色火山烟花"
+    },
+    {
+      "id": -92759291,
+      "shortName": "spikes.floor",
+      "nameEn": "Wooden Floor Spikes",
+      "nameZh": "木制地刺"
+    },
+    {
+      "id": -1923843855,
+      "shortName": "half.bamboo.shelves",
+      "nameEn": "Half Height Bamboo Shelves",
+      "nameZh": "半高竹架"
+    },
+    {
+      "id": 1575635062,
+      "shortName": "frankensteintable",
+      "nameEn": "Frankenstein Table",
+      "nameZh": "科学怪人桌"
+    },
+    {
+      "id": 1413014235,
+      "shortName": "fridge",
+      "nameEn": "Fridge",
+      "nameZh": "冰箱"
+    },
+    {
+      "id": -1992717673,
+      "shortName": "furnace.large",
+      "nameEn": "Large Furnace",
+      "nameZh": "大熔炉"
+    },
+    {
+      "id": -1999722522,
+      "shortName": "furnace",
+      "nameEn": "Furnace",
+      "nameZh": "熔炉"
+    },
+    {
+      "id": -1163943815,
+      "shortName": "weaponrack.light",
+      "nameEn": "Weapon Rack Light",
+      "nameZh": ""
+    },
+    {
+      "id": 1277159544,
+      "shortName": "weaponrack.doublelight",
+      "nameEn": "Weapon Rack Double Light",
+      "nameZh": ""
+    },
+    {
+      "id": 1578317134,
+      "shortName": "hazmat.plushy",
+      "nameEn": "Hazmat Plushy",
+      "nameZh": "防化服玩偶"
+    },
+    {
+      "id": 146221721,
+      "shortName": "heavy.scientist.plushie",
+      "nameEn": "Heavy Scientist Plushie",
+      "nameZh": "Heavy Scientist Plushie"
+    },
+    {
+      "id": 1160881421,
+      "shortName": "hitchtroughcombo",
+      "nameEn": "Hitch & Trough",
+      "nameZh": "拴马桩&喂食槽"
+    },
+    {
+      "id": 1428574144,
+      "shortName": "hopper",
+      "nameEn": "Hopper",
+      "nameZh": "漏斗"
+    },
+    {
+      "id": -1989600732,
+      "shortName": "hab.armor",
+      "nameEn": "Hot Air Balloon Armor",
+      "nameZh": "热气球装甲"
+    },
+    {
+      "id": 696029539,
+      "shortName": "hab",
+      "nameEn": "Hot Air Balloon",
+      "nameZh": ""
+    },
+    {
+      "id": 210787554,
+      "shortName": "iotable",
+      "nameEn": "Engineering Workbench",
+      "nameZh": "工程工作台"
+    },
+    {
+      "id": 1242482355,
+      "shortName": "jackolantern.angry",
+      "nameEn": "Jack O Lantern Angry",
+      "nameZh": "愤怒的南瓜灯"
+    },
+    {
+      "id": -1824943010,
+      "shortName": "jackolantern.happy",
+      "nameEn": "Jack O Lantern Happy",
+      "nameZh": "开心的南瓜灯"
+    },
+    {
+      "id": -1663759755,
+      "shortName": "trap.landmine",
+      "nameEn": "Homemade Landmine",
+      "nameZh": "自制地雷"
+    },
+    {
+      "id": 1658229558,
+      "shortName": "lantern",
+      "nameEn": "Lantern",
+      "nameZh": "煤油灯"
+    },
+    {
+      "id": 833533164,
+      "shortName": "box.wooden.large",
+      "nameEn": "Large Wood Box",
+      "nameZh": "大型储物箱"
+    },
+    {
+      "id": -880494890,
+      "shortName": "abyss.barrel.horizontal",
+      "nameEn": "Abyss Horizontal Storage Tank",
+      "nameZh": "深渊卧式铁桶"
+    },
+    {
+      "id": -919882824,
+      "shortName": "abyss.barrel.vertical",
+      "nameEn": "Abyss Vertical Storage Tank",
+      "nameZh": "深渊立式铁桶"
+    },
+    {
+      "id": -1593678393,
+      "shortName": "component.box.ammo.large",
+      "nameEn": "Ammo Component Box",
+      "nameZh": "Ammo Component Box"
+    },
+    {
+      "id": 1254295946,
+      "shortName": "component.box.armor.large",
+      "nameEn": "Armor Component Box",
+      "nameZh": "Armor Component Box"
+    },
+    {
+      "id": 1884461210,
+      "shortName": "component.box.charcoal.large",
+      "nameEn": "Charcoal Component Box",
+      "nameZh": "Charcoal Component Box"
+    },
+    {
+      "id": 1736620421,
+      "shortName": "component.box.clothing.large",
+      "nameEn": "Clothing Component Box",
+      "nameZh": "Clothing Component Box"
+    },
+    {
+      "id": -413663149,
+      "shortName": "component.box.comps.large",
+      "nameEn": "Comps Component Box",
+      "nameZh": "Comps Component Box"
+    },
+    {
+      "id": -1998423571,
+      "shortName": "component.box.explosives.large",
+      "nameEn": "Explosives Component Box",
+      "nameZh": "Explosives Component Box"
+    },
+    {
+      "id": 1023919015,
+      "shortName": "component.box.food.large",
+      "nameEn": "Food Component Box",
+      "nameZh": "Food Component Box"
+    },
+    {
+      "id": -544295594,
+      "shortName": "component.box.guns.large",
+      "nameEn": "Guns Component Box",
+      "nameZh": "Guns Component Box"
+    },
+    {
+      "id": -800824218,
+      "shortName": "component.box.meds.large",
+      "nameEn": "Meds Component Box",
+      "nameZh": "Meds Component Box"
+    },
+    {
+      "id": 1465782238,
+      "shortName": "component.box.metal.large",
+      "nameEn": "Metal Component Box",
+      "nameZh": "Metal Component Box"
+    },
+    {
+      "id": 992944937,
+      "shortName": "component.box.ore.large",
+      "nameEn": "Ore Component Box",
+      "nameZh": "Ore Component Box"
+    },
+    {
+      "id": 574701440,
+      "shortName": "component.box.scrap.large",
+      "nameEn": "Scrap Component Box",
+      "nameZh": "Scrap Component Box"
+    },
+    {
+      "id": 94971664,
+      "shortName": "component.box.stone.large",
+      "nameEn": "Stone Component Box",
+      "nameZh": "Stone Component Box"
+    },
+    {
+      "id": -10594280,
+      "shortName": "component.box.sulfur.large",
+      "nameEn": "Sulfur Component Box",
+      "nameZh": "Sulfur Component Box"
+    },
+    {
+      "id": 679690962,
+      "shortName": "component.box.tools.large",
+      "nameEn": "Tools Component Box",
+      "nameZh": "Tools Component Box"
+    },
+    {
+      "id": 1044081720,
+      "shortName": "component.box.wood.large",
+      "nameEn": "Wood Component Box",
+      "nameZh": "Wood Component Box"
+    },
+    {
+      "id": -526026171,
+      "shortName": "wicker.barrel",
+      "nameEn": "Wicker Barrel",
+      "nameZh": "柳条桶"
+    },
+    {
+      "id": -1652561344,
+      "shortName": "bamboo.barrel",
+      "nameEn": "Bamboo Barrel",
+      "nameZh": "竹桶"
+    },
+    {
+      "id": 814297925,
+      "shortName": "medieval.box.wooden.large",
+      "nameEn": "Medieval Large Wood Box",
+      "nameZh": ""
+    },
+    {
+      "id": 652793345,
+      "shortName": "krieg.storage.horizontal",
+      "nameEn": "Krieg Storage Crates",
+      "nameZh": "克里格储物箱"
+    },
+    {
+      "id": 1305765685,
+      "shortName": "krieg.storage.vertical",
+      "nameEn": "Krieg Storage Barrel",
+      "nameZh": "克里格储物桶"
+    },
+    {
+      "id": -1310391395,
+      "shortName": "legacyfurnace",
+      "nameEn": "Legacy Furnace",
+      "nameZh": ""
+    },
+    {
+      "id": -1863559151,
+      "shortName": "water.barrel",
+      "nameEn": "Water Barrel",
+      "nameZh": "啤酒桶"
+    },
+    {
+      "id": -110921842,
+      "shortName": "locker",
+      "nameEn": "Locker",
+      "nameZh": "衣柜"
+    },
+    {
+      "id": 1115193056,
+      "shortName": "wall.frame.lunar2025_a",
+      "nameEn": "Wall Divider Pack",
+      "nameZh": "月洞门"
+    },
+    {
+      "id": -450890885,
+      "shortName": "wall.frame.lunar2025_b",
+      "nameEn": "Wall Divider Pack",
+      "nameZh": "月洞门"
+    },
+    {
+      "id": -2016974826,
+      "shortName": "wall.frame.lunar2025_c",
+      "nameEn": "Wall Divider Pack",
+      "nameZh": "月洞门"
+    },
+    {
+      "id": -586784898,
+      "shortName": "mailbox",
+      "nameEn": "Mail Box",
+      "nameZh": "信箱"
+    },
+    {
+      "id": -1035206446,
+      "shortName": "mannequin",
+      "nameEn": "Clothing Mannequin",
+      "nameZh": "服装模特"
+    },
+    {
+      "id": 1174484438,
+      "shortName": "mini fridge",
+      "nameEn": "Mini Fridge",
+      "nameZh": "迷你冰箱"
+    },
+    {
+      "id": 1259919256,
+      "shortName": "mixingtable",
+      "nameEn": "Mixing Table",
+      "nameZh": "调制台"
+    },
+    {
+      "id": 1696050067,
+      "shortName": "modularcarlift",
+      "nameEn": "Modular Car Lift",
+      "nameZh": "车辆升降机"
+    },
+    {
+      "id": 381595627,
+      "shortName": "neonsigntr",
+      "nameEn": "Twitch Rivals Neon Sign",
+      "nameZh": "Twitch 竞技场霓虹灯牌"
+    },
+    {
+      "id": -1130709577,
+      "shortName": "mining.pumpjack",
+      "nameEn": "Pump Jack",
+      "nameZh": "抽油机"
+    },
+    {
+      "id": -1293296287,
+      "shortName": "small.oil.refinery",
+      "nameEn": "Small Oil Refinery",
+      "nameZh": "炼油机"
+    },
+    {
+      "id": -430416124,
+      "shortName": "plantpot.single",
+      "nameEn": "Single Plant Pot",
+      "nameZh": "盆栽"
+    },
+    {
+      "id": 1581210395,
+      "shortName": "planter.large",
+      "nameEn": "Large Planter Box",
+      "nameZh": "大型种植箱"
+    },
+    {
+      "id": 1903654061,
+      "shortName": "planter.small",
+      "nameEn": "Small Planter Box",
+      "nameZh": "小型种植箱"
+    },
+    {
+      "id": -280812482,
+      "shortName": "planter.triangle",
+      "nameEn": "Triangle Planter Box",
+      "nameZh": "三角形种植箱"
+    },
+    {
+      "id": 2100007442,
+      "shortName": "electric.audioalarm",
+      "nameEn": "Audio Alarm",
+      "nameZh": "警告音响"
+    },
+    {
+      "id": -695978112,
+      "shortName": "smart.alarm",
+      "nameEn": "Smart Alarm",
+      "nameZh": "智能警报"
+    },
+    {
+      "id": 988652725,
+      "shortName": "smart.switch",
+      "nameEn": "Smart Switch",
+      "nameZh": "智能开关"
+    },
+    {
+      "id": 1149964039,
+      "shortName": "storage.monitor",
+      "nameEn": "Storage Monitor",
+      "nameZh": "存储监视器"
+    },
+    {
+      "id": 553270375,
+      "shortName": "electric.battery.rechargable.large",
+      "nameEn": "Large Rechargeable Battery",
+      "nameZh": "大型蓄电池"
+    },
+    {
+      "id": 2023888403,
+      "shortName": "electric.battery.rechargable.medium",
+      "nameEn": "Medium Rechargeable Battery",
+      "nameZh": "中型蓄电池"
+    },
+    {
+      "id": -692338819,
+      "shortName": "electric.battery.rechargable.small",
+      "nameEn": "Small Rechargeable Battery",
+      "nameZh": "小型蓄电池"
+    },
+    {
+      "id": -1778897469,
+      "shortName": "electric.button",
+      "nameEn": "Button",
+      "nameZh": "按钮"
+    },
+    {
+      "id": -1247485104,
+      "shortName": "command.block",
+      "nameEn": "Command Block",
+      "nameZh": "命令方块"
+    },
+    {
+      "id": -216999575,
+      "shortName": "electric.counter",
+      "nameEn": "Counter",
+      "nameZh": "计数器"
+    },
+    {
+      "id": -1507239837,
+      "shortName": "electric.hbhfsensor",
+      "nameEn": "HBHF Sensor",
+      "nameZh": "生命传感器"
+    },
+    {
+      "id": -798293154,
+      "shortName": "electric.laserdetector",
+      "nameEn": "Laser Detector",
+      "nameZh": "激光传感器"
+    },
+    {
+      "id": -2049214035,
+      "shortName": "electric.pressurepad",
+      "nameEn": "Pressure Pad",
+      "nameZh": "压力传感器"
+    },
+    {
+      "id": 962186730,
+      "shortName": "tincan.alarm",
+      "nameEn": "Tin Can Alarm",
+      "nameZh": "拌线陷阱"
+    },
+    {
+      "id": 1619039771,
+      "shortName": "electric.digitalclock",
+      "nameEn": "Digital Clock",
+      "nameZh": "数字时钟"
+    },
+    {
+      "id": -502177121,
+      "shortName": "electric.doorcontroller",
+      "nameEn": "Door Controller",
+      "nameZh": "门控器"
+    },
+    {
+      "id": -1196547867,
+      "shortName": "electric.furnace",
+      "nameEn": "Electric Furnace",
+      "nameZh": "电熔炉"
+    },
+    {
+      "id": -784870360,
+      "shortName": "electric.heater",
+      "nameEn": "Electric Heater",
+      "nameZh": "电加热器"
+    },
+    {
+      "id": -265292885,
+      "shortName": "fluid.combiner",
+      "nameEn": "Fluid Combiner",
+      "nameZh": "流体合并器"
+    },
+    {
+      "id": -1166712463,
+      "shortName": "fluid.splitter",
+      "nameEn": "Fluid Splitter",
+      "nameZh": "流体分离器"
+    },
+    {
+      "id": 443432036,
+      "shortName": "fluid.switch",
+      "nameEn": "Fluid Switch & Pump",
+      "nameZh": "流体开关&泵"
+    },
+    {
+      "id": 1171735914,
+      "shortName": "electric.andswitch",
+      "nameEn": "AND Switch",
+      "nameZh": "与门"
+    },
+    {
+      "id": -690968985,
+      "shortName": "electric.blocker",
+      "nameEn": "Blocker",
+      "nameZh": "拦截器"
+    },
+    {
+      "id": -1448252298,
+      "shortName": "electrical.branch",
+      "nameEn": "Electrical Branch",
+      "nameZh": "电力分离器"
+    },
+    {
+      "id": -458565393,
+      "shortName": "electrical.combiner",
+      "nameEn": "Root Combiner",
+      "nameZh": "串联器"
+    },
+    {
+      "id": -746647361,
+      "shortName": "electrical.memorycell",
+      "nameEn": "Memory Cell",
+      "nameZh": "存储单元"
+    },
+    {
+      "id": -1286302544,
+      "shortName": "electric.orswitch",
+      "nameEn": "OR Switch",
+      "nameZh": "或门"
+    },
+    {
+      "id": 492357192,
+      "shortName": "electric.random.switch",
+      "nameEn": "RAND Switch",
+      "nameZh": "随机门"
+    },
+    {
+      "id": -1044468317,
+      "shortName": "electric.rf.broadcaster",
+      "nameEn": "RF Broadcaster",
+      "nameZh": "射频广播器"
+    },
+    {
+      "id": 888415708,
+      "shortName": "electric.rf.receiver",
+      "nameEn": "RF Receiver",
+      "nameZh": "射频接收器"
+    },
+    {
+      "id": 1293102274,
+      "shortName": "electric.xorswitch",
+      "nameEn": "XOR Switch",
+      "nameZh": "异或门"
+    },
+    {
+      "id": 1849887541,
+      "shortName": "electric.fuelgenerator.small",
+      "nameEn": "Small Generator",
+      "nameZh": "小型燃油发电机"
+    },
+    {
+      "id": -295829489,
+      "shortName": "electric.generator.small",
+      "nameEn": "Test Generator",
+      "nameZh": "测试发电机"
+    },
+    {
+      "id": 2090395347,
+      "shortName": "electric.solarpanel.large",
+      "nameEn": "Large Solar Panel",
+      "nameZh": "太阳能"
+    },
+    {
+      "id": -44876289,
+      "shortName": "electric.igniter",
+      "nameEn": "Igniter",
+      "nameZh": "点火器"
+    },
+    {
+      "id": -1049172752,
+      "shortName": "storageadaptor",
+      "nameEn": "Storage Adaptor",
+      "nameZh": "存储适配器"
+    },
+    {
+      "id": 1538126328,
+      "shortName": "industrial.combiner",
+      "nameEn": "Industrial Combiner",
+      "nameZh": "工业合并器"
+    },
+    {
+      "id": 610102428,
+      "shortName": "industrial.conveyor",
+      "nameEn": "Industrial Conveyor",
+      "nameZh": "工业传输器"
+    },
+    {
+      "id": 1430085198,
+      "shortName": "industrial.crafter",
+      "nameEn": "Industrial Crafter",
+      "nameZh": "工业制作器"
+    },
+    {
+      "id": 742745918,
+      "shortName": "industrial.splitter",
+      "nameEn": "Industrial Splitter",
+      "nameZh": "工业分离器"
+    },
+    {
+      "id": -1510616686,
+      "shortName": "electric.chandelier",
+      "nameEn": "Chandelier",
+      "nameZh": "吊灯"
+    },
+    {
+      "id": 1717250161,
+      "shortName": "electric.tablelight",
+      "nameEn": "Electric Table Lamp",
+      "nameZh": "台灯"
+    },
+    {
+      "id": 54436981,
+      "shortName": "electric.fairylights",
+      "nameEn": "Fairy Lights",
+      "nameZh": "仙女灯串"
+    },
+    {
+      "id": 640470230,
+      "shortName": "electric.fluorescentlight.ceiling",
+      "nameEn": "Ceiling Fluorescent Light",
+      "nameZh": "吊顶日光灯"
+    },
+    {
+      "id": 1892536031,
+      "shortName": "electric.fluorescentlight",
+      "nameEn": "Fluorescent Light",
+      "nameZh": "日光灯"
+    },
+    {
+      "id": 104856514,
+      "shortName": "electric.bulbstringlights",
+      "nameEn": "Bulb String Lights",
+      "nameZh": "灯串"
+    },
+    {
+      "id": -1258821205,
+      "shortName": "electric.spotlight",
+      "nameEn": "Spot Light",
+      "nameZh": "聚光灯"
+    },
+    {
+      "id": -2134097299,
+      "shortName": "electric.spotlight.tripod",
+      "nameEn": "Tripod Spot Light",
+      "nameZh": "三脚架聚光灯"
+    },
+    {
+      "id": -939424778,
+      "shortName": "electric.flasherlight",
+      "nameEn": "Flasher Light",
+      "nameZh": "闪光灯"
+    },
+    {
+      "id": -282113991,
+      "shortName": "electric.simplelight",
+      "nameEn": "Simple Light",
+      "nameZh": "补光灯"
+    },
+    {
+      "id": 762289806,
+      "shortName": "electric.sirenlight",
+      "nameEn": "Siren Light",
+      "nameZh": "警笛灯"
+    },
+    {
+      "id": -365097295,
+      "shortName": "powered.water.purifier",
+      "nameEn": "Powered Water Purifier",
+      "nameZh": "电力净水器"
+    },
+    {
+      "id": -948291630,
+      "shortName": "electric.seismicsensor",
+      "nameEn": "Seismic Sensor",
+      "nameZh": "震动传感器"
+    },
+    {
+      "id": 1951603367,
+      "shortName": "electric.switch",
+      "nameEn": "Switch",
+      "nameZh": "开关"
+    },
+    {
+      "id": -563624462,
+      "shortName": "electric.splitter",
+      "nameEn": "Splitter",
+      "nameZh": "线路分离器"
+    },
+    {
+      "id": -781014061,
+      "shortName": "electric.sprinkler",
+      "nameEn": "Sprinkler",
+      "nameZh": "洒水器"
+    },
+    {
+      "id": 1371909803,
+      "shortName": "electric.teslacoil",
+      "nameEn": "Tesla Coil",
+      "nameZh": "特斯拉线圈"
+    },
+    {
+      "id": 665332906,
+      "shortName": "electric.timer",
+      "nameEn": "Timer",
+      "nameZh": "计时器"
+    },
+    {
+      "id": 1835946060,
+      "shortName": "electric.cabletunnel",
+      "nameEn": "Cable Tunnel",
+      "nameZh": "电缆隧道"
+    },
+    {
+      "id": -1284169891,
+      "shortName": "waterpump",
+      "nameEn": "Water Pump",
+      "nameZh": "抽水泵"
+    },
+    {
+      "id": 140006625,
+      "shortName": "ptz.cctv.camera",
+      "nameEn": "PTZ CCTV Camera",
+      "nameZh": "全景摄像机"
+    },
+    {
+      "id": 1052926200,
+      "shortName": "mining.quarry",
+      "nameEn": "Mining Quarry",
+      "nameZh": "挖矿机"
+    },
+    {
+      "id": -1736356576,
+      "shortName": "target.reactive",
+      "nameEn": "Reactive Target",
+      "nameZh": "标靶"
+    },
+    {
+      "id": 803222026,
+      "shortName": "box.repair.bench",
+      "nameEn": "Repair Bench",
+      "nameZh": "维修工作台"
+    },
+    {
+      "id": -1861522751,
+      "shortName": "research.table",
+      "nameEn": "Research Table",
+      "nameZh": "研究工作台"
+    },
+    {
+      "id": -1104881824,
+      "shortName": "rug.bear",
+      "nameEn": "Bear Skin Rug",
+      "nameZh": "Bear Skin Rug"
+    },
+    {
+      "id": -1985799200,
+      "shortName": "rug",
+      "nameEn": "Rug",
+      "nameZh": "地毯"
+    },
+    {
+      "id": 445662288,
+      "shortName": "scientist.plushie",
+      "nameEn": "Scientist Plushie",
+      "nameZh": "Scientist Plushie"
+    },
+    {
+      "id": 504109620,
+      "shortName": "sculpture.ice",
+      "nameEn": "Ice Sculpture",
+      "nameZh": "冰雕"
+    },
+    {
+      "id": 2087678962,
+      "shortName": "searchlight",
+      "nameEn": "Search Light",
+      "nameZh": "探照灯"
+    },
+    {
+      "id": 567871954,
+      "shortName": "secretlabchair",
+      "nameEn": "Secretlab Chair",
+      "nameZh": "圣临电竞椅"
+    },
+    {
+      "id": 1950721418,
+      "shortName": "shelves",
+      "nameEn": "Salvaged Shelves",
+      "nameZh": "货架"
+    },
+    {
+      "id": -2110553371,
+      "shortName": "salvaged.bamboo.shelves",
+      "nameEn": "Bamboo Salvaged Shelves",
+      "nameZh": ""
+    },
+    {
+      "id": 23352662,
+      "shortName": "sign.hanging.banner.large",
+      "nameEn": "Large Banner Hanging",
+      "nameZh": "悬挂条幅"
+    },
+    {
+      "id": 1205607945,
+      "shortName": "sign.hanging",
+      "nameEn": "Two Sided Hanging Sign",
+      "nameZh": "双面吊牌"
+    },
+    {
+      "id": -1647846966,
+      "shortName": "sign.hanging.ornate",
+      "nameEn": "Two Sided Ornate Hanging Sign",
+      "nameZh": "华丽的双面吊牌"
+    },
+    {
+      "id": -845557339,
+      "shortName": "sign.pictureframe.landscape",
+      "nameEn": "Landscape Picture Frame",
+      "nameZh": "横向画框"
+    },
+    {
+      "id": -1370759135,
+      "shortName": "sign.pictureframe.portrait",
+      "nameEn": "Portrait Picture Frame",
+      "nameZh": "纵向画框"
+    },
+    {
+      "id": 121049755,
+      "shortName": "sign.pictureframe.tall",
+      "nameEn": "Tall Picture Frame",
+      "nameZh": "纵向大画框"
+    },
+    {
+      "id": -996185386,
+      "shortName": "sign.pictureframe.xl",
+      "nameEn": "XL Picture Frame",
+      "nameZh": "大型画框"
+    },
+    {
+      "id": 98508942,
+      "shortName": "sign.pictureframe.xxl",
+      "nameEn": "XXL Picture Frame",
+      "nameZh": "特大型画框"
+    },
+    {
+      "id": 2070189026,
+      "shortName": "sign.pole.banner.large",
+      "nameEn": "Large Banner on pole",
+      "nameZh": "支架条幅"
+    },
+    {
+      "id": 1521286012,
+      "shortName": "sign.post.double",
+      "nameEn": "Double Sign Post",
+      "nameZh": "双向路标"
+    },
+    {
+      "id": 1542290441,
+      "shortName": "sign.post.single",
+      "nameEn": "Single Sign Post",
+      "nameZh": "单向路标"
+    },
+    {
+      "id": -1832422579,
+      "shortName": "sign.post.town",
+      "nameEn": "One Sided Town Sign Post",
+      "nameZh": "单面村庄标牌"
+    },
+    {
+      "id": 826309791,
+      "shortName": "sign.post.town.roof",
+      "nameEn": "Two Sided Town Sign Post",
+      "nameZh": "双面村庄标牌"
+    },
+    {
+      "id": -143132326,
+      "shortName": "sign.wooden.huge",
+      "nameEn": "Huge Wooden Sign",
+      "nameZh": "巨型木牌"
+    },
+    {
+      "id": 1153652756,
+      "shortName": "sign.wooden.large",
+      "nameEn": "Large Wooden Sign",
+      "nameZh": "大型木牌"
+    },
+    {
+      "id": -1819233322,
+      "shortName": "sign.wooden.medium",
+      "nameEn": "Medium Wooden Sign",
+      "nameZh": "中型木牌"
+    },
+    {
+      "id": -1138208076,
+      "shortName": "sign.wooden.small",
+      "nameEn": "Small Wooden Sign",
+      "nameZh": "小型木牌"
+    },
+    {
+      "id": 352499047,
+      "shortName": "guntrap",
+      "nameEn": "Shotgun Trap",
+      "nameZh": "霰弹枪陷阱"
+    },
+    {
+      "id": -1754948969,
+      "shortName": "sleepingbag",
+      "nameEn": "Sleeping Bag",
+      "nameZh": "睡袋"
+    },
+    {
+      "id": -369760990,
+      "shortName": "stash.small",
+      "nameEn": "Small Stash",
+      "nameZh": "小藏匿"
+    },
+    {
+      "id": -555122905,
+      "shortName": "sofa",
+      "nameEn": "Sofa",
+      "nameZh": "沙发"
+    },
+    {
+      "id": 782422285,
+      "shortName": "sofa.pattern",
+      "nameEn": "Sofa - Pattern",
+      "nameZh": ""
+    },
+    {
+      "id": 1604092540,
+      "shortName": "twitchrivals2025sofa",
+      "nameEn": "Twitch Rivals 2025 Sofa",
+      "nameZh": "Twitch竞技场2025年度沙发"
+    },
+    {
+      "id": -1850297170,
+      "shortName": "spikes.trap",
+      "nameEn": "Small Spike Trap",
+      "nameZh": "小型尖刺陷阱"
+    },
+    {
+      "id": -1100422738,
+      "shortName": "spinner.wheel",
+      "nameEn": "Spinning Wheel",
+      "nameZh": "转盘"
+    },
+    {
+      "id": 559147458,
+      "shortName": "fishtrap.small",
+      "nameEn": "Survival Fish Trap",
+      "nameZh": "捕鱼陷阱"
+    },
+    {
+      "id": 593465182,
+      "shortName": "table",
+      "nameEn": "Table",
+      "nameZh": "桌子"
+    },
+    {
+      "id": 1524187186,
+      "shortName": "workbench1",
+      "nameEn": "Workbench Level 1",
+      "nameZh": "一级工作台"
+    },
+    {
+      "id": -41896755,
+      "shortName": "workbench2",
+      "nameEn": "Workbench Level 2",
+      "nameZh": "二级工作台"
+    },
+    {
+      "id": -1607980696,
+      "shortName": "workbench3",
+      "nameEn": "Workbench Level 3",
+      "nameZh": "三级工作台"
+    },
+    {
+      "id": -97956382,
+      "shortName": "cupboard.tool",
+      "nameEn": "Tool Cupboard",
+      "nameZh": "工具柜"
+    },
+    {
+      "id": 1488606552,
+      "shortName": "cupboard.tool.retro",
+      "nameEn": "Retro Tool Cupboard",
+      "nameZh": ""
+    },
+    {
+      "id": 1174957864,
+      "shortName": "cupboard.tool.shockbyte",
+      "nameEn": "Shockbyte Tool Cupboard",
+      "nameZh": ""
+    },
+    {
+      "id": -1478445584,
+      "shortName": "tunalight",
+      "nameEn": "Tuna Can Lamp",
+      "nameZh": "罐头灯"
+    },
+    {
+      "id": 198438816,
+      "shortName": "vending.machine",
+      "nameEn": "Vending Machine",
+      "nameZh": "自动售货机"
+    },
+    {
+      "id": 656829501,
+      "shortName": "electric.wallcabinet",
+      "nameEn": "Wall Cabinet",
+      "nameZh": "壁橱"
+    },
+    {
+      "id": -193519904,
+      "shortName": "single.shallow.wall.shelves",
+      "nameEn": "Single Shallow Wall Shelves",
+      "nameZh": "单层墙壁挂架"
+    },
+    {
+      "id": -1100168350,
+      "shortName": "water.catcher.large",
+      "nameEn": "Large Water Catcher",
+      "nameZh": "大型露水收集器"
+    },
+    {
+      "id": -132247350,
+      "shortName": "water.catcher.small",
+      "nameEn": "Small Water Catcher",
+      "nameZh": "小型露水收集器"
+    },
+    {
+      "id": 2114754781,
+      "shortName": "water.purifier",
+      "nameEn": "Water Purifier",
+      "nameZh": "净水器"
+    },
+    {
+      "id": -246672609,
+      "shortName": "gunrack.horizontal",
+      "nameEn": "Horizontal Weapon Rack",
+      "nameZh": "壁挂武器架"
+    },
+    {
+      "id": 1973949960,
+      "shortName": "gunrack.single.1.horizontal",
+      "nameEn": "Frontier Bolts Single Item Rack",
+      "nameZh": "螺栓单物品架"
+    },
+    {
+      "id": -849373693,
+      "shortName": "gunrack.single.2.horizontal",
+      "nameEn": "Frontier Horseshoe Single Item Rack",
+      "nameZh": "马蹄铁单物品架"
+    },
+    {
+      "id": -52398594,
+      "shortName": "gunrack.single.3.horizontal",
+      "nameEn": "Frontier Horns Single Item Rack",
+      "nameZh": "牛角单物品架"
+    },
+    {
+      "id": 1132603396,
+      "shortName": "gunrack_stand",
+      "nameEn": "Weapon Rack Stand",
+      "nameZh": "武器架"
+    },
+    {
+      "id": 240752557,
+      "shortName": "gunrack_tall.horizontal",
+      "nameEn": "Tall Weapon Rack",
+      "nameZh": "竖向武器架"
+    },
+    {
+      "id": -96256997,
+      "shortName": "gunrack_wide.horizontal",
+      "nameEn": "Wide Weapon Rack",
+      "nameZh": "横向武器架"
+    },
+    {
+      "id": -1819763926,
+      "shortName": "generator.wind.scrap",
+      "nameEn": "Wind Turbine",
+      "nameZh": "风力发电机"
+    },
+    {
+      "id": -180129657,
+      "shortName": "box.wooden",
+      "nameEn": "Wood Storage Box",
+      "nameZh": "木制储物箱"
+    },
+    {
+      "id": 537946062,
+      "shortName": "pilot.hazmat.box.wooden",
+      "nameEn": "Flight Recorder Box",
+      "nameZh": "飞行记录器箱"
+    },
+    {
+      "id": -1696379844,
+      "shortName": "hazmatyoutooz",
+      "nameEn": "Hazmat Youtooz",
+      "nameZh": "防化服公仔"
+    },
+    {
+      "id": -722629980,
+      "shortName": "heavyscientistyoutooz",
+      "nameEn": "Heavy Scientist Youtooz",
+      "nameZh": "重型科学家公仔"
+    },
+    {
+      "id": 1548091822,
+      "shortName": "apple",
+      "nameEn": "Apple",
+      "nameZh": "苹果"
+    },
+    {
+      "id": 352130972,
+      "shortName": "apple.spoiled",
+      "nameEn": "Rotten Apple",
+      "nameZh": "烂苹果"
+    },
+    {
+      "id": 1931713481,
+      "shortName": "black.raspberries",
+      "nameEn": "Black Raspberries",
+      "nameZh": "黑树莓"
+    },
+    {
+      "id": -586342290,
+      "shortName": "blueberries",
+      "nameEn": "Blueberries",
+      "nameZh": "蓝莓"
+    },
+    {
+      "id": 613961768,
+      "shortName": "botabag",
+      "nameEn": "Bota Bag",
+      "nameZh": "水囊"
+    },
+    {
+      "id": 281099360,
+      "shortName": "bread.loaf",
+      "nameEn": "Bread Loaf",
+      "nameZh": "面包条"
+    },
+    {
+      "id": -568419968,
+      "shortName": "grub",
+      "nameEn": "Grub",
+      "nameZh": "蛆虫"
+    },
+    {
+      "id": 1770475779,
+      "shortName": "worm",
+      "nameEn": "Worm",
+      "nameZh": "蚯蚓"
+    },
+    {
+      "id": 1783512007,
+      "shortName": "cactusflesh",
+      "nameEn": "Cactus Flesh",
+      "nameZh": "仙人掌肉"
+    },
+    {
+      "id": -700591459,
+      "shortName": "can.beans",
+      "nameEn": "Can of Beans",
+      "nameZh": "豆罐头"
+    },
+    {
+      "id": -1941646328,
+      "shortName": "can.tuna",
+      "nameEn": "Can of Tuna",
+      "nameZh": "金枪鱼罐头"
+    },
+    {
+      "id": -965336208,
+      "shortName": "chocolate",
+      "nameEn": "Chocolate Bar",
+      "nameZh": "巧克力棒"
+    },
+    {
+      "id": -24571537,
+      "shortName": "coconut",
+      "nameEn": "Coconut",
+      "nameZh": "椰子"
+    },
+    {
+      "id": 1858828593,
+      "shortName": "egg",
+      "nameEn": "Egg",
+      "nameZh": "鸡蛋"
+    },
+    {
+      "id": 342438846,
+      "shortName": "fish.anchovy",
+      "nameEn": "Anchovy",
+      "nameZh": "鳀鱼"
+    },
+    {
+      "id": -587989372,
+      "shortName": "fish.catfish",
+      "nameEn": "Catfish",
+      "nameZh": "鲇鱼"
+    },
+    {
+      "id": -1698937385,
+      "shortName": "fish.herring",
+      "nameEn": "Herring",
+      "nameZh": "鲱鱼"
+    },
+    {
+      "id": -542577259,
+      "shortName": "fish.minnows",
+      "nameEn": "Minnows",
+      "nameZh": "诱饵鱼"
+    },
+    {
+      "id": -1904821376,
+      "shortName": "fish.orangeroughy",
+      "nameEn": "Orange Roughy",
+      "nameZh": "罗非鱼"
+    },
+    {
+      "id": -851988960,
+      "shortName": "fish.salmon",
+      "nameEn": "Salmon",
+      "nameZh": "三文鱼"
+    },
+    {
+      "id": -1654233406,
+      "shortName": "fish.sardine",
+      "nameEn": "Sardine",
+      "nameZh": "沙丁鱼"
+    },
+    {
+      "id": -1768880890,
+      "shortName": "fish.smallshark",
+      "nameEn": "Small Shark",
+      "nameZh": "小鲨鱼"
+    },
+    {
+      "id": -1878764039,
+      "shortName": "fish.troutsmall",
+      "nameEn": "Small Trout",
+      "nameZh": "小鳟鱼"
+    },
+    {
+      "id": 680234026,
+      "shortName": "fish.yellowperch",
+      "nameEn": "Yellow Perch",
+      "nameZh": "黄鲈"
+    },
+    {
+      "id": -746030907,
+      "shortName": "granolabar",
+      "nameEn": "Granola Bar",
+      "nameZh": "燕麦饼干"
+    },
+    {
+      "id": 1601800933,
+      "shortName": "honey",
+      "nameEn": "Jar of Honey",
+      "nameZh": "蜂蜜罐"
+    },
+    {
+      "id": -1811234677,
+      "shortName": "nucleus",
+      "nameEn": "Beehive Nucleus",
+      "nameZh": "蜂巢蜂核"
+    },
+    {
+      "id": -989755543,
+      "shortName": "bearmeat.burned",
+      "nameEn": "Burnt Bear Meat",
+      "nameZh": "烤焦的熊肉"
+    },
+    {
+      "id": 1873897110,
+      "shortName": "bearmeat.cooked",
+      "nameEn": "Cooked Bear Meat",
+      "nameZh": "烤熟的熊肉"
+    },
+    {
+      "id": -1520560807,
+      "shortName": "bearmeat",
+      "nameEn": "Raw Bear Meat",
+      "nameZh": "生熊肉"
+    },
+    {
+      "id": 1348294923,
+      "shortName": "bearmeat.spoiled",
+      "nameEn": "Spoiled Bear Meat",
+      "nameZh": "变质的熊肉"
+    },
+    {
+      "id": -1318837358,
+      "shortName": "bigcatmeat.cooked",
+      "nameEn": "Cooked Big Cat Meat",
+      "nameZh": "烤熟的猫科动物肉"
+    },
+    {
+      "id": -2095813057,
+      "shortName": "bigcatmeat",
+      "nameEn": "Raw Big Cat Meat",
+      "nameZh": "生猫科动物肉"
+    },
+    {
+      "id": 248643189,
+      "shortName": "bigcatmeat.spoiled",
+      "nameEn": "Spoiled Big Cat Meat",
+      "nameZh": "变质的猫科动物肉"
+    },
+    {
+      "id": 1973684065,
+      "shortName": "chicken.burned",
+      "nameEn": "Burnt Chicken",
+      "nameZh": "烧焦的鸡肉"
+    },
+    {
+      "id": -1848736516,
+      "shortName": "chicken.cooked",
+      "nameEn": "Cooked Chicken",
+      "nameZh": "烤熟的鸡肉"
+    },
+    {
+      "id": -1440987069,
+      "shortName": "chicken.raw",
+      "nameEn": "Raw Chicken Breast",
+      "nameZh": "生鸡肉"
+    },
+    {
+      "id": -751151717,
+      "shortName": "chicken.spoiled",
+      "nameEn": "Spoiled Chicken",
+      "nameZh": "变质的鸡肉"
+    },
+    {
+      "id": 392828520,
+      "shortName": "crocodilemeat.cooked",
+      "nameEn": "Cooked Crocodile Meat",
+      "nameZh": "烤熟的鳄鱼肉"
+    },
+    {
+      "id": -1081599445,
+      "shortName": "crocodilemeat",
+      "nameEn": "Raw Crocodile Meat",
+      "nameZh": "生鳄鱼肉"
+    },
+    {
+      "id": -1796837031,
+      "shortName": "crocodilemeat.spoiled",
+      "nameEn": "Spoiled Crocodile Meat",
+      "nameZh": "变质的鳄鱼肉"
+    },
+    {
+      "id": -78533081,
+      "shortName": "deermeat.burned",
+      "nameEn": "Burnt Deer Meat",
+      "nameZh": "烧焦的鹿肉"
+    },
+    {
+      "id": -1509851560,
+      "shortName": "deermeat.cooked",
+      "nameEn": "Cooked Deer Meat",
+      "nameZh": "烤熟的鹿肉"
+    },
+    {
+      "id": 1422530437,
+      "shortName": "deermeat.raw",
+      "nameEn": "Raw Deer Meat",
+      "nameZh": "生鹿肉"
+    },
+    {
+      "id": -2035449523,
+      "shortName": "deermeat.spoiled",
+      "nameEn": "Spoiled Deer Meat",
+      "nameZh": "变质的鹿肉"
+    },
+    {
+      "id": 1668129151,
+      "shortName": "fish.cooked",
+      "nameEn": "Cooked Fish",
+      "nameZh": "烤熟的鱼"
+    },
+    {
+      "id": 989925924,
+      "shortName": "fish.raw",
+      "nameEn": "Raw Fish",
+      "nameZh": "生鱼肉"
+    },
+    {
+      "id": 1130729138,
+      "shortName": "fish.spoiled",
+      "nameEn": "Spoiled Fish Meat",
+      "nameZh": "变质的鱼肉"
+    },
+    {
+      "id": 1917703890,
+      "shortName": "horsemeat.burned",
+      "nameEn": "Burnt Horse Meat",
+      "nameZh": "烧焦的马肉"
+    },
+    {
+      "id": -1162759543,
+      "shortName": "horsemeat.cooked",
+      "nameEn": "Cooked Horse Meat",
+      "nameZh": "烤熟的马肉"
+    },
+    {
+      "id": -1130350864,
+      "shortName": "horsemeat.raw",
+      "nameEn": "Raw Horse Meat",
+      "nameZh": "生马肉"
+    },
+    {
+      "id": -724146494,
+      "shortName": "horsemeat.spoiled",
+      "nameEn": "Spoiled Horse Meat",
+      "nameZh": "变质的马肉"
+    },
+    {
+      "id": -682687162,
+      "shortName": "humanmeat.burned",
+      "nameEn": "Burnt Human Meat",
+      "nameZh": "烧焦的人肉"
+    },
+    {
+      "id": 1536610005,
+      "shortName": "humanmeat.cooked",
+      "nameEn": "Cooked Human Meat",
+      "nameZh": "烤熟的人肉"
+    },
+    {
+      "id": -1709878924,
+      "shortName": "humanmeat.raw",
+      "nameEn": "Raw Human Meat",
+      "nameZh": "生人肉"
+    },
+    {
+      "id": 1272768630,
+      "shortName": "humanmeat.spoiled",
+      "nameEn": "Spoiled Human Meat",
+      "nameZh": "腐烂的人肉"
+    },
+    {
+      "id": 1391703481,
+      "shortName": "meat.pork.burned",
+      "nameEn": "Burnt Pork",
+      "nameZh": "烧焦的猪肉"
+    },
+    {
+      "id": -242084766,
+      "shortName": "meat.pork.cooked",
+      "nameEn": "Cooked Pork",
+      "nameZh": "烤熟的猪肉"
+    },
+    {
+      "id": 621915341,
+      "shortName": "meat.boar",
+      "nameEn": "Raw Pork",
+      "nameZh": "生猪肉"
+    },
+    {
+      "id": 1925646349,
+      "shortName": "porkmeat.spoiled",
+      "nameEn": "Spoiled Pork Meat",
+      "nameZh": "变质的猪肉"
+    },
+    {
+      "id": -170436364,
+      "shortName": "snakemeat.cooked",
+      "nameEn": "Cooked Snake Meat",
+      "nameZh": "烤熟的蛇肉"
+    },
+    {
+      "id": -2100458529,
+      "shortName": "snakemeat",
+      "nameEn": "Raw Snake Meat",
+      "nameZh": "生蛇肉"
+    },
+    {
+      "id": -1616704051,
+      "shortName": "snakemeat.spoiled",
+      "nameEn": "Spoiled Snake Meat",
+      "nameZh": "变质的蛇肉"
+    },
+    {
+      "id": 1827479659,
+      "shortName": "wolfmeat.burned",
+      "nameEn": "Burnt Wolf Meat",
+      "nameZh": "烧焦的狼肉"
+    },
+    {
+      "id": 813023040,
+      "shortName": "wolfmeat.cooked",
+      "nameEn": "Cooked Wolf Meat",
+      "nameZh": "烤熟的狼肉"
+    },
+    {
+      "id": -395377963,
+      "shortName": "wolfmeat.raw",
+      "nameEn": "Raw Wolf Meat",
+      "nameZh": "生狼肉"
+    },
+    {
+      "id": -1167031859,
+      "shortName": "wolfmeat.spoiled",
+      "nameEn": "Spoiled Wolf Meat",
+      "nameZh": "变质的狼肉"
+    },
+    {
+      "id": -1962971928,
+      "shortName": "mushroom",
+      "nameEn": "Mushroom",
+      "nameZh": "蘑菇"
+    },
+    {
+      "id": 286193827,
+      "shortName": "jar.pickle",
+      "nameEn": "Pickles",
+      "nameZh": "腌菜"
+    },
+    {
+      "id": 4384538,
+      "shortName": "pie.apple",
+      "nameEn": "Apple Pie",
+      "nameZh": "苹果派"
+    },
+    {
+      "id": 2039177180,
+      "shortName": "pie.bear",
+      "nameEn": "Bear Pie",
+      "nameZh": "熊肉派"
+    },
+    {
+      "id": 309017792,
+      "shortName": "pie.bigcat",
+      "nameEn": "Big Cat Pie",
+      "nameZh": "猫科动物派"
+    },
+    {
+      "id": 120820987,
+      "shortName": "pie.chicken",
+      "nameEn": "Chicken Pie",
+      "nameZh": "鸡肉派"
+    },
+    {
+      "id": 54265286,
+      "shortName": "pie.crocodile",
+      "nameEn": "Crocodile Pie",
+      "nameZh": "鳄鱼派"
+    },
+    {
+      "id": -1785248332,
+      "shortName": "pie.fish",
+      "nameEn": "Fish Pie",
+      "nameZh": "鱼肉派"
+    },
+    {
+      "id": 320438357,
+      "shortName": "pie.hunters",
+      "nameEn": "Hunters Pie",
+      "nameZh": "猎人派"
+    },
+    {
+      "id": 1467878256,
+      "shortName": "pie.pork",
+      "nameEn": "Pork Pie",
+      "nameZh": "猪肉派"
+    },
+    {
+      "id": -1488408786,
+      "shortName": "pie.pumpkin",
+      "nameEn": "Pumpkin Pie",
+      "nameZh": "南瓜派"
+    },
+    {
+      "id": -963820355,
+      "shortName": "pie.survivors",
+      "nameEn": "Survivor's Pie",
+      "nameZh": "幸存者派"
+    },
+    {
+      "id": -1039528932,
+      "shortName": "smallwaterbottle",
+      "nameEn": "Small Water Bottle",
+      "nameZh": "水瓶"
+    },
+    {
+      "id": 1184215560,
+      "shortName": "spoiled.produce",
+      "nameEn": "Spoiled Produce",
+      "nameZh": "腐坏的农产品"
+    },
+    {
+      "id": -119235651,
+      "shortName": "waterjug",
+      "nameEn": "Water Jug",
+      "nameZh": "塑料水桶"
+    },
+    {
+      "id": -2107018088,
+      "shortName": "fun.bass",
+      "nameEn": "Shovel Bass",
+      "nameZh": "贝斯"
+    },
+    {
+      "id": -1049881973,
+      "shortName": "fun.cowbell",
+      "nameEn": "Cowbell",
+      "nameZh": "牛铃"
+    },
+    {
+      "id": -1330640246,
+      "shortName": "drumkit",
+      "nameEn": "Junkyard Drum Kit",
+      "nameZh": "架子鼓"
+    },
+    {
+      "id": -2040817543,
+      "shortName": "fun.flute",
+      "nameEn": "Pan Flute",
+      "nameZh": "排萧"
+    },
+    {
+      "id": -2124352573,
+      "shortName": "fun.guitar",
+      "nameEn": "Acoustic Guitar",
+      "nameZh": "吉他"
+    },
+    {
+      "id": -979951147,
+      "shortName": "fun.jerrycanguitar",
+      "nameEn": "Jerry Can Guitar",
+      "nameZh": "电吉他"
+    },
+    {
+      "id": 1272430949,
+      "shortName": "piano",
+      "nameEn": "Wheelbarrow Piano",
+      "nameZh": "钢琴"
+    },
+    {
+      "id": -1379036069,
+      "shortName": "fun.tambourine",
+      "nameEn": "Canbourine",
+      "nameZh": "手铃"
+    },
+    {
+      "id": 273172220,
+      "shortName": "fun.trumpet",
+      "nameEn": "Plumber's Trumpet",
+      "nameZh": "小号"
+    },
+    {
+      "id": 1784406797,
+      "shortName": "fun.tuba",
+      "nameEn": "Sousaphone",
+      "nameZh": "苏萨大号"
+    },
+    {
+      "id": -211235948,
+      "shortName": "xylophone",
+      "nameEn": "Xylobone",
+      "nameZh": "骨琴"
+    },
+    {
+      "id": -1112793865,
+      "shortName": "door.key",
+      "nameEn": "Door Key",
+      "nameZh": "门钥匙"
+    },
+    {
+      "id": -850982208,
+      "shortName": "lock.key",
+      "nameEn": "Key Lock",
+      "nameZh": "钥匙锁"
+    },
+    {
+      "id": 1159991980,
+      "shortName": "lock.code",
+      "nameEn": "Code Lock",
+      "nameZh": "密码锁"
+    },
+    {
+      "id": 1586884551,
+      "shortName": "lock.code.a.pilot",
+      "nameEn": "Flight Control Codelock",
+      "nameZh": "航天密码锁"
+    },
+    {
+      "id": -946599114,
+      "shortName": "sign.artistcanvas.l",
+      "nameEn": "Artist Canvas Standing",
+      "nameZh": "Artist Canvas Standing"
+    },
+    {
+      "id": -946599113,
+      "shortName": "sign.artistcanvas.m",
+      "nameEn": "Artist Canvas Large",
+      "nameZh": "Artist Canvas Large"
+    },
+    {
+      "id": -946599131,
+      "shortName": "sign.artistcanvas.s",
+      "nameEn": "Artist Canvas Medium",
+      "nameZh": "Artist Canvas Medium"
+    },
+    {
+      "id": 1562867678,
+      "shortName": "sign.artistcanvas.xl",
+      "nameEn": "Artist Canvas XL",
+      "nameZh": "Artist Canvas XL"
+    },
+    {
+      "id": 1609921845,
+      "shortName": "sign.artistcanvas.xs",
+      "nameEn": "Artist Canvas Small",
+      "nameZh": "Artist Canvas Small"
+    },
+    {
+      "id": -816769770,
+      "shortName": "sign.artistcanvas.xxl",
+      "nameEn": "Artist Canvas XXL",
+      "nameZh": "Artist Canvas XXL"
+    },
+    {
+      "id": 242421166,
+      "shortName": "lightup.large",
+      "nameEn": "Light-Up Frame Large",
+      "nameZh": ""
+    },
+    {
+      "id": -1294739579,
+      "shortName": "lightupframe.medium",
+      "nameEn": "Light-Up Frame Medium",
+      "nameZh": "中型灯光框架"
+    },
+    {
+      "id": 1691223771,
+      "shortName": "lightupframe.small",
+      "nameEn": "Light-Up Frame Small",
+      "nameZh": "小型灯光框架"
+    },
+    {
+      "id": 1950013766,
+      "shortName": "lightupframe.standing",
+      "nameEn": "Light-Up Frame Standing",
+      "nameZh": "竖向灯光框架"
+    },
+    {
+      "id": 1801656689,
+      "shortName": "lightup.xl",
+      "nameEn": "Light-Up Frame XL",
+      "nameZh": "Light-Up Frame XL"
+    },
+    {
+      "id": 1447138977,
+      "shortName": "lightup.xxl",
+      "nameEn": "Light-Up Frame XXL",
+      "nameZh": "Light-Up Frame XXL"
+    },
+    {
+      "id": -996235148,
+      "shortName": "goldframe.large",
+      "nameEn": "Ornate Frame large",
+      "nameZh": "Ornate Frame large"
+    },
+    {
+      "id": -1901993050,
+      "shortName": "goldframe.medium",
+      "nameEn": "Ornate Frame Medium",
+      "nameZh": "Ornate Frame Medium"
+    },
+    {
+      "id": -1836526520,
+      "shortName": "goldframe.small",
+      "nameEn": "Ornate Frame Small",
+      "nameZh": "Ornate Frame Small"
+    },
+    {
+      "id": -1528767189,
+      "shortName": "goldframe.standing",
+      "nameEn": "Ornate Frame Standing",
+      "nameZh": "Ornate Frame Standing"
+    },
+    {
+      "id": -1430299277,
+      "shortName": "goldframe.xl",
+      "nameEn": "Ornate Frame XL",
+      "nameZh": "Ornate Frame XL"
+    },
+    {
+      "id": -1322332389,
+      "shortName": "goldframe.xxl",
+      "nameEn": "Ornate Frame XXL",
+      "nameZh": "Ornate Frame XXL"
+    },
+    {
+      "id": -1039234836,
+      "shortName": "paintabletarget.reactive",
+      "nameEn": "Paintable Reactive Target",
+      "nameZh": "Paintable Reactive Target"
+    },
+    {
+      "id": 738611016,
+      "shortName": "window.paintable",
+      "nameEn": "Paintable Window",
+      "nameZh": "Paintable Window"
+    },
+    {
+      "id": -1094453063,
+      "shortName": "scrapframe.large",
+      "nameEn": "Shutter Frame large",
+      "nameZh": "大型废料框架"
+    },
+    {
+      "id": -1060567807,
+      "shortName": "scrapframe.medium",
+      "nameEn": "Shutter Frame Medium",
+      "nameZh": "中型废料框架"
+    },
+    {
+      "id": -498301781,
+      "shortName": "scrapframe.small",
+      "nameEn": "Shutter Frame Small",
+      "nameZh": "小型废料框架"
+    },
+    {
+      "id": -1774190142,
+      "shortName": "scrapframe.standing",
+      "nameEn": "Shutter Frame Standing",
+      "nameZh": "竖向废料框架"
+    },
+    {
+      "id": -1244287686,
+      "shortName": "scrapframe.xl",
+      "nameEn": "Shutter Frame XL",
+      "nameZh": "Scrap Frame XL"
+    },
+    {
+      "id": -1211801774,
+      "shortName": "scrapframe.xxl",
+      "nameEn": "Shutter Frame XXL",
+      "nameZh": "Scrap Frame XXL"
+    },
+    {
+      "id": -635951327,
+      "shortName": "woodframe.large",
+      "nameEn": "Wood Frame Large",
+      "nameZh": "大型木框"
+    },
+    {
+      "id": -1541706279,
+      "shortName": "woodframe.medium",
+      "nameEn": "Wood Frame Medium",
+      "nameZh": "中型木框"
+    },
+    {
+      "id": -1476278729,
+      "shortName": "woodframe.small",
+      "nameEn": "Wood Frame Small",
+      "nameZh": "小型木框"
+    },
+    {
+      "id": 1769475390,
+      "shortName": "woodframe.standing",
+      "nameEn": "Wood Frame Standing",
+      "nameZh": "竖向木框"
+    },
+    {
+      "id": -105343718,
+      "shortName": "circleballoon2025",
+      "nameEn": "Circle Balloon",
+      "nameZh": "圆形气球"
+    },
+    {
+      "id": 362863314,
+      "shortName": "heartballoon2025",
+      "nameEn": "Heart Balloon",
+      "nameZh": "心形气球"
+    },
+    {
+      "id": 1295301598,
+      "shortName": "latexballoon2025",
+      "nameEn": "Latex Balloon",
+      "nameZh": "乳胶气球"
+    },
+    {
+      "id": -1440443161,
+      "shortName": "latexclumpballoon2025",
+      "nameEn": "Clump of Latex Balloons",
+      "nameZh": "乳胶气球簇"
+    },
+    {
+      "id": 571949408,
+      "shortName": "mixedclumpballoon2025",
+      "nameEn": "Clump of Mixed Balloons",
+      "nameZh": "混合气球簇"
+    },
+    {
+      "id": 963400638,
+      "shortName": "speechbubbleballoon2025",
+      "nameEn": "Speech Bubble Balloon",
+      "nameZh": "对话框气球"
+    },
+    {
+      "id": -1782127806,
+      "shortName": "starballoon2025",
+      "nameEn": "Star Balloon",
+      "nameZh": "星形气球"
+    },
+    {
+      "id": -996920608,
+      "shortName": "blueprintbase",
+      "nameEn": "Blueprint",
+      "nameZh": ""
+    },
+    {
+      "id": -1916473915,
+      "shortName": "chineselantern",
+      "nameEn": "Chinese Lantern",
+      "nameZh": "灯笼"
+    },
+    {
+      "id": -770304148,
+      "shortName": "chineselanternwhite",
+      "nameEn": "Chinese Lantern White",
+      "nameZh": "白色灯笼"
+    },
+    {
+      "id": -854270928,
+      "shortName": "dragondoorknocker",
+      "nameEn": "Dragon Door Knocker",
+      "nameZh": "龙门环"
+    },
+    {
+      "id": -22883916,
+      "shortName": "hat.dragonmask",
+      "nameEn": "Dragon Mask",
+      "nameZh": "龙面具"
+    },
+    {
+      "id": -418359052,
+      "shortName": "hat.horsemask",
+      "nameEn": "Horse Mask",
+      "nameZh": "Horse Mask"
+    },
+    {
+      "id": -961457160,
+      "shortName": "newyeargong",
+      "nameEn": "New Year Gong",
+      "nameZh": "锣"
+    },
+    {
+      "id": 1315082560,
+      "shortName": "hat.oxmask",
+      "nameEn": "Ox Mask",
+      "nameZh": "牛面具"
+    },
+    {
+      "id": -986782031,
+      "shortName": "hat.rabbitmask",
+      "nameEn": "Rabbit Mask",
+      "nameZh": "兔面具"
+    },
+    {
+      "id": 271048478,
+      "shortName": "hat.ratmask",
+      "nameEn": "Rat Mask",
+      "nameZh": "金鼠面具"
+    },
+    {
+      "id": 1819863051,
+      "shortName": "skylantern",
+      "nameEn": "Sky Lantern",
+      "nameZh": "孔明灯"
+    },
+    {
+      "id": -1770889433,
+      "shortName": "skylantern.skylantern.green",
+      "nameEn": "Sky Lantern - Green",
+      "nameZh": "孔明灯 - 绿"
+    },
+    {
+      "id": -1824770114,
+      "shortName": "skylantern.skylantern.orange",
+      "nameEn": "Sky Lantern - Orange",
+      "nameZh": "孔明灯 - 橙"
+    },
+    {
+      "id": 831955134,
+      "shortName": "skylantern.skylantern.purple",
+      "nameEn": "Sky Lantern - Purple",
+      "nameZh": "孔明灯 - 紫"
+    },
+    {
+      "id": -1433390281,
+      "shortName": "skylantern.skylantern.red",
+      "nameEn": "Sky Lantern - Red",
+      "nameZh": "孔明灯 - 红"
+    },
+    {
+      "id": -1314079879,
+      "shortName": "hat.snakemask",
+      "nameEn": "Snake mask",
+      "nameZh": "蛇面具"
+    },
+    {
+      "id": -1961560162,
+      "shortName": "lunar.firecrackers",
+      "nameEn": "Firecracker String",
+      "nameZh": "鞭炮"
+    },
+    {
+      "id": 709206314,
+      "shortName": "hat.tigermask",
+      "nameEn": "Tiger Mask",
+      "nameZh": "虎面具"
+    },
+    {
+      "id": 359723196,
+      "shortName": "arcade.machine.chippy",
+      "nameEn": "Chippy Arcade Game",
+      "nameZh": "街机游戏机"
+    },
+    {
+      "id": 1603174987,
+      "shortName": "confetticannon",
+      "nameEn": "Confetti Cannon",
+      "nameZh": "彩纸炮"
+    },
+    {
+      "id": -1151332840,
+      "shortName": "door.double.hinged.bardoors",
+      "nameEn": "Wooden Frontier Bar Doors",
+      "nameZh": "木制栅栏门"
+    },
+    {
+      "id": -1274093662,
+      "shortName": "bathtub.planter",
+      "nameEn": "Bath Tub Planter",
+      "nameZh": "浴缸种植箱"
+    },
+    {
+      "id": 209218760,
+      "shortName": "head.bag",
+      "nameEn": "Head Bag",
+      "nameZh": "头部袋"
+    },
+    {
+      "id": -1913996738,
+      "shortName": "fishtrophy",
+      "nameEn": "Fish Trophy",
+      "nameZh": "渔获奖杯"
+    },
+    {
+      "id": 960673498,
+      "shortName": "huntingtrophylarge",
+      "nameEn": "Large Hunting Trophy",
+      "nameZh": "大型狩猎奖杯"
+    },
+    {
+      "id": -869598982,
+      "shortName": "huntingtrophysmall",
+      "nameEn": "Small Hunting Trophy",
+      "nameZh": "小型狩猎奖杯"
+    },
+    {
+      "id": 1361520181,
+      "shortName": "minecart.planter",
+      "nameEn": "Minecart Planter",
+      "nameZh": "矿车种植箱"
+    },
+    {
+      "id": 615112838,
+      "shortName": "rail.road.planter",
+      "nameEn": "Rail Road Planter",
+      "nameZh": "铁轨种植箱"
+    },
+    {
+      "id": 647240052,
+      "shortName": "triangle.rail.road.planter",
+      "nameEn": "Triangle Rail Road Planter",
+      "nameZh": "三角铁轨种植箱"
+    },
+    {
+      "id": -1863063690,
+      "shortName": "rockingchair",
+      "nameEn": "Rocking Chair",
+      "nameZh": "摇椅"
+    },
+    {
+      "id": 1758333838,
+      "shortName": "rockingchair.rockingchair2",
+      "nameEn": "Teal",
+      "nameZh": ""
+    },
+    {
+      "id": 192249897,
+      "shortName": "rockingchair.rockingchair3",
+      "nameEn": "Green",
+      "nameZh": ""
+    },
+    {
+      "id": -2073432256,
+      "shortName": "knife.skinning",
+      "nameEn": "Skinning Knife",
+      "nameZh": "剥皮刀"
+    },
+    {
+      "id": -258457936,
+      "shortName": "storage_barrel_a",
+      "nameEn": "Unused Storage Barrel Vertical",
+      "nameZh": ""
+    },
+    {
+      "id": 1307626005,
+      "shortName": "storage_barrel_b",
+      "nameEn": "Storage Barrel Vertical",
+      "nameZh": "立式木桶"
+    },
+    {
+      "id": -1421257350,
+      "shortName": "storage_barrel_c",
+      "nameEn": "Storage Barrel Horizontal",
+      "nameZh": "卧式木桶"
+    },
+    {
+      "id": 446206234,
+      "shortName": "torchholder",
+      "nameEn": "Torch Holder",
+      "nameZh": "火把架"
+    },
+    {
+      "id": 301063058,
+      "shortName": "wantedposter.wantedposter2",
+      "nameEn": "Wanted Poster 2",
+      "nameZh": ""
+    },
+    {
+      "id": -1265020883,
+      "shortName": "wantedposter.wantedposter3",
+      "nameEn": "Wanted Poster 3",
+      "nameZh": ""
+    },
+    {
+      "id": 1463862472,
+      "shortName": "wantedposter.wantedposter4",
+      "nameEn": "Wanted Poster 4",
+      "nameZh": ""
+    },
+    {
+      "id": -1344017968,
+      "shortName": "wantedposter",
+      "nameEn": "Wanted Poster",
+      "nameZh": "通缉令"
+    },
+    {
+      "id": 1036321299,
+      "shortName": "bluedogtags",
+      "nameEn": "Blue Dog Tags",
+      "nameZh": ""
+    },
+    {
+      "id": 1223900335,
+      "shortName": "dogtagneutral",
+      "nameEn": "Dog Tag",
+      "nameZh": ""
+    },
+    {
+      "id": -602717596,
+      "shortName": "reddogtags",
+      "nameEn": "Red Dog Tags",
+      "nameZh": ""
+    },
+    {
+      "id": 1409529282,
+      "shortName": "door.closer",
+      "nameEn": "Door Closer",
+      "nameZh": "闭门器"
+    },
+    {
+      "id": -1004426654,
+      "shortName": "attire.bunnyears",
+      "nameEn": "Bunny Ears",
+      "nameZh": "兔子耳朵"
+    },
+    {
+      "id": -1266045928,
+      "shortName": "attire.bunny.onesie",
+      "nameEn": "Bunny Onesie",
+      "nameZh": "兔子服饰"
+    },
+    {
+      "id": 23391694,
+      "shortName": "hat.bunnyhat",
+      "nameEn": "Bunny Hat",
+      "nameZh": "兔子帽子"
+    },
+    {
+      "id": -152332823,
+      "shortName": "chicken.costume",
+      "nameEn": "Chicken Costume",
+      "nameZh": "鸡服装"
+    },
+    {
+      "id": -979302481,
+      "shortName": "easterdoorwreath",
+      "nameEn": "Easter Door Wreath",
+      "nameZh": "复活节门花环"
+    },
+    {
+      "id": 1856217390,
+      "shortName": "easterbasket",
+      "nameEn": "Egg Basket",
+      "nameZh": "蛋篮"
+    },
+    {
+      "id": -747743875,
+      "shortName": "attire.egg.suit",
+      "nameEn": "Egg Suit",
+      "nameZh": "鸡蛋装"
+    },
+    {
+      "id": -173268129,
+      "shortName": "rustige_egg_a",
+      "nameEn": "Rustigé Egg - Red",
+      "nameZh": "旋转彩蛋 - 红"
+    },
+    {
+      "id": -173268132,
+      "shortName": "rustige_egg_b",
+      "nameEn": "Rustigé Egg - Blue",
+      "nameZh": "旋转彩蛋 - 蓝"
+    },
+    {
+      "id": -173268131,
+      "shortName": "rustige_egg_c",
+      "nameEn": "Rustigé Egg - Purple",
+      "nameZh": "旋转彩蛋 - 紫"
+    },
+    {
+      "id": -173268126,
+      "shortName": "rustige_egg_d",
+      "nameEn": "Rustigé Egg - Ivory",
+      "nameZh": "旋转彩蛋 - 乳白"
+    },
+    {
+      "id": -173268125,
+      "shortName": "rustige_egg_e",
+      "nameEn": "Rustigé Egg - Green",
+      "nameZh": "旋转彩蛋 - 绿"
+    },
+    {
+      "id": -173268128,
+      "shortName": "rustige_egg_f",
+      "nameEn": "Rustigé Egg - White",
+      "nameZh": "旋转彩蛋 - 白"
+    },
+    {
+      "id": -173268127,
+      "shortName": "rustige_egg_g",
+      "nameEn": "Rustigé Egg - Cerulean",
+      "nameZh": "旋转彩蛋 - 天蓝"
+    },
+    {
+      "id": 1420547167,
+      "shortName": "horse.costume",
+      "nameEn": "Horse Costume",
+      "nameZh": "马匹装"
+    },
+    {
+      "id": 1081315464,
+      "shortName": "attire.nesthat",
+      "nameEn": "Nest Hat",
+      "nameZh": "鸡窝帽"
+    },
+    {
+      "id": 844440409,
+      "shortName": "easter.bronzeegg",
+      "nameEn": "Bronze Egg",
+      "nameZh": "铜蛋"
+    },
+    {
+      "id": -1002156085,
+      "shortName": "easter.goldegg",
+      "nameEn": "Gold Egg",
+      "nameZh": "金蛋"
+    },
+    {
+      "id": -126305173,
+      "shortName": "easter.paintedeggs",
+      "nameEn": "Painted Egg",
+      "nameZh": "彩蛋"
+    },
+    {
+      "id": 1757265204,
+      "shortName": "easter.silveregg",
+      "nameEn": "Silver Egg",
+      "nameZh": "银蛋"
+    },
+    {
+      "id": -888153050,
+      "shortName": "halloween.candy",
+      "nameEn": "Halloween Candy",
+      "nameZh": "万圣节糖果"
+    },
+    {
+      "id": -489848205,
+      "shortName": "largecandles",
+      "nameEn": "Large Candle Set",
+      "nameZh": "大型蜡烛堆"
+    },
+    {
+      "id": -2058362263,
+      "shortName": "smallcandles",
+      "nameEn": "Small Candle Set",
+      "nameZh": "小型蜡烛堆"
+    },
+    {
+      "id": 1524980732,
+      "shortName": "carvable.pumpkin",
+      "nameEn": "Carvable Pumpkin",
+      "nameZh": "南瓜木雕"
+    },
+    {
+      "id": 573676040,
+      "shortName": "coffin.storage",
+      "nameEn": "Coffin",
+      "nameZh": "棺材"
+    },
+    {
+      "id": 1242522330,
+      "shortName": "cursedcauldron",
+      "nameEn": "Cursed Cauldron",
+      "nameZh": "万圣节篝火"
+    },
+    {
+      "id": 809199956,
+      "shortName": "gravestone",
+      "nameEn": "Gravestone",
+      "nameZh": "墓碑"
+    },
+    {
+      "id": 699075597,
+      "shortName": "woodcross",
+      "nameEn": "Wooden Cross",
+      "nameZh": "木制十字架"
+    },
+    {
+      "id": -134959124,
+      "shortName": "frankensteins.monster.01.head",
+      "nameEn": "Light Frankenstein Head",
+      "nameZh": "轻型科学怪人头部"
+    },
+    {
+      "id": 106959911,
+      "shortName": "frankensteins.monster.01.legs",
+      "nameEn": "Light Frankenstein Legs",
+      "nameZh": "轻型科学怪人腿部"
+    },
+    {
+      "id": -1624770297,
+      "shortName": "frankensteins.monster.01.torso",
+      "nameEn": "Light Frankenstein Torso",
+      "nameZh": "轻型科学怪人身体"
+    },
+    {
+      "id": -1732475823,
+      "shortName": "frankensteins.monster.02.head",
+      "nameEn": "Medium Frankenstein Head",
+      "nameZh": "中型科学怪人头部"
+    },
+    {
+      "id": 835042040,
+      "shortName": "frankensteins.monster.02.legs",
+      "nameEn": "Medium Frankenstein Legs",
+      "nameZh": "中型科学怪人腿部"
+    },
+    {
+      "id": 1491753484,
+      "shortName": "frankensteins.monster.02.torso",
+      "nameEn": "Medium Frankenstein Torso",
+      "nameZh": "中型科学怪人身体"
+    },
+    {
+      "id": -297099594,
+      "shortName": "frankensteins.monster.03.head",
+      "nameEn": "Heavy Frankenstein Head",
+      "nameZh": "重型科学怪人头部"
+    },
+    {
+      "id": -2024549027,
+      "shortName": "frankensteins.monster.03.legs",
+      "nameEn": "Heavy Frankenstein Legs",
+      "nameZh": "重型科学怪人腿部"
+    },
+    {
+      "id": 1614528785,
+      "shortName": "frankensteins.monster.03.torso",
+      "nameEn": "Heavy Frankenstein Torso",
+      "nameZh": "重型科学怪人身体"
+    },
+    {
+      "id": -1679267738,
+      "shortName": "wall.graveyard.fence",
+      "nameEn": "Graveyard Fence",
+      "nameZh": "墓园围墙"
+    },
+    {
+      "id": 479292118,
+      "shortName": "halloween.lootbag.large",
+      "nameEn": "Large Loot Bag",
+      "nameZh": "大型万圣节礼袋"
+    },
+    {
+      "id": 1899610628,
+      "shortName": "halloween.lootbag.medium",
+      "nameEn": "Medium Loot Bag",
+      "nameZh": "中型万圣节礼袋"
+    },
+    {
+      "id": 1319617282,
+      "shortName": "halloween.lootbag.small",
+      "nameEn": "Small Loot Bag",
+      "nameZh": "小型万圣节礼袋"
+    },
+    {
+      "id": 1346158228,
+      "shortName": "pumpkinbasket",
+      "nameEn": "Pumpkin Basket",
+      "nameZh": "南瓜筐"
+    },
+    {
+      "id": 177226991,
+      "shortName": "scarecrow",
+      "nameEn": "Scarecrow",
+      "nameZh": "稻草人"
+    },
+    {
+      "id": -25740268,
+      "shortName": "skullspikes.candles",
+      "nameEn": "Skull Spikes",
+      "nameZh": ""
+    },
+    {
+      "id": -1078639462,
+      "shortName": "skullspikes.pumpkin",
+      "nameEn": "Skull Spikes",
+      "nameZh": ""
+    },
+    {
+      "id": -1073015016,
+      "shortName": "skullspikes",
+      "nameEn": "Skull Spikes",
+      "nameZh": "骷髅尖刺"
+    },
+    {
+      "id": -216116642,
+      "shortName": "skulldoorknocker",
+      "nameEn": "Skull Door Knocker",
+      "nameZh": "骷髅门环"
+    },
+    {
+      "id": 553887414,
+      "shortName": "skull_fire_pit",
+      "nameEn": "Skull Fire Pit",
+      "nameZh": "骷髅火堆"
+    },
+    {
+      "id": 882559853,
+      "shortName": "spiderweb",
+      "nameEn": "Spider Webs",
+      "nameZh": "蜘蛛网"
+    },
+    {
+      "id": 1885488976,
+      "shortName": "spookyspeaker",
+      "nameEn": "Spooky Speaker",
+      "nameZh": "幽灵音响"
+    },
+    {
+      "id": -1785231475,
+      "shortName": "halloween.surgeonsuit",
+      "nameEn": "Surgeon Scrubs",
+      "nameZh": "外科医生套装"
+    },
+    {
+      "id": 971362526,
+      "shortName": "skull.trophy.jar",
+      "nameEn": "Skull Trophy",
+      "nameZh": ""
+    },
+    {
+      "id": -924959988,
+      "shortName": "skull.trophy.jar2",
+      "nameEn": "Skull Trophy",
+      "nameZh": ""
+    },
+    {
+      "id": -156748077,
+      "shortName": "skull.trophy.table",
+      "nameEn": "Skull Trophy",
+      "nameZh": ""
+    },
+    {
+      "id": -769647921,
+      "shortName": "skull.trophy",
+      "nameEn": "Skull Trophy",
+      "nameZh": "骷髅奖杯"
+    },
+    {
+      "id": 1364514421,
+      "shortName": "blueidtag",
+      "nameEn": "Blue ID Tag",
+      "nameZh": ""
+    },
+    {
+      "id": -455286320,
+      "shortName": "grayidtag",
+      "nameEn": "Gray ID Tag",
+      "nameZh": ""
+    },
+    {
+      "id": 1762167092,
+      "shortName": "greenidtag",
+      "nameEn": "Green ID Tag",
+      "nameZh": ""
+    },
+    {
+      "id": 1223729384,
+      "shortName": "lavenderidtag",
+      "nameEn": "Lavender ID Tag",
+      "nameZh": ""
+    },
+    {
+      "id": 1572152877,
+      "shortName": "mintidtag",
+      "nameEn": "Mint ID Tag",
+      "nameZh": ""
+    },
+    {
+      "id": -282193997,
+      "shortName": "orangeidtag",
+      "nameEn": "Orange ID Tag",
+      "nameZh": ""
+    },
+    {
+      "id": 180752235,
+      "shortName": "pinkidtag",
+      "nameEn": "Pink ID Tag",
+      "nameZh": ""
+    },
+    {
+      "id": -1386082991,
+      "shortName": "purpleidtag",
+      "nameEn": "Purple ID Tag",
+      "nameZh": ""
+    },
+    {
+      "id": 70102328,
+      "shortName": "redidtag",
+      "nameEn": "Red ID Tag",
+      "nameZh": ""
+    },
+    {
+      "id": 22947882,
+      "shortName": "whiteidtag",
+      "nameEn": "White ID Tag",
+      "nameZh": ""
+    },
+    {
+      "id": 81423963,
+      "shortName": "yellowidtag",
+      "nameEn": "Yellow ID Tag",
+      "nameZh": ""
+    },
+    {
+      "id": -907422733,
+      "shortName": "largebackpack",
+      "nameEn": "Large Backpack",
+      "nameZh": "大型背包"
+    },
+    {
+      "id": -380502678,
+      "shortName": "medieval.door.double.hinged.metal",
+      "nameEn": "Medieval Sheet Metal Double Door",
+      "nameZh": ""
+    },
+    {
+      "id": -1654401345,
+      "shortName": "medieval.door.hinged.metal",
+      "nameEn": "Medieval Sheet Metal Door",
+      "nameZh": ""
+    },
+    {
+      "id": 242933621,
+      "shortName": "frontiermirror.large",
+      "nameEn": "Frontier Mirror Large",
+      "nameZh": ""
+    },
+    {
+      "id": 2055695285,
+      "shortName": "frontiermirror.medium",
+      "nameEn": "Frontier Mirror Medium",
+      "nameZh": ""
+    },
+    {
+      "id": 340210699,
+      "shortName": "frontiermirror.small",
+      "nameEn": "Frontier Mirror Small",
+      "nameZh": ""
+    },
+    {
+      "id": 1787198294,
+      "shortName": "frontiermirror.standing",
+      "nameEn": "Frontier Mirror Standing",
+      "nameZh": ""
+    },
+    {
+      "id": 1365234594,
+      "shortName": "goldmirror.large",
+      "nameEn": "Gold Mirror large",
+      "nameZh": ""
+    },
+    {
+      "id": -1804515496,
+      "shortName": "goldmirror.medium",
+      "nameEn": "Gold Mirror Medium",
+      "nameZh": ""
+    },
+    {
+      "id": -1444650226,
+      "shortName": "goldmirror.small",
+      "nameEn": "Gold Mirror Small",
+      "nameZh": ""
+    },
+    {
+      "id": 2120241887,
+      "shortName": "goldmirror.standing",
+      "nameEn": "Gold Mirror Standing",
+      "nameZh": ""
+    },
+    {
+      "id": 450531685,
+      "shortName": "lightupmirror.large",
+      "nameEn": "Light-Up Mirror Large",
+      "nameZh": ""
+    },
+    {
+      "id": 1028889957,
+      "shortName": "lightupmirror.medium",
+      "nameEn": "Light-Up Mirror Medium",
+      "nameZh": ""
+    },
+    {
+      "id": -389796733,
+      "shortName": "lightupmirror.small",
+      "nameEn": "Light-Up Mirror Small",
+      "nameZh": ""
+    },
+    {
+      "id": 1916016738,
+      "shortName": "lightupmirror.standing",
+      "nameEn": "Light-Up Mirror Standing",
+      "nameZh": ""
+    },
+    {
+      "id": -82758111,
+      "shortName": "scrapmirror.large",
+      "nameEn": "Scrap Mirror Large",
+      "nameZh": ""
+    },
+    {
+      "id": 839738457,
+      "shortName": "scrapmirror.medium",
+      "nameEn": "Scrap Mirror Medium",
+      "nameZh": ""
+    },
+    {
+      "id": -1050697733,
+      "shortName": "scrapmirror.small",
+      "nameEn": "Scrap Mirror Small",
+      "nameZh": ""
+    },
+    {
+      "id": -1380144986,
+      "shortName": "scrapmirror.standing",
+      "nameEn": "Scrap Mirror Standing",
+      "nameZh": ""
+    },
+    {
+      "id": 1312679249,
+      "shortName": "woodmirror.large",
+      "nameEn": "Wood Mirror Large",
+      "nameZh": ""
+    },
+    {
+      "id": 756125481,
+      "shortName": "woodmirror.medium",
+      "nameEn": "Wood Mirror Medium",
+      "nameZh": ""
+    },
+    {
+      "id": -1497205569,
+      "shortName": "woodmirror.small",
+      "nameEn": "Wood Mirror Small",
+      "nameZh": ""
+    },
+    {
+      "id": 723407026,
+      "shortName": "woodmirror.standing",
+      "nameEn": "Wood Mirror Standing",
+      "nameZh": ""
+    },
+    {
+      "id": 3380160,
+      "shortName": "movembermoustachecard",
+      "nameEn": "Card Movember Moustache",
+      "nameZh": ""
+    },
+    {
+      "id": -2047081330,
+      "shortName": "movembermoustache",
+      "nameEn": "Movember Moustache",
+      "nameZh": "大胡子"
+    },
+    {
+      "id": 1414245162,
+      "shortName": "note",
+      "nameEn": "Note",
+      "nameZh": "笔记"
+    },
+    {
+      "id": 1784005657,
+      "shortName": "parachute.deployed",
+      "nameEn": "Parachute (Deployed)",
+      "nameZh": ""
+    },
+    {
+      "id": 602628465,
+      "shortName": "parachute",
+      "nameEn": "Parachute",
+      "nameZh": "降落伞"
+    },
+    {
+      "id": 2054391128,
+      "shortName": "factorydoor",
+      "nameEn": "Factory Door",
+      "nameZh": ""
+    },
+    {
+      "id": 920930831,
+      "shortName": "industrial.wall.light.blue",
+      "nameEn": "Blue Industrial Wall Light",
+      "nameZh": "蓝色工业壁灯"
+    },
+    {
+      "id": 1268178466,
+      "shortName": "industrial.wall.light.green",
+      "nameEn": "Green Industrial Wall Light",
+      "nameZh": "绿色工业壁灯"
+    },
+    {
+      "id": 1623701499,
+      "shortName": "industrial.wall.light",
+      "nameEn": "Industrial Wall Light",
+      "nameZh": "工业壁灯"
+    },
+    {
+      "id": -1160621614,
+      "shortName": "industrial.wall.light.red",
+      "nameEn": "Red Industrial Wall Light",
+      "nameZh": "红色工业壁灯"
+    },
+    {
+      "id": -1442496789,
+      "shortName": "pinata",
+      "nameEn": "Pinata",
+      "nameZh": "皮纳塔"
+    },
+    {
+      "id": 996293980,
+      "shortName": "skull.human",
+      "nameEn": "Human Skull",
+      "nameZh": "人类头骨"
+    },
+    {
+      "id": 2068884361,
+      "shortName": "smallbackpack",
+      "nameEn": "Small Backpack",
+      "nameZh": "小型背包"
+    },
+    {
+      "id": 1840570710,
+      "shortName": "abovegroundpool",
+      "nameEn": "Above Ground Pool",
+      "nameZh": "Above Ground Pool"
+    },
+    {
+      "id": -321431890,
+      "shortName": "beachchair",
+      "nameEn": "Beach Chair",
+      "nameZh": "沙滩椅"
+    },
+    {
+      "id": -1621539785,
+      "shortName": "beachparasol",
+      "nameEn": "Beach Parasol",
+      "nameZh": "遮阳伞"
+    },
+    {
+      "id": 657352755,
+      "shortName": "beachtable",
+      "nameEn": "Beach Table",
+      "nameZh": "沙滩桌"
+    },
+    {
+      "id": -8312704,
+      "shortName": "beachtowel",
+      "nameEn": "Beach Towel",
+      "nameZh": "沙滩浴巾"
+    },
+    {
+      "id": -1478094705,
+      "shortName": "boogieboard",
+      "nameEn": "Boogie Board",
+      "nameZh": "冲浪板"
+    },
+    {
+      "id": -697981032,
+      "shortName": "innertube",
+      "nameEn": "Inner Tube",
+      "nameZh": "游泳圈"
+    },
+    {
+      "id": 185586769,
+      "shortName": "innertube.horse",
+      "nameEn": "Inner Tube",
+      "nameZh": ""
+    },
+    {
+      "id": 2052270186,
+      "shortName": "innertube.unicorn",
+      "nameEn": "Inner Tube",
+      "nameZh": ""
+    },
+    {
+      "id": -2001260025,
+      "shortName": "tool.instant_camera",
+      "nameEn": "Instant Camera",
+      "nameZh": "即时相机"
+    },
+    {
+      "id": -733625651,
+      "shortName": "paddlingpool",
+      "nameEn": "Paddling Pool",
+      "nameZh": "游泳池"
+    },
+    {
+      "id": 62577426,
+      "shortName": "photo",
+      "nameEn": "Photograph",
+      "nameZh": "相片"
+    },
+    {
+      "id": 1697996440,
+      "shortName": "photoframe.landscape",
+      "nameEn": "Landscape Photo Frame",
+      "nameZh": "横向相框"
+    },
+    {
+      "id": 1205084994,
+      "shortName": "photoframe.large",
+      "nameEn": "Large Photo Frame",
+      "nameZh": "大型相框"
+    },
+    {
+      "id": 1729712564,
+      "shortName": "photoframe.portrait",
+      "nameEn": "Portrait Photo Frame",
+      "nameZh": "纵向相框"
+    },
+    {
+      "id": 1258768145,
+      "shortName": "sunglasses02black",
+      "nameEn": "Sunglasses",
+      "nameZh": ""
+    },
+    {
+      "id": -2103694546,
+      "shortName": "sunglasses02camo",
+      "nameEn": "Sunglasses",
+      "nameZh": ""
+    },
+    {
+      "id": 1557173737,
+      "shortName": "sunglasses02red",
+      "nameEn": "Sunglasses",
+      "nameZh": ""
+    },
+    {
+      "id": -176608084,
+      "shortName": "sunglasses03black",
+      "nameEn": "Sunglasses",
+      "nameZh": ""
+    },
+    {
+      "id": -1997698639,
+      "shortName": "sunglasses03chrome",
+      "nameEn": "Sunglasses",
+      "nameZh": ""
+    },
+    {
+      "id": -1408336705,
+      "shortName": "sunglasses03gold",
+      "nameEn": "Sunglasses",
+      "nameZh": ""
+    },
+    {
+      "id": 352321488,
+      "shortName": "sunglasses",
+      "nameEn": "Sunglasses",
+      "nameZh": ""
+    },
+    {
+      "id": 722955039,
+      "shortName": "gun.water",
+      "nameEn": "Water Gun",
+      "nameZh": "水枪"
+    },
+    {
+      "id": -1815301988,
+      "shortName": "pistol.water",
+      "nameEn": "Water Pistol",
+      "nameZh": "小水枪"
+    },
+    {
+      "id": 975983052,
+      "shortName": "trophy",
+      "nameEn": "Twitch Rivals Trophy",
+      "nameZh": "Twitch Rivals奖杯"
+    },
+    {
+      "id": -901370585,
+      "shortName": "trophy2023",
+      "nameEn": "Twitch Rivals Trophy 2023",
+      "nameZh": "Twitch Rivals奖杯2023"
+    },
+    {
+      "id": 20489901,
+      "shortName": "twitchsunglasses",
+      "nameEn": "Purple Sunglasses",
+      "nameZh": "紫色太阳镜"
+    },
+    {
+      "id": -1569700847,
+      "shortName": "twitch.headset",
+      "nameEn": "Headset",
+      "nameZh": "耳机"
+    },
+    {
+      "id": -1442559428,
+      "shortName": "hobobarrel",
+      "nameEn": "Hobo Barrel",
+      "nameZh": "篝火桶"
+    },
+    {
+      "id": 818733919,
+      "shortName": "door.hinged.industrial.a",
+      "nameEn": "Industrial Door",
+      "nameZh": ""
+    },
+    {
+      "id": -243540612,
+      "shortName": "twitchrivals2023desk",
+      "nameEn": "Twitch Rivals Desk",
+      "nameZh": ""
+    },
+    {
+      "id": -739993590,
+      "shortName": "twitchrivalsflag",
+      "nameEn": "Twitch Rivals Flag",
+      "nameZh": "Twitch Rivals 旗帜"
+    },
+    {
+      "id": -870140677,
+      "shortName": "venom.snake",
+      "nameEn": "Snake Venom",
+      "nameZh": "蛇毒"
+    },
+    {
+      "id": -2027793839,
+      "shortName": "xmas.advent",
+      "nameEn": "Advent Calendar",
+      "nameZh": "惊喜日历"
+    },
+    {
+      "id": 1789825282,
+      "shortName": "candycaneclub",
+      "nameEn": "Candy Cane Club",
+      "nameZh": "糖果棒"
+    },
+    {
+      "id": 1058261682,
+      "shortName": "xmas.lightstring",
+      "nameEn": "Christmas Lights",
+      "nameZh": "圣诞彩灯"
+    },
+    {
+      "id": 674734128,
+      "shortName": "xmas.door.garland",
+      "nameEn": "Festive Doorway Garland",
+      "nameZh": "门框花环"
+    },
+    {
+      "id": -1230433643,
+      "shortName": "xmas.double.door.garland",
+      "nameEn": "Festive Double Doorway Garland",
+      "nameZh": "双门花环"
+    },
+    {
+      "id": 1121925526,
+      "shortName": "candycane",
+      "nameEn": "Candy Cane",
+      "nameZh": "糖果手杖"
+    },
+    {
+      "id": -695124222,
+      "shortName": "giantcandycanedecor",
+      "nameEn": "Giant Candy Decor",
+      "nameZh": "巨型糖果装饰"
+    },
+    {
+      "id": 1327005675,
+      "shortName": "wall.ice.wall",
+      "nameEn": "Short Ice Wall",
+      "nameZh": "冰质矮墙"
+    },
+    {
+      "id": -985781766,
+      "shortName": "wall.external.high.ice",
+      "nameEn": "High Ice Wall",
+      "nameZh": "冰质高墙"
+    },
+    {
+      "id": 282103175,
+      "shortName": "giantlollipops",
+      "nameEn": "Giant Lollipop Decor",
+      "nameZh": "巨型棒棒糖装饰"
+    },
+    {
+      "id": 1305578813,
+      "shortName": "sign.neon.125x125",
+      "nameEn": "Small Neon Sign",
+      "nameZh": "小型霓虹灯牌"
+    },
+    {
+      "id": 42535890,
+      "shortName": "sign.neon.125x215.animated",
+      "nameEn": "Medium Animated Neon Sign",
+      "nameZh": "中型动画霓虹灯牌"
+    },
+    {
+      "id": -1423304443,
+      "shortName": "sign.neon.125x215",
+      "nameEn": "Medium Neon Sign",
+      "nameZh": "中型霓虹灯牌"
+    },
+    {
+      "id": 1643667218,
+      "shortName": "sign.neon.xl.animated",
+      "nameEn": "Large Animated Neon Sign",
+      "nameZh": "大型动画霓虹灯牌"
+    },
+    {
+      "id": 866332017,
+      "shortName": "sign.neon.xl",
+      "nameEn": "Large Neon Sign",
+      "nameZh": "大型霓虹灯牌"
+    },
+    {
+      "id": -1651220691,
+      "shortName": "pookie.bear",
+      "nameEn": "Pookie Bear",
+      "nameZh": "泰迪熊"
+    },
+    {
+      "id": -151387974,
+      "shortName": "xmas.lightstring.advanced",
+      "nameEn": "Deluxe Christmas Lights",
+      "nameZh": "豪华圣诞彩灯"
+    },
+    {
+      "id": 204391461,
+      "shortName": "coal",
+      "nameEn": "Coal :(",
+      "nameZh": "煤炭"
+    },
+    {
+      "id": -1622660759,
+      "shortName": "xmas.present.large",
+      "nameEn": "Large Present",
+      "nameZh": "大型礼盒"
+    },
+    {
+      "id": 756517185,
+      "shortName": "xmas.present.medium",
+      "nameEn": "Medium Present",
+      "nameZh": "中型礼盒"
+    },
+    {
+      "id": -722241321,
+      "shortName": "xmas.present.small",
+      "nameEn": "Small Present",
+      "nameZh": "小型礼盒"
+    },
+    {
+      "id": -135252633,
+      "shortName": "sled.xmas",
+      "nameEn": "Sled",
+      "nameZh": "雪橇"
+    },
+    {
+      "id": -333406828,
+      "shortName": "sled",
+      "nameEn": "Sled",
+      "nameZh": "雪橇"
+    },
+    {
+      "id": 1358643074,
+      "shortName": "snowmachine",
+      "nameEn": "Snow Machine",
+      "nameZh": "造雪机"
+    },
+    {
+      "id": -363689972,
+      "shortName": "snowball",
+      "nameEn": "Snowball",
+      "nameZh": "雪球"
+    },
+    {
+      "id": 550753330,
+      "shortName": "ammo.snowballgun",
+      "nameEn": "Snowball Gun Ammo",
+      "nameZh": ""
+    },
+    {
+      "id": 1103488722,
+      "shortName": "snowballgun",
+      "nameEn": "Snowball Gun",
+      "nameZh": "雪球发射器"
+    },
+    {
+      "id": 1629293099,
+      "shortName": "snowman",
+      "nameEn": "Snowman",
+      "nameZh": "雪人"
+    },
+    {
+      "id": -465682601,
+      "shortName": "stocking.large",
+      "nameEn": "SUPER Stocking",
+      "nameZh": "大圣诞袜"
+    },
+    {
+      "id": 1668858301,
+      "shortName": "stocking.small",
+      "nameEn": "Small Stocking",
+      "nameZh": "小圣诞袜"
+    },
+    {
+      "id": -558880549,
+      "shortName": "gingerbreadsuit",
+      "nameEn": "Gingerbread Suit",
+      "nameZh": "姜饼装"
+    },
+    {
+      "id": -324675402,
+      "shortName": "attire.reindeer.headband",
+      "nameEn": "Reindeer Antlers",
+      "nameZh": "圣诞鹿角"
+    },
+    {
+      "id": 2126889441,
+      "shortName": "santabeard",
+      "nameEn": "Santa Beard",
+      "nameZh": "圣诞老人胡子"
+    },
+    {
+      "id": -575483084,
+      "shortName": "santahat",
+      "nameEn": "Santa Hat",
+      "nameZh": "圣诞帽"
+    },
+    {
+      "id": -842267147,
+      "shortName": "attire.snowman.helmet",
+      "nameEn": "Snowman Helmet",
+      "nameZh": "雪人头饰"
+    },
+    {
+      "id": -1379835144,
+      "shortName": "xmas.window.garland",
+      "nameEn": "Festive Window Garland",
+      "nameZh": "窗框花环"
+    },
+    {
+      "id": 204970153,
+      "shortName": "wrappedgift",
+      "nameEn": "Wrapped Gift",
+      "nameZh": "礼物"
+    },
+    {
+      "id": 1094293920,
+      "shortName": "wrappingpaper",
+      "nameEn": "Wrapping Paper",
+      "nameZh": "包装纸"
+    },
+    {
+      "id": 2009734114,
+      "shortName": "xmasdoorwreath",
+      "nameEn": "Christmas Door Wreath",
+      "nameZh": "圣诞花圈"
+    },
+    {
+      "id": -1667224349,
+      "shortName": "xmas.decoration.baubels",
+      "nameEn": "Decorative Baubels",
+      "nameZh": "装饰彩铃"
+    },
+    {
+      "id": -209869746,
+      "shortName": "xmas.decoration.candycanes",
+      "nameEn": "Decorative Plastic Candy Canes",
+      "nameZh": "装饰糖果棒"
+    },
+    {
+      "id": 1686524871,
+      "shortName": "xmas.decoration.gingerbreadmen",
+      "nameEn": "Decorative Gingerbread Men",
+      "nameZh": "小人饼干"
+    },
+    {
+      "id": 1723747470,
+      "shortName": "xmas.decoration.lights",
+      "nameEn": "Tree Lights",
+      "nameZh": "树灯"
+    },
+    {
+      "id": -129230242,
+      "shortName": "xmas.decoration.pinecone",
+      "nameEn": "Decorative Pinecones",
+      "nameZh": "装饰松子"
+    },
+    {
+      "id": -1331212963,
+      "shortName": "xmas.decoration.star",
+      "nameEn": "Star Tree Topper",
+      "nameZh": "圣诞星"
+    },
+    {
+      "id": 2106561762,
+      "shortName": "xmas.decoration.tinsel",
+      "nameEn": "Decorative Tinsel",
+      "nameZh": "装饰丝带"
+    },
+    {
+      "id": 794443127,
+      "shortName": "xmas.tree",
+      "nameEn": "Christmas Tree",
+      "nameZh": "圣诞树"
+    },
+    {
+      "id": 1230691307,
+      "shortName": "captainslog",
+      "nameEn": "Captain's Log",
+      "nameZh": "船长日志"
+    },
+    {
+      "id": -451310088,
+      "shortName": "documents",
+      "nameEn": "Documents",
+      "nameZh": "文件"
+    },
+    {
+      "id": -1707425764,
+      "shortName": "fishing.tackle",
+      "nameEn": "Fishing Tackle",
+      "nameZh": "渔具"
+    },
+    {
+      "id": -648077743,
+      "shortName": "mrspice.can",
+      "nameEn": "Mr Spice Can",
+      "nameZh": "香料先生"
+    },
+    {
+      "id": 755224797,
+      "shortName": "bottle.vodka",
+      "nameEn": "Vodka Bottle",
+      "nameZh": "伏特加"
+    },
+    {
+      "id": -2139580305,
+      "shortName": "autoturret",
+      "nameEn": "Auto Turret",
+      "nameZh": "自动炮塔"
+    },
+    {
+      "id": 528668503,
+      "shortName": "flameturret",
+      "nameEn": "Flame Turret",
+      "nameZh": "火焰炮塔"
+    },
+    {
+      "id": -690276911,
+      "shortName": "gloweyes",
+      "nameEn": "Glowing Eyes",
+      "nameZh": "发光眼睛"
+    },
+    {
+      "id": -384243979,
+      "shortName": "ammo.rocket.sam",
+      "nameEn": "SAM Ammo",
+      "nameZh": "防空导弹"
+    },
+    {
+      "id": -1009359066,
+      "shortName": "samsite",
+      "nameEn": "SAM Site",
+      "nameZh": "防空炮台"
+    },
+    {
+      "id": 1771755747,
+      "shortName": "black.berry",
+      "nameEn": "Black Berry",
+      "nameZh": "黑浆果"
+    },
+    {
+      "id": 122783240,
+      "shortName": "clone.black.berry",
+      "nameEn": "Black Berry Clone",
+      "nameZh": "黑浆果茎"
+    },
+    {
+      "id": 1911552868,
+      "shortName": "seed.black.berry",
+      "nameEn": "Black Berry Seed",
+      "nameZh": "黑浆果种子"
+    },
+    {
+      "id": 1112162468,
+      "shortName": "blue.berry",
+      "nameEn": "Blue Berry",
+      "nameZh": "蓝浆果"
+    },
+    {
+      "id": 838831151,
+      "shortName": "clone.blue.berry",
+      "nameEn": "Blue Berry Clone",
+      "nameZh": "蓝浆果茎"
+    },
+    {
+      "id": 803954639,
+      "shortName": "seed.blue.berry",
+      "nameEn": "Blue Berry Seed",
+      "nameZh": "蓝浆果种子"
+    },
+    {
+      "id": 858486327,
+      "shortName": "green.berry",
+      "nameEn": "Green Berry",
+      "nameZh": "绿浆果"
+    },
+    {
+      "id": -1305326964,
+      "shortName": "clone.green.berry",
+      "nameEn": "Green Berry Clone",
+      "nameZh": "绿浆果茎"
+    },
+    {
+      "id": -1776128552,
+      "shortName": "seed.green.berry",
+      "nameEn": "Green Berry Seed",
+      "nameZh": "绿浆果种子"
+    },
+    {
+      "id": 1272194103,
+      "shortName": "red.berry",
+      "nameEn": "Red Berry",
+      "nameZh": "红浆果"
+    },
+    {
+      "id": 2133269020,
+      "shortName": "clone.red.berry",
+      "nameEn": "Red Berry Clone",
+      "nameZh": "红浆果茎"
+    },
+    {
+      "id": 830839496,
+      "shortName": "seed.red.berry",
+      "nameEn": "Red Berry Seed",
+      "nameZh": "红浆果种子"
+    },
+    {
+      "id": 854447607,
+      "shortName": "white.berry",
+      "nameEn": "White Berry",
+      "nameZh": "白浆果"
+    },
+    {
+      "id": 1533551194,
+      "shortName": "clone.white.berry",
+      "nameEn": "White Berry Clone",
+      "nameZh": "白浆果茎"
+    },
+    {
+      "id": -992286106,
+      "shortName": "seed.white.berry",
+      "nameEn": "White Berry Seed",
+      "nameZh": "白浆果种子"
+    },
+    {
+      "id": 1660145984,
+      "shortName": "yellow.berry",
+      "nameEn": "Yellow Berry",
+      "nameZh": "黄浆果"
+    },
+    {
+      "id": 390728933,
+      "shortName": "clone.yellow.berry",
+      "nameEn": "Yellow Berry Clone",
+      "nameZh": "黄浆果茎"
+    },
+    {
+      "id": -520133715,
+      "shortName": "seed.yellow.berry",
+      "nameEn": "Yellow Berry Seed",
+      "nameZh": "黄浆果种子"
+    },
+    {
+      "id": 1367190888,
+      "shortName": "corn",
+      "nameEn": "Corn",
+      "nameZh": "玉米"
+    },
+    {
+      "id": -778875547,
+      "shortName": "clone.corn",
+      "nameEn": "Corn Clone",
+      "nameZh": "玉米茎"
+    },
+    {
+      "id": 998894949,
+      "shortName": "seed.corn",
+      "nameEn": "Corn Seed",
+      "nameZh": "玉米种子"
+    },
+    {
+      "id": -886280491,
+      "shortName": "clone.hemp",
+      "nameEn": "Hemp Clone",
+      "nameZh": "亚麻茎"
+    },
+    {
+      "id": -237809779,
+      "shortName": "seed.hemp",
+      "nameEn": "Hemp Seed",
+      "nameZh": "亚麻种子"
+    },
+    {
+      "id": 734320711,
+      "shortName": "orchid",
+      "nameEn": "Orchid",
+      "nameZh": "兰花"
+    },
+    {
+      "id": -798662404,
+      "shortName": "clone.orchid",
+      "nameEn": "Orchid Clone",
+      "nameZh": "兰花茎"
+    },
+    {
+      "id": 1004843240,
+      "shortName": "seed.orchid",
+      "nameEn": "Orchid Seed",
+      "nameZh": "兰花种子"
+    },
+    {
+      "id": -2086926071,
+      "shortName": "potato",
+      "nameEn": "Potato",
+      "nameZh": "土豆"
+    },
+    {
+      "id": 1512054436,
+      "shortName": "clone.potato",
+      "nameEn": "Potato Clone",
+      "nameZh": "土豆茎"
+    },
+    {
+      "id": -2084071424,
+      "shortName": "seed.potato",
+      "nameEn": "Potato Seed",
+      "nameZh": "土豆种子"
+    },
+    {
+      "id": -567909622,
+      "shortName": "pumpkin",
+      "nameEn": "Pumpkin",
+      "nameZh": "南瓜"
+    },
+    {
+      "id": 1898094925,
+      "shortName": "clone.pumpkin",
+      "nameEn": "Pumpkin Plant Clone",
+      "nameZh": "南瓜茎"
+    },
+    {
+      "id": -1511285251,
+      "shortName": "seed.pumpkin",
+      "nameEn": "Pumpkin Seed",
+      "nameZh": "南瓜种子"
+    },
+    {
+      "id": 1414245519,
+      "shortName": "rose",
+      "nameEn": "Rose",
+      "nameZh": "玫瑰"
+    },
+    {
+      "id": -19360132,
+      "shortName": "clone.rose",
+      "nameEn": "Rose Clone",
+      "nameZh": "玫瑰茎"
+    },
+    {
+      "id": -1037472336,
+      "shortName": "seed.rose",
+      "nameEn": "Rose Seed",
+      "nameZh": "玫瑰种子"
+    },
+    {
+      "id": -611118083,
+      "shortName": "sunflower",
+      "nameEn": "Sunflower",
+      "nameZh": "向日葵"
+    },
+    {
+      "id": 912235912,
+      "shortName": "clone.sunflower",
+      "nameEn": "Sunflower Clone",
+      "nameZh": "向日葵茎"
+    },
+    {
+      "id": 1412103380,
+      "shortName": "seed.sunflower",
+      "nameEn": "Sunflower Seed",
+      "nameZh": "向日葵种子"
+    },
+    {
+      "id": 1178325727,
+      "shortName": "wheat",
+      "nameEn": "Wheat",
+      "nameZh": "小麦"
+    },
+    {
+      "id": 924598634,
+      "shortName": "clone.wheat",
+      "nameEn": "Wheat Clone",
+      "nameZh": "小麦茎"
+    },
+    {
+      "id": -1790885730,
+      "shortName": "seed.wheat",
+      "nameEn": "Wheat Seed",
+      "nameZh": "小麦种子"
+    },
+    {
+      "id": -1018587433,
+      "shortName": "fat.animal",
+      "nameEn": "Animal Fat",
+      "nameZh": "动物脂肪"
+    },
+    {
+      "id": 609049394,
+      "shortName": "battery.small",
+      "nameEn": "Battery - Small",
+      "nameZh": "小号电池"
+    },
+    {
+      "id": 1776460938,
+      "shortName": "blood",
+      "nameEn": "Blood",
+      "nameZh": "输血袋"
+    },
+    {
+      "id": -1896395719,
+      "shortName": "advancedblueprintfragment",
+      "nameEn": "Advanced Blueprint Fragment",
+      "nameZh": "高级蓝图碎片"
+    },
+    {
+      "id": -143481979,
+      "shortName": "basicblueprintfragment",
+      "nameEn": "Basic Blueprint Fragment",
+      "nameZh": "基础蓝图碎片"
+    },
+    {
+      "id": 1719978075,
+      "shortName": "bone.fragments",
+      "nameEn": "Bone Fragments",
+      "nameZh": "骨头碎片"
+    },
+    {
+      "id": 634478325,
+      "shortName": "cctv.camera",
+      "nameEn": "CCTV Camera",
+      "nameZh": "监控摄像机"
+    },
+    {
+      "id": -1938052175,
+      "shortName": "charcoal",
+      "nameEn": "Charcoal",
+      "nameZh": "木炭"
+    },
+    {
+      "id": -858312878,
+      "shortName": "cloth",
+      "nameEn": "Cloth",
+      "nameZh": "布"
+    },
+    {
+      "id": -321733511,
+      "shortName": "crude.oil",
+      "nameEn": "Crude Oil",
+      "nameZh": "原油"
+    },
+    {
+      "id": 1568388703,
+      "shortName": "diesel_barrel",
+      "nameEn": "Diesel Fuel",
+      "nameZh": "柴油"
+    },
+    {
+      "id": 1655979682,
+      "shortName": "can.beans.empty",
+      "nameEn": "Empty Can Of Beans",
+      "nameZh": "空豆罐"
+    },
+    {
+      "id": -1557377697,
+      "shortName": "can.tuna.empty",
+      "nameEn": "Empty Tuna Can",
+      "nameZh": "空的金枪鱼罐头"
+    },
+    {
+      "id": -592016202,
+      "shortName": "explosives",
+      "nameEn": "Explosives",
+      "nameZh": "炸药"
+    },
+    {
+      "id": -930193596,
+      "shortName": "fertilizer",
+      "nameEn": "Fertilizer",
+      "nameZh": "肥料"
+    },
+    {
+      "id": -265876753,
+      "shortName": "gunpowder",
+      "nameEn": "Gun Powder",
+      "nameZh": "火药"
+    },
+    {
+      "id": -1513203236,
+      "shortName": "honeycomb",
+      "nameEn": "Honeycomb",
+      "nameZh": "蜂巢"
+    },
+    {
+      "id": -1579932985,
+      "shortName": "horsedung",
+      "nameEn": "Horse Dung",
+      "nameZh": "马粪"
+    },
+    {
+      "id": -1982036270,
+      "shortName": "hq.metal.ore",
+      "nameEn": "High Quality Metal Ore",
+      "nameZh": "高级金属矿石"
+    },
+    {
+      "id": 317398316,
+      "shortName": "metal.refined",
+      "nameEn": "High Quality Metal",
+      "nameZh": "高级金属"
+    },
+    {
+      "id": 1381010055,
+      "shortName": "leather",
+      "nameEn": "Leather",
+      "nameZh": "皮革"
+    },
+    {
+      "id": -946369541,
+      "shortName": "lowgradefuel",
+      "nameEn": "Low Grade Fuel",
+      "nameZh": "低品质燃油"
+    },
+    {
+      "id": 69511070,
+      "shortName": "metal.fragments",
+      "nameEn": "Metal Fragments",
+      "nameZh": "金属碎片"
+    },
+    {
+      "id": -4031221,
+      "shortName": "metal.ore",
+      "nameEn": "Metal Ore",
+      "nameZh": "金属矿石"
+    },
+    {
+      "id": -1779183908,
+      "shortName": "paper",
+      "nameEn": "Paper",
+      "nameZh": ""
+    },
+    {
+      "id": -804769727,
+      "shortName": "plantfiber",
+      "nameEn": "Plant Fiber",
+      "nameZh": "植物纤维"
+    },
+    {
+      "id": 1811780502,
+      "shortName": "water.radioactive",
+      "nameEn": "Radioactive Water",
+      "nameZh": "核污水"
+    },
+    {
+      "id": -544317637,
+      "shortName": "researchpaper",
+      "nameEn": "Research Paper",
+      "nameZh": ""
+    },
+    {
+      "id": -277057363,
+      "shortName": "water.salt",
+      "nameEn": "Salt Water",
+      "nameZh": "盐水"
+    },
+    {
+      "id": -932201673,
+      "shortName": "scrap",
+      "nameEn": "Scrap",
+      "nameZh": "废料"
+    },
+    {
+      "id": -2099697608,
+      "shortName": "stones",
+      "nameEn": "Stones",
+      "nameZh": "石头"
+    },
+    {
+      "id": -1157596551,
+      "shortName": "sulfur.ore",
+      "nameEn": "Sulfur Ore",
+      "nameZh": "硫磺矿石"
+    },
+    {
+      "id": -1581843485,
+      "shortName": "sulfur",
+      "nameEn": "Sulfur",
+      "nameZh": "硫磺"
+    },
+    {
+      "id": 1523195708,
+      "shortName": "targeting.computer",
+      "nameEn": "Targeting Computer",
+      "nameZh": "笔记本电脑"
+    },
+    {
+      "id": -1779180711,
+      "shortName": "water",
+      "nameEn": "Water",
+      "nameZh": "水"
+    },
+    {
+      "id": 2048317869,
+      "shortName": "skull.wolf",
+      "nameEn": "Wolf Skull",
+      "nameZh": "狼头骨"
+    },
+    {
+      "id": -151838493,
+      "shortName": "wood",
+      "nameEn": "Wood",
+      "nameZh": "木头"
+    },
+    {
+      "id": -1498613415,
+      "shortName": "advancedcoolingtea",
+      "nameEn": "Advanced Cooling Tea",
+      "nameZh": "上等凉茶"
+    },
+    {
+      "id": -1260229965,
+      "shortName": "coolingtea",
+      "nameEn": "Basic Cooling Tea",
+      "nameZh": "普通凉茶"
+    },
+    {
+      "id": 1121416193,
+      "shortName": "purecoolingtea",
+      "nameEn": "Pure Cooling Tea",
+      "nameZh": "纯正凉茶"
+    },
+    {
+      "id": -652889722,
+      "shortName": "advancedcraftingtea_quality",
+      "nameEn": "Advanced Crafting Quality Tea",
+      "nameZh": "上等制作质量茶"
+    },
+    {
+      "id": 368008432,
+      "shortName": "craftingtea_quality",
+      "nameEn": "Basic Crafting Quality Tea",
+      "nameZh": "普通制作质量茶"
+    },
+    {
+      "id": 97903330,
+      "shortName": "purecraftingtea_quality",
+      "nameEn": "Pure Crafting Quality Tea",
+      "nameZh": "纯正制作质量茶"
+    },
+    {
+      "id": -1385721419,
+      "shortName": "advanceharvestingtea",
+      "nameEn": "Advanced Harvesting Tea",
+      "nameZh": "上等收获茶"
+    },
+    {
+      "id": 1516531815,
+      "shortName": "harvestingtea",
+      "nameEn": "Basic Harvesting Tea",
+      "nameZh": "普通收获茶"
+    },
+    {
+      "id": 377750553,
+      "shortName": "pureharvestingtea",
+      "nameEn": "Pure Harvesting Tea",
+      "nameZh": "纯正收获茶"
+    },
+    {
+      "id": -2123125470,
+      "shortName": "healingtea.advanced",
+      "nameEn": "Advanced Healing Tea",
+      "nameZh": "上等药茶"
+    },
+    {
+      "id": -929092070,
+      "shortName": "healingtea",
+      "nameEn": "Basic Healing Tea",
+      "nameZh": "普通药茶"
+    },
+    {
+      "id": -1677315902,
+      "shortName": "healingtea.pure",
+      "nameEn": "Pure Healing Tea",
+      "nameZh": "纯正药茶"
+    },
+    {
+      "id": 603811464,
+      "shortName": "maxhealthtea.advanced",
+      "nameEn": "Advanced Max Health Tea",
+      "nameZh": "上等高药茶"
+    },
+    {
+      "id": -1184406448,
+      "shortName": "maxhealthtea",
+      "nameEn": "Basic Max Health Tea",
+      "nameZh": "普通高药茶"
+    },
+    {
+      "id": 1712261904,
+      "shortName": "maxhealthtea.pure",
+      "nameEn": "Pure Max Health Tea",
+      "nameZh": "纯正高药茶"
+    },
+    {
+      "id": 2063916636,
+      "shortName": "oretea.advanced",
+      "nameEn": "Advanced Ore Tea",
+      "nameZh": "上等矿茶"
+    },
+    {
+      "id": 1480022580,
+      "shortName": "oretea",
+      "nameEn": "Basic Ore Tea",
+      "nameZh": "普通矿茶"
+    },
+    {
+      "id": 1729374708,
+      "shortName": "oretea.pure",
+      "nameEn": "Pure Ore Tea",
+      "nameZh": "纯正矿茶"
+    },
+    {
+      "id": 2021351233,
+      "shortName": "radiationremovetea.advanced",
+      "nameEn": "Advanced Rad. Removal Tea",
+      "nameZh": ""
+    },
+    {
+      "id": -496584751,
+      "shortName": "radiationremovetea",
+      "nameEn": "Rad. Removal Tea",
+      "nameZh": ""
+    },
+    {
+      "id": 1905387657,
+      "shortName": "radiationremovetea.pure",
+      "nameEn": "Pure Rad. Removal Tea",
+      "nameZh": ""
+    },
+    {
+      "id": -1729415579,
+      "shortName": "radiationresisttea.advanced",
+      "nameEn": "Advanced Anti-Rad Tea",
+      "nameZh": "上等抗辐射茶"
+    },
+    {
+      "id": -487356515,
+      "shortName": "radiationresisttea",
+      "nameEn": "Basic Anti-Rad Tea",
+      "nameZh": "抗辐射茶"
+    },
+    {
+      "id": -33009419,
+      "shortName": "radiationresisttea.pure",
+      "nameEn": "Pure Anti-Rad Tea",
+      "nameZh": "纯正抗辐射茶"
+    },
+    {
+      "id": 524678627,
+      "shortName": "scraptea.advanced",
+      "nameEn": "Advanced Scrap Tea",
+      "nameZh": "上等废料茶"
+    },
+    {
+      "id": 263834859,
+      "shortName": "scraptea",
+      "nameEn": "Basic Scrap Tea",
+      "nameZh": "普通废料茶"
+    },
+    {
+      "id": 2024467711,
+      "shortName": "scraptea.pure",
+      "nameEn": "Pure Scrap Tea",
+      "nameZh": "纯正废料茶"
+    },
+    {
+      "id": -1003665711,
+      "shortName": "supertea",
+      "nameEn": "Super Serum",
+      "nameZh": "超级血清"
+    },
+    {
+      "id": -334418777,
+      "shortName": "advancedwarmingtea",
+      "nameEn": "Advanced Warming Tea",
+      "nameZh": "上等温茶"
+    },
+    {
+      "id": -1476814093,
+      "shortName": "purewarmingtea",
+      "nameEn": "Pure Warming Tea",
+      "nameZh": "纯正温茶"
+    },
+    {
+      "id": -1142222427,
+      "shortName": "warmingtea",
+      "nameEn": "Basic Warming Tea",
+      "nameZh": "普通温茶"
+    },
+    {
+      "id": -541206665,
+      "shortName": "woodtea.advanced",
+      "nameEn": "Advanced Wood Tea",
+      "nameZh": "上等木茶"
+    },
+    {
+      "id": -649128577,
+      "shortName": "woodtea",
+      "nameEn": "Basic Wood Tea",
+      "nameZh": "普通木茶"
+    },
+    {
+      "id": -557539629,
+      "shortName": "woodtea.pure",
+      "nameEn": "Pure Wood Tea",
+      "nameZh": "纯正木茶"
+    },
+    {
+      "id": -1432674913,
+      "shortName": "antiradpills",
+      "nameEn": "Anti-Radiation Pills",
+      "nameZh": "抗辐射药"
+    },
+    {
+      "id": -1262185308,
+      "shortName": "tool.binoculars",
+      "nameEn": "Binoculars",
+      "nameZh": "望远镜"
+    },
+    {
+      "id": 1248356124,
+      "shortName": "explosive.timed",
+      "nameEn": "Timed Explosive Charge",
+      "nameZh": "定时炸弹"
+    },
+    {
+      "id": -1316706473,
+      "shortName": "tool.camera",
+      "nameEn": "Camera",
+      "nameZh": "照相机"
+    },
+    {
+      "id": 594041190,
+      "shortName": "compass",
+      "nameEn": "Compass",
+      "nameZh": "罗盘"
+    },
+    {
+      "id": 596469572,
+      "shortName": "rf.detonator",
+      "nameEn": "RF Transmitter",
+      "nameZh": "射频发射器"
+    },
+    {
+      "id": 1569882109,
+      "shortName": "fishingrod.handmade",
+      "nameEn": "Handmade Fishing Rod",
+      "nameZh": "手工钓鱼竿"
+    },
+    {
+      "id": 304481038,
+      "shortName": "flare",
+      "nameEn": "Flare",
+      "nameZh": "燃烧棒"
+    },
+    {
+      "id": -196667575,
+      "shortName": "flashlight.held",
+      "nameEn": "Flashlight",
+      "nameZh": "手电筒"
+    },
+    {
+      "id": 999690781,
+      "shortName": "geiger.counter",
+      "nameEn": "Geiger Counter",
+      "nameZh": "盖革计数器"
+    },
+    {
+      "id": -839576748,
+      "shortName": "handcuffs",
+      "nameEn": "Handcuffs",
+      "nameZh": "手铐"
+    },
+    {
+      "id": 363163265,
+      "shortName": "hosetool",
+      "nameEn": "Hose Tool",
+      "nameZh": "软管工具"
+    },
+    {
+      "id": 1488979457,
+      "shortName": "jackhammer",
+      "nameEn": "Jackhammer",
+      "nameZh": "电镐"
+    },
+    {
+      "id": -484206264,
+      "shortName": "keycard_blue",
+      "nameEn": "Blue Keycard",
+      "nameZh": "蓝卡"
+    },
+    {
+      "id": 37122747,
+      "shortName": "keycard_green",
+      "nameEn": "Green Keycard",
+      "nameZh": "绿卡"
+    },
+    {
+      "id": -1880870149,
+      "shortName": "keycard_red",
+      "nameEn": "Red Keycard",
+      "nameZh": "红卡"
+    },
+    {
+      "id": 254522515,
+      "shortName": "largemedkit",
+      "nameEn": "Large Medkit",
+      "nameZh": "医疗包"
+    },
+    {
+      "id": 1176355476,
+      "shortName": "concretehatchet",
+      "nameEn": "Concrete Hatchet",
+      "nameZh": ""
+    },
+    {
+      "id": -1360171080,
+      "shortName": "concretepickaxe",
+      "nameEn": "Concrete Pickaxe",
+      "nameZh": ""
+    },
+    {
+      "id": -399173933,
+      "shortName": "lumberjack.hatchet",
+      "nameEn": "Prototype Hatchet",
+      "nameZh": ""
+    },
+    {
+      "id": 236677901,
+      "shortName": "lumberjack.pickaxe",
+      "nameEn": "Prototype Pickaxe",
+      "nameZh": ""
+    },
+    {
+      "id": 696029452,
+      "shortName": "map",
+      "nameEn": "Paper Map",
+      "nameZh": "地图"
+    },
+    {
+      "id": 1079279582,
+      "shortName": "syringe.medical",
+      "nameEn": "Medical Syringe",
+      "nameZh": "医疗注射器"
+    },
+    {
+      "id": 1168856825,
+      "shortName": "metal.detector",
+      "nameEn": "Metal Detector",
+      "nameZh": "金属探测器"
+    },
+    {
+      "id": 1621942085,
+      "shortName": "outbreak.sprayer",
+      "nameEn": "Outbreak Sprayer",
+      "nameZh": ""
+    },
+    {
+      "id": -566907190,
+      "shortName": "rf_pager",
+      "nameEn": "RF Pager",
+      "nameZh": "射频寻呼机"
+    },
+    {
+      "id": -144513264,
+      "shortName": "pipetool",
+      "nameEn": "Pipe Tool",
+      "nameZh": "管道工具"
+    },
+    {
+      "id": -321247698,
+      "shortName": "boat.planner",
+      "nameEn": "Boat Building Plan",
+      "nameZh": "船只建造蓝图"
+    },
+    {
+      "id": 1525520776,
+      "shortName": "building.planner",
+      "nameEn": "Building Plan",
+      "nameZh": "建筑图纸"
+    },
+    {
+      "id": -1536855921,
+      "shortName": "shovel",
+      "nameEn": "Shovel",
+      "nameZh": "铲子"
+    },
+    {
+      "id": 1263920163,
+      "shortName": "grenade.smoke",
+      "nameEn": "Smoke Grenade",
+      "nameZh": "烟雾弹"
+    },
+    {
+      "id": -596876839,
+      "shortName": "spraycan",
+      "nameEn": "Spray Can",
+      "nameZh": "喷雾罐"
+    },
+    {
+      "id": -1366326648,
+      "shortName": "spraycandecal",
+      "nameEn": "Spray Can Decal",
+      "nameZh": ""
+    },
+    {
+      "id": 1397052267,
+      "shortName": "supply.signal",
+      "nameEn": "Supply Signal",
+      "nameZh": "信号弹"
+    },
+    {
+      "id": 1975934948,
+      "shortName": "surveycharge",
+      "nameEn": "Survey Charge",
+      "nameZh": "勘探装置"
+    },
+    {
+      "id": -1416322465,
+      "shortName": "walkietalkie",
+      "nameEn": "Walkie Talkie",
+      "nameZh": "对讲机"
+    },
+    {
+      "id": -144417939,
+      "shortName": "wiretool",
+      "nameEn": "Wire Tool",
+      "nameZh": "接线工具"
+    },
+    {
+      "id": -44066600,
+      "shortName": "vehicle.chassis.2mod",
+      "nameEn": "Small Chassis",
+      "nameZh": ""
+    },
+    {
+      "id": -44066823,
+      "shortName": "vehicle.chassis.3mod",
+      "nameEn": "Medium Chassis",
+      "nameZh": ""
+    },
+    {
+      "id": -44066790,
+      "shortName": "vehicle.chassis.4mod",
+      "nameEn": "Large Chassis",
+      "nameZh": ""
+    },
+    {
+      "id": 1770744540,
+      "shortName": "vehicle.chassis",
+      "nameEn": "Generic vehicle chassis",
+      "nameZh": ""
+    },
+    {
+      "id": -1501451746,
+      "shortName": "vehicle.1mod.cockpit",
+      "nameEn": "Cockpit Vehicle Module",
+      "nameZh": "驾驶室模块"
+    },
+    {
+      "id": 1874610722,
+      "shortName": "vehicle.1mod.cockpit.armored",
+      "nameEn": "Armored Cockpit Vehicle Module",
+      "nameZh": "装甲驾驶室模块"
+    },
+    {
+      "id": 170758448,
+      "shortName": "vehicle.1mod.cockpit.with.engine",
+      "nameEn": "Cockpit With Engine Vehicle Module",
+      "nameZh": "驾驶室引擎模块"
+    },
+    {
+      "id": 1559779253,
+      "shortName": "vehicle.1mod.engine",
+      "nameEn": "Engine Vehicle Module",
+      "nameZh": "引擎模块"
+    },
+    {
+      "id": -1880231361,
+      "shortName": "vehicle.1mod.flatbed",
+      "nameEn": "Flatbed Vehicle Module",
+      "nameZh": "平板模块"
+    },
+    {
+      "id": -1615281216,
+      "shortName": "vehicle.1mod.passengers.armored",
+      "nameEn": "Armored Passenger Vehicle Module",
+      "nameZh": "装甲乘客模块"
+    },
+    {
+      "id": 1376065505,
+      "shortName": "vehicle.1mod.rear.seats",
+      "nameEn": "Rear Seats Vehicle Module",
+      "nameZh": "乘客模块"
+    },
+    {
+      "id": 268565518,
+      "shortName": "vehicle.1mod.storage",
+      "nameEn": "Storage Vehicle Module",
+      "nameZh": "存储模块"
+    },
+    {
+      "id": -626174997,
+      "shortName": "vehicle.1mod.taxi",
+      "nameEn": "Taxi Vehicle Module",
+      "nameZh": "出租车模块"
+    },
+    {
+      "id": -1040518150,
+      "shortName": "vehicle.2mod.camper",
+      "nameEn": "Camper Vehicle Module",
+      "nameZh": "房车模块"
+    },
+    {
+      "id": -1693832478,
+      "shortName": "vehicle.2mod.flatbed",
+      "nameEn": "Large Flatbed Vehicle Module",
+      "nameZh": "大型平板模块"
+    },
+    {
+      "id": 1186655046,
+      "shortName": "vehicle.2mod.fuel.tank",
+      "nameEn": "Fuel Tank Vehicle Module",
+      "nameZh": "油罐模块"
+    },
+    {
+      "id": 895374329,
+      "shortName": "vehicle.2mod.passengers",
+      "nameEn": "Passenger Vehicle Module",
+      "nameZh": "大型乘客模块"
+    },
+    {
+      "id": 878301596,
+      "shortName": "vehicle.module",
+      "nameEn": "Generic vehicle module",
+      "nameZh": ""
+    },
+    {
+      "id": 721798950,
+      "shortName": "vehicle.car_radio",
+      "nameEn": "Car Radio",
+      "nameZh": "汽车电台"
+    },
+    {
+      "id": -1113501606,
+      "shortName": "boombox",
+      "nameEn": "Boom Box",
+      "nameZh": "音响"
+    },
+    {
+      "id": 576509618,
+      "shortName": "fun.boomboxportable",
+      "nameEn": "Portable Boom Box",
+      "nameZh": "便携式音响"
+    },
+    {
+      "id": 476066818,
+      "shortName": "cassette",
+      "nameEn": "Cassette - Long",
+      "nameZh": "卡带 - 长"
+    },
+    {
+      "id": -912398867,
+      "shortName": "cassette.medium",
+      "nameEn": "Cassette - Medium",
+      "nameZh": "卡带 - 中"
+    },
+    {
+      "id": 1523403414,
+      "shortName": "cassette.short",
+      "nameEn": "Cassette - Short",
+      "nameZh": "卡带 - 短"
+    },
+    {
+      "id": -1530414568,
+      "shortName": "fun.casetterecorder",
+      "nameEn": "Cassette Recorder",
+      "nameZh": "卡式录音机"
+    },
+    {
+      "id": 1895235349,
+      "shortName": "discoball",
+      "nameEn": "Disco Ball",
+      "nameZh": "迪斯科球"
+    },
+    {
+      "id": 286648290,
+      "shortName": "discofloor",
+      "nameEn": "Disco Floor",
+      "nameZh": "迪斯科地板"
+    },
+    {
+      "id": 1735402444,
+      "shortName": "discofloor.largetiles",
+      "nameEn": "Disco Floor",
+      "nameZh": ""
+    },
+    {
+      "id": 968421290,
+      "shortName": "connected.speaker",
+      "nameEn": "Connected Speaker",
+      "nameZh": "喇叭"
+    },
+    {
+      "id": 853471967,
+      "shortName": "laserlight",
+      "nameEn": "Laser Light",
+      "nameZh": "声控激光灯"
+    },
+    {
+      "id": -583379016,
+      "shortName": "megaphone",
+      "nameEn": "Megaphone",
+      "nameZh": "扩音器"
+    },
+    {
+      "id": 39600618,
+      "shortName": "microphonestand",
+      "nameEn": "Microphone Stand",
+      "nameZh": "麦克风支架"
+    },
+    {
+      "id": -20045316,
+      "shortName": "mobilephone",
+      "nameEn": "Mobile Phone",
+      "nameZh": "移动电话"
+    },
+    {
+      "id": -343857907,
+      "shortName": "soundlight",
+      "nameEn": "Sound Light",
+      "nameZh": "声控脉冲灯"
+    },
+    {
+      "id": 1234878710,
+      "shortName": "telephone",
+      "nameEn": "Telephone",
+      "nameZh": "电话"
+    },
+    {
+      "id": 1730664641,
+      "shortName": "wallpaper.ceiling",
+      "nameEn": "Wallpaper Ceiling",
+      "nameZh": "天花板壁纸"
+    },
+    {
+      "id": -551431036,
+      "shortName": "wallpaper.flooring",
+      "nameEn": "Wallpaper Flooring",
+      "nameZh": "地板壁纸"
+    },
+    {
+      "id": 1629564540,
+      "shortName": "wallpaper.tool",
+      "nameEn": "Wallpaper Tool",
+      "nameZh": "壁纸工具"
+    },
+    {
+      "id": 553967074,
+      "shortName": "wallpaper.wall",
+      "nameEn": "Wallpaper Wall",
+      "nameZh": "墙壁壁纸"
+    },
+    {
+      "id": 174866732,
+      "shortName": "weapon.mod.8x.scope",
+      "nameEn": "Variable Zoom Scope",
+      "nameZh": "可变倍镜"
+    },
+    {
+      "id": 838308300,
+      "shortName": "weapon.mod.burstmodule",
+      "nameEn": "Burst Module",
+      "nameZh": "连发模块"
+    },
+    {
+      "id": 2005491391,
+      "shortName": "weapon.mod.extendedmags",
+      "nameEn": "Extended Magazine",
+      "nameZh": "扩容弹夹"
+    },
+    {
+      "id": 952603248,
+      "shortName": "weapon.mod.flashlight",
+      "nameEn": "Weapon flashlight",
+      "nameZh": "战术手电筒"
+    },
+    {
+      "id": -1767794021,
+      "shortName": "weapon.mod.gascompressionovedrive",
+      "nameEn": "Gas Compression Overdrive",
+      "nameZh": "强压气驱器"
+    },
+    {
+      "id": 442289265,
+      "shortName": "weapon.mod.holosight",
+      "nameEn": "Holosight",
+      "nameZh": "全息瞄准镜"
+    },
+    {
+      "id": -132516482,
+      "shortName": "weapon.mod.lasersight",
+      "nameEn": "Weapon Lasersight",
+      "nameZh": "激光照准器"
+    },
+    {
+      "id": -1405508498,
+      "shortName": "weapon.mod.muzzleboost",
+      "nameEn": "Muzzle Boost",
+      "nameZh": "增压器"
+    },
+    {
+      "id": 1478091698,
+      "shortName": "weapon.mod.muzzlebrake",
+      "nameEn": "Muzzle Brake",
+      "nameZh": "制退器"
+    },
+    {
+      "id": -855748505,
+      "shortName": "weapon.mod.simplesight",
+      "nameEn": "Simple Handmade Sight",
+      "nameZh": "自制瞄准镜"
+    },
+    {
+      "id": -781866273,
+      "shortName": "weapon.mod.oilfiltersilencer",
+      "nameEn": "Oil Filter Silencer",
+      "nameZh": "油滤消音器"
+    },
+    {
+      "id": -1850571427,
+      "shortName": "weapon.mod.silencer",
+      "nameEn": "Military Silencer",
+      "nameZh": "军用消音器"
+    },
+    {
+      "id": -1659598760,
+      "shortName": "weapon.mod.sodacansilencer",
+      "nameEn": "Soda Can Silencer",
+      "nameZh": "易拉罐消音器"
+    },
+    {
+      "id": 567235583,
+      "shortName": "weapon.mod.small.scope",
+      "nameEn": "8x Zoom Scope",
+      "nameZh": "8倍瞄准镜"
+    },
+    {
+      "id": 1719587208,
+      "shortName": "weapon.mod.targetingattachment",
+      "nameEn": "Targeting Attachment",
+      "nameZh": "瞄准辅助装置"
+    },
+    {
+      "id": 1545779598,
+      "shortName": "rifle.ak",
+      "nameEn": "Assault Rifle",
+      "nameZh": "AK-47突击步枪"
+    },
+    {
+      "id": -139037392,
+      "shortName": "rifle.ak.diver",
+      "nameEn": "Abyss Assault Rifle",
+      "nameZh": ""
+    },
+    {
+      "id": -1335497659,
+      "shortName": "rifle.ak.ice",
+      "nameEn": "Ice Assault Rifle",
+      "nameZh": ""
+    },
+    {
+      "id": 2054929933,
+      "shortName": "rifle.ak.jungle",
+      "nameEn": "Jungle Relic Assault Rifle",
+      "nameZh": ""
+    },
+    {
+      "id": 472505338,
+      "shortName": "rifle.ak.med",
+      "nameEn": "Medieval AR",
+      "nameZh": ""
+    },
+    {
+      "id": -2072273936,
+      "shortName": "bandage",
+      "nameEn": "Bandage",
+      "nameZh": "绷带"
+    },
+    {
+      "id": 1840822026,
+      "shortName": "grenade.beancan",
+      "nameEn": "Beancan Grenade",
+      "nameZh": "豆罐雷"
+    },
+    {
+      "id": 1168916338,
+      "shortName": "grenade.bee",
+      "nameEn": "Bee Grenade",
+      "nameZh": "蜜蜂手榴弹"
+    },
+    {
+      "id": -851288382,
+      "shortName": "blowpipe",
+      "nameEn": "Blow Pipe",
+      "nameZh": "吹管"
+    },
+    {
+      "id": -880412831,
+      "shortName": "blunderbuss",
+      "nameEn": "Blunderbuss",
+      "nameZh": ""
+    },
+    {
+      "id": 1588298435,
+      "shortName": "rifle.bolt",
+      "nameEn": "Bolt Action Rifle",
+      "nameZh": "栓动步枪"
+    },
+    {
+      "id": 1711033574,
+      "shortName": "bone.club",
+      "nameEn": "Bone Club",
+      "nameZh": "骨棒"
+    },
+    {
+      "id": 1814288539,
+      "shortName": "knife.bone",
+      "nameEn": "Bone Knife",
+      "nameZh": "骨刃"
+    },
+    {
+      "id": 158303804,
+      "shortName": "knife.bone.obsidian",
+      "nameEn": "Obsidian Bone Knife",
+      "nameZh": "黑曜石骨刃"
+    },
+    {
+      "id": 1680793490,
+      "shortName": "boomerang",
+      "nameEn": "Boomerang",
+      "nameZh": "回旋镖"
+    },
+    {
+      "id": 1443579727,
+      "shortName": "bow.hunting",
+      "nameEn": "Hunting Bow",
+      "nameZh": "猎弓"
+    },
+    {
+      "id": 1973165031,
+      "shortName": "cakefiveyear",
+      "nameEn": "Birthday Cake",
+      "nameZh": "生日蛋糕"
+    },
+    {
+      "id": 1104520648,
+      "shortName": "chainsaw",
+      "nameEn": "Chainsaw",
+      "nameZh": "电锯"
+    },
+    {
+      "id": -1978999529,
+      "shortName": "salvaged.cleaver",
+      "nameEn": "Salvaged Cleaver",
+      "nameZh": "废料切肉刀"
+    },
+    {
+      "id": 695450239,
+      "shortName": "spear.cny",
+      "nameEn": "Lunar New Year Spear",
+      "nameZh": "中华长矛"
+    },
+    {
+      "id": 884424049,
+      "shortName": "bow.compound",
+      "nameEn": "Compound Bow",
+      "nameZh": "复合弓"
+    },
+    {
+      "id": 1965232394,
+      "shortName": "crossbow",
+      "nameEn": "Crossbow",
+      "nameZh": "弩"
+    },
+    {
+      "id": 1046904719,
+      "shortName": "diverhatchet",
+      "nameEn": "Abyss Metal Hatchet",
+      "nameZh": ""
+    },
+    {
+      "id": 1561022037,
+      "shortName": "diverpickaxe",
+      "nameEn": "Abyss Metal Pickaxe",
+      "nameZh": ""
+    },
+    {
+      "id": 1846605708,
+      "shortName": "divertorch",
+      "nameEn": "Abyss Torch",
+      "nameZh": ""
+    },
+    {
+      "id": -765183617,
+      "shortName": "shotgun.double",
+      "nameEn": "Double Barrel Shotgun",
+      "nameZh": "双管霰弹枪"
+    },
+    {
+      "id": -75944661,
+      "shortName": "pistol.eoka",
+      "nameEn": "Eoka Pistol",
+      "nameZh": "土制手枪"
+    },
+    {
+      "id": 143803535,
+      "shortName": "grenade.f1",
+      "nameEn": "F1 Grenade",
+      "nameZh": "F1破片手榴弹"
+    },
+    {
+      "id": -1215753368,
+      "shortName": "flamethrower",
+      "nameEn": "Flame Thrower",
+      "nameZh": "火焰喷射器"
+    },
+    {
+      "id": -936921910,
+      "shortName": "grenade.flashbang",
+      "nameEn": "Flashbang",
+      "nameZh": "闪光弹"
+    },
+    {
+      "id": 1937380239,
+      "shortName": "frontier_hatchet",
+      "nameEn": "Frontier Hatchet",
+      "nameZh": ""
+    },
+    {
+      "id": 1914691295,
+      "shortName": "pistol.prototype17",
+      "nameEn": "Prototype 17",
+      "nameZh": "17型手枪"
+    },
+    {
+      "id": -1123473824,
+      "shortName": "multiplegrenadelauncher",
+      "nameEn": "Multiple Grenade Launcher",
+      "nameZh": "榴弹发射器"
+    },
+    {
+      "id": -2026042603,
+      "shortName": "mace.baseballbat",
+      "nameEn": "Baseball Bat",
+      "nameZh": "棒球棍"
+    },
+    {
+      "id": -194509282,
+      "shortName": "knife.butcher",
+      "nameEn": "Butcher Knife",
+      "nameZh": "屠宰刀"
+    },
+    {
+      "id": 1090916276,
+      "shortName": "pitchfork",
+      "nameEn": "Pitchfork",
+      "nameZh": "干草叉"
+    },
+    {
+      "id": -1368584029,
+      "shortName": "sickle",
+      "nameEn": "Sickle",
+      "nameZh": "镰刀"
+    },
+    {
+      "id": -1175656359,
+      "shortName": "torch.torch.skull",
+      "nameEn": "Cultist Deer Torch",
+      "nameZh": "异教徒火炬"
+    },
+    {
+      "id": 1312843609,
+      "shortName": "skull",
+      "nameEn": "Skull",
+      "nameZh": ""
+    },
+    {
+      "id": -885833256,
+      "shortName": "vampire.stake",
+      "nameEn": "Vampire Stake",
+      "nameZh": "吸血鬼尖刺"
+    },
+    {
+      "id": 200773292,
+      "shortName": "hammer",
+      "nameEn": "Hammer",
+      "nameZh": "木锤"
+    },
+    {
+      "id": -1252059217,
+      "shortName": "hatchet",
+      "nameEn": "Hatchet",
+      "nameZh": "铁斧"
+    },
+    {
+      "id": -92315244,
+      "shortName": "revolver.hc",
+      "nameEn": "High Caliber Revolver",
+      "nameZh": "大口径左轮手枪"
+    },
+    {
+      "id": -1214542497,
+      "shortName": "hmlmg",
+      "nameEn": "HMLMG",
+      "nameZh": "自制轻机枪"
+    },
+    {
+      "id": -218009552,
+      "shortName": "homingmissile.launcher",
+      "nameEn": "Homing Missile Launcher",
+      "nameZh": "跟踪导弹发射器"
+    },
+    {
+      "id": 196784377,
+      "shortName": "improvised.shield",
+      "nameEn": "Improvised Shield",
+      "nameZh": "简易盾牌"
+    },
+    {
+      "id": 2040726127,
+      "shortName": "knife.combat",
+      "nameEn": "Combat Knife",
+      "nameZh": "匕首"
+    },
+    {
+      "id": 789333045,
+      "shortName": "sunken.knife",
+      "nameEn": "Sunken Combat Knife",
+      "nameZh": "深渊匕首"
+    },
+    {
+      "id": -778367295,
+      "shortName": "rifle.l96",
+      "nameEn": "L96 Rifle",
+      "nameZh": "L96狙击步枪"
+    },
+    {
+      "id": -73195037,
+      "shortName": "legacy bow",
+      "nameEn": "Legacy Bow",
+      "nameZh": ""
+    },
+    {
+      "id": -1812555177,
+      "shortName": "rifle.lr300",
+      "nameEn": "LR-300 Assault Rifle",
+      "nameZh": "LR-300突击步枪"
+    },
+    {
+      "id": 533993281,
+      "shortName": "rifle.lr300.space",
+      "nameEn": "Space LR-300 Assault Rifle",
+      "nameZh": "Space LR-300 Assault Rifle"
+    },
+    {
+      "id": -2069578888,
+      "shortName": "lmg.m249",
+      "nameEn": "M249",
+      "nameZh": "M249"
+    },
+    {
+      "id": 28201841,
+      "shortName": "rifle.m39",
+      "nameEn": "M39 Rifle",
+      "nameZh": "M39步枪"
+    },
+    {
+      "id": 678698219,
+      "shortName": "shotgun.m4",
+      "nameEn": "M4 Shotgun",
+      "nameZh": "M4型霰弹枪"
+    },
+    {
+      "id": -852563019,
+      "shortName": "pistol.m92",
+      "nameEn": "M92 Pistol",
+      "nameZh": "M92手枪"
+    },
+    {
+      "id": -1966748496,
+      "shortName": "mace",
+      "nameEn": "Mace",
+      "nameZh": "狼牙锤"
+    },
+    {
+      "id": -1137865085,
+      "shortName": "machete",
+      "nameEn": "Machete",
+      "nameZh": "大砍刀"
+    },
+    {
+      "id": 625599716,
+      "shortName": "metal.shield",
+      "nameEn": "Metal Shield",
+      "nameZh": "金属盾牌"
+    },
+    {
+      "id": 703057617,
+      "shortName": "military flamethrower",
+      "nameEn": "Military Flame Thrower",
+      "nameZh": "军用火焰喷射器"
+    },
+    {
+      "id": -482348853,
+      "shortName": "minicrossbow",
+      "nameEn": "Mini Crossbow",
+      "nameZh": "迷你弩"
+    },
+    {
+      "id": 935606207,
+      "shortName": "minigun",
+      "nameEn": "Minigun",
+      "nameZh": "加特林"
+    },
+    {
+      "id": 1556365900,
+      "shortName": "grenade.molotov",
+      "nameEn": "Molotov Cocktail",
+      "nameZh": "燃烧瓶"
+    },
+    {
+      "id": 1318558775,
+      "shortName": "smg.mp5",
+      "nameEn": "MP5A4",
+      "nameZh": "MP5A4"
+    },
+    {
+      "id": 1953903201,
+      "shortName": "pistol.nailgun",
+      "nameEn": "Nailgun",
+      "nameZh": "钉枪"
+    },
+    {
+      "id": 1491189398,
+      "shortName": "paddle",
+      "nameEn": "Paddle",
+      "nameZh": "桨"
+    },
+    {
+      "id": -707792719,
+      "shortName": "paintballgun",
+      "nameEn": "Paintball Gun",
+      "nameZh": "Paintball gun"
+    },
+    {
+      "id": -1302129395,
+      "shortName": "pickaxe",
+      "nameEn": "Pickaxe",
+      "nameZh": "铁镐"
+    },
+    {
+      "id": -1367281941,
+      "shortName": "shotgun.waterpipe",
+      "nameEn": "Waterpipe Shotgun",
+      "nameZh": "单管霰弹枪"
+    },
+    {
+      "id": 1373971859,
+      "shortName": "pistol.python",
+      "nameEn": "Python Revolver",
+      "nameZh": "蟒蛇型左轮手枪"
+    },
+    {
+      "id": 969768382,
+      "shortName": "reinforced.wooden.shield",
+      "nameEn": "Reinforced Wooden Shield",
+      "nameZh": "强化木盾"
+    },
+    {
+      "id": 649912614,
+      "shortName": "pistol.revolver",
+      "nameEn": "Revolver",
+      "nameZh": "左轮手枪"
+    },
+    {
+      "id": 963906841,
+      "shortName": "rock",
+      "nameEn": "Rock",
+      "nameZh": "岩石"
+    },
+    {
+      "id": 1350707894,
+      "shortName": "jungle.rock",
+      "nameEn": "Jungle Rock",
+      "nameZh": "丛林岩石"
+    },
+    {
+      "id": 442886268,
+      "shortName": "rocket.launcher",
+      "nameEn": "Rocket Launcher",
+      "nameZh": "火箭发射器"
+    },
+    {
+      "id": -1315992997,
+      "shortName": "rocket.launcher.dragon",
+      "nameEn": "Dragon Rocket Launcher",
+      "nameZh": ""
+    },
+    {
+      "id": 494161326,
+      "shortName": "rocket.launcher.rpg7",
+      "nameEn": "RPG Launcher",
+      "nameZh": "火箭筒"
+    },
+    {
+      "id": -262590403,
+      "shortName": "axe.salvaged",
+      "nameEn": "Salvaged Axe",
+      "nameZh": "圆斧"
+    },
+    {
+      "id": -1506397857,
+      "shortName": "hammer.salvaged",
+      "nameEn": "Salvaged Hammer",
+      "nameZh": "废料锤"
+    },
+    {
+      "id": -1780802565,
+      "shortName": "icepick.salvaged",
+      "nameEn": "Salvaged Icepick",
+      "nameZh": "废料十字镐"
+    },
+    {
+      "id": -1878475007,
+      "shortName": "explosive.satchel",
+      "nameEn": "Satchel Charge",
+      "nameZh": "豆罐炸药包"
+    },
+    {
+      "id": 795371088,
+      "shortName": "shotgun.pump",
+      "nameEn": "Pump Shotgun",
+      "nameZh": "泵动霰弹枪"
+    },
+    {
+      "id": 818877484,
+      "shortName": "pistol.semiauto",
+      "nameEn": "Semi-Automatic Pistol",
+      "nameZh": "半自动手枪"
+    },
+    {
+      "id": 1673224590,
+      "shortName": "pistol.semiauto.a.m15",
+      "nameEn": "M15 Semi-Automatic Pistol",
+      "nameZh": "M15半自动手枪"
+    },
+    {
+      "id": -904863145,
+      "shortName": "rifle.semiauto",
+      "nameEn": "Semi-Automatic Rifle",
+      "nameZh": "半自动步枪"
+    },
+    {
+      "id": -348232115,
+      "shortName": "rifle.sks",
+      "nameEn": "SKS",
+      "nameZh": "SKS"
+    },
+    {
+      "id": 1796682209,
+      "shortName": "smg.2",
+      "nameEn": "Custom SMG",
+      "nameZh": "自制冲锋枪"
+    },
+    {
+      "id": -41440462,
+      "shortName": "shotgun.spas12",
+      "nameEn": "Spas-12 Shotgun",
+      "nameZh": "Spas-12霰弹枪"
+    },
+    {
+      "id": -1517740219,
+      "shortName": "speargun",
+      "nameEn": "Speargun",
+      "nameZh": "鱼叉枪"
+    },
+    {
+      "id": -1583967946,
+      "shortName": "stonehatchet",
+      "nameEn": "Stone Hatchet",
+      "nameZh": "石斧"
+    },
+    {
+      "id": 171931394,
+      "shortName": "stone.pickaxe",
+      "nameEn": "Stone Pickaxe",
+      "nameZh": "石镐"
+    },
+    {
+      "id": 1602646136,
+      "shortName": "spear.stone",
+      "nameEn": "Stone Spear",
+      "nameZh": "石矛"
+    },
+    {
+      "id": -1469578201,
+      "shortName": "longsword",
+      "nameEn": "Longsword",
+      "nameZh": "长剑"
+    },
+    {
+      "id": 1326180354,
+      "shortName": "salvaged.sword",
+      "nameEn": "Salvaged Sword",
+      "nameZh": "废料剑"
+    },
+    {
+      "id": 2083256995,
+      "shortName": "t1_smg",
+      "nameEn": "Handmade SMG",
+      "nameZh": "手工冲锋枪"
+    },
+    {
+      "id": -1758372725,
+      "shortName": "smg.thompson",
+      "nameEn": "Thompson",
+      "nameZh": "汤普森冲锋枪"
+    },
+    {
+      "id": 1803831286,
+      "shortName": "toolgun",
+      "nameEn": "Garry's Mod Tool Gun",
+      "nameZh": "盖瑞模组工具枪"
+    },
+    {
+      "id": 795236088,
+      "shortName": "torch",
+      "nameEn": "Torch",
+      "nameZh": "火把"
+    },
+    {
+      "id": -1770281406,
+      "shortName": "krieg.chainsword",
+      "nameEn": "Krieg chainsword",
+      "nameZh": "战争链剑"
+    },
+    {
+      "id": -420889602,
+      "shortName": "krieg.shotgun",
+      "nameEn": "Krieg Shotgun",
+      "nameZh": "克里格霰弹枪"
+    },
+    {
+      "id": 1424075905,
+      "shortName": "bucket.water",
+      "nameEn": "Water Bucket",
+      "nameZh": "铁桶"
+    },
+    {
+      "id": 1604837581,
+      "shortName": "wooden.shield",
+      "nameEn": "Wooden Shield",
+      "nameZh": "木制盾牌"
+    },
+    {
+      "id": 1540934679,
+      "shortName": "spear.wooden",
+      "nameEn": "Wooden Spear",
+      "nameZh": "木矛"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+node_modules/
+.env
+config/servers.json
+config/devices.json
+config/rustplus.config.json
+config/fcm-listen-last.log
+config/playwright-tool-rustplus-state.json
+config/fcm-listener-state.json
+logs/*.log
+*.local
+.DS_Store
+Thumbs.db
+
+# IDE & Tool directories
+.claude/
+.playwright-cli/
+
+# Build output
+dist/
+output/

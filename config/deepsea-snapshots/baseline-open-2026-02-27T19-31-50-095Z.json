@@ -1,0 +1,3283 @@
+{
+  "capturedAt": "2026-02-27T19:31:50.093Z",
+  "server": {
+    "id": "server_1772205331307",
+    "name": "Rusty Moose |US Monthly|",
+    "ip": "137.83.91.96",
+    "port": 28082
+  },
+  "mapSize": 4750,
+  "totalMarkers": 221,
+  "type9Count": 0,
+  "vendingCount": 216,
+  "deepseaCandidateCount": 192,
+  "type9": [],
+  "deepseaCandidates": [
+    {
+      "id": 4095364756,
+      "type": 3,
+      "x": 2440.80078125,
+      "y": 2558.6123046875,
+      "name": "Exchange",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095364811,
+      "type": 3,
+      "x": 2448.107666015625,
+      "y": 2596.612060546875,
+      "name": "Building",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095364812,
+      "type": 3,
+      "x": 2436.054931640625,
+      "y": 2606.99755859375,
+      "name": "Vendor Farming",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095364813,
+      "type": 3,
+      "x": 2440.395263671875,
+      "y": 2603.31787109375,
+      "name": "Vehicles",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095364814,
+      "type": 3,
+      "x": 2428.7880859375,
+      "y": 2606.16796875,
+      "name": "Food",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095364815,
+      "type": 3,
+      "x": 2427.458984375,
+      "y": 2604.59912109375,
+      "name": "Resources",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095364816,
+      "type": 3,
+      "x": 2434.64208984375,
+      "y": 2608.19970703125,
+      "name": "Weapons",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095364857,
+      "type": 3,
+      "x": 1778.5970458984375,
+      "y": 2718.539794921875,
+      "name": "Stables Shopkeeper",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095364891,
+      "type": 3,
+      "x": 3402.24951171875,
+      "y": 534.4722900390625,
+      "name": "Stables Shopkeeper",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095364918,
+      "type": 3,
+      "x": 2449.686767578125,
+      "y": 2595.3134765625,
+      "name": "Extra 1",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095364919,
+      "type": 3,
+      "x": 2480.55810546875,
+      "y": 2575.906494140625,
+      "name": "Tools & Stuff",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095364920,
+      "type": 3,
+      "x": 2438.562744140625,
+      "y": 2536.6611328125,
+      "name": "Resource Exchange",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095364921,
+      "type": 3,
+      "x": 2437.034912109375,
+      "y": 2537.953369140625,
+      "name": "Components",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095364922,
+      "type": 3,
+      "x": 2460.2314453125,
+      "y": 2556.30908203125,
+      "name": "Weapons",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095364923,
+      "type": 3,
+      "x": 2478.90380859375,
+      "y": 2577.323486328125,
+      "name": "Output Outfitters",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095364924,
+      "type": 3,
+      "x": 2482.796142578125,
+      "y": 2538.44482421875,
+      "name": "Building",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095365035,
+      "type": 3,
+      "x": 283.628173828125,
+      "y": 2973.555419921875,
+      "name": "Shop Keeper",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095365059,
+      "type": 3,
+      "x": 283.97119140625,
+      "y": 2970.552978515625,
+      "name": "Fish Exchange",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095365060,
+      "type": 3,
+      "x": 293.244384765625,
+      "y": 2990.045166015625,
+      "name": "Boat Vendor",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095365069,
+      "type": 3,
+      "x": 3577.342529296875,
+      "y": 3745.6357421875,
+      "name": "mp5",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095365089,
+      "type": 3,
+      "x": 2753.77294921875,
+      "y": 2618.82470703125,
+      "name": "Village Market :heartrock:",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095365134,
+      "type": 3,
+      "x": 2734.60205078125,
+      "y": 2554.317138671875,
+      "name": "Pies",
+      "sellOrdersCount": 3
+    },
+    {
+      "id": 4095365221,
+      "type": 3,
+      "x": 2754.2216796875,
+      "y": 2586.502685546875,
+      "name": "BEN'S FRAGS",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095365241,
+      "type": 3,
+      "x": 1138.082763671875,
+      "y": 4102.76806640625,
+      "name": "A Shop",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095365279,
+      "type": 3,
+      "x": 1134.405517578125,
+      "y": 4081.793212890625,
+      "name": "semi auto pistol",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095365333,
+      "type": 3,
+      "x": 3113.11279296875,
+      "y": 538.06787109375,
+      "name": "Deals",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095365364,
+      "type": 3,
+      "x": 1135.957763671875,
+      "y": 4081.64697265625,
+      "name": "m92 & high cali",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095365374,
+      "type": 3,
+      "x": 3248.407958984375,
+      "y": 738.068359375,
+      "name": "shrooms + stone",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095365392,
+      "type": 3,
+      "x": 1146.7662353515625,
+      "y": 4094.728515625,
+      "name": "Dittman's holo & 8x",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095365406,
+      "type": 3,
+      "x": 3582.986572265625,
+      "y": 3754.8623046875,
+      "name": "A Shop",
+      "sellOrdersCount": 3
+    },
+    {
+      "id": 4095365415,
+      "type": 3,
+      "x": 2019.602294921875,
+      "y": 2385.797607421875,
+      "name": ":heartrock:",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095365438,
+      "type": 3,
+      "x": 1764.8662109375,
+      "y": 4167.322265625,
+      "name": "A Shop",
+      "sellOrdersCount": 0
+    },
+    {
+      "id": 4095365450,
+      "type": 3,
+      "x": 1139.3565673828125,
+      "y": 4102.630859375,
+      "name": "workbench level 2",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095365451,
+      "type": 3,
+      "x": 2165.753662109375,
+      "y": 2612.546630859375,
+      "name": "GRUB HUB",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095365524,
+      "type": 3,
+      "x": 3580.509765625,
+      "y": 3755.646728515625,
+      "name": "high qual",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095365706,
+      "type": 3,
+      "x": 1126.9058837890625,
+      "y": 4087.09130859375,
+      "name": "hazmat",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095365754,
+      "type": 3,
+      "x": 2732.003662109375,
+      "y": 2554.30224609375,
+      "name": "Teas",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095365755,
+      "type": 3,
+      "x": 1126.214599609375,
+      "y": 4088.6357421875,
+      "name": "jackhammer",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095365793,
+      "type": 3,
+      "x": 1135.9691162109375,
+      "y": 4081.647705078125,
+      "name": "A Shop",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095365868,
+      "type": 3,
+      "x": 3579.819091796875,
+      "y": 3744.85205078125,
+      "name": "MD HQ",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095365879,
+      "type": 3,
+      "x": 3568.9072265625,
+      "y": 3622.060546875,
+      "name": "Potato House :happy:",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095365924,
+      "type": 3,
+      "x": 2730.69140625,
+      "y": 2556.544921875,
+      "name": "Non-Perishable Snacks",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095365972,
+      "type": 3,
+      "x": 3898.17041015625,
+      "y": 1084.0701904296875,
+      "name": "A Shop",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095366056,
+      "type": 3,
+      "x": 2749.16748046875,
+      "y": 2614.978759765625,
+      "name": "Village Market :heartrock:",
+      "sellOrdersCount": 0
+    },
+    {
+      "id": 4095366097,
+      "type": 3,
+      "x": 1770.598876953125,
+      "y": 4321.90869140625,
+      "name": "Under New Ownership",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095366104,
+      "type": 3,
+      "x": 2781.12451171875,
+      "y": 515.906494140625,
+      "name": "cards",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095366119,
+      "type": 3,
+      "x": 2779.15283203125,
+      "y": 515.125,
+      "name": "A Shop",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095366154,
+      "type": 3,
+      "x": 2128.552001953125,
+      "y": 2558.9462890625,
+      "name": "A Shop",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095366192,
+      "type": 3,
+      "x": 1127.464599609375,
+      "y": 4085.87060546875,
+      "name": "pump & spas12",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095366201,
+      "type": 3,
+      "x": 2525.626953125,
+      "y": 1647.677978515625,
+      "name": "A Shop",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095366243,
+      "type": 3,
+      "x": 2696.15283203125,
+      "y": 2591.06298828125,
+      "name": "AL's  FIREWORKS SHOP :dance:",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095366251,
+      "type": 3,
+      "x": 1522.165283203125,
+      "y": 2896.164306640625,
+      "name": "A Shop",
+      "sellOrdersCount": 0
+    },
+    {
+      "id": 4095366285,
+      "type": 3,
+      "x": 2703.2392578125,
+      "y": 4381.90625,
+      "name": "Bellsa HQ :heart:",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095366314,
+      "type": 3,
+      "x": 2208.80908203125,
+      "y": 1841.57861328125,
+      "name": "UNRAIDBALE TRIO:rifle.ak:",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095366318,
+      "type": 3,
+      "x": 1505.971435546875,
+      "y": 2908.25390625,
+      "name": "Fert-R-Us!",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095366330,
+      "type": 3,
+      "x": 4305.0849609375,
+      "y": 1633.5408935546875,
+      "name": "EPSTEIN ISLAND",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095366332,
+      "type": 3,
+      "x": 1146.1943359375,
+      "y": 4095.9453125,
+      "name": "A Shop",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095366336,
+      "type": 3,
+      "x": 1392.2254638671875,
+      "y": 2194.76513671875,
+      "name": "Buy My Shit",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095366362,
+      "type": 3,
+      "x": 2702.468505859375,
+      "y": 4379.93017578125,
+      "name": "Jay Fai HQ :heart:",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095366410,
+      "type": 3,
+      "x": 1125.661865234375,
+      "y": 4089.859375,
+      "name": "furnaces",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095366417,
+      "type": 3,
+      "x": 3516.47265625,
+      "y": 3755.61669921875,
+      "name": "A Shop",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095366475,
+      "type": 3,
+      "x": 1761.5791015625,
+      "y": 2612.717529296875,
+      "name": "A Shop",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095366522,
+      "type": 3,
+      "x": 3974.8291015625,
+      "y": 583.9324951171875,
+      "name": "ETI 83 :heart::heart::heart:",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095366680,
+      "type": 3,
+      "x": 1137.316650390625,
+      "y": 4081.50830078125,
+      "name": "A Shop",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095366711,
+      "type": 3,
+      "x": 3585.57080078125,
+      "y": 3750.11181640625,
+      "name": "oil ref",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095366732,
+      "type": 3,
+      "x": 3575.318115234375,
+      "y": 3747.849609375,
+      "name": "A Shop",
+      "sellOrdersCount": 3
+    },
+    {
+      "id": 4095366833,
+      "type": 3,
+      "x": 2782.797607421875,
+      "y": 2374.005615234375,
+      "name": "HELP ME IM STUCK IN HERE:love:",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095366893,
+      "type": 3,
+      "x": 3585.010986328125,
+      "y": 3752.6484375,
+      "name": "A Shop",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095366925,
+      "type": 3,
+      "x": 3575.66357421875,
+      "y": 3753.24658203125,
+      "name": "A Shop",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095366929,
+      "type": 3,
+      "x": 3032.98828125,
+      "y": 1119.8687744140625,
+      "name": "A Shop",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095366963,
+      "type": 3,
+      "x": 1145.5355224609375,
+      "y": 4097.4375,
+      "name": "blue keycard",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095367011,
+      "type": 3,
+      "x": 2737.191162109375,
+      "y": 2555.83251953125,
+      "name": "Pies",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095367021,
+      "type": 3,
+      "x": 3896.62353515625,
+      "y": 1081.5003662109375,
+      "name": "A Shop",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095367077,
+      "type": 3,
+      "x": 777.3529052734375,
+      "y": 3768.995849609375,
+      "name": ":heart:Bob:heart:",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095367120,
+      "type": 3,
+      "x": 3575.317626953125,
+      "y": 3747.84912109375,
+      "name": "A Shop",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095367136,
+      "type": 3,
+      "x": 3650.69189453125,
+      "y": 2122.416748046875,
+      "name": "",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095367137,
+      "type": 3,
+      "x": 2915.373046875,
+      "y": 2567.884521484375,
+      "name": "Fast Delivery 24/7 :drone:",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095367149,
+      "type": 3,
+      "x": 1217.8289794921875,
+      "y": 4018.18701171875,
+      "name": "A Shop",
+      "sellOrdersCount": 3
+    },
+    {
+      "id": 4095367154,
+      "type": 3,
+      "x": 3237.5966796875,
+      "y": 669.646484375,
+      "name": "FERT/BLICKIES",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095367205,
+      "type": 3,
+      "x": 3577.58056640625,
+      "y": 3755,
+      "name": "A Shop",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095367230,
+      "type": 3,
+      "x": 3035.1005859375,
+      "y": 1204.5706787109375,
+      "name": "A Shop",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095367243,
+      "type": 3,
+      "x": 3754.77099609375,
+      "y": 909.447265625,
+      "name": "BB Mart",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095367254,
+      "type": 3,
+      "x": 2779.15283203125,
+      "y": 515.125,
+      "name": "A Shop",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095367300,
+      "type": 3,
+      "x": 3584.666015625,
+      "y": 3747.251220703125,
+      "name": "red card",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095367318,
+      "type": 3,
+      "x": 1126.2249755859375,
+      "y": 4088.61083984375,
+      "name": "mp5",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095367319,
+      "type": 3,
+      "x": 3575.66357421875,
+      "y": 3753.2470703125,
+      "name": "cloth and fragments",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095367364,
+      "type": 3,
+      "x": 2566.871826171875,
+      "y": 1606.5572509765625,
+      "name": "A Shop",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095367371,
+      "type": 3,
+      "x": 2348.282470703125,
+      "y": 2321.624267578125,
+      "name": "A Shop",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095367401,
+      "type": 3,
+      "x": 1138.0909423828125,
+      "y": 4102.76171875,
+      "name": "workbench level 3",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095367405,
+      "type": 3,
+      "x": 1136.29736328125,
+      "y": 4102.9228515625,
+      "name": "A Shop",
+      "sellOrdersCount": 3
+    },
+    {
+      "id": 4095367458,
+      "type": 3,
+      "x": 4453.0009765625,
+      "y": 1635.9984130859375,
+      "name": "EPSTEIN WAS HERE",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095367475,
+      "type": 3,
+      "x": 1145.022216796875,
+      "y": 4098.564453125,
+      "name": "auto turret",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095367528,
+      "type": 3,
+      "x": 2667.27587890625,
+      "y": 454.6495361328125,
+      "name": "Low Grade Guy",
+      "sellOrdersCount": 3
+    },
+    {
+      "id": 4095367538,
+      "type": 3,
+      "x": 2742.259521484375,
+      "y": 2609.2099609375,
+      "name": "Village Market :heartrock:",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095367672,
+      "type": 3,
+      "x": 3580.510009765625,
+      "y": 3755.646484375,
+      "name": "t2:workbench2:",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095367709,
+      "type": 3,
+      "x": 3258.015869140625,
+      "y": 1109.9705810546875,
+      "name": "A Shop",
+      "sellOrdersCount": 0
+    },
+    {
+      "id": 4095367726,
+      "type": 3,
+      "x": 4455.66015625,
+      "y": 1783.408447265625,
+      "name": "stroking my shit rn :heartrock:",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095367753,
+      "type": 3,
+      "x": 3584.66552734375,
+      "y": 3747.25146484375,
+      "name": "A Shop",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095367778,
+      "type": 3,
+      "x": 1137.3438720703125,
+      "y": 4081.50146484375,
+      "name": "m39 & prototype",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095367787,
+      "type": 3,
+      "x": 1135.0316162109375,
+      "y": 4103.0810546875,
+      "name": "doors",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095367795,
+      "type": 3,
+      "x": 2744.562255859375,
+      "y": 2611.1328125,
+      "name": "Village Market :heartrock:",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095367824,
+      "type": 3,
+      "x": 1391.2861328125,
+      "y": 2666.53759765625,
+      "name": "TOES R US",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095367855,
+      "type": 3,
+      "x": 3952.1171875,
+      "y": 756.7017822265625,
+      "name": "A Shop",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095367887,
+      "type": 3,
+      "x": 2473.9697265625,
+      "y": 2306.796630859375,
+      "name": "A Shop",
+      "sellOrdersCount": 0
+    },
+    {
+      "id": 4095367888,
+      "type": 3,
+      "x": 1136.2369384765625,
+      "y": 4102.9462890625,
+      "name": "blueprints",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095367937,
+      "type": 3,
+      "x": 3266.463134765625,
+      "y": 1186.451904296875,
+      "name": "A Shop",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095367950,
+      "type": 3,
+      "x": 3145.5244140625,
+      "y": 3929.2822265625,
+      "name": "v5 controlling:coffeecan:",
+      "sellOrdersCount": 3
+    },
+    {
+      "id": 4095367958,
+      "type": 3,
+      "x": 2776.399169921875,
+      "y": 516.3154296875,
+      "name": "A Shop",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095367969,
+      "type": 3,
+      "x": 1739.6005859375,
+      "y": 4317.11279296875,
+      "name": "BUY HQM @H4",
+      "sellOrdersCount": 0
+    },
+    {
+      "id": 4095367971,
+      "type": 3,
+      "x": 1139.4615478515625,
+      "y": 4102.6259765625,
+      "name": "A Shop",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095367972,
+      "type": 3,
+      "x": 3521.54052734375,
+      "y": 3752.699951171875,
+      "name": "A Shop",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095368038,
+      "type": 3,
+      "x": 1133.1641845703125,
+      "y": 4081.9189453125,
+      "name": "python",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095368193,
+      "type": 3,
+      "x": 1144.9619140625,
+      "y": 4098.7080078125,
+      "name": "hqm for diesel",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095368196,
+      "type": 3,
+      "x": 4156.96826171875,
+      "y": 1777.166748046875,
+      "name": "WE OWN THE DEEPSEA",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095368218,
+      "type": 3,
+      "x": 1146.7379150390625,
+      "y": 4094.745849609375,
+      "name": "A Shop",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095368223,
+      "type": 3,
+      "x": 2755.426513671875,
+      "y": 2583.75537109375,
+      "name": "A Shop",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095368225,
+      "type": 3,
+      "x": 3574.75830078125,
+      "y": 3750.38623046875,
+      "name": "A Shop",
+      "sellOrdersCount": 3
+    },
+    {
+      "id": 4095368231,
+      "type": 3,
+      "x": 1133.086181640625,
+      "y": 4081.93359375,
+      "name": "sks",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095368250,
+      "type": 3,
+      "x": 1146.28125,
+      "y": 4095.77978515625,
+      "name": "red keycard",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095368281,
+      "type": 3,
+      "x": 1134.3739013671875,
+      "y": 4081.803955078125,
+      "name": "cloth",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095368283,
+      "type": 3,
+      "x": 1714.22802734375,
+      "y": 4459.3359375,
+      "name": "A Shop",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095368293,
+      "type": 3,
+      "x": 1125.6534423828125,
+      "y": 4089.9111328125,
+      "name": "custom smg",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095368294,
+      "type": 3,
+      "x": 1135.103759765625,
+      "y": 4103.0595703125,
+      "name": "A Shop",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095368310,
+      "type": 3,
+      "x": 1145.51904296875,
+      "y": 4097.474609375,
+      "name": "A Shop",
+      "sellOrdersCount": 0
+    },
+    {
+      "id": 4095368314,
+      "type": 3,
+      "x": 1127.4481201171875,
+      "y": 4085.911376953125,
+      "name": "semi",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095368321,
+      "type": 3,
+      "x": 1126.934326171875,
+      "y": 4087.10791015625,
+      "name": "thompson",
+      "sellOrdersCount": 3
+    },
+    {
+      "id": 4095368339,
+      "type": 3,
+      "x": 3300.433349609375,
+      "y": 671.1260986328125,
+      "name": "rifle",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095368400,
+      "type": 3,
+      "x": 2474.411865234375,
+      "y": 2308.021728515625,
+      "name": "A Shop",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095368406,
+      "type": 3,
+      "x": 3976.077880859375,
+      "y": 586.211181640625,
+      "name": "A Shop",
+      "sellOrdersCount": 0
+    },
+    {
+      "id": 4095368415,
+      "type": 3,
+      "x": 2756.07568359375,
+      "y": 2620.74755859375,
+      "name": "Village Market :heartrock:",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095368426,
+      "type": 3,
+      "x": 3473.240234375,
+      "y": 518.8614501953125,
+      "name": "Shitty Shop",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095368441,
+      "type": 3,
+      "x": 3951.97314453125,
+      "y": 753.478759765625,
+      "name": "A Shop",
+      "sellOrdersCount": 0
+    },
+    {
+      "id": 4095368487,
+      "type": 3,
+      "x": 4154,
+      "y": 2076.17822265625,
+      "name": "Doing Freaky Stuff on the Island",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095368516,
+      "type": 3,
+      "x": 2915.373046875,
+      "y": 2567.884521484375,
+      "name": "Fast Delivery 24/7 :drone:",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095368524,
+      "type": 3,
+      "x": 3582.986572265625,
+      "y": 3754.862548828125,
+      "name": "A Shop",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095368559,
+      "type": 3,
+      "x": 2382.21630859375,
+      "y": 2858.798828125,
+      "name": "Cheapest Fertilizer Shop :dance:",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095368572,
+      "type": 3,
+      "x": 3035.070556640625,
+      "y": 1120.2740478515625,
+      "name": "A Shop",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095368586,
+      "type": 3,
+      "x": 2737.16552734375,
+      "y": 2560.33251953125,
+      "name": "Bread n Honey",
+      "sellOrdersCount": 3
+    },
+    {
+      "id": 4095368596,
+      "type": 3,
+      "x": 2738.4775390625,
+      "y": 2558.08984375,
+      "name": "Teas",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095368597,
+      "type": 3,
+      "x": 2518.643798828125,
+      "y": 3035.302001953125,
+      "name": "The Plushy Shop :coffeecan:",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095368618,
+      "type": 3,
+      "x": 4338.9345703125,
+      "y": 1168.769775390625,
+      "name": "Did not fall of a truck items",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095368699,
+      "type": 3,
+      "x": 2263.5009765625,
+      "y": 282.61083984375,
+      "name": "A Shop",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095368700,
+      "type": 3,
+      "x": 3582.74853515625,
+      "y": 3745.49853515625,
+      "name": "A Shop",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095368708,
+      "type": 3,
+      "x": 381.9879150390625,
+      "y": 3698.370849609375,
+      "name": "A Shop",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095368736,
+      "type": 3,
+      "x": 2746.86474609375,
+      "y": 2613.055908203125,
+      "name": "Village Market :heartrock:",
+      "sellOrdersCount": 0
+    },
+    {
+      "id": 4095368757,
+      "type": 3,
+      "x": 2785.007080078125,
+      "y": 960.8426513671875,
+      "name": "A Shop",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095368763,
+      "type": 3,
+      "x": 4157.32421875,
+      "y": 1633.6785888671875,
+      "name": "AD18 CONTROLS WATER",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095368793,
+      "type": 3,
+      "x": 3519.15380859375,
+      "y": 3754.517578125,
+      "name": "A Shop",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095368794,
+      "type": 3,
+      "x": 771.149658203125,
+      "y": 3775.092041015625,
+      "name": "T2 Guns:mask:",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095368808,
+      "type": 3,
+      "x": 4311.0556640625,
+      "y": 1776.7333984375,
+      "name": "Smoil Smiggers",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095368874,
+      "type": 3,
+      "x": 3579.8193359375,
+      "y": 3744.8515625,
+      "name": "A Shop",
+      "sellOrdersCount": 3
+    },
+    {
+      "id": 4095368885,
+      "type": 3,
+      "x": 1520.074951171875,
+      "y": 2896.526123046875,
+      "name": "A Shop",
+      "sellOrdersCount": 0
+    },
+    {
+      "id": 4095368940,
+      "type": 3,
+      "x": 2267.861572265625,
+      "y": 283.722412109375,
+      "name": "A Shop",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095368959,
+      "type": 3,
+      "x": 2852.796630859375,
+      "y": 2138.083984375,
+      "name": ":wave: Your Tea Shop :wave:",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095368978,
+      "type": 3,
+      "x": 2751.47021484375,
+      "y": 2616.901611328125,
+      "name": "Village Market :heartrock:",
+      "sellOrdersCount": 0
+    },
+    {
+      "id": 4095369085,
+      "type": 3,
+      "x": 4335.837890625,
+      "y": 1164.74365234375,
+      "name": "A Shop",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095369170,
+      "type": 3,
+      "x": 2468.557373046875,
+      "y": 1493.429443359375,
+      "name": "TOES R US 2",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095369171,
+      "type": 3,
+      "x": 3898.681640625,
+      "y": 1082.0118408203125,
+      "name": "A Shop",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095369216,
+      "type": 3,
+      "x": 3585.010986328125,
+      "y": 3752.6484375,
+      "name": "A Shop",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095369217,
+      "type": 3,
+      "x": 2760.23583984375,
+      "y": 2462.173828125,
+      "name": "",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095369231,
+      "type": 3,
+      "x": 4425.3037109375,
+      "y": 1937.98095703125,
+      "name": "VANITY OWNS YOU",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095369429,
+      "type": 3,
+      "x": 3540.78564453125,
+      "y": 3705.481689453125,
+      "name": "Wild Ween HQ :yellowpin:",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095369439,
+      "type": 3,
+      "x": 2526.006103515625,
+      "y": 1617.930908203125,
+      "name": "A Shop",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095369566,
+      "type": 3,
+      "x": 4341.4130859375,
+      "y": 1170.2716064453125,
+      "name": "Honey Pot",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095369762,
+      "type": 3,
+      "x": 2775.61767578125,
+      "y": 518.287109375,
+      "name": "A Shop",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095369778,
+      "type": 3,
+      "x": 923.1217041015625,
+      "y": 2249.388671875,
+      "name": "A Shop",
+      "sellOrdersCount": 3
+    },
+    {
+      "id": 4095369794,
+      "type": 3,
+      "x": 2383.10205078125,
+      "y": 2855.93310546875,
+      "name": "Cheapest Fertilizer Shop :dance:",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095369846,
+      "type": 3,
+      "x": 2138.781982421875,
+      "y": 2905.29345703125,
+      "name": "waterfall wonders",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095369847,
+      "type": 3,
+      "x": 4303.521484375,
+      "y": 2078.386474609375,
+      "name": "PIRATES OF THE CARRIBEAN OT",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095369878,
+      "type": 3,
+      "x": 2915.373046875,
+      "y": 2567.884521484375,
+      "name": "Fast Delivery 24/7 :drone:",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095369912,
+      "type": 3,
+      "x": 4337.150390625,
+      "y": 1179.548583984375,
+      "name": "Green & Clean",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095369925,
+      "type": 3,
+      "x": 2556.6865234375,
+      "y": 668.7579345703125,
+      "name": "Walk and Drone :happy:",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095370107,
+      "type": 3,
+      "x": 2046.6431884765625,
+      "y": 3219.120849609375,
+      "name": "CLONES4SALE :exclamation::eyes:",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095370137,
+      "type": 3,
+      "x": 3461.452880859375,
+      "y": 1184.9078369140625,
+      "name": "how hes still alive!?",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095370154,
+      "type": 3,
+      "x": 2915.373046875,
+      "y": 2567.884521484375,
+      "name": "feeling cute, cheap cloth prices",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095370166,
+      "type": 3,
+      "x": 778.0704345703125,
+      "y": 3771.90869140625,
+      "name": ":heart:Bob:heart:",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095370174,
+      "type": 3,
+      "x": 3270.759521484375,
+      "y": 1177.38037109375,
+      "name": "A Shop",
+      "sellOrdersCount": 0
+    },
+    {
+      "id": 4095370244,
+      "type": 3,
+      "x": 3144.57421875,
+      "y": 3928.501953125,
+      "name": "A Shop",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095370270,
+      "type": 3,
+      "x": 2756.63134765625,
+      "y": 2581.0078125,
+      "name": ":happy:",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095370406,
+      "type": 3,
+      "x": 2776.399169921875,
+      "y": 516.3154296875,
+      "name": "A Shop",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095370419,
+      "type": 3,
+      "x": 1522.5263671875,
+      "y": 2898.254638671875,
+      "name": "A Shop",
+      "sellOrdersCount": 0
+    },
+    {
+      "id": 4095370738,
+      "type": 3,
+      "x": 2428.803466796875,
+      "y": 2594.18408203125,
+      "name": "Shop Keeper",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4106215051,
+      "type": 3,
+      "x": -4038.484375,
+      "y": 2621.492431640625,
+      "name": "Attire shop",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4106215063,
+      "type": 3,
+      "x": -4039.91552734375,
+      "y": 2643.283203125,
+      "name": "Bandit Weapons Shop",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4106215093,
+      "type": 3,
+      "x": -3987.1591796875,
+      "y": 2678.0029296875,
+      "name": "Main Food Shop",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4106215144,
+      "type": 3,
+      "x": -3971.46923828125,
+      "y": 2699.95068359375,
+      "name": "Farming shop",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4106215246,
+      "type": 3,
+      "x": -4001.4296875,
+      "y": 2605.006103515625,
+      "name": "Weapons Shop",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4106215288,
+      "type": 3,
+      "x": -4056.84765625,
+      "y": 2620.450927734375,
+      "name": "Boat Vendor",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4106215291,
+      "type": 3,
+      "x": -4055.31201171875,
+      "y": 2618.081298828125,
+      "name": "Fish Exchange",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4106215313,
+      "type": 3,
+      "x": -3961.83056640625,
+      "y": 2647.8623046875,
+      "name": "Fishing shop",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4106215325,
+      "type": 3,
+      "x": -3975.2998046875,
+      "y": 2638.927490234375,
+      "name": "Medical shop",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4106215340,
+      "type": 3,
+      "x": -4013.64111328125,
+      "y": 2640.19384765625,
+      "name": "Casino Bar Shopkeeper",
+      "sellOrdersCount": 7
+    }
+  ],
+  "vending": [
+    {
+      "id": 4095364756,
+      "type": 3,
+      "x": 2440.80078125,
+      "y": 2558.6123046875,
+      "name": "Exchange",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095364811,
+      "type": 3,
+      "x": 2448.107666015625,
+      "y": 2596.612060546875,
+      "name": "Building",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095364812,
+      "type": 3,
+      "x": 2436.054931640625,
+      "y": 2606.99755859375,
+      "name": "Vendor Farming",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095364813,
+      "type": 3,
+      "x": 2440.395263671875,
+      "y": 2603.31787109375,
+      "name": "Vehicles",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095364814,
+      "type": 3,
+      "x": 2428.7880859375,
+      "y": 2606.16796875,
+      "name": "Food",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095364815,
+      "type": 3,
+      "x": 2427.458984375,
+      "y": 2604.59912109375,
+      "name": "Resources",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095364816,
+      "type": 3,
+      "x": 2434.64208984375,
+      "y": 2608.19970703125,
+      "name": "Weapons",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095364857,
+      "type": 3,
+      "x": 1778.5970458984375,
+      "y": 2718.539794921875,
+      "name": "Stables Shopkeeper",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095364891,
+      "type": 3,
+      "x": 3402.24951171875,
+      "y": 534.4722900390625,
+      "name": "Stables Shopkeeper",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095364918,
+      "type": 3,
+      "x": 2449.686767578125,
+      "y": 2595.3134765625,
+      "name": "Extra 1",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095364919,
+      "type": 3,
+      "x": 2480.55810546875,
+      "y": 2575.906494140625,
+      "name": "Tools & Stuff",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095364920,
+      "type": 3,
+      "x": 2438.562744140625,
+      "y": 2536.6611328125,
+      "name": "Resource Exchange",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095364921,
+      "type": 3,
+      "x": 2437.034912109375,
+      "y": 2537.953369140625,
+      "name": "Components",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095364922,
+      "type": 3,
+      "x": 2460.2314453125,
+      "y": 2556.30908203125,
+      "name": "Weapons",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095364923,
+      "type": 3,
+      "x": 2478.90380859375,
+      "y": 2577.323486328125,
+      "name": "Output Outfitters",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095364924,
+      "type": 3,
+      "x": 2482.796142578125,
+      "y": 2538.44482421875,
+      "name": "Building",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095364974,
+      "type": 3,
+      "x": 563.826171875,
+      "y": 740.9306640625,
+      "name": "Shop Keeper",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095364975,
+      "type": 3,
+      "x": 568.1485595703125,
+      "y": 709.8553466796875,
+      "name": "Fish Exchange",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095364976,
+      "type": 3,
+      "x": 567.5379638671875,
+      "y": 721.8648681640625,
+      "name": "Boat Vendor",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095364993,
+      "type": 3,
+      "x": 1442.56201171875,
+      "y": 367.205322265625,
+      "name": "Shop Keeper",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095365017,
+      "type": 3,
+      "x": 1451.746826171875,
+      "y": 352.8013916015625,
+      "name": "Fish Exchange",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095365018,
+      "type": 3,
+      "x": 1438.98583984375,
+      "y": 352.0753173828125,
+      "name": "Boat Vendor",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095365035,
+      "type": 3,
+      "x": 283.628173828125,
+      "y": 2973.555419921875,
+      "name": "Shop Keeper",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095365059,
+      "type": 3,
+      "x": 283.97119140625,
+      "y": 2970.552978515625,
+      "name": "Fish Exchange",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095365060,
+      "type": 3,
+      "x": 293.244384765625,
+      "y": 2990.045166015625,
+      "name": "Boat Vendor",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095365069,
+      "type": 3,
+      "x": 3577.342529296875,
+      "y": 3745.6357421875,
+      "name": "mp5",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095365089,
+      "type": 3,
+      "x": 2753.77294921875,
+      "y": 2618.82470703125,
+      "name": "Village Market :heartrock:",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095365134,
+      "type": 3,
+      "x": 2734.60205078125,
+      "y": 2554.317138671875,
+      "name": "Pies",
+      "sellOrdersCount": 3
+    },
+    {
+      "id": 4095365221,
+      "type": 3,
+      "x": 2754.2216796875,
+      "y": 2586.502685546875,
+      "name": "BEN'S FRAGS",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095365241,
+      "type": 3,
+      "x": 1138.082763671875,
+      "y": 4102.76806640625,
+      "name": "A Shop",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095365279,
+      "type": 3,
+      "x": 1134.405517578125,
+      "y": 4081.793212890625,
+      "name": "semi auto pistol",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095365333,
+      "type": 3,
+      "x": 3113.11279296875,
+      "y": 538.06787109375,
+      "name": "Deals",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095365364,
+      "type": 3,
+      "x": 1135.957763671875,
+      "y": 4081.64697265625,
+      "name": "m92 & high cali",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095365374,
+      "type": 3,
+      "x": 3248.407958984375,
+      "y": 738.068359375,
+      "name": "shrooms + stone",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095365392,
+      "type": 3,
+      "x": 1146.7662353515625,
+      "y": 4094.728515625,
+      "name": "Dittman's holo & 8x",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095365406,
+      "type": 3,
+      "x": 3582.986572265625,
+      "y": 3754.8623046875,
+      "name": "A Shop",
+      "sellOrdersCount": 3
+    },
+    {
+      "id": 4095365415,
+      "type": 3,
+      "x": 2019.602294921875,
+      "y": 2385.797607421875,
+      "name": ":heartrock:",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095365438,
+      "type": 3,
+      "x": 1764.8662109375,
+      "y": 4167.322265625,
+      "name": "A Shop",
+      "sellOrdersCount": 0
+    },
+    {
+      "id": 4095365450,
+      "type": 3,
+      "x": 1139.3565673828125,
+      "y": 4102.630859375,
+      "name": "workbench level 2",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095365451,
+      "type": 3,
+      "x": 2165.753662109375,
+      "y": 2612.546630859375,
+      "name": "GRUB HUB",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095365480,
+      "type": 3,
+      "x": 1567.205810546875,
+      "y": 1564.376220703125,
+      "name": "Clothilda :heartrock:",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095365524,
+      "type": 3,
+      "x": 3580.509765625,
+      "y": 3755.646728515625,
+      "name": "high qual",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095365545,
+      "type": 3,
+      "x": 1566.78515625,
+      "y": 1636.7884521484375,
+      "name": "A Shop",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095365706,
+      "type": 3,
+      "x": 1126.9058837890625,
+      "y": 4087.09130859375,
+      "name": "hazmat",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095365754,
+      "type": 3,
+      "x": 2732.003662109375,
+      "y": 2554.30224609375,
+      "name": "Teas",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095365755,
+      "type": 3,
+      "x": 1126.214599609375,
+      "y": 4088.6357421875,
+      "name": "jackhammer",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095365772,
+      "type": 3,
+      "x": 2018.3253173828125,
+      "y": 578.48974609375,
+      "name": "WankyMane:trumpet::bush:",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095365793,
+      "type": 3,
+      "x": 1135.9691162109375,
+      "y": 4081.647705078125,
+      "name": "A Shop",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095365868,
+      "type": 3,
+      "x": 3579.819091796875,
+      "y": 3744.85205078125,
+      "name": "MD HQ",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095365879,
+      "type": 3,
+      "x": 3568.9072265625,
+      "y": 3622.060546875,
+      "name": "Potato House :happy:",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095365924,
+      "type": 3,
+      "x": 2730.69140625,
+      "y": 2556.544921875,
+      "name": "Non-Perishable Snacks",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095365972,
+      "type": 3,
+      "x": 3898.17041015625,
+      "y": 1084.0701904296875,
+      "name": "A Shop",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095366046,
+      "type": 3,
+      "x": 1683.629638671875,
+      "y": 2058.958984375,
+      "name": "Big  Gashole :lowgradefuel:",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095366056,
+      "type": 3,
+      "x": 2749.16748046875,
+      "y": 2614.978759765625,
+      "name": "Village Market :heartrock:",
+      "sellOrdersCount": 0
+    },
+    {
+      "id": 4095366097,
+      "type": 3,
+      "x": 1770.598876953125,
+      "y": 4321.90869140625,
+      "name": "Under New Ownership",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095366104,
+      "type": 3,
+      "x": 2781.12451171875,
+      "y": 515.906494140625,
+      "name": "cards",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095366119,
+      "type": 3,
+      "x": 2779.15283203125,
+      "y": 515.125,
+      "name": "A Shop",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095366154,
+      "type": 3,
+      "x": 2128.552001953125,
+      "y": 2558.9462890625,
+      "name": "A Shop",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095366192,
+      "type": 3,
+      "x": 1127.464599609375,
+      "y": 4085.87060546875,
+      "name": "pump & spas12",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095366201,
+      "type": 3,
+      "x": 2525.626953125,
+      "y": 1647.677978515625,
+      "name": "A Shop",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095366243,
+      "type": 3,
+      "x": 2696.15283203125,
+      "y": 2591.06298828125,
+      "name": "AL's  FIREWORKS SHOP :dance:",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095366251,
+      "type": 3,
+      "x": 1522.165283203125,
+      "y": 2896.164306640625,
+      "name": "A Shop",
+      "sellOrdersCount": 0
+    },
+    {
+      "id": 4095366285,
+      "type": 3,
+      "x": 2703.2392578125,
+      "y": 4381.90625,
+      "name": "Bellsa HQ :heart:",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095366314,
+      "type": 3,
+      "x": 2208.80908203125,
+      "y": 1841.57861328125,
+      "name": "UNRAIDBALE TRIO:rifle.ak:",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095366318,
+      "type": 3,
+      "x": 1505.971435546875,
+      "y": 2908.25390625,
+      "name": "Fert-R-Us!",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095366330,
+      "type": 3,
+      "x": 4305.0849609375,
+      "y": 1633.5408935546875,
+      "name": "EPSTEIN ISLAND",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095366332,
+      "type": 3,
+      "x": 1146.1943359375,
+      "y": 4095.9453125,
+      "name": "A Shop",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095366336,
+      "type": 3,
+      "x": 1392.2254638671875,
+      "y": 2194.76513671875,
+      "name": "Buy My Shit",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095366362,
+      "type": 3,
+      "x": 2702.468505859375,
+      "y": 4379.93017578125,
+      "name": "Jay Fai HQ :heart:",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095366410,
+      "type": 3,
+      "x": 1125.661865234375,
+      "y": 4089.859375,
+      "name": "furnaces",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095366417,
+      "type": 3,
+      "x": 3516.47265625,
+      "y": 3755.61669921875,
+      "name": "A Shop",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095366475,
+      "type": 3,
+      "x": 1761.5791015625,
+      "y": 2612.717529296875,
+      "name": "A Shop",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095366490,
+      "type": 3,
+      "x": 1568.5789794921875,
+      "y": 1562.170654296875,
+      "name": "Potataaa! :laugh:",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095366522,
+      "type": 3,
+      "x": 3974.8291015625,
+      "y": 583.9324951171875,
+      "name": "ETI 83 :heart::heart::heart:",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095366680,
+      "type": 3,
+      "x": 1137.316650390625,
+      "y": 4081.50830078125,
+      "name": "A Shop",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095366711,
+      "type": 3,
+      "x": 3585.57080078125,
+      "y": 3750.11181640625,
+      "name": "oil ref",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095366732,
+      "type": 3,
+      "x": 3575.318115234375,
+      "y": 3747.849609375,
+      "name": "A Shop",
+      "sellOrdersCount": 3
+    },
+    {
+      "id": 4095366833,
+      "type": 3,
+      "x": 2782.797607421875,
+      "y": 2374.005615234375,
+      "name": "HELP ME IM STUCK IN HERE:love:",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095366893,
+      "type": 3,
+      "x": 3585.010986328125,
+      "y": 3752.6484375,
+      "name": "A Shop",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095366925,
+      "type": 3,
+      "x": 3575.66357421875,
+      "y": 3753.24658203125,
+      "name": "A Shop",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095366929,
+      "type": 3,
+      "x": 3032.98828125,
+      "y": 1119.8687744140625,
+      "name": "A Shop",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095366961,
+      "type": 3,
+      "x": 1649.0986328125,
+      "y": 1919.0230712890625,
+      "name": "GOOD SHOP",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095366963,
+      "type": 3,
+      "x": 1145.5355224609375,
+      "y": 4097.4375,
+      "name": "blue keycard",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095367011,
+      "type": 3,
+      "x": 2737.191162109375,
+      "y": 2555.83251953125,
+      "name": "Pies",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095367021,
+      "type": 3,
+      "x": 3896.62353515625,
+      "y": 1081.5003662109375,
+      "name": "A Shop",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095367077,
+      "type": 3,
+      "x": 777.3529052734375,
+      "y": 3768.995849609375,
+      "name": ":heart:Bob:heart:",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095367120,
+      "type": 3,
+      "x": 3575.317626953125,
+      "y": 3747.84912109375,
+      "name": "A Shop",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095367136,
+      "type": 3,
+      "x": 3650.69189453125,
+      "y": 2122.416748046875,
+      "name": "",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095367137,
+      "type": 3,
+      "x": 2915.373046875,
+      "y": 2567.884521484375,
+      "name": "Fast Delivery 24/7 :drone:",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095367149,
+      "type": 3,
+      "x": 1217.8289794921875,
+      "y": 4018.18701171875,
+      "name": "A Shop",
+      "sellOrdersCount": 3
+    },
+    {
+      "id": 4095367154,
+      "type": 3,
+      "x": 3237.5966796875,
+      "y": 669.646484375,
+      "name": "FERT/BLICKIES",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095367205,
+      "type": 3,
+      "x": 3577.58056640625,
+      "y": 3755,
+      "name": "A Shop",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095367230,
+      "type": 3,
+      "x": 3035.1005859375,
+      "y": 1204.5706787109375,
+      "name": "A Shop",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095367243,
+      "type": 3,
+      "x": 3754.77099609375,
+      "y": 909.447265625,
+      "name": "BB Mart",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095367254,
+      "type": 3,
+      "x": 2779.15283203125,
+      "y": 515.125,
+      "name": "A Shop",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095367278,
+      "type": 3,
+      "x": 1567.20556640625,
+      "y": 1564.375732421875,
+      "name": "Slutfur! :dance:",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095367300,
+      "type": 3,
+      "x": 3584.666015625,
+      "y": 3747.251220703125,
+      "name": "red card",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095367318,
+      "type": 3,
+      "x": 1126.2249755859375,
+      "y": 4088.61083984375,
+      "name": "mp5",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095367319,
+      "type": 3,
+      "x": 3575.66357421875,
+      "y": 3753.2470703125,
+      "name": "cloth and fragments",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095367364,
+      "type": 3,
+      "x": 2566.871826171875,
+      "y": 1606.5572509765625,
+      "name": "A Shop",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095367371,
+      "type": 3,
+      "x": 2348.282470703125,
+      "y": 2321.624267578125,
+      "name": "A Shop",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095367401,
+      "type": 3,
+      "x": 1138.0909423828125,
+      "y": 4102.76171875,
+      "name": "workbench level 3",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095367405,
+      "type": 3,
+      "x": 1136.29736328125,
+      "y": 4102.9228515625,
+      "name": "A Shop",
+      "sellOrdersCount": 3
+    },
+    {
+      "id": 4095367458,
+      "type": 3,
+      "x": 4453.0009765625,
+      "y": 1635.9984130859375,
+      "name": "EPSTEIN WAS HERE",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095367475,
+      "type": 3,
+      "x": 1145.022216796875,
+      "y": 4098.564453125,
+      "name": "auto turret",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095367528,
+      "type": 3,
+      "x": 2667.27587890625,
+      "y": 454.6495361328125,
+      "name": "Low Grade Guy",
+      "sellOrdersCount": 3
+    },
+    {
+      "id": 4095367538,
+      "type": 3,
+      "x": 2742.259521484375,
+      "y": 2609.2099609375,
+      "name": "Village Market :heartrock:",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095367658,
+      "type": 3,
+      "x": 1568.5789794921875,
+      "y": 1562.170654296875,
+      "name": "Timon & P000PA! :light:",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095367667,
+      "type": 3,
+      "x": 1490.4908447265625,
+      "y": 1557.8603515625,
+      "name": ":honey::honey::honey:",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095367668,
+      "type": 3,
+      "x": 2069.59619140625,
+      "y": 1439.06298828125,
+      "name": "A Shop",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095367672,
+      "type": 3,
+      "x": 3580.510009765625,
+      "y": 3755.646484375,
+      "name": "t2:workbench2:",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095367709,
+      "type": 3,
+      "x": 3258.015869140625,
+      "y": 1109.9705810546875,
+      "name": "A Shop",
+      "sellOrdersCount": 0
+    },
+    {
+      "id": 4095367726,
+      "type": 3,
+      "x": 4455.66015625,
+      "y": 1783.408447265625,
+      "name": "stroking my shit rn :heartrock:",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095367753,
+      "type": 3,
+      "x": 3584.66552734375,
+      "y": 3747.25146484375,
+      "name": "A Shop",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095367778,
+      "type": 3,
+      "x": 1137.3438720703125,
+      "y": 4081.50146484375,
+      "name": "m39 & prototype",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095367787,
+      "type": 3,
+      "x": 1135.0316162109375,
+      "y": 4103.0810546875,
+      "name": "doors",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095367795,
+      "type": 3,
+      "x": 2744.562255859375,
+      "y": 2611.1328125,
+      "name": "Village Market :heartrock:",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095367824,
+      "type": 3,
+      "x": 1391.2861328125,
+      "y": 2666.53759765625,
+      "name": "TOES R US",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095367855,
+      "type": 3,
+      "x": 3952.1171875,
+      "y": 756.7017822265625,
+      "name": "A Shop",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095367887,
+      "type": 3,
+      "x": 2473.9697265625,
+      "y": 2306.796630859375,
+      "name": "A Shop",
+      "sellOrdersCount": 0
+    },
+    {
+      "id": 4095367888,
+      "type": 3,
+      "x": 1136.2369384765625,
+      "y": 4102.9462890625,
+      "name": "blueprints",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095367890,
+      "type": 3,
+      "x": 542.860107421875,
+      "y": 896.603515625,
+      "name": "A Shop",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095367937,
+      "type": 3,
+      "x": 3266.463134765625,
+      "y": 1186.451904296875,
+      "name": "A Shop",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095367950,
+      "type": 3,
+      "x": 3145.5244140625,
+      "y": 3929.2822265625,
+      "name": "v5 controlling:coffeecan:",
+      "sellOrdersCount": 3
+    },
+    {
+      "id": 4095367958,
+      "type": 3,
+      "x": 2776.399169921875,
+      "y": 516.3154296875,
+      "name": "A Shop",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095367969,
+      "type": 3,
+      "x": 1739.6005859375,
+      "y": 4317.11279296875,
+      "name": "BUY HQM @H4",
+      "sellOrdersCount": 0
+    },
+    {
+      "id": 4095367971,
+      "type": 3,
+      "x": 1139.4615478515625,
+      "y": 4102.6259765625,
+      "name": "A Shop",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095367972,
+      "type": 3,
+      "x": 3521.54052734375,
+      "y": 3752.699951171875,
+      "name": "A Shop",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095368038,
+      "type": 3,
+      "x": 1133.1641845703125,
+      "y": 4081.9189453125,
+      "name": "python",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095368056,
+      "type": 3,
+      "x": 467.151123046875,
+      "y": 916.27587890625,
+      "name": "come raid pussys:funny:",
+      "sellOrdersCount": 0
+    },
+    {
+      "id": 4095368193,
+      "type": 3,
+      "x": 1144.9619140625,
+      "y": 4098.7080078125,
+      "name": "hqm for diesel",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095368196,
+      "type": 3,
+      "x": 4156.96826171875,
+      "y": 1777.166748046875,
+      "name": "WE OWN THE DEEPSEA",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095368218,
+      "type": 3,
+      "x": 1146.7379150390625,
+      "y": 4094.745849609375,
+      "name": "A Shop",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095368223,
+      "type": 3,
+      "x": 2755.426513671875,
+      "y": 2583.75537109375,
+      "name": "A Shop",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095368225,
+      "type": 3,
+      "x": 3574.75830078125,
+      "y": 3750.38623046875,
+      "name": "A Shop",
+      "sellOrdersCount": 3
+    },
+    {
+      "id": 4095368231,
+      "type": 3,
+      "x": 1133.086181640625,
+      "y": 4081.93359375,
+      "name": "sks",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095368250,
+      "type": 3,
+      "x": 1146.28125,
+      "y": 4095.77978515625,
+      "name": "red keycard",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095368281,
+      "type": 3,
+      "x": 1134.3739013671875,
+      "y": 4081.803955078125,
+      "name": "cloth",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095368283,
+      "type": 3,
+      "x": 1714.22802734375,
+      "y": 4459.3359375,
+      "name": "A Shop",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095368293,
+      "type": 3,
+      "x": 1125.6534423828125,
+      "y": 4089.9111328125,
+      "name": "custom smg",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095368294,
+      "type": 3,
+      "x": 1135.103759765625,
+      "y": 4103.0595703125,
+      "name": "A Shop",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095368310,
+      "type": 3,
+      "x": 1145.51904296875,
+      "y": 4097.474609375,
+      "name": "A Shop",
+      "sellOrdersCount": 0
+    },
+    {
+      "id": 4095368314,
+      "type": 3,
+      "x": 1127.4481201171875,
+      "y": 4085.911376953125,
+      "name": "semi",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095368321,
+      "type": 3,
+      "x": 1126.934326171875,
+      "y": 4087.10791015625,
+      "name": "thompson",
+      "sellOrdersCount": 3
+    },
+    {
+      "id": 4095368339,
+      "type": 3,
+      "x": 3300.433349609375,
+      "y": 671.1260986328125,
+      "name": "rifle",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095368400,
+      "type": 3,
+      "x": 2474.411865234375,
+      "y": 2308.021728515625,
+      "name": "A Shop",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095368405,
+      "type": 3,
+      "x": 1570.6695556640625,
+      "y": 389.0931396484375,
+      "name": "FedEx :documents:",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095368406,
+      "type": 3,
+      "x": 3976.077880859375,
+      "y": 586.211181640625,
+      "name": "A Shop",
+      "sellOrdersCount": 0
+    },
+    {
+      "id": 4095368415,
+      "type": 3,
+      "x": 2756.07568359375,
+      "y": 2620.74755859375,
+      "name": "Village Market :heartrock:",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095368426,
+      "type": 3,
+      "x": 3473.240234375,
+      "y": 518.8614501953125,
+      "name": "Shitty Shop",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095368441,
+      "type": 3,
+      "x": 3951.97314453125,
+      "y": 753.478759765625,
+      "name": "A Shop",
+      "sellOrdersCount": 0
+    },
+    {
+      "id": 4095368487,
+      "type": 3,
+      "x": 4154,
+      "y": 2076.17822265625,
+      "name": "Doing Freaky Stuff on the Island",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095368516,
+      "type": 3,
+      "x": 2915.373046875,
+      "y": 2567.884521484375,
+      "name": "Fast Delivery 24/7 :drone:",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095368524,
+      "type": 3,
+      "x": 3582.986572265625,
+      "y": 3754.862548828125,
+      "name": "A Shop",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095368559,
+      "type": 3,
+      "x": 2382.21630859375,
+      "y": 2858.798828125,
+      "name": "Cheapest Fertilizer Shop :dance:",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095368572,
+      "type": 3,
+      "x": 3035.070556640625,
+      "y": 1120.2740478515625,
+      "name": "A Shop",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095368586,
+      "type": 3,
+      "x": 2737.16552734375,
+      "y": 2560.33251953125,
+      "name": "Bread n Honey",
+      "sellOrdersCount": 3
+    },
+    {
+      "id": 4095368596,
+      "type": 3,
+      "x": 2738.4775390625,
+      "y": 2558.08984375,
+      "name": "Teas",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095368597,
+      "type": 3,
+      "x": 2518.643798828125,
+      "y": 3035.302001953125,
+      "name": "The Plushy Shop :coffeecan:",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095368618,
+      "type": 3,
+      "x": 4338.9345703125,
+      "y": 1168.769775390625,
+      "name": "Did not fall of a truck items",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095368665,
+      "type": 3,
+      "x": 446.20947265625,
+      "y": 1179.2540283203125,
+      "name": "A Shop",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095368699,
+      "type": 3,
+      "x": 2263.5009765625,
+      "y": 282.61083984375,
+      "name": "A Shop",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095368700,
+      "type": 3,
+      "x": 3582.74853515625,
+      "y": 3745.49853515625,
+      "name": "A Shop",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095368708,
+      "type": 3,
+      "x": 381.9879150390625,
+      "y": 3698.370849609375,
+      "name": "A Shop",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095368736,
+      "type": 3,
+      "x": 2746.86474609375,
+      "y": 2613.055908203125,
+      "name": "Village Market :heartrock:",
+      "sellOrdersCount": 0
+    },
+    {
+      "id": 4095368757,
+      "type": 3,
+      "x": 2785.007080078125,
+      "y": 960.8426513671875,
+      "name": "A Shop",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095368763,
+      "type": 3,
+      "x": 4157.32421875,
+      "y": 1633.6785888671875,
+      "name": "AD18 CONTROLS WATER",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095368781,
+      "type": 3,
+      "x": 1451.43603515625,
+      "y": 506.8284912109375,
+      "name": "Strife's Surplus:exclamation:",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095368793,
+      "type": 3,
+      "x": 3519.15380859375,
+      "y": 3754.517578125,
+      "name": "A Shop",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095368794,
+      "type": 3,
+      "x": 771.149658203125,
+      "y": 3775.092041015625,
+      "name": "T2 Guns:mask:",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095368808,
+      "type": 3,
+      "x": 4311.0556640625,
+      "y": 1776.7333984375,
+      "name": "Smoil Smiggers",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095368874,
+      "type": 3,
+      "x": 3579.8193359375,
+      "y": 3744.8515625,
+      "name": "A Shop",
+      "sellOrdersCount": 3
+    },
+    {
+      "id": 4095368885,
+      "type": 3,
+      "x": 1520.074951171875,
+      "y": 2896.526123046875,
+      "name": "A Shop",
+      "sellOrdersCount": 0
+    },
+    {
+      "id": 4095368940,
+      "type": 3,
+      "x": 2267.861572265625,
+      "y": 283.722412109375,
+      "name": "A Shop",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095368959,
+      "type": 3,
+      "x": 2852.796630859375,
+      "y": 2138.083984375,
+      "name": ":wave: Your Tea Shop :wave:",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095368978,
+      "type": 3,
+      "x": 2751.47021484375,
+      "y": 2616.901611328125,
+      "name": "Village Market :heartrock:",
+      "sellOrdersCount": 0
+    },
+    {
+      "id": 4095369085,
+      "type": 3,
+      "x": 4335.837890625,
+      "y": 1164.74365234375,
+      "name": "A Shop",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4095369170,
+      "type": 3,
+      "x": 2468.557373046875,
+      "y": 1493.429443359375,
+      "name": "TOES R US 2",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095369171,
+      "type": 3,
+      "x": 3898.681640625,
+      "y": 1082.0118408203125,
+      "name": "A Shop",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095369216,
+      "type": 3,
+      "x": 3585.010986328125,
+      "y": 3752.6484375,
+      "name": "A Shop",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095369217,
+      "type": 3,
+      "x": 2760.23583984375,
+      "y": 2462.173828125,
+      "name": "",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095369231,
+      "type": 3,
+      "x": 4425.3037109375,
+      "y": 1937.98095703125,
+      "name": "VANITY OWNS YOU",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095369422,
+      "type": 3,
+      "x": 666.5535888671875,
+      "y": 686.9056396484375,
+      "name": "A Shop",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095369429,
+      "type": 3,
+      "x": 3540.78564453125,
+      "y": 3705.481689453125,
+      "name": "Wild Ween HQ :yellowpin:",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095369439,
+      "type": 3,
+      "x": 2526.006103515625,
+      "y": 1617.930908203125,
+      "name": "A Shop",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095369566,
+      "type": 3,
+      "x": 4341.4130859375,
+      "y": 1170.2716064453125,
+      "name": "Honey Pot",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095369762,
+      "type": 3,
+      "x": 2775.61767578125,
+      "y": 518.287109375,
+      "name": "A Shop",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095369778,
+      "type": 3,
+      "x": 923.1217041015625,
+      "y": 2249.388671875,
+      "name": "A Shop",
+      "sellOrdersCount": 3
+    },
+    {
+      "id": 4095369794,
+      "type": 3,
+      "x": 2383.10205078125,
+      "y": 2855.93310546875,
+      "name": "Cheapest Fertilizer Shop :dance:",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095369846,
+      "type": 3,
+      "x": 2138.781982421875,
+      "y": 2905.29345703125,
+      "name": "waterfall wonders",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095369847,
+      "type": 3,
+      "x": 4303.521484375,
+      "y": 2078.386474609375,
+      "name": "PIRATES OF THE CARRIBEAN OT",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095369851,
+      "type": 3,
+      "x": 628.955078125,
+      "y": 1320.5128173828125,
+      "name": "A Shop",
+      "sellOrdersCount": 1
+    },
+    {
+      "id": 4095369878,
+      "type": 3,
+      "x": 2915.373046875,
+      "y": 2567.884521484375,
+      "name": "Fast Delivery 24/7 :drone:",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095369912,
+      "type": 3,
+      "x": 4337.150390625,
+      "y": 1179.548583984375,
+      "name": "Green & Clean",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095369925,
+      "type": 3,
+      "x": 2556.6865234375,
+      "y": 668.7579345703125,
+      "name": "Walk and Drone :happy:",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4095370107,
+      "type": 3,
+      "x": 2046.6431884765625,
+      "y": 3219.120849609375,
+      "name": "CLONES4SALE :exclamation::eyes:",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095370137,
+      "type": 3,
+      "x": 3461.452880859375,
+      "y": 1184.9078369140625,
+      "name": "how hes still alive!?",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095370154,
+      "type": 3,
+      "x": 2915.373046875,
+      "y": 2567.884521484375,
+      "name": "feeling cute, cheap cloth prices",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4095370166,
+      "type": 3,
+      "x": 778.0704345703125,
+      "y": 3771.90869140625,
+      "name": ":heart:Bob:heart:",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095370174,
+      "type": 3,
+      "x": 3270.759521484375,
+      "y": 1177.38037109375,
+      "name": "A Shop",
+      "sellOrdersCount": 0
+    },
+    {
+      "id": 4095370244,
+      "type": 3,
+      "x": 3144.57421875,
+      "y": 3928.501953125,
+      "name": "A Shop",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095370270,
+      "type": 3,
+      "x": 2756.63134765625,
+      "y": 2581.0078125,
+      "name": ":happy:",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4095370274,
+      "type": 3,
+      "x": 677.12158203125,
+      "y": 719.296630859375,
+      "name": "Coffee:heart:",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095370406,
+      "type": 3,
+      "x": 2776.399169921875,
+      "y": 516.3154296875,
+      "name": "A Shop",
+      "sellOrdersCount": 2
+    },
+    {
+      "id": 4095370419,
+      "type": 3,
+      "x": 1522.5263671875,
+      "y": 2898.254638671875,
+      "name": "A Shop",
+      "sellOrdersCount": 0
+    },
+    {
+      "id": 4095370738,
+      "type": 3,
+      "x": 2428.803466796875,
+      "y": 2594.18408203125,
+      "name": "Shop Keeper",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4106215051,
+      "type": 3,
+      "x": -4038.484375,
+      "y": 2621.492431640625,
+      "name": "Attire shop",
+      "sellOrdersCount": 5
+    },
+    {
+      "id": 4106215063,
+      "type": 3,
+      "x": -4039.91552734375,
+      "y": 2643.283203125,
+      "name": "Bandit Weapons Shop",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4106215093,
+      "type": 3,
+      "x": -3987.1591796875,
+      "y": 2678.0029296875,
+      "name": "Main Food Shop",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4106215144,
+      "type": 3,
+      "x": -3971.46923828125,
+      "y": 2699.95068359375,
+      "name": "Farming shop",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4106215246,
+      "type": 3,
+      "x": -4001.4296875,
+      "y": 2605.006103515625,
+      "name": "Weapons Shop",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4106215288,
+      "type": 3,
+      "x": -4056.84765625,
+      "y": 2620.450927734375,
+      "name": "Boat Vendor",
+      "sellOrdersCount": 4
+    },
+    {
+      "id": 4106215291,
+      "type": 3,
+      "x": -4055.31201171875,
+      "y": 2618.081298828125,
+      "name": "Fish Exchange",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4106215313,
+      "type": 3,
+      "x": -3961.83056640625,
+      "y": 2647.8623046875,
+      "name": "Fishing shop",
+      "sellOrdersCount": 6
+    },
+    {
+      "id": 4106215325,
+      "type": 3,
+      "x": -3975.2998046875,
+      "y": 2638.927490234375,
+      "name": "Medical shop",
+      "sellOrdersCount": 7
+    },
+    {
+      "id": 4106215340,
+      "type": 3,
+      "x": -4013.64111328125,
+      "y": 2640.19384765625,
+      "name": "Casino Bar Shopkeeper",
+      "sellOrdersCount": 7
+    }
+  ]
+}
