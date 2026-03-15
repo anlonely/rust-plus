@@ -6,6 +6,7 @@
 
 const path     = require('path');
 const fs       = require('fs');
+const fsp      = require('fs').promises;
 const logger   = require('../utils/logger');
 const { getConfigDir } = require('../utils/runtime-paths');
 
@@ -20,7 +21,7 @@ class JsonDb {
 
   async read() {
     try {
-      const raw = fs.readFileSync(this.filePath, 'utf8');
+      const raw = await fsp.readFile(this.filePath, 'utf8');
       this.data = JSON.parse(raw);
     } catch (err) {
       if (err.code === 'ENOENT') {
@@ -32,7 +33,9 @@ class JsonDb {
   }
 
   async write() {
-    fs.writeFileSync(this.filePath, JSON.stringify(this.data, null, 2), 'utf8');
+    const tmp = this.filePath + '.tmp';
+    await fsp.writeFile(tmp, JSON.stringify(this.data, null, 2), 'utf8');
+    await fsp.rename(tmp, this.filePath);
   }
 }
 

@@ -29,12 +29,16 @@ function sendDesktop(title, message) {
   logger.info(`[Notify] 桌面通知: ${title} - ${message}`);
 }
 
+const DISCORD_TIMEOUT_MS = 8_000;
+const DISCORD_MAX_RETRIES = 2;
+
 /**
- * 发送 Discord Webhook Embed 消息
+ * 发送 Discord Webhook Embed 消息（含超时 + 指数退避重试）
  * @param {string} webhookUrl
  * @param {object} embed  - Discord Embed 对象
+ * @param {number} [attempt=0] - 内部重试计数
  */
-function sendDiscord(webhookUrl, embed) {
+function sendDiscord(webhookUrl, embed, attempt = 0) {
   if (!webhookUrl) {
     logger.debug('[Notify] Discord Webhook URL 未配置，跳过');
     return;
@@ -49,14 +53,35 @@ function sendDiscord(webhookUrl, embed) {
     method:   'POST',
     headers:  { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(payload) },
   }, (res) => {
-    if (res.statusCode >= 400) {
+    res.resume(); // 消费响应体，防止内存泄漏
+    if (res.statusCode === 429 && attempt < DISCORD_MAX_RETRIES) {
+      // Discord 限速：等待后重试
+      const retryAfter = Number(res.headers['retry-after'] || 1) * 1000;
+      logger.warn(`[Notify] Discord 限速，${retryAfter}ms 后重试 (${attempt + 1}/${DISCORD_MAX_RETRIES})`);
+      setTimeout(() => sendDiscord(webhookUrl, embed, attempt + 1), retryAfter);
+    } else if (res.statusCode >= 500 && attempt < DISCORD_MAX_RETRIES) {
+      const delay = Math.pow(2, attempt) * 1000;
+      logger.warn(`[Notify] Discord 服务端错误 ${res.statusCode}，${delay}ms 后重试`);
+      setTimeout(() => sendDiscord(webhookUrl, embed, attempt + 1), delay);
+    } else if (res.statusCode >= 400) {
       logger.error(`[Notify] Discord 发送失败: HTTP ${res.statusCode}`);
     } else {
-      logger.debug(`[Notify] Discord 发送成功`);
+      logger.debug('[Notify] Discord 发送成功');
     }
   });
 
-  req.on('error', e => logger.error('[Notify] Discord 请求错误: ' + e.message));
+  req.setTimeout(DISCORD_TIMEOUT_MS, () => {
+    req.destroy(new Error(`Discord 请求超时（${DISCORD_TIMEOUT_MS}ms）`));
+  });
+  req.on('error', (e) => {
+    if (attempt < DISCORD_MAX_RETRIES) {
+      const delay = Math.pow(2, attempt) * 1000;
+      logger.warn(`[Notify] Discord 请求错误，${delay}ms 后重试: ${e.message}`);
+      setTimeout(() => sendDiscord(webhookUrl, embed, attempt + 1), delay);
+    } else {
+      logger.error('[Notify] Discord 请求错误（已放弃）: ' + e.message);
+    }
+  });
   req.write(payload);
   req.end();
 }

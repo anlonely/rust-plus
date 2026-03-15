@@ -1,5 +1,17 @@
 const buckets = new Map();
 
+// 每 10 分钟清理一次已过期的空桶，防止 Map 无限增长
+const CLEANUP_INTERVAL_MS = 10 * 60 * 1000;
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, arr] of buckets) {
+    // 清除窗口内已过期的时间戳
+    while (arr.length && now - arr[0] >= CLEANUP_INTERVAL_MS) arr.shift();
+    // 空桶直接删除
+    if (arr.length === 0) buckets.delete(key);
+  }
+}, CLEANUP_INTERVAL_MS).unref(); // unref 确保不阻止进程退出
+
 class RateLimitError extends Error {
   constructor(message) {
     super(message);

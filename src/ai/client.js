@@ -107,8 +107,4 @@ async function ask(question, options = {}) {
   return askGemini(question, SYSTEM, options);
 }
 
-// 兼容旧导出名
-const askOpenAI = askGemini;
-const askClaude = askGemini;
-
-module.exports = { ask, askGemini, askOpenAI, askClaude };
+module.exports = { ask, askGemini };

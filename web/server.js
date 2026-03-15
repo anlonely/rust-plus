@@ -80,6 +80,19 @@ const DEFAULT_PLAYER_STATUS_MESSAGES = {
 };
 
 const app = express();
+
+// 安全响应头：防 XSS / Clickjacking / MIME 嗅探
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  if (!IS_LOOPBACK_HOST) {
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  }
+  next();
+});
+
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server, path: '/ws' });
 
