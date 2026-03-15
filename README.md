@@ -162,3 +162,15 @@ WEB_REQUIRE_API_TOKEN=1
 | P4 | ✅ | 语音通知（互亿无线/Twilio）/ Gemini AI / 翻译 |
 | P5 | ✅ | Electron GUI 完整界面 |
 | P6 | ✅ | 本地部署精简（移除激活与分享入口） |
+
+---
+
+## 📚 文档索引
+
+| 文档 | 说明 |
+|------|------|
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | 系统架构、模块说明、数据流图 |
+| [docs/API.md](docs/API.md) | REST API + WebSocket 完整参考 |
+| [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | 开发者指南、测试、贡献说明 |
+| [docs/HELP.md](docs/HELP.md) | 指令与事件模板变量完整说明 |
+| [docs/WEB_UBUNTU_DEPLOY.md](docs/WEB_UBUNTU_DEPLOY.md) | Ubuntu 服务器部署指南 |
