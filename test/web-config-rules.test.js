@@ -20,7 +20,7 @@ test('web-config-rules: normalizeEventRuleInput fills defaults', () => {
   assert.equal(rule.name, '测试事件');
   assert.equal(rule.event, 'alarm_on');
   assert.equal(rule.enabled, true);
-  assert.deepEqual(rule.trigger, {});
+  assert.deepEqual(rule.trigger, { cooldownMs: 3000 });
   assert.deepEqual(rule._meta, {
     doNotify: false,
     doChat: true,
@@ -44,6 +44,18 @@ test('web-config-rules: normalizeCommandRuleInput keeps keyword and defaults', (
   assert.deepEqual(rule.trigger, {
     cooldownMs: 3000,
   });
+});
+
+test('web-config-rules: normalizeCallGroupInput supports system team chat config', () => {
+  const group = normalizeCallGroupInput({
+    id: '__team_chat_settings__',
+    kind: 'team_chat_settings',
+    intervalMs: 9000,
+  });
+  assert.equal(group.id, '__team_chat_settings__');
+  assert.equal(group.kind, 'team_chat_settings');
+  assert.equal(group.locked, true);
+  assert.equal(group.intervalMs, 9000);
 });
 
 test('web-config-rules: normalizeCallGroupInput filters invalid members', () => {

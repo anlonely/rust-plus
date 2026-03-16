@@ -1,7 +1,16 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
-const { normalizeGroupConfig, resolveEnabledChannels, setGroup, callGroup } = require('../src/call/groups');
+const {
+  normalizeGroupConfig,
+  resolveEnabledChannels,
+  setGroup,
+  callGroup,
+  listGroups,
+  removeGroup,
+  getTeamChatSettings,
+  TEAM_CHAT_SETTINGS_GROUP_ID,
+} = require('../src/call/groups');
 
 test('call-groups: normalizeGroupConfig keeps legacy members as phone config', () => {
   const group = normalizeGroupConfig({
@@ -86,4 +95,12 @@ test('call-groups: repeated calls are not throttled by cooldown anymore', async 
 
   assert.equal(first.success, true);
   assert.equal(second.success, true);
+});
+
+test('call-groups: system team chat settings group is always present and not removable', () => {
+  const settings = getTeamChatSettings();
+  assert.equal(settings.id, TEAM_CHAT_SETTINGS_GROUP_ID);
+  assert.equal(settings.kind, 'team_chat_settings');
+  assert.equal(listGroups().some((group) => group.id === TEAM_CHAT_SETTINGS_GROUP_ID), true);
+  assert.equal(removeGroup(TEAM_CHAT_SETTINGS_GROUP_ID), false);
 });

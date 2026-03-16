@@ -41,12 +41,20 @@ const { buildServerInfoSnapshot } = require('../src/utils/server-info');
 const { getItemById, matchItems } = require('../src/utils/item-catalog');
 const { normalizeServerMapPayload } = require('../src/utils/server-map-payload');
 const { enrichMapDataWithRustMaps } = require('../src/utils/rustmaps');
-const { setGroup, listGroups, removeGroup, callGroup } = require('../src/call/groups');
+const {
+  setGroup,
+  listGroups,
+  removeGroup,
+  callGroup,
+  getTeamChatIntervalMs,
+  TEAM_CHAT_SETTINGS_GROUP_ID,
+} = require('../src/call/groups');
 const { listPresets, getEventPreset, getCommandPreset } = require('../src/presets');
 const { registerFCM, listenForPairing } = require('../src/pairing/fcm');
 const { createIpcInvoker } = require('./ipc-invoke');
 const { hydrateRule } = require('./event-actions');
 const { applyPersistedCommandRules } = require('./runtime-sync');
+const { createTeamChatDispatcher } = require('../src/utils/team-chat-dispatcher');
 const {
   normalizeEventRuleInput,
   normalizeCommandRuleInput,
@@ -62,6 +70,7 @@ const AUTO_CONNECT = String(process.env.WEB_AUTO_CONNECT || '1') !== '0';
 const MAX_TEAM_MESSAGES = Math.max(20, Number(process.env.WEB_MAX_TEAM_MESSAGES || 120));
 const TEAM_CHAT_MAX_CHARS = Math.max(32, Number(process.env.RUST_TEAM_MESSAGE_MAX_CHARS || 128) || 128);
 const TEAM_CHAT_RPM_LIMIT = Math.max(1, Number(process.env.WEB_TEAM_CHAT_RPM || 20) || 20);
+const FALLBACK_TEAM_CHAT_INTERVAL_MS = 3_000;
 const VERSION = '1.0.0';
 const TEAMCHAT_CONNECTED_BROADCAST = '安静的Rust工具已连接 - 输入help查看全部可触发指令';
 const LEGACY_PLAYER_STATUS_EVENTS = new Set([
@@ -78,6 +87,18 @@ const DEFAULT_PLAYER_STATUS_MESSAGES = {
   respawn: '{member}已重生｜当前位置:{member_grid}',
   afk: '{member}挂机已持续15分钟｜当前位置:{member_grid}',
 };
+
+function getGlobalTeamChatIntervalMs() {
+  return Math.max(1_000, Number(getTeamChatIntervalMs()) || FALLBACK_TEAM_CHAT_INTERVAL_MS);
+}
+
+function normalizeEventRuleForServer(rule, serverId) {
+  return normalizeEventRuleInput(rule, serverId, { defaultCooldownMs: getGlobalTeamChatIntervalMs() });
+}
+
+function normalizeCommandRuleForServer(rule, serverId) {
+  return normalizeCommandRuleInput(rule, serverId, { defaultCooldownMs: getGlobalTeamChatIntervalMs() });
+}
 
 const app = express();
 
@@ -112,6 +133,17 @@ let cmdParser = null;
 let serverInfoTimer = null;
 let fcmStopFn = null;
 let pairingNoNotificationTimer = null;
+const dispatchTeamChat = createTeamChatDispatcher({
+  normalizeMessage: normalizeTeamMessageText,
+  getIntervalMs: () => getGlobalTeamChatIntervalMs(),
+  sendMessage: async (message) => {
+    if (!rustClient?.connected) throw new Error('未连接服务器');
+    await rustClient.sendTeamMessage(message);
+  },
+  onSent: (message) => {
+    pushTeamMessage({ name: 'Me', message });
+  },
+});
 
 function isAuthed(req) {
   if (!REQUIRE_API_TOKEN) return true;
@@ -406,7 +438,7 @@ function buildPersistedCommandSnapshot(keyword, serverId) {
     permission: command.permission || 'all',
     enabled: command.enabled !== false,
     meta: command.meta || {},
-    trigger: command.trigger || { cooldownMs: 3_000 },
+    trigger: command.trigger || { cooldownMs: getGlobalTeamChatIntervalMs() },
     serverId: serverId || null,
     deleted: false,
   };
@@ -421,7 +453,7 @@ async function ensureDefaultCommandRules(serverId) {
   cmdParser.restoreBuiltinCommands?.();
   const applied = [];
   for (const rule of preset.commandRules) {
-    const normalized = normalizeCommandRuleInput({
+    const normalized = normalizeCommandRuleForServer({
       ...rule,
       enabled: true,
       meta: {
@@ -443,7 +475,7 @@ function buildSystemCommandRulesFromParser(serverId) {
   if (!cmdParser) return [];
   return cmdParser.getCommands()
     .filter((command) => command?.isBuiltin)
-    .map((command) => normalizeCommandRuleInput({
+    .map((command) => normalizeCommandRuleForServer({
       id: command.keyword,
       keyword: command.keyword,
       type: command.type || null,
@@ -456,7 +488,7 @@ function buildSystemCommandRulesFromParser(serverId) {
         doChat: true,
         actions: [{ type: 'team_chat' }],
       },
-      trigger: { cooldownMs: 3_000 },
+      trigger: { cooldownMs: getGlobalTeamChatIntervalMs() },
     }, serverId))
     .filter(Boolean);
 }
@@ -471,20 +503,32 @@ function normalizeCommandListRecord(rule = {}) {
     type: rule.type || null,
     isBuiltin: false,
     meta: rule.meta || {},
-    trigger: rule.trigger || { cooldownMs: 3_000 },
+    trigger: rule.trigger || { cooldownMs: getGlobalTeamChatIntervalMs() },
   };
 }
 
 async function syncCallGroupsFromDb() {
   const dbGroups = await listCallGroupsDb();
+  let hasTeamChatSettings = false;
   const dbIds = new Set(dbGroups.map((g) => String(g.id || '')));
   for (const inMemory of listGroups()) {
     const gid = String(inMemory?.id || '');
-    if (gid && !dbIds.has(gid)) removeGroup(gid);
+    if (gid && gid !== TEAM_CHAT_SETTINGS_GROUP_ID && !dbIds.has(gid)) removeGroup(gid);
   }
   for (const group of dbGroups) {
     if (!group?.id) continue;
     setGroup(group.id, group);
+    if (String(group.id) === TEAM_CHAT_SETTINGS_GROUP_ID) hasTeamChatSettings = true;
+  }
+  if (!hasTeamChatSettings) {
+    const teamChatGroup = normalizeCallGroupInput({
+      id: TEAM_CHAT_SETTINGS_GROUP_ID,
+      kind: 'team_chat_settings',
+      name: '团队聊天',
+      intervalMs: FALLBACK_TEAM_CHAT_INTERVAL_MS,
+    });
+    setGroup(teamChatGroup.id, teamChatGroup);
+    await saveCallGroupDb(teamChatGroup);
   }
   return dbGroups;
 }
@@ -538,7 +582,7 @@ function createRuleActionDeps() {
     },
     sendTeamMessage: async (message) => {
       if (!rustClient?.connected) return;
-      await rustClient.sendTeamMessage(normalizeTeamMessageText(message));
+      await dispatchTeamChat(message);
     },
     toggleSwitch: async ({ entityId, state }) => {
       if (!rustClient?.connected) return;
@@ -570,7 +614,7 @@ async function bootstrapRuntimeForConnectedServer(serverConfig) {
     },
     teamChatRunner: async (message) => {
       if (!rustClient?.connected) return;
-      await rustClient.sendTeamMessage(normalizeTeamMessageText(message));
+      await dispatchTeamChat(message);
     },
   });
 
@@ -604,7 +648,7 @@ async function bootstrapRuntimeForConnectedServer(serverConfig) {
   if (!safeRules.length) {
     const preset = getEventPreset('event_system_default');
     for (const rule of preset?.eventRules || []) {
-      const normalized = normalizeEventRuleInput(rule, serverConfig.id);
+      const normalized = normalizeEventRuleForServer(rule, serverConfig.id);
       await saveEventRule(normalized);
     }
     safeRules = await listEventRules(serverConfig.id);
@@ -616,7 +660,7 @@ async function bootstrapRuntimeForConnectedServer(serverConfig) {
       name: '队友状态整合事件',
       event: 'player_status',
       serverId: serverConfig.id,
-      trigger: { cooldownMs: 5_000 },
+      trigger: { cooldownMs: getGlobalTeamChatIntervalMs() },
       enabled: true,
       _meta: {
         doNotify: false,
@@ -689,8 +733,7 @@ async function sendTeamChatWithGuards(rawMessage) {
       windowMs: 60_000,
       message: `发送过于频繁：每分钟最多 ${TEAM_CHAT_RPM_LIMIT} 条`,
     });
-    await rustClient.sendTeamMessage(message);
-    pushTeamMessage({ name: 'Me', message });
+    await dispatchTeamChat(message);
     return { success: true };
   } catch (err) {
     if (err instanceof RateLimitError || err?.code === 'RATE_LIMIT') {
@@ -1098,7 +1141,7 @@ const invokeIpc = createIpcInvoker({
     if (!rustClient?.connected || !runtime.currentServerId) {
       return { success: false, error: '未连接服务器，无法新增事件规则' };
     }
-    const normalized = normalizeEventRuleInput(args[0] || {}, runtime.currentServerId);
+    const normalized = normalizeEventRuleForServer(args[0] || {}, runtime.currentServerId);
     if (LEGACY_PLAYER_STATUS_EVENTS.has(String(normalized.event || ''))) {
       return { success: false, error: '队友单项事件已下线，请使用「队友状态整合」事件' };
     }
@@ -1153,7 +1196,7 @@ const invokeIpc = createIpcInvoker({
     const incoming = args[0] || {};
     const keyword = String(incoming?.keyword || '').toLowerCase().trim();
     if (!keyword) return { success: false, error: '缺少指令关键词' };
-    const payload = normalizeCommandRuleInput(incoming, runtime.currentServerId);
+    const payload = normalizeCommandRuleForServer(incoming, runtime.currentServerId);
     if (!payload) return { success: false, error: '缺少指令关键词' };
     if (!cmdParser?.setCommandRule(payload)) {
       return { success: false, error: '指令规则创建失败（类型或关键词无效）' };
@@ -1182,7 +1225,7 @@ const invokeIpc = createIpcInvoker({
         name: String(current.description || '').trim(),
         permission: current.permission || 'all',
         meta: current.meta || {},
-        trigger: current.trigger || { cooldownMs: 3_000 },
+        trigger: current.trigger || { cooldownMs: getGlobalTeamChatIntervalMs() },
         serverId: runtime.currentServerId,
       };
       await saveCommandRule({
@@ -1218,7 +1261,10 @@ const invokeIpc = createIpcInvoker({
         }
       }
       for (const rule of preset.eventRules || []) {
-        const normalized = normalizeEventRuleInput(rule, runtime.currentServerId);
+        const normalized = normalizeEventRuleForServer({
+          ...rule,
+          trigger: { ...(rule.trigger || {}), cooldownMs: getGlobalTeamChatIntervalMs() },
+        }, runtime.currentServerId);
         eventEngine?.addRule(hydrateRule(normalized, createRuleActionDeps()));
         await saveEventRule(normalized);
       }
@@ -1241,7 +1287,7 @@ const invokeIpc = createIpcInvoker({
       }
       const rulesToApply = buildSystemCommandRulesFromParser(runtime.currentServerId);
       for (const rule of rulesToApply.length ? rulesToApply : (preset.commandRules || [])) {
-        const normalized = normalizeCommandRuleInput({
+        const normalized = normalizeCommandRuleForServer({
           ...rule,
           enabled: true,
           meta: {
@@ -1250,6 +1296,7 @@ const invokeIpc = createIpcInvoker({
             doChat: true,
             actions: [{ type: 'team_chat' }],
           },
+          trigger: { ...(rule.trigger || {}), cooldownMs: getGlobalTeamChatIntervalMs() },
         }, runtime.currentServerId);
         if (!normalized) continue;
         if (cmdParser) {
@@ -1275,6 +1322,9 @@ const invokeIpc = createIpcInvoker({
     return { success: true, group: normalized };
   },
   'callgroup:remove': async (args) => {
+    if (String(args[0] || '') === TEAM_CHAT_SETTINGS_GROUP_ID) {
+      return { success: false, error: '系统团队聊天配置不可删除' };
+    }
     const id = String(args[0] || '').trim();
     if (!id) return { success: false, error: '缺少呼叫组ID' };
     removeGroup(id);

@@ -1225,18 +1225,26 @@ input, textarea, select { font-family:inherit; }
       <span id="cg-modal-title">新建呼叫组</span>
       <button class="modal-close" onclick="closeModal('modal-callgroup')">✕</button>
     </div>
+    <div class="form-row" id="cg-teamchat-note" style="display:none">
+      <div style="font-size:12px;color:var(--text2)">这是系统内置的团队聊天配置。不可删除，仅用于控制全部发送到团队聊天的全局发送间隔。</div>
+    </div>
     <div class="form-row">
       <div class="form-label">组名称</div>
       <input class="input" id="cg-name" placeholder="例如：核心成员组">
     </div>
-    <div class="form-row">
+    <div class="form-row" id="cg-teamchat-interval-row" style="display:none">
+      <div class="form-label">团队聊天发送间隔（秒）</div>
+      <input class="input" id="cg-teamchat-interval" type="number" value="3" min="1">
+      <div style="font-size:11px;color:var(--text3)">对全部发送到团队聊天生效。事件逻辑和指令逻辑里如果自定义了冷却时间，会优先使用自定义值。</div>
+    </div>
+    <div class="form-row" id="cg-phone-row">
       <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);cursor:pointer">
         <input type="checkbox" id="cg-phone-enabled" checked style="accent-color:var(--blue)"> 电话配置（语音通知）
       </label>
       <div class="form-label">电话成员（每行一个：名字,+86手机号）</div>
       <textarea class="input" id="cg-members" rows="4" placeholder="张三,+8613800000001&#10;李四,+8613900000002"></textarea>
     </div>
-    <div class="form-row">
+    <div class="form-row" id="cg-kook-row">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
         <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);cursor:pointer">
           <input type="checkbox" id="cg-kook-enabled" style="accent-color:var(--blue)"> KOOK 配置
@@ -1246,7 +1254,7 @@ input, textarea, select { font-family:inherit; }
       <input class="input" id="cg-kook-webhook" placeholder="https://www.kookapp.cn/api/webhook/...">
       <div style="font-size:11px;color:var(--text3)">当前使用 Webhook 推送，不需要 KOOK Bot Token。</div>
     </div>
-    <div class="form-row">
+    <div class="form-row" id="cg-discord-row">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
         <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);cursor:pointer">
           <input type="checkbox" id="cg-discord-enabled" style="accent-color:var(--blue)"> Discord 配置
@@ -1256,7 +1264,7 @@ input, textarea, select { font-family:inherit; }
       <input class="input" id="cg-discord-webhook" placeholder="https://discord.com/api/webhooks/...">
       <div style="font-size:11px;color:var(--text3)">当前使用 Webhook 推送，不需要 Discord Bot Token。</div>
     </div>
-    <div class="form-row">
+    <div class="form-row" id="cg-enabled-row">
       <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);cursor:pointer">
         <input type="checkbox" id="cg-enabled" checked style="accent-color:var(--blue)"> 启用此呼叫组
       </label>
@@ -1360,6 +1368,7 @@ const state = {
     dragOriginY: 0,
   },
 };
+const TEAM_CHAT_SETTINGS_GROUP_ID = '__team_chat_settings__';
 
 // ── 事件类型 → 中文标签映射 ────────────────────
 const EVENT_LABELS = {
@@ -1564,9 +1573,28 @@ async function ensureCallGroupsLoaded() {
   return state.callGroups || [];
 }
 
+function isSystemTeamChatGroup(group = {}) {
+  return String(group?.id || '') === TEAM_CHAT_SETTINGS_GROUP_ID || String(group?.kind || '') === 'team_chat_settings';
+}
+
+function getGlobalTeamChatGroup() {
+  return (state.callGroups || []).find((group) => isSystemTeamChatGroup(group)) || {
+    id: TEAM_CHAT_SETTINGS_GROUP_ID,
+    kind: 'team_chat_settings',
+    name: '团队聊天',
+    intervalMs: 3000,
+  };
+}
+
+function getGlobalTeamChatIntervalSec() {
+  const intervalMs = Number(getGlobalTeamChatGroup()?.intervalMs);
+  return Number.isFinite(intervalMs) && intervalMs > 0 ? Math.max(1, Math.round(intervalMs / 1000)) : 3;
+}
+
 function getCallGroupOptions(selected = '') {
   const selectedId = String(selected || '');
   return (state.callGroups || [])
+    .filter((group) => !isSystemTeamChatGroup(group))
     .map((group) => {
       const id = String(group?.id || '');
       if (!id) return '';
@@ -4702,7 +4730,7 @@ function openAddEventModal() {
   openModal('modal-event');
   document.getElementById('ev-name').value = '';
   document.getElementById('ev-message').value = '';
-  document.getElementById('ev-cooldown').value = '30';
+  document.getElementById('ev-cooldown').value = String(getGlobalTeamChatIntervalSec());
   document.getElementById('ev-act-notify').checked = false;
   document.getElementById('ev-act-chat').checked = true;
   document.getElementById('ev-act-callgroup').checked = false;
@@ -4731,7 +4759,8 @@ function editRule(ruleId) {
 async function saveEventRule() {
   const name     = document.getElementById('ev-name').value.trim();
   const event    = document.getElementById('ev-type').value;
-  const cooldown = parseInt(document.getElementById('ev-cooldown').value, 10) || 30;
+  const cooldownRaw = parseInt(document.getElementById('ev-cooldown').value, 10);
+  const cooldown = Number.isFinite(cooldownRaw) && cooldownRaw >= 0 ? cooldownRaw : getGlobalTeamChatIntervalSec();
   const message  = document.getElementById('ev-message').value.trim();
   const doNotify = document.getElementById('ev-act-notify').checked;
   const doChat   = document.getElementById('ev-act-chat').checked;
@@ -5060,7 +5089,8 @@ async function saveCmdRule() {
   const permission = document.getElementById('cmd-permission').value;
   const keywordRaw = document.getElementById('cmd-keyword').value.trim();
   const keyword = (keywordRaw || DEFAULT_KEYWORD_BY_TYPE[type] || '').toLowerCase();
-  const cooldown = Math.max(0, parseInt(document.getElementById('cmd-cooldown')?.value, 10) || 3);
+  const cooldownRaw = parseInt(document.getElementById('cmd-cooldown')?.value, 10);
+  const cooldown = Number.isFinite(cooldownRaw) && cooldownRaw >= 0 ? cooldownRaw : getGlobalTeamChatIntervalSec();
   const doNotify = !!document.getElementById('cmd-act-notify')?.checked;
   const doChat = !!document.getElementById('cmd-act-chat')?.checked;
   const doCallGroup = type !== 'call_group' && !!document.getElementById('cmd-act-callgroup')?.checked;
@@ -5147,7 +5177,7 @@ function openAddCmdModal() {
   document.getElementById('cmd-name').value = '';
   document.getElementById('cmd-permission').value = 'all';
   document.getElementById('cmd-keyword').value = DEFAULT_KEYWORD_BY_TYPE.ai;
-  document.getElementById('cmd-cooldown').value = '3';
+  document.getElementById('cmd-cooldown').value = String(getGlobalTeamChatIntervalSec());
   document.getElementById('cmd-act-notify').checked = false;
   document.getElementById('cmd-act-chat').checked = true;
   document.getElementById('cmd-act-callgroup').checked = false;
@@ -5163,7 +5193,7 @@ function editCommandRule(keyword) {
   document.getElementById('cmd-name').value = rule.name || '';
   document.getElementById('cmd-permission').value = rule.permission || 'all';
   document.getElementById('cmd-keyword').value = rule.keyword || '';
-  document.getElementById('cmd-cooldown').value = Math.max(0, Math.round((rule.trigger?.cooldownMs ?? 3000) / 1000));
+  document.getElementById('cmd-cooldown').value = Math.max(0, Math.round((rule.trigger?.cooldownMs ?? (getGlobalTeamChatIntervalSec() * 1000)) / 1000));
   const actions = buildMetaActionsFromToggles(rule.meta || {});
   document.getElementById('cmd-act-notify').checked = actions.some((item) => item?.type === 'notify_desktop');
   document.getElementById('cmd-act-chat').checked = actions.some((item) => item?.type === 'team_chat' || item?.type === 'send_game_message');
@@ -5198,24 +5228,36 @@ async function loadCallGroups() {
       <div style="display:flex;justify-content:space-between;align-items:flex-start">
         <div>
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px">
-            <div style="font-weight:700;font-size:14px">📞 ${esc(g.name)}</div>
-            <span class="tag ${g.enabled === false ? 'tag-red' : 'tag-green'}">${g.enabled === false ? '已禁用' : '已启用'}</span>
+            <div style="font-weight:700;font-size:14px">${isSystemTeamChatGroup(g) ? '💬' : '📞'} ${esc(g.name)}</div>
+            <span class="tag ${isSystemTeamChatGroup(g) ? 'tag-blue' : (g.enabled === false ? 'tag-red' : 'tag-green')}">${isSystemTeamChatGroup(g) ? '系统配置' : (g.enabled === false ? '已禁用' : '已启用')}</span>
           </div>
-          <div style="display:flex;flex-wrap:wrap;gap:5px">
+          <div style="display:${isSystemTeamChatGroup(g) ? 'none' : 'flex'};flex-wrap:wrap;gap:5px">
             ${(g.phone?.members || g.members || []).map(m => `<span class="member-chip">👤 ${esc(m.name || m.phone)}</span>`).join('')}
           </div>
           <div style="font-size:11px;color:var(--text3);margin-top:8px">
-            电话:${(g.phone?.enabled && (g.phone?.members || []).length) ? `${(g.phone?.members || []).length}人` : '关'} · KOOK:${g.kook?.enabled && g.kook?.webhookUrl ? '开' : '关'} · Discord:${g.discord?.enabled && g.discord?.webhookUrl ? '开' : '关'}
+            ${isSystemTeamChatGroup(g)
+              ? `全局团队聊天发送间隔：${Math.max(1, Math.round(Number(g.intervalMs || 3000) / 1000))}秒`
+              : `电话:${(g.phone?.enabled && (g.phone?.members || []).length) ? `${(g.phone?.members || []).length}人` : '关'} · KOOK:${g.kook?.enabled && g.kook?.webhookUrl ? '开' : '关'} · Discord:${g.discord?.enabled && g.discord?.webhookUrl ? '开' : '关'}`}
           </div>
         </div>
         <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">
           <button class="btn btn-ghost btn-sm" onclick="editCallGroup(${jsArg(g.id)})">编辑</button>
-          <button class="btn btn-ghost btn-sm" onclick="toggleCallGroupEnabled(${jsArg(g.id)})">${g.enabled === false ? '启用' : '禁用'}</button>
-          <button class="btn btn-green btn-sm" onclick="testCall(${jsArg(g.id)})">📞 测试呼叫</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteCallGroup(${jsArg(g.id)})">删除</button>
+          ${isSystemTeamChatGroup(g) ? '' : `<button class="btn btn-ghost btn-sm" onclick="toggleCallGroupEnabled(${jsArg(g.id)})">${g.enabled === false ? '启用' : '禁用'}</button>`}
+          ${isSystemTeamChatGroup(g) ? '' : `<button class="btn btn-green btn-sm" onclick="testCall(${jsArg(g.id)})">📞 测试呼叫</button>`}
+          ${isSystemTeamChatGroup(g) ? '' : `<button class="btn btn-danger btn-sm" onclick="deleteCallGroup(${jsArg(g.id)})">删除</button>`}
         </div>
       </div>
     </div>`).join('');
+}
+
+function applyCallGroupModalMode(group = null) {
+  const isSystem = isSystemTeamChatGroup(group || { id: state.editingCallGroupId });
+  document.getElementById('cg-teamchat-note').style.display = isSystem ? 'block' : 'none';
+  document.getElementById('cg-teamchat-interval-row').style.display = isSystem ? 'block' : 'none';
+  document.getElementById('cg-phone-row').style.display = isSystem ? 'none' : 'block';
+  document.getElementById('cg-kook-row').style.display = isSystem ? 'none' : 'block';
+  document.getElementById('cg-discord-row').style.display = isSystem ? 'none' : 'block';
+  document.getElementById('cg-enabled-row').style.display = isSystem ? 'none' : 'block';
 }
 
 function openCallGroupTutorial(type) {
@@ -5243,6 +5285,8 @@ function openAddGroupModal() {
   document.getElementById('cg-discord-enabled').checked = false;
   document.getElementById('cg-discord-webhook').value = '';
   document.getElementById('cg-enabled').checked = true;
+  document.getElementById('cg-teamchat-interval').value = String(getGlobalTeamChatIntervalSec());
+  applyCallGroupModalMode(null);
 }
 
 function editCallGroup(groupId) {
@@ -5253,7 +5297,7 @@ function editCallGroup(groupId) {
   }
   state.editingCallGroupId = String(group.id);
   openModal('modal-callgroup');
-  document.getElementById('cg-modal-title').textContent = '编辑呼叫组';
+  document.getElementById('cg-modal-title').textContent = isSystemTeamChatGroup(group) ? '编辑团队聊天配置' : '编辑呼叫组';
   document.getElementById('cg-save-btn').textContent = '保存修改';
   document.getElementById('cg-name').value = String(group.name || '');
   document.getElementById('cg-members').value = (group.phone?.members || group.members || [])
@@ -5265,6 +5309,8 @@ function editCallGroup(groupId) {
   document.getElementById('cg-discord-enabled').checked = !!group.discord?.enabled;
   document.getElementById('cg-discord-webhook').value = String(group.discord?.webhookUrl || '');
   document.getElementById('cg-enabled').checked = group.enabled !== false;
+  document.getElementById('cg-teamchat-interval').value = String(Math.max(1, Math.round(Number(group.intervalMs || 3000) / 1000)));
+  applyCallGroupModalMode(group);
 }
 
 async function toggleCallGroupEnabled(groupId) {
@@ -5285,6 +5331,23 @@ async function toggleCallGroupEnabled(groupId) {
 
 async function saveCallGroup() {
   const name = document.getElementById('cg-name').value.trim();
+  const editingGroup = state.callGroups.find((item) => String(item.id) === String(state.editingCallGroupId || ''));
+  if (isSystemTeamChatGroup(editingGroup)) {
+    const intervalRaw = parseInt(document.getElementById('cg-teamchat-interval')?.value, 10);
+    const intervalSec = Number.isFinite(intervalRaw) && intervalRaw > 0 ? intervalRaw : 3;
+    await rustAPI.setCallGroup({
+      id: TEAM_CHAT_SETTINGS_GROUP_ID,
+      kind: 'team_chat_settings',
+      name: name || '团队聊天',
+      intervalMs: intervalSec * 1000,
+      enabled: true,
+    });
+    toast('success', '团队聊天全局配置已更新');
+    state.editingCallGroupId = null;
+    closeModal('modal-callgroup');
+    loadCallGroups();
+    return;
+  }
   const rawLines = document.getElementById('cg-members').value.trim().split('\n').filter(Boolean);
   const phoneEnabled = !!document.getElementById('cg-phone-enabled')?.checked;
   const kookEnabled = !!document.getElementById('cg-kook-enabled')?.checked;
@@ -5376,6 +5439,10 @@ async function confirmPairingDevice() {
 }
 
 async function deleteCallGroup(id) {
+  if (String(id || '') === TEAM_CHAT_SETTINGS_GROUP_ID) {
+    toast('warning', '系统团队聊天配置不可删除');
+    return;
+  }
   if (!confirm('确认删除此呼叫组？')) return;
   await rustAPI.removeCallGroup(id);
   if (String(state.editingCallGroupId || '') === String(id)) state.editingCallGroupId = null;

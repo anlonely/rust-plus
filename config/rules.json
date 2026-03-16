@@ -82,7 +82,7 @@
           "afk": "{member}挂机已持续15分钟｜当前位置:{member_grid}"
         }
       },
-      "updatedAt": "2026-03-16T09:35:01.746Z",
+      "updatedAt": "2026-03-16T11:13:40.048Z",
       "createdAt": "2026-03-16T09:28:06.273Z"
     },
     {
@@ -112,7 +112,7 @@
           "explode": "武直已被击落｜坠落位置:{marker_grid}"
         }
       },
-      "updatedAt": "2026-03-16T09:35:01.744Z",
+      "updatedAt": "2026-03-16T11:13:40.045Z",
       "createdAt": "2026-03-16T09:28:06.273Z"
     },
     {
@@ -140,7 +140,7 @@
           "leave": "军用运输直升机已离开地图｜最后位置:{marker_grid}"
         }
       },
-      "updatedAt": "2026-03-16T09:35:01.743Z",
+      "updatedAt": "2026-03-16T11:13:40.044Z",
       "createdAt": "2026-03-16T09:28:06.274Z"
     },
     {
@@ -170,7 +170,7 @@
           "dock": "货船已停靠 ｜{cargo_harbor} [{cargo_harbor_grid}]"
         }
       },
-      "updatedAt": "2026-03-16T09:35:01.741Z",
+      "updatedAt": "2026-03-16T11:13:40.041Z",
       "createdAt": "2026-03-16T09:28:06.275Z"
     },
     {
@@ -200,7 +200,7 @@
           "small_unlock": "小石油箱子已解锁｜方向：{oil_direction}"
         }
       },
-      "updatedAt": "2026-03-16T09:35:01.742Z",
+      "updatedAt": "2026-03-16T11:13:40.042Z",
       "createdAt": "2026-03-16T09:28:06.276Z"
     },
     {
@@ -230,7 +230,7 @@
           "leave": "流浪商人离开地图｜最后位置:{marker_grid}"
         }
       },
-      "updatedAt": "2026-03-16T09:35:01.745Z",
+      "updatedAt": "2026-03-16T11:13:40.046Z",
       "createdAt": "2026-03-16T09:28:06.277Z"
     },
     {
@@ -286,7 +286,7 @@
           }
         ]
       },
-      "updatedAt": "2026-03-16T09:35:01.740Z",
+      "updatedAt": "2026-03-16T11:13:40.039Z",
       "createdAt": "2026-03-16T09:28:06.278Z"
     },
     {
@@ -312,7 +312,7 @@
           "close": "深海已关闭"
         }
       },
-      "updatedAt": "2026-03-16T09:35:01.746Z",
+      "updatedAt": "2026-03-16T11:13:40.047Z",
       "createdAt": "2026-03-16T09:28:06.279Z"
     },
     {
@@ -1090,17 +1090,41 @@
       },
       "updatedAt": "2026-03-14T15:40:05.420Z",
       "createdAt": "2026-03-14T15:28:02.475Z"
+    },
+    {
+      "id": "__team_chat_settings__",
+      "kind": "team_chat_settings",
+      "system": true,
+      "locked": true,
+      "name": "团队聊天",
+      "enabled": true,
+      "intervalMs": 3000,
+      "phone": {
+        "enabled": false,
+        "members": []
+      },
+      "kook": {
+        "enabled": false,
+        "webhookUrl": ""
+      },
+      "discord": {
+        "enabled": false,
+        "webhookUrl": ""
+      },
+      "members": [],
+      "updatedAt": "2026-03-16T11:11:38.426Z",
+      "createdAt": "2026-03-16T11:11:38.427Z"
     }
   ],
   "appState": {
     "lastServerId": "server_1773632567536",
     "deepSea": {
-      "lastOpenAt": "2026-03-16T07:34:02.120Z",
+      "lastOpenAt": "2026-03-16T10:55:14.267Z",
       "lastCloseAt": "2026-03-16T06:42:59.353Z",
       "lastDirection": "南",
       "lastEntryGrid": "A12",
-      "lastEntryCoord": "x=0, y=2655",
-      "updatedAt": "2026-03-16T09:05:43.122Z"
+      "lastEntryCoord": "x=0, y=2691",
+      "updatedAt": "2026-03-16T11:13:51.274Z"
     }
   }
 }

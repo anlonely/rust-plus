@@ -12,6 +12,7 @@ const { normalizeSteamId64 } = require('../utils/steam-id');
 const { matchItems, getItemById } = require('../utils/item-catalog');
 const { matchCctvEntries } = require('../utils/cctv-codes');
 const RUST_TEAM_MESSAGE_MAX_CHARS = Math.max(32, parseInt(process.env.RUST_TEAM_MESSAGE_MAX_CHARS || '128', 10) || 128);
+const RUST_TEAM_MESSAGE_LINE_DELAY_MS = Math.max(1000, parseInt(process.env.RUST_TEAM_MESSAGE_LINE_DELAY_MS || '5000', 10) || 5000);
 
 class CommandParser {
   constructor({
@@ -249,17 +250,10 @@ class CommandParser {
 
   async _reply(message) {
     if (!this._client?.connected) return;
-    const lines = String(message).split('\n');
-    for (let i = 0; i < lines.length; i++) {
-      const clean = this._stripEmoji(lines[i]).trim();
-      if (clean) {
-        try { await this._client.sendTeamMessage(clean); }
-        catch (e) { logger.error('[CMD] 发送失败: ' + e.message); }
-        if (i < lines.length - 1) {
-          await new Promise((r) => setTimeout(r, 1500));
-        }
-      }
-    }
+    await this._sendTeamChatLines(message, async (line) => {
+      try { await this._client.sendTeamMessage(line); }
+      catch (e) { logger.error('[CMD] 发送失败: ' + e.message); }
+    }, { delayMs: RUST_TEAM_MESSAGE_LINE_DELAY_MS });
   }
 
   _stripEmoji(text) {
@@ -332,10 +326,25 @@ class CommandParser {
 
   async _sendTeamChatMessage(message) {
     if (typeof this._teamChatRunner === 'function') {
-      await this._teamChatRunner(message);
+      await this._sendTeamChatLines(message, async (line) => {
+        await this._teamChatRunner(line);
+      }, { delayMs: 0 });
       return;
     }
     await this._reply(message);
+  }
+
+  async _sendTeamChatLines(message, sender, { delayMs = RUST_TEAM_MESSAGE_LINE_DELAY_MS } = {}) {
+    const lines = String(message)
+      .split('\n')
+      .map((line) => this._stripEmoji(line).trim())
+      .filter(Boolean);
+    for (let i = 0; i < lines.length; i += 1) {
+      await sender(lines[i]);
+      if (i < lines.length - 1 && delayMs > 0) {
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+      }
+    }
   }
 
   async _dispatchCommandActions({ keyword, command, message }) {
@@ -411,8 +420,8 @@ class CommandParser {
       })
       .filter(Boolean);
     const lines = [];
-    for (let i = 0; i < tokens.length; i += 2) {
-      const pair = tokens.slice(i, i + 2).join('  ');
+    for (let i = 0; i < tokens.length; i += 4) {
+      const pair = tokens.slice(i, i + 4).join('  ');
       if (i === 0) {
         lines.push(`${label}监控代码：${pair}`);
       } else {
@@ -1245,9 +1254,8 @@ class CommandParser {
         jk: '监控代码查询 <地点关键词> 例: jk 强盗',
         help: '显示帮助',
       };
-      const cmds = Object.entries(this._commands)
-        .filter(([k, v]) => k !== 'dz' && String(v?.type || '') !== 'change_leader')
-        .map(([k, v]) => `${k}: ${helpOverrides[k] || v.description}${v.permission === 'leader' ? '（仅队长）' : ''}`);
+      const cmds = this.getCommands()
+        .map((command) => `${command.keyword}: ${helpOverrides[command.keyword] || command.description}${command.permission === 'leader' ? '（仅队长）' : ''}`);
       return cmds.join('\n');
     }, { description: '帮助' });
   }

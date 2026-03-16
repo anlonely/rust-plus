@@ -31,24 +31,33 @@ const RustClient           = require('../src/connection/client');
 const EventEngine          = require('../src/events/engine');
 const CommandParser        = require('../src/commands/parser');
 const { notify }           = require('../src/notify/service');
-const { setGroup, listGroups, removeGroup, callGroup, normalizeGroupConfig } = require('../src/call/groups');
+const {
+  setGroup,
+  listGroups,
+  removeGroup,
+  callGroup,
+  getTeamChatIntervalMs,
+  TEAM_CHAT_SETTINGS_GROUP_ID,
+} = require('../src/call/groups');
 const { listPresets, getEventPreset, getCommandPreset } = require('../src/presets');
 const { getSteamProfileStatus, logoutSteam } = require('../src/steam/profile');
 const { formatServerInfoText, buildServerInfoSnapshot } = require('../src/utils/server-info');
 const { markerToGrid9, markerToNearestEdgeDirection } = require('../src/utils/map-grid');
 const { toSafeExternalUrl } = require('../src/utils/security');
 const { consumeRateLimit, RateLimitError } = require('../src/utils/rate-limit');
+const { createTeamChatDispatcher } = require('../src/utils/team-chat-dispatcher');
 const { getItemById, matchItems } = require('../src/utils/item-catalog');
 const { normalizeServerMapPayload } = require('../src/utils/server-map-payload');
 const { enrichMapDataWithRustMaps } = require('../src/utils/rustmaps');
 const { getConfigDir } = require('../src/utils/runtime-paths');
-const { normalizeEventRuleInput, normalizeCommandRuleInput } = require('../src/utils/web-config-rules');
+const { normalizeEventRuleInput, normalizeCommandRuleInput, normalizeCallGroupInput } = require('../src/utils/web-config-rules');
 const {
   VENDING_NEW_WATCH_ITEM_IDS,
   VENDING_NEW_WATCH_ITEM_NAMES,
 } = require('../src/utils/vending-watchlist');
 const TEAM_CHAT_MAX_CHARS = Math.max(32, Number(process.env.RUST_TEAM_MESSAGE_MAX_CHARS || 128) || 128);
 const TEAM_CHAT_RPM_LIMIT = Math.max(1, Number(process.env.GUI_TEAM_CHAT_RPM || 20) || 20);
+const FALLBACK_TEAM_CHAT_INTERVAL_MS = 3_000;
 
 let mainWindow = null;
 let tray = null;
@@ -160,6 +169,27 @@ const LEGACY_PLAYER_STATUS_EVENTS = new Set([
 const DEFAULT_VENDING_NEW_MESSAGE = '发现 {vending_items}上架售货机 | 坐标:[{marker_grid}]';
 const TEAMCHAT_CONNECTED_BROADCAST = '安静的Rust工具已连接 - 输入help查看全部可触发指令';
 
+function getGlobalTeamChatIntervalMs() {
+  return Math.max(1_000, Number(getTeamChatIntervalMs()) || FALLBACK_TEAM_CHAT_INTERVAL_MS);
+}
+
+function normalizeEventRuleForServer(rule, serverId) {
+  return normalizeEventRuleInput(rule, serverId, { defaultCooldownMs: getGlobalTeamChatIntervalMs() });
+}
+
+function normalizeCommandRuleForServer(rule, serverId) {
+  return normalizeCommandRuleInput(rule, serverId, { defaultCooldownMs: getGlobalTeamChatIntervalMs() });
+}
+
+const dispatchTeamChat = createTeamChatDispatcher({
+  normalizeMessage: normalizeTeamMessageText,
+  getIntervalMs: () => getGlobalTeamChatIntervalMs(),
+  sendMessage: async (message) => {
+    if (!rustClient?.connected) throw new Error('未连接');
+    await rustClient.sendTeamMessage(message);
+  },
+});
+
 function normalizeVendingNewTrigger(trigger = {}) {
   const next = { ...(trigger || {}) };
   const ids = Array.isArray(next.vendingWatchItemIds)
@@ -234,7 +264,7 @@ async function sendTeamChatWithGuards(rawMessage) {
       windowMs: 60_000,
       message: `发送过于频繁：每分钟最多 ${TEAM_CHAT_RPM_LIMIT} 条`,
     });
-    await rustClient.sendTeamMessage(message);
+    await dispatchTeamChat(message);
     return { success: true };
   } catch (e) {
     if (e instanceof RateLimitError || e?.code === 'RATE_LIMIT') {
@@ -349,7 +379,7 @@ function buildActionsFromMeta(meta, eventType) {
       return async (context) => {
         if (!rustClient?.connected) return;
         const message = renderMessageTemplate(resolveTemplate(action.message || msg, context), eventType, context);
-        await rustClient.sendTeamMessage(message);
+        await dispatchTeamChat(message);
       };
     }
     if (type === 'switch_control') {
@@ -389,7 +419,7 @@ function buildActionsFromMeta(meta, eventType) {
     actions.push(async (context) => {
       if (!rustClient?.connected) return;
       const message = renderMessageTemplate(resolveTemplate(msg, context), eventType, context);
-      await rustClient.sendTeamMessage(message);
+      await dispatchTeamChat(message);
     });
   }
 
@@ -816,6 +846,7 @@ function hydrateRule(rule) {
 }
 
 function buildSystemEventTemplates(serverId) {
+  const globalCooldownMs = getGlobalTeamChatIntervalMs();
   const chatMeta = (message) => ({
     doNotify: false,
     doChat: true,
@@ -826,7 +857,7 @@ function buildSystemEventTemplates(serverId) {
       id: 'vending_new_notify',
       name: '新售货机出现事件',
       event: 'vending_new',
-      trigger: normalizeVendingNewTrigger({ cooldownMs: 30_000 }),
+      trigger: normalizeVendingNewTrigger({ cooldownMs: globalCooldownMs }),
       enabled: true,
       serverId,
       _meta: chatMeta(DEFAULT_VENDING_NEW_MESSAGE),
@@ -836,7 +867,7 @@ function buildSystemEventTemplates(serverId) {
       id: 'day_phase_notice',
       name: '天黑天亮提醒',
       event: 'day_phase_notice',
-      trigger: { cooldownMs: 30_000 },
+      trigger: { cooldownMs: globalCooldownMs },
       enabled: true,
       serverId,
       _meta: chatMeta('当前游戏时间{hourly_time} ｜{day_phase}｜距离{phase_target}还有{time_to_phase_real}'),
@@ -846,7 +877,7 @@ function buildSystemEventTemplates(serverId) {
       name: '军用运输直升机事件整合',
       event: 'ch47_status',
       trigger: {
-        cooldownMs: 30_000,
+        cooldownMs: globalCooldownMs,
         ch47NotifyEnter: true,
         ch47NotifyActive: false,
         ch47NotifyLeave: true,
@@ -863,7 +894,7 @@ function buildSystemEventTemplates(serverId) {
       name: '武装直升机事件整合',
       event: 'patrol_heli_status',
       trigger: {
-        cooldownMs: 30_000,
+        cooldownMs: globalCooldownMs,
         heliNotifyEnter: true,
         heliNotifyActive: false,
         heliNotifyLeave: true,
@@ -881,7 +912,7 @@ function buildSystemEventTemplates(serverId) {
       name: '流浪商人事件整合',
       event: 'vendor_status',
       trigger: {
-        cooldownMs: 60_000,
+        cooldownMs: globalCooldownMs,
         vendorNotifyEnter: true,
         vendorNotifyMove: false,
         vendorNotifyStopped: true,
@@ -899,7 +930,7 @@ function buildSystemEventTemplates(serverId) {
       name: '深海整合',
       event: 'deep_sea_status',
       trigger: {
-        cooldownMs: 30_000,
+        cooldownMs: globalCooldownMs,
         deepSeaNotifyOpen: true,
         deepSeaNotifyClose: true,
       },
@@ -915,7 +946,7 @@ function buildSystemEventTemplates(serverId) {
       name: '货船事件整合',
       event: 'cargo_ship_status',
       trigger: {
-        cooldownMs: 30_000,
+        cooldownMs: globalCooldownMs,
         cargoNotifyEnter: true,
         cargoNotifyLeave: true,
         cargoNotifyActive: false,
@@ -933,7 +964,7 @@ function buildSystemEventTemplates(serverId) {
       name: '石油事件整合',
       event: 'oil_rig_status',
       trigger: {
-        cooldownMs: 30_000,
+        cooldownMs: globalCooldownMs,
         oilNotifyLargeHeavy: true,
         oilNotifySmallHeavy: true,
         oilNotifyLargeUnlock: true,
@@ -950,7 +981,7 @@ function buildSystemEventTemplates(serverId) {
       id: 'player_status_notify',
       name: '队友状态整合事件',
       event: 'player_status',
-      trigger: { cooldownMs: 5_000 },
+      trigger: { cooldownMs: globalCooldownMs },
       enabled: true,
       serverId,
       _meta: {
@@ -1387,9 +1418,21 @@ async function registerPersistedRules(serverId) {
 
 async function restoreCallGroups() {
   const groups = await listCallGroupsDb();
+  let hasTeamChatSettings = false;
   groups.forEach(g => {
     setGroup(g.id, g);
+    if (String(g?.id || '') === TEAM_CHAT_SETTINGS_GROUP_ID) hasTeamChatSettings = true;
   });
+  if (!hasTeamChatSettings) {
+    const teamChatGroup = normalizeCallGroupInput({
+      id: TEAM_CHAT_SETTINGS_GROUP_ID,
+      kind: 'team_chat_settings',
+      name: '团队聊天',
+      intervalMs: FALLBACK_TEAM_CHAT_INTERVAL_MS,
+    });
+    setGroup(teamChatGroup.id, teamChatGroup);
+    await saveCallGroupDb(teamChatGroup);
+  }
   logger.info(`[Main] 已恢复呼叫组 ${groups.length} 个`);
 }
 
@@ -1444,7 +1487,7 @@ async function startServices(serverConfig, options = {}) {
     },
     teamChatRunner: async (message) => {
       if (!rustClient?.connected) return;
-      await rustClient.sendTeamMessage(normalizeTeamMessageText(message));
+      await dispatchTeamChat(message);
     },
   });
 
@@ -1459,7 +1502,7 @@ async function startServices(serverConfig, options = {}) {
     if (connectedBroadcastSent) return;
     connectedBroadcastSent = true;
     try {
-      await rustClient.sendTeamMessage(TEAMCHAT_CONNECTED_BROADCAST);
+      await dispatchTeamChat(TEAMCHAT_CONNECTED_BROADCAST);
     } catch (e) {
       logger.warn('[Main] 连接成功提示发送失败: ' + e.message);
     }
@@ -1572,7 +1615,7 @@ async function autoConnect() {
 
 async function registerDefaultRules(serverId) {
   const preset = getEventPreset('event_system_default');
-  const defaults = (preset?.eventRules || []).map((rule) => normalizeEventRuleInput(rule, serverId));
+  const defaults = (preset?.eventRules || []).map((rule) => normalizeEventRuleForServer(rule, serverId));
 
   for (const rule of defaults) {
     await saveEventRule(rule);
@@ -1669,7 +1712,7 @@ function buildPersistedCommandSnapshot(keyword, serverId) {
     permission: command.permission || 'all',
     enabled: command.enabled !== false,
     meta: command.meta || {},
-    trigger: command.trigger || { cooldownMs: 3_000 },
+    trigger: command.trigger || { cooldownMs: getGlobalTeamChatIntervalMs() },
     serverId: serverId || null,
     deleted: false,
   };
@@ -1684,7 +1727,7 @@ async function ensureDefaultCommandRules(serverId) {
   cmdParser.restoreBuiltinCommands?.();
   const applied = [];
   for (const rule of preset.commandRules) {
-    const normalized = normalizeCommandRuleInput({
+    const normalized = normalizeCommandRuleForServer({
       ...rule,
       enabled: true,
       meta: {
@@ -1706,7 +1749,7 @@ function buildSystemCommandRulesFromParser(serverId) {
   if (!cmdParser) return [];
   return cmdParser.getCommands()
     .filter((command) => command?.isBuiltin)
-    .map((command) => normalizeCommandRuleInput({
+    .map((command) => normalizeCommandRuleForServer({
       id: command.keyword,
       keyword: command.keyword,
       type: command.type || null,
@@ -1719,7 +1762,7 @@ function buildSystemCommandRulesFromParser(serverId) {
         doChat: true,
         actions: [{ type: 'team_chat' }],
       },
-      trigger: { cooldownMs: 3_000 },
+      trigger: { cooldownMs: getGlobalTeamChatIntervalMs() },
     }, serverId))
     .filter(Boolean);
 }
@@ -2131,7 +2174,7 @@ function setupIPC() {
     if (!rustClient?.connected || !activeServerId) {
       return { success: false, error: '未连接服务器，无法新增事件规则' };
     }
-    const normalized = normalizeEventRuleInput({
+    const normalized = normalizeEventRuleForServer({
       ...rule,
       id: rule.id || `rule_${Date.now()}`,
       name: rule.name || '未命名规则',
@@ -2285,7 +2328,7 @@ function setupIPC() {
   });
   ipcMain.handle('commands:saveRule', async (_, rule) => {
     if (!activeServerId) return { success: false, error: '未连接服务器，无法保存指令规则' };
-    const payload = normalizeCommandRuleInput(rule, activeServerId);
+    const payload = normalizeCommandRuleForServer(rule, activeServerId);
     if (!payload) return { success: false, error: '缺少指令关键词' };
     if (!cmdParser?.setCommandRule(payload)) {
       return { success: false, error: '指令规则创建失败（类型或关键词无效）' };
@@ -2308,7 +2351,7 @@ function setupIPC() {
         name: String(current.description || '').trim(),
         permission: current.permission || 'all',
         meta: current.meta || {},
-        trigger: current.trigger || { cooldownMs: 3_000 },
+        trigger: current.trigger || { cooldownMs: getGlobalTeamChatIntervalMs() },
         serverId: activeServerId,
       };
       await saveCommandRule({
@@ -2347,15 +2390,15 @@ function setupIPC() {
       }
 
       for (const rule of preset.eventRules || []) {
-        const normalized = {
+        const normalized = normalizeEventRuleForServer({
           id: rule.id || `preset_rule_${Date.now()}`,
           name: rule.name || '预设规则',
           event: rule.event,
           serverId: activeServerId,
-          trigger: rule.trigger || {},
+          trigger: { ...(rule.trigger || {}), cooldownMs: getGlobalTeamChatIntervalMs() },
           enabled: rule.enabled !== false,
           _meta: rule._meta || {},
-        };
+        }, activeServerId);
         eventEngine?.addRule(hydrateRule(normalized));
         await saveEventRule(normalized);
       }
@@ -2385,7 +2428,7 @@ function setupIPC() {
       for (const rule of rulesToApply.length ? rulesToApply : (preset.commandRules || [])) {
         const keyword = String(rule.keyword || '').toLowerCase();
         if (!keyword) continue;
-        const payload = normalizeCommandRuleInput({
+        const payload = normalizeCommandRuleForServer({
           ...rule,
           id: String(rule.id || keyword),
           keyword,
@@ -2396,6 +2439,7 @@ function setupIPC() {
             doChat: true,
             actions: [{ type: 'team_chat' }],
           },
+          trigger: { ...(rule.trigger || {}), cooldownMs: getGlobalTeamChatIntervalMs() },
         }, activeServerId);
         if (!payload) continue;
         if (cmdParser) {
@@ -2414,13 +2458,16 @@ function setupIPC() {
 
   ipcMain.handle('callgroup:set', async (_, payload = {}) => {
     const groupId = String(payload.id || '').trim() || `group_${Date.now()}`;
-    const normalized = normalizeGroupConfig({ ...payload, id: groupId });
+    const normalized = normalizeCallGroupInput({ ...payload, id: groupId });
     setGroup(groupId, normalized);
     await saveCallGroupDb(normalized);
     return { success: true, group: normalized };
   });
 
   ipcMain.handle('callgroup:remove', async (_, id) => {
+    if (String(id || '') === TEAM_CHAT_SETTINGS_GROUP_ID) {
+      return { success: false, error: '系统团队聊天配置不可删除' };
+    }
     removeGroup(id);
     await removeCallGroupDb(id);
     return { success: true };

@@ -40,7 +40,15 @@ function normalizeRuleActions(actions = [], meta = {}) {
   ];
 }
 
-function normalizeEventRuleInput(raw = {}, serverId = '') {
+function normalizeCooldownMs(rawValue, fallbackMs = 3_000) {
+  const raw = Number(rawValue);
+  if (Number.isFinite(raw) && raw >= 0) return Math.round(raw);
+  const fallback = Number(fallbackMs);
+  if (Number.isFinite(fallback) && fallback >= 0) return Math.round(fallback);
+  return 3_000;
+}
+
+function normalizeEventRuleInput(raw = {}, serverId = '', options = {}) {
   const input = safeObject(raw);
   const event = String(input.event || '').trim() || 'alarm_on';
   const trigger = safeObject(input.trigger);
@@ -48,6 +56,7 @@ function normalizeEventRuleInput(raw = {}, serverId = '') {
   meta.doNotify = meta.doNotify === true;
   meta.doChat = meta.doChat !== false;
   meta.actions = normalizeRuleActions(meta.actions, meta);
+  trigger.cooldownMs = normalizeCooldownMs(trigger.cooldownMs, options.defaultCooldownMs);
 
   if (event === 'cargo_ship_status') {
     trigger.cargoNotifyEnter = trigger.cargoNotifyEnter !== false;
@@ -84,7 +93,7 @@ function normalizeEventRuleInput(raw = {}, serverId = '') {
   };
 }
 
-function normalizeCommandRuleInput(raw = {}, serverId = '') {
+function normalizeCommandRuleInput(raw = {}, serverId = '', options = {}) {
   const input = safeObject(raw);
   const keyword = String(input.keyword || '').trim().toLowerCase();
   if (!keyword) return null;
@@ -93,7 +102,7 @@ function normalizeCommandRuleInput(raw = {}, serverId = '') {
   meta.doNotify = meta.doNotify === true;
   meta.doChat = meta.doChat !== false;
   meta.actions = normalizeRuleActions(meta.actions, meta);
-  trigger.cooldownMs = Math.max(0, Number(trigger.cooldownMs) || 3_000);
+  trigger.cooldownMs = normalizeCooldownMs(trigger.cooldownMs, options.defaultCooldownMs);
 
   return {
     id: String(input.id || '').trim() || keyword,

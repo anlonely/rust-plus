@@ -12,11 +12,15 @@ test('command-parser: builtins default to team chat action with 3s cooldown', as
   });
   parser._client = { connected: true };
 
-  await parser._onTeamMessage({ steamId: '1', message: 'help' });
-  await parser._onTeamMessage({ steamId: '1', message: 'help' });
+  await Promise.all([
+    parser._onTeamMessage({ steamId: '1', message: 'help' }),
+    parser._onTeamMessage({ steamId: '1', message: 'help' }),
+  ]);
 
-  assert.equal(teamMessages.length, 1);
-  assert.match(teamMessages[0], /help:/);
+  assert.ok(teamMessages.length >= 5);
+  assert.ok(teamMessages.some((message) => /^help:/.test(message)));
+  const helpCount = teamMessages.filter((message) => /^help:/.test(message)).length;
+  assert.equal(helpCount, 1);
 });
 
 test('command-parser: command rules dispatch desktop discord and call group actions', async () => {

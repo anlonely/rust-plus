@@ -9,6 +9,8 @@ const { escapeXmlText } = require('../utils/security');
 const { hasIhuyiConfig, submitVoiceNotice } = require('./ihuyi-vm');
 
 const TWILIO_TIMEOUT_MS = Math.max(3_000, parseInt(process.env.TWILIO_TIMEOUT_MS || '15000', 10) || 15000);
+const TEAM_CHAT_SETTINGS_GROUP_ID = '__team_chat_settings__';
+const DEFAULT_TEAM_CHAT_INTERVAL_MS = Math.max(1_000, parseInt(process.env.RUST_TEAM_CHAT_GLOBAL_INTERVAL_MS || '3000', 10) || 3000);
 
 // ── Twilio 电话呼叫 ───────────────────────────
 function twilioAuth() {
@@ -138,6 +140,27 @@ function normalizeWebhookConfig(raw = {}, fallbackUrl = '') {
 
 function normalizeGroupConfig(raw = {}) {
   const source = raw && typeof raw === 'object' ? raw : {};
+  if (
+    String(source.id || '').trim() === TEAM_CHAT_SETTINGS_GROUP_ID
+    || String(source.kind || '').trim().toLowerCase() === 'team_chat_settings'
+  ) {
+    const intervalRaw = Number(source.intervalMs);
+    return {
+      id: TEAM_CHAT_SETTINGS_GROUP_ID,
+      kind: 'team_chat_settings',
+      system: true,
+      locked: true,
+      name: String(source.name || '').trim() || '团队聊天',
+      enabled: true,
+      intervalMs: Number.isFinite(intervalRaw) && intervalRaw > 0
+        ? Math.max(1_000, Math.round(intervalRaw))
+        : DEFAULT_TEAM_CHAT_INTERVAL_MS,
+      phone: { enabled: false, members: [] },
+      kook: { enabled: false, webhookUrl: '' },
+      discord: { enabled: false, webhookUrl: '' },
+      members: [],
+    };
+  }
   const members = normalizeMembers(source.members);
   const phoneMembers = normalizeMembers(source.phone?.members || members);
   const explicitPhoneEnabled = source.phone && Object.prototype.hasOwnProperty.call(source.phone, 'enabled')
@@ -175,7 +198,27 @@ function resolveEnabledChannels(group = {}, requestedChannels = []) {
 // ── 内存存储 ─────────────────────────────────
 const _groups = new Map();
 
+function ensureSystemTeamChatGroup() {
+  if (!_groups.has(TEAM_CHAT_SETTINGS_GROUP_ID)) {
+    _groups.set(TEAM_CHAT_SETTINGS_GROUP_ID, normalizeGroupConfig({
+      id: TEAM_CHAT_SETTINGS_GROUP_ID,
+      kind: 'team_chat_settings',
+      name: '团队聊天',
+      intervalMs: DEFAULT_TEAM_CHAT_INTERVAL_MS,
+    }));
+  }
+  return _groups.get(TEAM_CHAT_SETTINGS_GROUP_ID);
+}
+
+function isTeamChatSettingsGroup(value = {}) {
+  const id = typeof value === 'string' ? value : value?.id;
+  const kind = typeof value === 'string' ? '' : value?.kind;
+  return String(id || '').trim() === TEAM_CHAT_SETTINGS_GROUP_ID
+    || String(kind || '').trim().toLowerCase() === 'team_chat_settings';
+}
+
 function setGroup(id, group = {}) {
+  ensureSystemTeamChatGroup();
   const normalized = normalizeGroupConfig({ ...group, id });
   _groups.set(id, normalized);
   logger.info(`[Call] 呼叫组已设置: [${normalized.name}] phone=${normalized.phone.members.length} kook=${normalized.kook.enabled ? 'on' : 'off'} discord=${normalized.discord.enabled ? 'on' : 'off'}`);
@@ -183,14 +226,32 @@ function setGroup(id, group = {}) {
 }
 
 function listGroups() {
-  return [..._groups.values()];
+  const system = ensureSystemTeamChatGroup();
+  return [
+    system,
+    ...[..._groups.values()].filter((group) => !isTeamChatSettingsGroup(group)),
+  ];
 }
 
 function removeGroup(id) {
+  if (isTeamChatSettingsGroup(id)) return false;
   _groups.delete(id);
+  return true;
+}
+
+function getTeamChatSettings() {
+  return ensureSystemTeamChatGroup();
+}
+
+function getTeamChatIntervalMs() {
+  return getTeamChatSettings().intervalMs || DEFAULT_TEAM_CHAT_INTERVAL_MS;
 }
 
 async function callGroup(groupId, message, options = {}) {
+  ensureSystemTeamChatGroup();
+  if (isTeamChatSettingsGroup(groupId)) {
+    return { success: false, reason: '系统团队聊天配置不可作为呼叫组触发' };
+  }
   const group = _groups.get(groupId);
   if (!group) {
     logger.warn(`[Call] 未找到呼叫组: ${groupId}`);
@@ -246,6 +307,8 @@ async function callGroup(groupId, message, options = {}) {
 }
 
 module.exports = {
+  TEAM_CHAT_SETTINGS_GROUP_ID,
+  DEFAULT_TEAM_CHAT_INTERVAL_MS,
   setGroup,
   listGroups,
   removeGroup,
@@ -253,4 +316,7 @@ module.exports = {
   makeCall,
   normalizeGroupConfig,
   resolveEnabledChannels,
+  getTeamChatSettings,
+  getTeamChatIntervalMs,
+  isTeamChatSettingsGroup,
 };
