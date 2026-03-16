@@ -201,6 +201,20 @@
     };
   }
 
+  function monumentToNormalized(x, y, mapContext) {
+    const context = resolveMapContext(mapContext);
+    const size = toFiniteNumber(context.worldSize, 0);
+    const rawX = toFiniteNumber(x, NaN);
+    const rawY = toFiniteNumber(y, NaN);
+    if (size <= 0 || !Number.isFinite(rawX) || !Number.isFinite(rawY)) return null;
+    return {
+      x: rawX / size,
+      y: 1 - (rawY / size),
+      outside: rawX < 0 || rawX > size || rawY < 0 || rawY > size,
+      clamped: false,
+    };
+  }
+
   function normalizedToWorld(normalizedX, normalizedY, mapContext) {
     const context = resolveMapContext(mapContext);
     const size = toFiniteNumber(context.worldSize, 0);
@@ -227,6 +241,7 @@
     getImageLayout,
     markerToGridLabel,
     worldToNormalized,
+    monumentToNormalized,
     normalizedToWorld,
   };
 }));

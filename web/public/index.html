@@ -2906,20 +2906,8 @@ function normalizedToPixel(normalized, renderedRect, options = {}) {
   return { x: clampedPx, y: clampedPy };
 }
 
-function worldToExtendedNormalized(x, y, mapContext) {
-  const size = Number(mapContext?.worldSize || mapContext?.coordinateSize || 0);
-  const rawX = Number(x);
-  const rawY = Number(y);
-  if (!Number.isFinite(size) || size <= 0 || !Number.isFinite(rawX) || !Number.isFinite(rawY)) return null;
-  const mapX = toMapAxis(rawX, size);
-  const mapY = toMapAxis(rawY, size);
-  const resolvedX = mapX != null ? mapX : rawX;
-  const resolvedY = mapY != null ? mapY : rawY;
-  return {
-    x: resolvedX / size,
-    y: 1 - (resolvedY / size),
-    outside: resolvedX < 0 || resolvedX > size || resolvedY < 0 || resolvedY > size,
-  };
+function monumentToNormalized(x, y, mapContext) {
+  return ServerMapGeometry.monumentToNormalized(x, y, mapContext);
 }
 
 function renderMapDebugOverlay(renderedRect, mapContext = null) {
@@ -3696,10 +3684,7 @@ function resolveMonumentLabel(tokenRaw) {
 
 function getMapResourceMonuments() {
   if (!state.serverMapSettings.showMonuments) return [];
-  const external = Array.isArray(state.serverMap?.externalMonuments) ? state.serverMap.externalMonuments : [];
-  const list = external.length
-    ? external
-    : (Array.isArray(state.serverMap?.monuments) ? state.serverMap.monuments : []);
+  const list = Array.isArray(state.serverMap?.monuments) ? state.serverMap.monuments : [];
   const dedup = new Set();
   return list
     .map((m) => {
@@ -3856,7 +3841,7 @@ function renderServerMapLayer(teamMembers = state.serverMapView.teamMembers, ven
   }
 
   for (const mon of monuments) {
-    const normalized = worldToExtendedNormalized(mon?.x, mon?.y, mapContext);
+    const normalized = monumentToNormalized(mon?.x, mon?.y, mapContext);
     const pos = shrinkPos(normalizedToPixel(normalized, renderedRect, { clamp: false }));
     if (!normalized || !pos) continue;
     points.push(`

@@ -41,6 +41,16 @@ test('server map normalization uses direct world coordinates after crop', () => 
   assert.ok(Math.abs(point.y - (1 - (1599.7177734375 / 4096))) < 1e-9);
 });
 
+test('server map monument normalization follows raw rustplus monument coordinates only', () => {
+  const ctx = geometry.resolveMapContext({ worldSize: 3499, width: 4499, height: 4499 });
+  const point = geometry.monumentToNormalized(583.1666870117188, 3127.166748046875, ctx);
+
+  assert.ok(point);
+  assert.ok(Math.abs(point.x - (583.1666870117188 / 3499)) < 1e-9);
+  assert.ok(Math.abs(point.y - (1 - (3127.166748046875 / 3499))) < 1e-9);
+  assert.equal(point.outside, false);
+});
+
 test('server map grid label follows rustplus.py floor conversion', () => {
   const ctx = geometry.resolveMapContext({ worldSize: 4096 });
   const grid = geometry.markerToGridLabel({ x: 1835, y: 1603 }, 4096, ctx);
