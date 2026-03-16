@@ -34,30 +34,38 @@ test('presets: get preset should return isolated copies', () => {
   assert.notEqual(commandB.name, 'mutated');
 });
 
-test('presets: player status should keep only integrated event', () => {
+test('presets: system preset should include individual player events', () => {
   const system = getEventPreset('event_system_default');
   assert.ok(system, 'event_system_default not found');
   const events = (system.eventRules || []).map((r) => String(r?.event || ''));
 
-  assert.ok(events.includes('player_status'), 'system preset should include player_status');
-  assert.equal(events.includes('player_online'), false);
-  assert.equal(events.includes('player_offline'), false);
-  assert.equal(events.includes('player_dead'), false);
-  assert.equal(events.includes('player_respawn'), false);
-  assert.equal(events.includes('player_afk'), false);
+  assert.ok(events.includes('player_online'), 'system preset should include player_online');
+  assert.ok(events.includes('player_offline'), 'system preset should include player_offline');
+  assert.ok(events.includes('player_dead'), 'system preset should include player_dead');
+  assert.ok(events.includes('player_respawn'), 'system preset should include player_respawn');
+  assert.ok(events.includes('player_afk'), 'system preset should include player_afk');
+  assert.ok(events.includes('player_afk_recover'), 'system preset should include player_afk_recover');
 });
 
-test('presets: defense preset should keep only integrated player_status', () => {
+test('presets: defense preset should include individual player events', () => {
   const defense = getEventPreset('event_defense_basic');
   assert.ok(defense, 'event_defense_basic not found');
   const events = (defense.eventRules || []).map((r) => String(r?.event || ''));
 
-  assert.ok(events.includes('player_status'), 'defense preset should include player_status');
-  assert.equal(events.includes('player_online'), false);
-  assert.equal(events.includes('player_offline'), false);
-  assert.equal(events.includes('player_dead'), false);
-  assert.equal(events.includes('player_respawn'), false);
-  assert.equal(events.includes('player_afk'), false);
+  assert.ok(events.includes('player_online'), 'defense preset should include player_online');
+  assert.ok(events.includes('player_offline'), 'defense preset should include player_offline');
+  assert.ok(events.includes('player_dead'), 'defense preset should include player_dead');
+  assert.ok(events.includes('player_respawn'), 'defense preset should include player_respawn');
+  assert.ok(events.includes('player_afk'), 'defense preset should include player_afk');
+  assert.ok(events.includes('player_afk_recover'), 'defense preset should include player_afk_recover');
+});
+
+test('presets: player_afk preset should have afkMinutes trigger', () => {
+  const system = getEventPreset('event_system_default');
+  assert.ok(system, 'event_system_default not found');
+  const afkRule = (system.eventRules || []).find(r => r.event === 'player_afk');
+  assert.ok(afkRule, 'missing player_afk preset');
+  assert.equal(afkRule.trigger?.afkMinutes, 15, 'player_afk should default to 15 minutes');
 });
 
 

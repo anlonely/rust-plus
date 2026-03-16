@@ -356,14 +356,32 @@ class EventEngine {
       dead: 'player_dead',
       respawn: 'player_respawn',
       afk: 'player_afk',
+      afk_recover: 'player_afk_recover',
     };
     const eventType = map[String(status || '').toLowerCase()];
     if (!eventType) return;
-    this._fire('player_status', {
+    const payload = {
       ...context,
       playerStatus: String(status || '').toLowerCase(),
       playerStatusEvent: eventType,
-    });
+    };
+    // 触发整合事件（向后兼容）
+    this._fire('player_status', payload);
+    // 触发单项事件
+    this._fire(eventType, payload);
+  }
+
+  /** 获取挂机检测阈值（从 player_afk 规则中读取 afkMinutes，默认 15 分钟） */
+  getAfkThresholdMs() {
+    for (const rule of this.rules) {
+      if (rule.event === 'player_afk' && rule.enabled) {
+        const minutes = Number(rule.trigger?.afkMinutes);
+        if (Number.isFinite(minutes) && minutes > 0) {
+          return minutes * 60 * 1000;
+        }
+      }
+    }
+    return TEAM_AFK_IDLE_MS;
   }
 
   /** 队伍变化 */
@@ -450,9 +468,13 @@ class EventEngine {
         const dx = Math.abs((Number(m.x || 0)) - (state.x || 0));
         const dy = Math.abs((Number(m.y || 0)) - (state.y || 0));
         if (dx > POS_EPSILON || dy > POS_EPSILON) {
+          if (state.afkFired) {
+            logger.info(`[EventEngine] 队友挂机恢复: ${m.name}`);
+            this._emitPlayerStatus('afk_recover', { member: m, idleMs: now - state.lastMoveAt });
+          }
           state.lastMoveAt = now;
           state.afkFired = false;
-        } else if (!state.afkFired && now - state.lastMoveAt >= TEAM_AFK_IDLE_MS) {
+        } else if (!state.afkFired && now - state.lastMoveAt >= this.getAfkThresholdMs()) {
           logger.info(`[EventEngine] 队友挂机: ${m.name}`);
           this._emitPlayerStatus('afk', { member: m, idleMs: now - state.lastMoveAt });
           state.afkFired = true;

@@ -71,10 +71,39 @@ function renderMessageTemplate(template, context = {}, { mapSize = 0 } = {}) {
     if (oilStage === 'small_unlock') return `小石油箱子已解锁｜方向：${oilDirection}`;
     return '';
   })();
+  const afkDuration = (() => {
+    const ms = Number(context.idleMs || 0);
+    if (!ms || ms <= 0) return '';
+    const totalMin = Math.floor(ms / 60000);
+    if (totalMin < 1) return '';
+    return `${totalMin}分钟`;
+  })();
+  const playerStatusKey = String(context.playerStatus || '').toLowerCase();
+  const playerStatusText = ({
+    online: '已上线', offline: '已下线', dead: '已死亡',
+    respawn: '已重生', afk: '挂机', afk_recover: '已恢复活动',
+  })[playerStatusKey] || '';
+  const playerStatusMessage = (() => {
+    const name = toSafeText(context.member?.name || '队友');
+    const grid = toSafeText(memberGrid || '-');
+    const msgs = {
+      online: `${name}已上线｜上线位置:${grid}`,
+      offline: `${name}已离线｜离线位置:${grid}`,
+      dead: `${name}已死亡｜死亡位置:${grid}`,
+      respawn: `${name}已重生｜当前位置:${grid}`,
+      afk: `${name}已挂机${afkDuration || '15分钟'}｜当前位置:${grid}`,
+      afk_recover: `${name}已恢复活动｜当前位置:${grid}`,
+    };
+    return msgs[playerStatusKey] || '';
+  })();
   const vars = {
     member: toSafeText(context.member?.name || ''),
     member_grid: toSafeText(memberGrid),
+    member_status: playerStatusText,
     marker_grid: toSafeText(markerGrid),
+    afk_duration: afkDuration,
+    player_status: playerStatusText,
+    player_status_message: playerStatusMessage,
     oil_grid: oilGrid,
     oil_direction: oilDirection,
     oil_status_message: oilStatusMessage,
@@ -111,6 +140,11 @@ function makeActionContext(meta = {}, eventType = '', deps = {}) {
         return String(DEFAULT_OIL_STAGE_MESSAGES[stage] || baseTemplate || '').trim();
       }
       return stageTemplate;
+    }
+    if (eventType === 'player_status') {
+      const stage = String(ctx?.playerStatus || '').toLowerCase();
+      const stageTemplate = String(meta?.playerStatusMessages?.[stage] || '').trim();
+      return stageTemplate || baseTemplate;
     }
     return String(baseTemplate || '').trim();
   };

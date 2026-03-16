@@ -73,19 +73,21 @@ const TEAM_CHAT_RPM_LIMIT = Math.max(1, Number(process.env.WEB_TEAM_CHAT_RPM || 
 const FALLBACK_TEAM_CHAT_INTERVAL_MS = 3_000;
 const VERSION = '1.0.0';
 const TEAMCHAT_CONNECTED_BROADCAST = '安静的Rust工具已连接 - 输入help查看全部可触发指令';
-const LEGACY_PLAYER_STATUS_EVENTS = new Set([
+const INDIVIDUAL_PLAYER_EVENTS = new Set([
   'player_online',
   'player_offline',
   'player_dead',
   'player_respawn',
   'player_afk',
+  'player_afk_recover',
 ]);
 const DEFAULT_PLAYER_STATUS_MESSAGES = {
   online: '{member}已上线｜上线位置:{member_grid}',
   offline: '{member}已离线｜离线位置:{member_grid}',
   dead: '{member}已死亡｜死亡位置:{member_grid}',
   respawn: '{member}已重生｜当前位置:{member_grid}',
-  afk: '{member}挂机已持续15分钟｜当前位置:{member_grid}',
+  afk: '{member}已挂机{afk_duration}｜当前位置:{member_grid}',
+  afk_recover: '{member}已恢复活动｜当前位置:{member_grid}',
 };
 
 function getGlobalTeamChatIntervalMs() {
@@ -639,11 +641,6 @@ async function bootstrapRuntimeForConnectedServer(serverConfig) {
   }
 
   const persistedRules = await listEventRules(serverConfig.id);
-  for (const rule of persistedRules) {
-    if (LEGACY_PLAYER_STATUS_EVENTS.has(String(rule?.event || ''))) {
-      await removeEventRule(rule.id, serverConfig.id);
-    }
-  }
   let safeRules = await listEventRules(serverConfig.id);
   if (!safeRules.length) {
     const preset = getEventPreset('event_system_default');
@@ -1142,9 +1139,6 @@ const invokeIpc = createIpcInvoker({
       return { success: false, error: '未连接服务器，无法新增事件规则' };
     }
     const normalized = normalizeEventRuleForServer(args[0] || {}, runtime.currentServerId);
-    if (LEGACY_PLAYER_STATUS_EVENTS.has(String(normalized.event || ''))) {
-      return { success: false, error: '队友单项事件已下线，请使用「队友状态整合」事件' };
-    }
     eventEngine?.addRule(hydrateRule(normalized, createRuleActionDeps()));
     const saved = await saveEventRule(normalized);
     return { success: true, rule: serializeRule(hydrateRule(saved, createRuleActionDeps())) };

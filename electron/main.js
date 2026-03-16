@@ -157,14 +157,16 @@ const DEFAULT_PLAYER_STATUS_MESSAGES = {
   offline: '{member}已离线｜离线位置:{member_grid}',
   dead: '{member}已死亡｜死亡位置:{member_grid}',
   respawn: '{member}已重生｜当前位置:{member_grid}',
-  afk: '{member}挂机已持续15分钟｜当前位置:{member_grid}',
+  afk: '{member}已挂机{afk_duration}｜当前位置:{member_grid}',
+  afk_recover: '{member}已恢复活动｜当前位置:{member_grid}',
 };
-const LEGACY_PLAYER_STATUS_EVENTS = new Set([
+const INDIVIDUAL_PLAYER_EVENTS = new Set([
   'player_online',
   'player_offline',
   'player_dead',
   'player_respawn',
   'player_afk',
+  'player_afk_recover',
 ]);
 const DEFAULT_VENDING_NEW_MESSAGE = '发现 {vending_items}上架售货机 | 坐标:[{marker_grid}]';
 const TEAMCHAT_CONNECTED_BROADCAST = '安静的Rust工具已连接 - 输入help查看全部可触发指令';
@@ -576,6 +578,7 @@ function renderMessageTemplate(template, eventType, context = {}) {
     player_dead: '已死亡',
     player_online: '已上线',
     player_afk: '挂机',
+    player_afk_recover: '已恢复活动',
   };
   const memberStatusText = (
     eventType === 'player_status'
@@ -585,6 +588,7 @@ function renderMessageTemplate(template, eventType, context = {}) {
         dead: '已死亡',
         respawn: '已重生',
         afk: '挂机',
+        afk_recover: '已恢复活动',
       })[String(context.playerStatus || '').toLowerCase()] || ''
       : memberStatusTextByEvent[eventType]
   ) || '';
@@ -597,8 +601,16 @@ function renderMessageTemplate(template, eventType, context = {}) {
         player_dead: 'dead',
         player_respawn: 'respawn',
         player_afk: 'afk',
+        player_afk_recover: 'afk_recover',
       })[eventType] || ''
   );
+  const afkDuration = (() => {
+    const ms = Number(context.idleMs || 0);
+    if (!ms || ms <= 0) return '';
+    const totalMin = Math.floor(ms / 60000);
+    if (totalMin < 1) return '';
+    return `${totalMin}分钟`;
+  })();
   const playerStatusMessage = (() => {
     const name = memberName || '队友';
     const grid = memberGrid || '-';
@@ -606,7 +618,8 @@ function renderMessageTemplate(template, eventType, context = {}) {
     if (playerStatusKey === 'offline') return `${name}已离线｜离线位置:${grid}`;
     if (playerStatusKey === 'dead') return `${name}已死亡｜死亡位置:${grid}`;
     if (playerStatusKey === 'respawn') return `${name}已重生｜当前位置:${grid}`;
-    if (playerStatusKey === 'afk') return `${name}挂机已持续15分钟｜当前位置:${grid}`;
+    if (playerStatusKey === 'afk') return `${name}已挂机${afkDuration || '15分钟'}｜当前位置:${grid}`;
+    if (playerStatusKey === 'afk_recover') return `${name}已恢复活动｜当前位置:${grid}`;
     return '';
   })();
   const vars = {
@@ -651,6 +664,7 @@ function renderMessageTemplate(template, eventType, context = {}) {
     '{player_status}': memberStatusText,
     '{player_status_message}': playerStatusMessage,
     '{member_status}': memberStatusText,
+    '{afk_duration}': afkDuration,
     '{member_grid}': memberGrid,
     '{marker_id}': markerId ? String(markerId) : '',
     '{marker_grid}': markerGrid,
@@ -982,12 +996,66 @@ function buildSystemEventTemplates(serverId) {
       name: '队友状态整合事件',
       event: 'player_status',
       trigger: { cooldownMs: globalCooldownMs },
-      enabled: true,
+      enabled: false,
       serverId,
       _meta: {
         ...chatMeta('{player_status_message}'),
         playerStatusMessages: { ...DEFAULT_PLAYER_STATUS_MESSAGES },
       },
+    },
+    {
+      id: 'player_online_notify',
+      name: '队友上线通知',
+      event: 'player_online',
+      trigger: { cooldownMs: globalCooldownMs },
+      enabled: true,
+      serverId,
+      _meta: chatMeta('{member}已上线｜上线位置:{member_grid}'),
+    },
+    {
+      id: 'player_offline_notify',
+      name: '队友下线通知',
+      event: 'player_offline',
+      trigger: { cooldownMs: globalCooldownMs },
+      enabled: true,
+      serverId,
+      _meta: chatMeta('{member}已离线｜离线位置:{member_grid}'),
+    },
+    {
+      id: 'player_dead_notify',
+      name: '队友死亡通知',
+      event: 'player_dead',
+      trigger: { cooldownMs: globalCooldownMs },
+      enabled: true,
+      serverId,
+      _meta: chatMeta('{member}已死亡｜死亡位置:{member_grid}'),
+    },
+    {
+      id: 'player_respawn_notify',
+      name: '队友重生通知',
+      event: 'player_respawn',
+      trigger: { cooldownMs: globalCooldownMs },
+      enabled: true,
+      serverId,
+      _meta: chatMeta('{member}已重生｜当前位置:{member_grid}'),
+    },
+    {
+      id: 'player_afk_notify',
+      name: '队友挂机通知',
+      event: 'player_afk',
+      trigger: { cooldownMs: globalCooldownMs, afkMinutes: 15 },
+      enabled: true,
+      serverId,
+      _meta: chatMeta('{member}已挂机{afk_duration}｜当前位置:{member_grid}'),
+    },
+    {
+      id: 'player_afk_recover_notify',
+      name: '队友挂机恢复通知',
+      event: 'player_afk_recover',
+      trigger: { cooldownMs: globalCooldownMs },
+      enabled: true,
+      serverId,
+      _meta: chatMeta('{member}已恢复活动｜当前位置:{member_grid}'),
     },
   ];
 }
@@ -1085,11 +1153,6 @@ async function registerPersistedRules(serverId) {
     'heli_notify',
     'cargo_notify',
     'vendor_notify',
-    'player_online_notify',
-    'player_offline_notify',
-    'player_respawn_notify',
-    'player_dead_notify',
-    'player_afk_notify',
     'cargo_enter_notify',
     'cargo_active_notify',
     'cargo_dock_notify',
@@ -1116,10 +1179,6 @@ async function registerPersistedRules(serverId) {
   for (const rule of current) {
     const ruleEvent = String(rule?.event || '');
     if (ruleEvent === 'deep_sea_reminder') {
-      await removeEventRule(rule.id, serverId);
-      continue;
-    }
-    if (LEGACY_PLAYER_STATUS_EVENTS.has(ruleEvent)) {
       await removeEventRule(rule.id, serverId);
       continue;
     }
@@ -2192,9 +2251,6 @@ function setupIPC() {
       id: rule.id || `rule_${Date.now()}`,
       name: rule.name || '未命名规则',
     }, activeServerId);
-    if (LEGACY_PLAYER_STATUS_EVENTS.has(String(normalized.event || ''))) {
-      return { success: false, error: '队友单项事件已下线，请使用「队友状态整合」事件' };
-    }
     if (normalized.event === 'vending_new') {
       normalized.trigger = normalizeVendingNewTrigger(normalized.trigger || {});
       normalized._meta = {

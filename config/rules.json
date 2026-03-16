@@ -44,7 +44,7 @@
       "event": "alarm_on",
       "serverId": "server_1773632567536",
       "trigger": {
-        "cooldownMs": 30000
+        "cooldownMs": 3000
       },
       "enabled": true,
       "_meta": {
@@ -53,37 +53,145 @@
           {
             "type": "team_chat"
           }
-        ]
+        ],
+        "doNotify": false,
+        "doChat": true
       },
-      "updatedAt": "2026-03-16T09:28:06.272Z",
-      "createdAt": "2026-03-16T09:28:06.272Z"
+      "updatedAt": "2026-03-16T12:28:33.221Z",
+      "createdAt": "2026-03-16T12:28:33.221Z"
     },
     {
-      "id": "preset_player_status",
-      "name": "队友状态整合通知",
-      "event": "player_status",
+      "id": "preset_player_online",
+      "name": "队友上线通知",
+      "event": "player_online",
       "serverId": "server_1773632567536",
       "trigger": {
-        "cooldownMs": 5000
+        "cooldownMs": 3000
       },
       "enabled": true,
       "_meta": {
-        "message": "{player_status_message}",
+        "message": "{member}已上线｜上线位置:{member_grid}",
         "actions": [
           {
             "type": "team_chat"
           }
         ],
-        "playerStatusMessages": {
-          "online": "{member}已上线｜上线位置:{member_grid}",
-          "offline": "{member}已离线｜离线位置:{member_grid}",
-          "dead": "{member}已死亡｜死亡位置:{member_grid}",
-          "respawn": "{member}已重生｜当前位置:{member_grid}",
-          "afk": "{member}挂机已持续15分钟｜当前位置:{member_grid}"
-        }
+        "doNotify": false,
+        "doChat": true
       },
-      "updatedAt": "2026-03-16T12:00:05.788Z",
-      "createdAt": "2026-03-16T09:28:06.273Z"
+      "updatedAt": "2026-03-16T12:28:33.221Z",
+      "createdAt": "2026-03-16T12:28:33.221Z"
+    },
+    {
+      "id": "preset_player_offline",
+      "name": "队友下线通知",
+      "event": "player_offline",
+      "serverId": "server_1773632567536",
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "enabled": true,
+      "_meta": {
+        "message": "{member}已离线｜离线位置:{member_grid}",
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ],
+        "doNotify": false,
+        "doChat": true
+      },
+      "updatedAt": "2026-03-16T12:28:33.222Z",
+      "createdAt": "2026-03-16T12:28:33.222Z"
+    },
+    {
+      "id": "preset_player_dead",
+      "name": "队友死亡通知",
+      "event": "player_dead",
+      "serverId": "server_1773632567536",
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "enabled": true,
+      "_meta": {
+        "message": "{member}已死亡｜死亡位置:{member_grid}",
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ],
+        "doNotify": false,
+        "doChat": true
+      },
+      "updatedAt": "2026-03-16T12:28:33.223Z",
+      "createdAt": "2026-03-16T12:28:33.223Z"
+    },
+    {
+      "id": "preset_player_respawn",
+      "name": "队友重生通知",
+      "event": "player_respawn",
+      "serverId": "server_1773632567536",
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "enabled": true,
+      "_meta": {
+        "message": "{member}已重生｜当前位置:{member_grid}",
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ],
+        "doNotify": false,
+        "doChat": true
+      },
+      "updatedAt": "2026-03-16T12:28:33.223Z",
+      "createdAt": "2026-03-16T12:28:33.223Z"
+    },
+    {
+      "id": "preset_player_afk",
+      "name": "队友挂机通知",
+      "event": "player_afk",
+      "serverId": "server_1773632567536",
+      "trigger": {
+        "cooldownMs": 3000,
+        "afkMinutes": 15
+      },
+      "enabled": true,
+      "_meta": {
+        "message": "{member}已挂机{afk_duration}｜当前位置:{member_grid}",
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ],
+        "doNotify": false,
+        "doChat": true
+      },
+      "updatedAt": "2026-03-16T12:28:33.224Z",
+      "createdAt": "2026-03-16T12:28:33.224Z"
+    },
+    {
+      "id": "preset_player_afk_recover",
+      "name": "队友挂机恢复通知",
+      "event": "player_afk_recover",
+      "serverId": "server_1773632567536",
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "enabled": true,
+      "_meta": {
+        "message": "{member}已恢复活动｜当前位置:{member_grid}",
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ],
+        "doNotify": false,
+        "doChat": true
+      },
+      "updatedAt": "2026-03-16T12:28:33.224Z",
+      "createdAt": "2026-03-16T12:28:33.224Z"
     },
     {
       "id": "preset_heli_status",
@@ -91,7 +199,7 @@
       "event": "patrol_heli_status",
       "serverId": "server_1773632567536",
       "trigger": {
-        "cooldownMs": 60000,
+        "cooldownMs": 3000,
         "heliNotifyEnter": true,
         "heliNotifyActive": false,
         "heliNotifyLeave": true,
@@ -105,6 +213,8 @@
             "type": "team_chat"
           }
         ],
+        "doNotify": false,
+        "doChat": true,
         "heliMessages": {
           "enter": "武直进入地图｜当前位置:{marker_grid}",
           "active": "武直巡逻中｜当前位置:{marker_grid}",
@@ -112,8 +222,8 @@
           "explode": "武直已被击落｜坠落位置:{marker_grid}"
         }
       },
-      "updatedAt": "2026-03-16T12:00:05.786Z",
-      "createdAt": "2026-03-16T09:28:06.273Z"
+      "updatedAt": "2026-03-16T13:52:28.509Z",
+      "createdAt": "2026-03-16T12:28:33.225Z"
     },
     {
       "id": "preset_ch47_status",
@@ -121,7 +231,7 @@
       "event": "ch47_status",
       "serverId": "server_1773632567536",
       "trigger": {
-        "cooldownMs": 60000,
+        "cooldownMs": 3000,
         "ch47NotifyEnter": true,
         "ch47NotifyActive": false,
         "ch47NotifyLeave": true
@@ -134,14 +244,16 @@
             "type": "team_chat"
           }
         ],
+        "doNotify": false,
+        "doChat": true,
         "ch47Messages": {
           "enter": "军用运输直升机进入地图｜当前位置:{marker_grid}",
           "active": "军用运输直升机巡逻中｜当前位置:{marker_grid}",
           "leave": "军用运输直升机已离开地图｜最后位置:{marker_grid}"
         }
       },
-      "updatedAt": "2026-03-16T12:00:05.784Z",
-      "createdAt": "2026-03-16T09:28:06.274Z"
+      "updatedAt": "2026-03-16T13:52:28.508Z",
+      "createdAt": "2026-03-16T12:28:33.226Z"
     },
     {
       "id": "preset_cargo_status",
@@ -149,7 +261,7 @@
       "event": "cargo_ship_status",
       "serverId": "server_1773632567536",
       "trigger": {
-        "cooldownMs": 60000,
+        "cooldownMs": 3000,
         "cargoNotifyEnter": true,
         "cargoNotifyLeave": true,
         "cargoNotifyActive": false,
@@ -163,6 +275,8 @@
             "type": "team_chat"
           }
         ],
+        "doNotify": false,
+        "doChat": true,
         "cargoMessages": {
           "enter": "货船进入地图｜当前位置:{cargo_grid}",
           "leave": "货船已离开地图｜最后位置:{cargo_grid}",
@@ -170,8 +284,8 @@
           "dock": "货船已停靠 ｜{cargo_harbor} [{cargo_harbor_grid}]"
         }
       },
-      "updatedAt": "2026-03-16T12:00:05.782Z",
-      "createdAt": "2026-03-16T09:28:06.275Z"
+      "updatedAt": "2026-03-16T13:52:28.506Z",
+      "createdAt": "2026-03-16T12:28:33.227Z"
     },
     {
       "id": "preset_oil_status",
@@ -179,7 +293,7 @@
       "event": "oil_rig_status",
       "serverId": "server_1773632567536",
       "trigger": {
-        "cooldownMs": 60000,
+        "cooldownMs": 3000,
         "oilNotifyLargeHeavy": true,
         "oilNotifySmallHeavy": true,
         "oilNotifyLargeUnlock": true,
@@ -193,6 +307,8 @@
             "type": "team_chat"
           }
         ],
+        "doNotify": false,
+        "doChat": true,
         "oilMessages": {
           "large_heavy": "大石油重装已呼叫｜方向：{oil_direction}",
           "small_heavy": "小石油重装已呼叫｜方向：{oil_direction}",
@@ -200,8 +316,8 @@
           "small_unlock": "小石油箱子已解锁｜方向：{oil_direction}"
         }
       },
-      "updatedAt": "2026-03-16T12:00:05.783Z",
-      "createdAt": "2026-03-16T09:28:06.276Z"
+      "updatedAt": "2026-03-16T13:52:28.507Z",
+      "createdAt": "2026-03-16T12:28:33.228Z"
     },
     {
       "id": "preset_vendor_status",
@@ -209,7 +325,7 @@
       "event": "vendor_status",
       "serverId": "server_1773632567536",
       "trigger": {
-        "cooldownMs": 120000,
+        "cooldownMs": 3000,
         "vendorNotifyEnter": true,
         "vendorNotifyMove": false,
         "vendorNotifyStopped": true,
@@ -223,6 +339,8 @@
             "type": "team_chat"
           }
         ],
+        "doNotify": false,
+        "doChat": true,
         "vendorMessages": {
           "enter": "流浪商人进入地图｜当前位置:{marker_grid}",
           "move": "流浪商人移动中｜当前位置:{marker_grid}",
@@ -230,8 +348,8 @@
           "leave": "流浪商人离开地图｜最后位置:{marker_grid}"
         }
       },
-      "updatedAt": "2026-03-16T12:00:05.786Z",
-      "createdAt": "2026-03-16T09:28:06.277Z"
+      "updatedAt": "2026-03-16T13:52:28.510Z",
+      "createdAt": "2026-03-16T12:28:33.228Z"
     },
     {
       "id": "preset_vending_new",
@@ -239,7 +357,7 @@
       "event": "vending_new",
       "serverId": "server_1773632567536",
       "trigger": {
-        "cooldownMs": 10000,
+        "cooldownMs": 3000,
         "vendingWatchItemIds": [
           -1607980696,
           -41896755,
@@ -284,10 +402,12 @@
           {
             "type": "team_chat"
           }
-        ]
+        ],
+        "doNotify": false,
+        "doChat": true
       },
-      "updatedAt": "2026-03-16T12:00:05.780Z",
-      "createdAt": "2026-03-16T09:28:06.278Z"
+      "updatedAt": "2026-03-16T13:52:28.504Z",
+      "createdAt": "2026-03-16T12:28:33.229Z"
     },
     {
       "id": "preset_deepsea_status",
@@ -295,7 +415,7 @@
       "event": "deep_sea_status",
       "serverId": "server_1773632567536",
       "trigger": {
-        "cooldownMs": 30000,
+        "cooldownMs": 3000,
         "deepSeaNotifyOpen": true,
         "deepSeaNotifyClose": true
       },
@@ -307,13 +427,15 @@
             "type": "team_chat"
           }
         ],
+        "doNotify": false,
+        "doChat": true,
         "deepSeaMessages": {
           "open": "｜ 深海已开启｜",
           "close": "深海已关闭"
         }
       },
-      "updatedAt": "2026-03-16T12:00:05.787Z",
-      "createdAt": "2026-03-16T09:28:06.279Z"
+      "updatedAt": "2026-03-16T13:52:28.511Z",
+      "createdAt": "2026-03-16T12:28:33.229Z"
     },
     {
       "id": "preset_hourly",
@@ -321,7 +443,7 @@
       "event": "hourly_tick",
       "serverId": "server_1773632567536",
       "trigger": {
-        "cooldownMs": 0
+        "cooldownMs": 3000
       },
       "enabled": true,
       "_meta": {
@@ -330,10 +452,12 @@
           {
             "type": "team_chat"
           }
-        ]
+        ],
+        "doNotify": false,
+        "doChat": true
       },
-      "updatedAt": "2026-03-16T09:28:06.280Z",
-      "createdAt": "2026-03-16T09:28:06.280Z"
+      "updatedAt": "2026-03-16T12:28:33.230Z",
+      "createdAt": "2026-03-16T12:28:33.230Z"
     },
     {
       "id": "preset_day_phase_notice",
@@ -341,7 +465,7 @@
       "event": "day_phase_notice",
       "serverId": "server_1773632567536",
       "trigger": {
-        "cooldownMs": 30000
+        "cooldownMs": 3000
       },
       "enabled": true,
       "_meta": {
@@ -350,10 +474,37 @@
           {
             "type": "team_chat"
           }
-        ]
+        ],
+        "doNotify": false,
+        "doChat": true
       },
-      "updatedAt": "2026-03-16T09:28:06.280Z",
-      "createdAt": "2026-03-16T09:28:06.280Z"
+      "updatedAt": "2026-03-16T12:28:33.230Z",
+      "createdAt": "2026-03-16T12:28:33.230Z"
+    },
+    {
+      "id": "player_status_notify",
+      "name": "队友状态整合事件",
+      "event": "player_status",
+      "serverId": "server_1773632567536",
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "enabled": true,
+      "_meta": {
+        "doNotify": false,
+        "doChat": true,
+        "message": "{player_status_message}",
+        "playerStatusMessages": {
+          "online": "{member}已上线｜上线位置:{member_grid}",
+          "offline": "{member}已离线｜离线位置:{member_grid}",
+          "dead": "{member}已死亡｜死亡位置:{member_grid}",
+          "respawn": "{member}已重生｜当前位置:{member_grid}",
+          "afk": "{member}已挂机{afk_duration}｜当前位置:{member_grid}",
+          "afk_recover": "{member}已恢复活动｜当前位置:{member_grid}"
+        }
+      },
+      "updatedAt": "2026-03-16T13:52:28.512Z",
+      "createdAt": "2026-03-16T12:46:32.010Z"
     }
   ],
   "commandRules": [
@@ -809,7 +960,7 @@
       "id": "fwq",
       "keyword": "fwq",
       "type": "server_info",
-      "name": "服务器信息",
+      "name": "",
       "permission": "all",
       "enabled": true,
       "meta": {
@@ -826,8 +977,8 @@
       },
       "serverId": "server_1773632567536",
       "deleted": false,
-      "updatedAt": "2026-03-16T11:27:44.897Z",
-      "createdAt": "2026-03-16T06:18:01.696Z"
+      "updatedAt": "2026-03-16T12:28:38.820Z",
+      "createdAt": "2026-03-16T12:28:38.820Z"
     },
     {
       "id": "fk",
@@ -851,8 +1002,8 @@
       },
       "serverId": "server_1773632567536",
       "deleted": false,
-      "updatedAt": "2026-03-16T06:18:01.697Z",
-      "createdAt": "2026-03-16T06:18:01.697Z"
+      "updatedAt": "2026-03-16T12:28:38.821Z",
+      "createdAt": "2026-03-16T12:28:38.821Z"
     },
     {
       "id": "hc",
@@ -875,8 +1026,8 @@
       },
       "serverId": "server_1773632567536",
       "deleted": false,
-      "updatedAt": "2026-03-16T06:18:01.698Z",
-      "createdAt": "2026-03-16T06:18:01.698Z"
+      "updatedAt": "2026-03-16T12:28:38.821Z",
+      "createdAt": "2026-03-16T12:28:38.821Z"
     },
     {
       "id": "wz",
@@ -899,8 +1050,8 @@
       },
       "serverId": "server_1773632567536",
       "deleted": false,
-      "updatedAt": "2026-03-16T06:18:01.699Z",
-      "createdAt": "2026-03-16T06:18:01.699Z"
+      "updatedAt": "2026-03-16T12:28:38.822Z",
+      "createdAt": "2026-03-16T12:28:38.822Z"
     },
     {
       "id": "sh",
@@ -923,8 +1074,8 @@
       },
       "serverId": "server_1773632567536",
       "deleted": false,
-      "updatedAt": "2026-03-16T06:18:01.700Z",
-      "createdAt": "2026-03-16T06:18:01.700Z"
+      "updatedAt": "2026-03-16T12:28:38.823Z",
+      "createdAt": "2026-03-16T12:28:38.823Z"
     },
     {
       "id": "fy",
@@ -947,14 +1098,14 @@
       },
       "serverId": "server_1773632567536",
       "deleted": false,
-      "updatedAt": "2026-03-16T06:18:01.701Z",
-      "createdAt": "2026-03-16T06:18:01.701Z"
+      "updatedAt": "2026-03-16T12:28:38.824Z",
+      "createdAt": "2026-03-16T12:28:38.824Z"
     },
     {
       "id": "ai",
       "keyword": "ai",
       "type": "ai",
-      "name": "AI 问答",
+      "name": "",
       "permission": "all",
       "enabled": true,
       "meta": {
@@ -971,8 +1122,8 @@
       },
       "serverId": "server_1773632567536",
       "deleted": false,
-      "updatedAt": "2026-03-16T06:18:05.191Z",
-      "createdAt": "2026-03-16T06:18:01.702Z"
+      "updatedAt": "2026-03-16T12:28:38.825Z",
+      "createdAt": "2026-03-16T12:28:38.825Z"
     },
     {
       "id": "shj",
@@ -995,8 +1146,8 @@
       },
       "serverId": "server_1773632567536",
       "deleted": false,
-      "updatedAt": "2026-03-16T06:18:01.703Z",
-      "createdAt": "2026-03-16T06:18:01.703Z"
+      "updatedAt": "2026-03-16T12:28:38.826Z",
+      "createdAt": "2026-03-16T12:28:38.826Z"
     },
     {
       "id": "dz",
@@ -1019,8 +1170,8 @@
       },
       "serverId": "server_1773632567536",
       "deleted": false,
-      "updatedAt": "2026-03-16T06:18:01.704Z",
-      "createdAt": "2026-03-16T06:18:01.704Z"
+      "updatedAt": "2026-03-16T12:28:38.827Z",
+      "createdAt": "2026-03-16T12:28:38.827Z"
     },
     {
       "id": "jk",
@@ -1043,8 +1194,8 @@
       },
       "serverId": "server_1773632567536",
       "deleted": false,
-      "updatedAt": "2026-03-16T06:18:01.705Z",
-      "createdAt": "2026-03-16T06:18:01.705Z"
+      "updatedAt": "2026-03-16T12:28:38.828Z",
+      "createdAt": "2026-03-16T12:28:38.828Z"
     },
     {
       "id": "help",
@@ -1067,8 +1218,8 @@
       },
       "serverId": "server_1773632567536",
       "deleted": false,
-      "updatedAt": "2026-03-16T06:18:01.706Z",
-      "createdAt": "2026-03-16T06:18:01.706Z"
+      "updatedAt": "2026-03-16T12:28:38.828Z",
+      "createdAt": "2026-03-16T12:28:38.828Z"
     }
   ],
   "callGroups": [
@@ -1098,7 +1249,7 @@
       "locked": true,
       "name": "团队聊天",
       "enabled": true,
-      "intervalMs": 5000,
+      "intervalMs": 3000,
       "phone": {
         "enabled": false,
         "members": []
@@ -1112,19 +1263,19 @@
         "webhookUrl": ""
       },
       "members": [],
-      "updatedAt": "2026-03-16T11:29:03.956Z",
+      "updatedAt": "2026-03-16T12:28:29.076Z",
       "createdAt": "2026-03-16T11:11:38.427Z"
     }
   ],
   "appState": {
     "lastServerId": "server_1773632567536",
     "deepSea": {
-      "lastOpenAt": "2026-03-16T10:55:14.601Z",
+      "lastOpenAt": "2026-03-16T10:55:16.481Z",
       "lastCloseAt": "2026-03-16T06:42:59.353Z",
       "lastDirection": "南",
       "lastEntryGrid": "A12",
       "lastEntryCoord": "x=0, y=2691",
-      "updatedAt": "2026-03-16T12:00:16.604Z"
+      "updatedAt": "2026-03-16T13:52:39.496Z"
     }
   }
 }

@@ -542,7 +542,7 @@ input, textarea, select { font-family:inherit; }
 .server-map-vending-cluster:hover { transform:scale(1.06); }
 .server-map-vending-cluster.oos { opacity:.38; }
 .server-map-point-vending.selected .server-map-vending-cluster { box-shadow:0 0 0 2px rgba(124,170,255,.7), 0 4px 10px rgba(0,0,0,.35); }
-.server-map-grid-cell { position:absolute; border:1px solid rgba(255,255,255,.12); pointer-events:none; box-shadow:inset 0 0 0 1px rgba(0,0,0,.04); }
+.server-map-grid-surface { position:absolute; pointer-events:none; background-image:linear-gradient(to right, rgba(255,255,255,.12) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,.12) 1px, transparent 1px); background-repeat:repeat; box-shadow:inset 0 0 0 1px rgba(255,255,255,.06); }
 .server-map-grid-cell-label { position:absolute; font-size:8px; color:rgba(255,255,255,.28); pointer-events:none; }
 .server-map-monument-label { position:absolute; transform:translate(-50%,-50%); font-size:9px; color:var(--orange); text-shadow:0 1px 4px #000; pointer-events:none; white-space:nowrap; z-index:1; }
 .team-popover, #team-cluster-popover { position:absolute; z-index:10; background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:8px 10px; min-width:120px; pointer-events:auto; box-shadow:0 4px 16px rgba(0,0,0,.5); }
@@ -989,7 +989,7 @@ input, textarea, select { font-family:inherit; }
 
       <!-- 地图容器 -->
       <div id="server-map-wrap" style="flex:1;position:relative;overflow:hidden;border-radius:10px;border:1px solid var(--border);background:#000;min-height:300px">
-        <img id="server-map-image" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain;pointer-events:none;display:none">
+        <canvas id="server-map-image" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;display:none"></canvas>
         <div id="server-map-layer" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none"></div>
         <div id="server-map-empty" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;color:var(--text3);font-size:14px">未连接服务器，无法加载地图</div>
         <div id="server-map-reticle"></div>
@@ -1336,6 +1336,8 @@ const state = {
   serverMap: null,
   serverMapServerId: '',
   serverMapImageUrl: '',
+  serverMapImageAsset: null,
+  serverMapImageLoadSeq: 0,
   serverMapLastAt: 0,
   latestMapSize: 0,
   serverMapView: { teamMembers: [], vendingMarkers: [] },
@@ -1366,6 +1368,7 @@ const state = {
   },
 };
 const TEAM_CHAT_SETTINGS_GROUP_ID = '__team_chat_settings__';
+const SERVER_MAP_MAX_ZOOM = 2.5;
 
 // ── 事件类型 → 中文标签映射 ────────────────────
 const EVENT_LABELS = {
@@ -2307,7 +2310,7 @@ function updateConnectionUI(connected, serverName) {
     state.currentServer = null;
     state.serverMap = null;
     state.serverMapServerId = '';
-    state.serverMapImageUrl = '';
+    resetServerMapImageState();
     state.latestMapSize = 0;
     state.serverMapLastAt = 0;
     state.serverMapLayout = { renderedRect: null, mapContext: null };
@@ -2717,12 +2720,79 @@ function syncServerMapImageLayout() {
   const mapContext = resolveMapCoordinateContext();
   const layout = ServerMapGeometry.getImageLayout(cw, ch, mapContext);
   if (!layout) return null;
-  mapImage.style.objectFit = 'fill';
   mapImage.style.left = `${layout.imageRect.left}px`;
   mapImage.style.top = `${layout.imageRect.top}px`;
   mapImage.style.width = `${layout.imageRect.width}px`;
   mapImage.style.height = `${layout.imageRect.height}px`;
+  if (mapImage instanceof HTMLCanvasElement) {
+    const dpr = clamp(Number(window.devicePixelRatio || 1), 1, 2);
+    const canvasWidth = Math.max(1, Math.round(layout.imageRect.width * dpr));
+    const canvasHeight = Math.max(1, Math.round(layout.imageRect.height * dpr));
+    if (mapImage.width !== canvasWidth) mapImage.width = canvasWidth;
+    if (mapImage.height !== canvasHeight) mapImage.height = canvasHeight;
+  }
   return layout;
+}
+
+function resetServerMapImageState() {
+  state.serverMapImageUrl = '';
+  state.serverMapImageAsset = null;
+  state.serverMapImageLoadSeq += 1;
+  const mapImage = document.getElementById('server-map-image');
+  if (mapImage instanceof HTMLCanvasElement) {
+    const ctx = mapImage.getContext('2d');
+    ctx?.clearRect(0, 0, mapImage.width || 0, mapImage.height || 0);
+  }
+}
+
+async function setServerMapImageFromBase64(imageBase64 = '') {
+  const encoded = String(imageBase64 || '').trim();
+  if (!encoded) {
+    resetServerMapImageState();
+    return '';
+  }
+  const seq = state.serverMapImageLoadSeq + 1;
+  state.serverMapImageLoadSeq = seq;
+  const dataUrl = `data:image/jpeg;base64,${encoded}`;
+  const img = new Image();
+  img.decoding = 'async';
+  await new Promise((resolve, reject) => {
+    img.onload = resolve;
+    img.onerror = () => reject(new Error('map_image_load_failed'));
+    img.src = dataUrl;
+  });
+  if (seq !== state.serverMapImageLoadSeq) return state.serverMapImageUrl;
+  state.serverMapImageUrl = dataUrl;
+  state.serverMapImageAsset = img;
+  return dataUrl;
+}
+
+function renderServerMapImageCanvas() {
+  const mapImage = document.getElementById('server-map-image');
+  if (!(mapImage instanceof HTMLCanvasElement)) return;
+  const layout = syncServerMapImageLayout();
+  const imageRect = layout?.imageRect || null;
+  const asset = state.serverMapImageAsset;
+  if (!imageRect || !asset) {
+    const ctx = mapImage.getContext('2d');
+    ctx?.clearRect(0, 0, mapImage.width || 0, mapImage.height || 0);
+    return;
+  }
+  const ctx = mapImage.getContext('2d', { alpha: false });
+  if (!ctx) return;
+  const canvasWidth = Number(mapImage.width || 0);
+  const canvasHeight = Number(mapImage.height || 0);
+  if (canvasWidth <= 0 || canvasHeight <= 0) return;
+  const dpr = clamp(Number(window.devicePixelRatio || 1), 1, 2);
+  const cam = state.serverMapCamera;
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.translate((canvasWidth / 2) + (Number(cam.offsetX || 0) * dpr), (canvasHeight / 2) + (Number(cam.offsetY || 0) * dpr));
+  ctx.scale(Number(cam.scale || 1), Number(cam.scale || 1));
+  ctx.drawImage(asset, -canvasWidth / 2, -canvasHeight / 2, canvasWidth, canvasHeight);
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
 }
 
 function clampServerMapCamera() {
@@ -2735,20 +2805,33 @@ function clampServerMapCamera() {
   cam.offsetY = clamp(cam.offsetY, -maxY, maxY);
 }
 
+function projectServerMapPixel(point, wrapWidth, wrapHeight, camera = state.serverMapCamera) {
+  if (!point) return null;
+  const x = Number(point.x);
+  const y = Number(point.y);
+  if (!Number.isFinite(x) || !Number.isFinite(y)) return null;
+  const ww = Number(wrapWidth || 0);
+  const wh = Number(wrapHeight || 0);
+  if (!Number.isFinite(ww) || !Number.isFinite(wh) || ww <= 0 || wh <= 0) return null;
+  const cam = camera || state.serverMapCamera;
+  const scale = Number(cam?.scale || 1) > 0 ? Number(cam.scale) : 1;
+  const offsetX = Number(cam?.offsetX || 0);
+  const offsetY = Number(cam?.offsetY || 0);
+  const cx = ww / 2;
+  const cy = wh / 2;
+  return {
+    x: ((x - cx) * scale) + cx + offsetX,
+    y: ((y - cy) * scale) + cy + offsetY,
+  };
+}
+
 function applyServerMapTransform() {
   clampServerMapCamera();
-  const mapImage = document.getElementById('server-map-image');
-  const mapLayer = document.getElementById('server-map-layer');
   syncServerMapImageLayout();
-  const cam = state.serverMapCamera;
-  const t = `translate(${cam.offsetX}px, ${cam.offsetY}px) scale(${cam.scale})`;
-  if (mapImage) {
-    mapImage.style.transformOrigin = '50% 50%';
-    mapImage.style.transform = t;
-  }
+  renderServerMapImageCanvas();
+  const mapLayer = document.getElementById('server-map-layer');
   if (mapLayer) {
-    mapLayer.style.transformOrigin = '50% 50%';
-    mapLayer.style.transform = t;
+    mapLayer.style.transform = 'none';
   }
   renderServerMapCenterReticle();
 }
@@ -2757,7 +2840,7 @@ function zoomServerMap(factor = 1) {
   const cam = state.serverMapCamera;
   const f = Number(factor);
   if (!Number.isFinite(f) || f <= 0) return;
-  const next = clamp(cam.scale * f, 1, 4);
+  const next = clamp(cam.scale * f, 1, SERVER_MAP_MAX_ZOOM);
   cam.scale = Number(next.toFixed(3));
   if (cam.scale <= 1.001) {
     cam.scale = 1;
@@ -2765,7 +2848,7 @@ function zoomServerMap(factor = 1) {
     cam.offsetY = 0;
   }
   applyServerMapTransform();
-  renderTeamClusterPopover();
+  renderServerMapLayer();
 }
 
 function resetServerMapView() {
@@ -2774,7 +2857,7 @@ function resetServerMapView() {
   state.serverMapCamera.offsetY = 0;
   state.serverMapCamera.isDragging = false;
   applyServerMapTransform();
-  renderTeamClusterPopover();
+  renderServerMapLayer();
 }
 
 function bindServerMapInteractions(wrapEl) {
@@ -2822,7 +2905,7 @@ function bindServerMapInteractions(wrapEl) {
     state.serverMapCamera.offsetX = state.serverMapCamera.dragOriginX + dx;
     state.serverMapCamera.offsetY = state.serverMapCamera.dragOriginY + dy;
     applyServerMapTransform();
-    renderTeamClusterPopover();
+    renderServerMapLayer();
   });
   wrap.addEventListener('pointerup', stopDrag);
   wrap.addEventListener('pointercancel', stopDrag);
@@ -3509,39 +3592,44 @@ function toMapGridColumnLabel(idx) {
   return out;
 }
 
-function buildMapGridOverlayHtml(mapContext, renderedRect) {
+function buildMapGridOverlayHtml(mapContext, renderedRect, camera = state.serverMapCamera, wrapEl = null) {
   if (!state.serverMapSettings.showGrid) return '';
   const worldSize = Number(mapContext?.worldSize || mapContext?.coordinateSize || 0);
   if (!Number.isFinite(worldSize) || worldSize <= 0 || !renderedRect) return '';
   const meta = getRustGridMeta(worldSize);
   if (!meta) return '';
+  const wrap = wrapEl || document.getElementById('server-map-wrap');
+  const wrapWidth = Number(wrap?.clientWidth || 0);
+  const wrapHeight = Number(wrap?.clientHeight || 0);
+  if (!Number.isFinite(wrapWidth) || !Number.isFinite(wrapHeight) || wrapWidth <= 0 || wrapHeight <= 0) return '';
   const gridSize = meta.cellSize;
   const cols = meta.cols;
   const rows = meta.rows;
   const html = [];
   const maxCellLabels = 1400;
+  const scale = Number(camera?.scale || 1) > 0 ? Number(camera.scale) : 1;
+  const baseCenter = {
+    x: renderedRect.left + (renderedRect.width / 2),
+    y: renderedRect.top + (renderedRect.height / 2),
+  };
+  const projectedCenter = projectServerMapPixel(baseCenter, wrapWidth, wrapHeight, camera);
+  const surfaceWidth = renderedRect.width * scale;
+  const surfaceHeight = renderedRect.height * scale;
+  const cellWidth = surfaceWidth / cols;
+  const cellHeight = surfaceHeight / rows;
+  if (projectedCenter && cellWidth > 0 && cellHeight > 0) {
+    html.push(`<div class="server-map-grid-surface" style="left:${projectedCenter.x - (surfaceWidth / 2)}px;top:${projectedCenter.y - (surfaceHeight / 2)}px;width:${surfaceWidth}px;height:${surfaceHeight}px;background-size:${cellWidth}px ${cellHeight}px;"></div>`);
+  }
   if ((cols * rows) <= maxCellLabels) {
     for (let c = 0; c < cols; c += 1) {
       const colLabel = toMapGridColumnLabel(c);
       for (let r = 0; r < rows; r += 1) {
         const rowNumber = r;
-        const worldLeft = c * gridSize;
-        const worldRight = Math.min(worldSize, (c + 1) * gridSize);
-        const worldTop = worldSize - (r * gridSize);
-        const worldBottom = Math.max(0, worldSize - ((r + 1) * gridSize));
-        const topLeft = normalizedToPixel(worldToNormalized(worldLeft, worldTop, mapContext), renderedRect);
-        const bottomRight = normalizedToPixel(worldToNormalized(worldRight, worldBottom, mapContext), renderedRect);
         const worldX = Math.min(worldSize, (c + 0.5) * gridSize);
         const worldY = Math.max(0, worldSize - ((r + 0.5) * gridSize));
-        const pixel = normalizedToPixel(worldToNormalized(worldX, worldY, mapContext), renderedRect);
-        if (!pixel || !topLeft || !bottomRight) continue;
-        const left = Math.min(topLeft.x, bottomRight.x);
-        const top = Math.min(topLeft.y, bottomRight.y);
-        const width = Math.abs(bottomRight.x - topLeft.x);
-        const height = Math.abs(bottomRight.y - topLeft.y);
-        if (width > 0 && height > 0) {
-          html.push(`<div class="server-map-grid-cell" style="left:${left}px;top:${top}px;width:${width}px;height:${height}px;"></div>`);
-        }
+        const basePixel = normalizedToPixel(worldToNormalized(worldX, worldY, mapContext), renderedRect);
+        const pixel = projectServerMapPixel(basePixel, wrapWidth, wrapHeight, camera);
+        if (!pixel) continue;
         html.push(`<div class="server-map-grid-cell-label" style="left:${pixel.x}px;top:${pixel.y}px;">${colLabel}${rowNumber}</div>`);
       }
     }
@@ -3787,6 +3875,7 @@ function renderServerMapLayer(teamMembers = state.serverMapView.teamMembers, ven
   const teamChip = document.getElementById('map-chip-team');
   const vendingChip = document.getElementById('map-chip-vending');
   const updatedChip = document.getElementById('map-chip-updated');
+  const wrap = document.getElementById('server-map-wrap');
   if (!subtitle || !mapImage || !mapLayer || !emptyEl) return;
 
   state.serverMapView = {
@@ -3845,7 +3934,6 @@ function renderServerMapLayer(teamMembers = state.serverMapView.teamMembers, ven
     return;
   }
 
-  if (mapImage.src !== state.serverMapImageUrl) mapImage.src = state.serverMapImageUrl;
   mapImage.style.display = 'block';
   emptyEl.style.display = 'none';
 
@@ -3869,21 +3957,21 @@ function renderServerMapLayer(teamMembers = state.serverMapView.teamMembers, ven
     return;
   }
   state.serverMapLayout = { renderedRect, imageRect, mapContext };
-  const clipSource = imageRect || renderedRect;
-  const clipTop = Math.max(0, clipSource.top);
-  const clipLeft = Math.max(0, clipSource.left);
-  const clipRight = Math.max(0, clipSource.containerWidth - clipSource.left - clipSource.width);
-  const clipBottom = Math.max(0, clipSource.containerHeight - clipSource.top - clipSource.height);
-  mapLayer.style.clipPath = `inset(${clipTop}px ${clipRight}px ${clipBottom}px ${clipLeft}px)`;
+  mapLayer.style.clipPath = 'none';
+  const wrapWidth = Number(wrap?.clientWidth || 0);
+  const wrapHeight = Number(wrap?.clientHeight || 0);
+  const camera = state.serverMapCamera;
   const points = [];
   const clusterById = {};
-  points.push(buildMapGridOverlayHtml(mapContext, renderedRect));
+  points.push(buildMapGridOverlayHtml(mapContext, renderedRect, camera, wrap));
 
   const teamClusters = clusterTeamMembers(state.serverMapView.teamMembers, mapContext, renderedRect);
   for (let idx = 0; idx < teamClusters.length; idx += 1) {
     const cluster = teamClusters[idx];
     const members = Array.isArray(cluster?.members) ? cluster.members : [];
-    const pos = { x: Number(cluster?.x || 0), y: Number(cluster?.y || 0) };
+    const basePos = { x: Number(cluster?.x || 0), y: Number(cluster?.y || 0) };
+    const pos = projectServerMapPixel(basePos, wrapWidth, wrapHeight, camera);
+    if (!pos) continue;
     const multi = members.length > 1;
     const stateClass = multi ? getTeamClusterStateClass(members) : getTeamMemberStateClass(members[0] || {});
     const label = multi ? `${members.length}人` : String(members[0]?.name || 'Unknown');
@@ -3891,7 +3979,7 @@ function renderServerMapLayer(teamMembers = state.serverMapView.teamMembers, ven
       ? `${members.map((m) => String(m?.name || 'Unknown')).join(' / ')}`
       : `${members[0]?.isOnline ? '在线' : '离线'} · ${Number(members[0]?.x || 0).toFixed(0)},${Number(members[0]?.y || 0).toFixed(0)}`;
     const clusterId = `team_cluster_${idx}`;
-    clusterById[clusterId] = { x: pos.x, y: pos.y, members };
+    clusterById[clusterId] = { x: basePos.x, y: basePos.y, members };
     points.push(`
       <div class="server-map-point" ${multi ? `data-team-cluster-id="${clusterId}"` : ''} style="left:${pos.x}px;top:${pos.y}px;" title="${esc(detail)}">
         <div class="server-map-dot team ${stateClass}"></div>
@@ -3902,7 +3990,8 @@ function renderServerMapLayer(teamMembers = state.serverMapView.teamMembers, ven
 
   for (const mon of monuments) {
     const normalized = monumentToNormalized(mon?.x, mon?.y, mapContext);
-    const pos = normalizedToPixel(normalized, renderedRect, { clamp: false });
+    const basePos = normalizedToPixel(normalized, renderedRect, { clamp: false });
+    const pos = projectServerMapPixel(basePos, wrapWidth, wrapHeight, camera);
     if (!normalized || !pos) continue;
     const tokenStr = String(mon.token || '').toLowerCase();
     const isSubway = tokenStr.includes('train_tunnel') || tokenStr.includes('tunnel_entrance') || tokenStr.includes('subway') || tokenStr.includes('metro');
@@ -3942,7 +4031,9 @@ function renderServerMapLayer(teamMembers = state.serverMapView.teamMembers, ven
     }
     const anchorId = ids[0] || '';
     const isSelected = ids.some((id) => state.selectedVendingGroupIds.includes(id));
-    const pos = { x: Number(cluster?.x || 0), y: Number(cluster?.y || 0) };
+    const basePos = { x: Number(cluster?.x || 0), y: Number(cluster?.y || 0) };
+    const pos = projectServerMapPixel(basePos, wrapWidth, wrapHeight, camera);
+    if (!pos) continue;
     if (ids.length <= 1) {
       const marker = markers[0];
       const name = String(marker?.name || marker?.vendingMachineName || '售货机');
@@ -3955,7 +4046,7 @@ function renderServerMapLayer(teamMembers = state.serverMapView.teamMembers, ven
       continue;
     }
     const clusterId = `vending_cluster_${idx}`;
-    vendingClusterById[clusterId] = { ids, anchorId, x: pos.x, y: pos.y };
+    vendingClusterById[clusterId] = { ids, anchorId, x: basePos.x, y: basePos.y };
     points.push(`
       <div class="server-map-point server-map-point-vending ${isSelected ? 'selected' : ''}" data-vending-cluster-id="${esc(clusterId)}" style="left:${pos.x}px;top:${pos.y}px;" title="${esc(`重叠售货机 x${ids.length}`)}">
         <div class="server-map-vending-cluster ${anyOutOfStock ? 'oos' : ''}">${ids.length}</div>
@@ -3976,7 +4067,7 @@ function renderServerMapLayer(teamMembers = state.serverMapView.teamMembers, ven
   renderTeamClusterPopover();
   renderVendingModal();
   mapLayer.innerHTML = points.join('') + renderMapDebugOverlay(renderedRect, mapContext);
-  applyServerMapTransform();
+  renderServerMapImageCanvas();
   renderServerMapCenterReticle();
 }
 
@@ -4005,9 +4096,7 @@ async function refreshServerMap(forceMapReload = false) {
       if (mapRes) {
         state.serverMap = mapRes;
         state.serverMapServerId = serverId;
-        state.serverMapImageUrl = mapRes.imageBase64
-          ? `data:image/jpeg;base64,${mapRes.imageBase64}`
-          : '';
+        await setServerMapImageFromBase64(mapRes.imageBase64);
       }
     }
 
@@ -5535,7 +5624,7 @@ rustAPI.on('server:status', ({ connected, name, serverId, server }) => {
   if (connected && prevServerId && nextServerId && prevServerId !== nextServerId) {
     state.serverMap = null;
     state.serverMapServerId = '';
-    state.serverMapImageUrl = '';
+    resetServerMapImageState();
     state.serverMapLastAt = 0;
     state.selectedVendingId = '';
     state.vendingById = {};
