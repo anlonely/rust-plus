@@ -207,9 +207,11 @@
     const rawX = toFiniteNumber(x, NaN);
     const rawY = toFiniteNumber(y, NaN);
     if (size <= 0 || !Number.isFinite(rawX) || !Number.isFinite(rawY)) return null;
+    const projectedX = clamp(rawX, 0, size);
+    const projectedY = clamp(rawY, 0, size);
     return {
-      x: rawX / size,
-      y: 1 - (rawY / size),
+      x: projectedX / size,
+      y: 1 - (projectedY / size),
       outside: rawX < 0 || rawX > size || rawY < 0 || rawY > size,
       clamped: false,
     };

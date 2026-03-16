@@ -51,6 +51,21 @@ test('server map monument normalization follows raw rustplus monument coordinate
   assert.equal(point.outside, false);
 });
 
+test('server map monument normalization clamps offshore monuments to map edge like rustplus format_coord', () => {
+  const ctx = geometry.resolveMapContext({ worldSize: 3499, width: 4499, height: 4499 });
+  const largeOil = geometry.monumentToNormalized(1749.5, 3799.034912109375, ctx);
+  const smallOil = geometry.monumentToNormalized(1749.5, -350, ctx);
+
+  assert.ok(largeOil);
+  assert.ok(smallOil);
+  assert.ok(Math.abs(largeOil.x - (1749.5 / 3499)) < 1e-9);
+  assert.equal(largeOil.y, 0);
+  assert.equal(largeOil.outside, true);
+  assert.ok(Math.abs(smallOil.x - (1749.5 / 3499)) < 1e-9);
+  assert.equal(smallOil.y, 1);
+  assert.equal(smallOil.outside, true);
+});
+
 test('server map grid label follows rustplus.py floor conversion', () => {
   const ctx = geometry.resolveMapContext({ worldSize: 4096 });
   const grid = geometry.markerToGridLabel({ x: 1835, y: 1603 }, 4096, ctx);

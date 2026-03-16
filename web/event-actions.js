@@ -141,13 +141,6 @@ function buildActionsFromMeta(meta = {}, eventType = '', deps = {}) {
       });
       continue;
     }
-    if (type === 'notify_discord') {
-      actions.push(async (context = {}) => {
-        const message = actionCtx.render(context, meta.message);
-        deps.notifyDiscord?.({ title: `🔔 ${eventType}`, message });
-      });
-      continue;
-    }
     if (type === 'team_chat' || type === 'send_game_message') {
       actions.push(async (context = {}) => {
         const message = actionCtx.render(context, action.message || meta.message);
@@ -185,12 +178,6 @@ function buildActionsFromMeta(meta = {}, eventType = '', deps = {}) {
       const message = actionCtx.render(context, meta.message);
       deps.notifyDesktop?.({ title: `🔔 ${eventType}`, message });
       deps.sendWsNotification?.({ type: 'info', title: `🔔 ${eventType}`, message });
-    });
-  }
-  if (meta.doDiscord) {
-    actions.push(async (context = {}) => {
-      const message = actionCtx.render(context, meta.message);
-      deps.notifyDiscord?.({ title: `🔔 ${eventType}`, message });
     });
   }
   if (meta.doChat !== false) {

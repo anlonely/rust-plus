@@ -304,7 +304,21 @@ function bindClientEvents(client, serverConfig) {
 
   client.on('error', (error) => {
     runtime.lastError = String(error?.message || error || '连接异常');
-    sendWs('runtime:error', { message: runtime.lastError });
+    const lower = runtime.lastError.toLowerCase();
+    let message = runtime.lastError;
+    if (lower.includes('socket hang up')) {
+      message = '连接被服务器主动断开，当前服务器 Rust+ 配对可能已失效，请在游戏内 ESC -> Rust+ -> Pair with Server 重新配对。';
+    } else if (lower.includes('econnrefused') || lower.includes('timed out') || lower.includes('timeout')) {
+      message = '无法连接到 Rust+ 端口，请确认服务器在线、app.port 可用，或稍后重试。';
+    } else if (lower.includes('not_found')) {
+      message = '服务器未接受当前请求，当前配对信息可能已失效，请重新配对。';
+    }
+    sendWs('runtime:error', { message });
+    sendWs('notification', {
+      type: 'error',
+      title: '服务器连接异常',
+      message,
+    });
   });
 }
 
@@ -368,7 +382,6 @@ function serializeRule(rule = {}) {
   const meta = rule?._meta || {};
   const inferActions = [];
   if (meta.doNotify === true) inferActions.push('notify_desktop');
-  if (meta.doDiscord) inferActions.push('notify_discord');
   if (meta.doChat !== false) inferActions.push('team_chat');
   const metaActions = Array.isArray(meta.actions) ? meta.actions.length : inferActions.length;
   return {
@@ -380,6 +393,72 @@ function serializeRule(rule = {}) {
     _meta: meta,
     actions: metaActions ? [`${metaActions}个动作`] : ((rule.actions || []).length ? [`${rule.actions.length}个动作`] : []),
   };
+}
+
+function buildPersistedCommandSnapshot(keyword, serverId) {
+  const command = cmdParser?.getCommand(keyword, { includeDeleted: true });
+  if (!command) return null;
+  return {
+    id: String(command.keyword || keyword).toLowerCase(),
+    keyword: String(command.keyword || keyword).toLowerCase(),
+    type: command.type || null,
+    name: String(command.description || '').trim(),
+    permission: command.permission || 'all',
+    enabled: command.enabled !== false,
+    meta: command.meta || {},
+    trigger: command.trigger || { cooldownMs: 3_000 },
+    serverId: serverId || null,
+    deleted: false,
+  };
+}
+
+async function ensureDefaultCommandRules(serverId) {
+  if (!serverId || !cmdParser) return [];
+  const persisted = await listCommandRules(serverId);
+  if (persisted.length) return persisted;
+  const preset = getCommandPreset('command_system_default');
+  if (!preset?.commandRules?.length) return [];
+  cmdParser.restoreBuiltinCommands?.();
+  const applied = [];
+  for (const rule of preset.commandRules) {
+    const normalized = normalizeCommandRuleInput({
+      ...rule,
+      enabled: true,
+      meta: {
+        ...(rule.meta || {}),
+        doNotify: false,
+        doChat: true,
+        actions: [{ type: 'team_chat' }],
+      },
+    }, serverId);
+    if (!normalized) continue;
+    cmdParser.setCommandRule(normalized);
+    const saved = await saveCommandRule({ ...normalized, deleted: false });
+    applied.push(saved);
+  }
+  return applied;
+}
+
+function buildSystemCommandRulesFromParser(serverId) {
+  if (!cmdParser) return [];
+  return cmdParser.getCommands()
+    .filter((command) => command?.isBuiltin)
+    .map((command) => normalizeCommandRuleInput({
+      id: command.keyword,
+      keyword: command.keyword,
+      type: command.type || null,
+      name: command.keyword === 'fk' ? '防空' : '',
+      permission: command.keyword === 'fk' ? 'all' : (command.permission || 'all'),
+      enabled: true,
+      meta: {
+        ...(command.keyword === 'fk' ? { action: 'toggle' } : {}),
+        doNotify: false,
+        doChat: true,
+        actions: [{ type: 'team_chat' }],
+      },
+      trigger: { cooldownMs: 3_000 },
+    }, serverId))
+    .filter(Boolean);
 }
 
 function normalizeCommandListRecord(rule = {}) {
@@ -511,6 +590,9 @@ async function bootstrapRuntimeForConnectedServer(serverConfig) {
     persistedRules: persistedCommands,
     removeRule: async (keyword) => removeCommandRule(keyword, serverConfig.id),
   });
+  if (!(await listCommandRules(serverConfig.id)).length) {
+    await ensureDefaultCommandRules(serverConfig.id);
+  }
 
   const persistedRules = await listEventRules(serverConfig.id);
   for (const rule of persistedRules) {
@@ -519,6 +601,14 @@ async function bootstrapRuntimeForConnectedServer(serverConfig) {
     }
   }
   let safeRules = await listEventRules(serverConfig.id);
+  if (!safeRules.length) {
+    const preset = getEventPreset('event_system_default');
+    for (const rule of preset?.eventRules || []) {
+      const normalized = normalizeEventRuleInput(rule, serverConfig.id);
+      await saveEventRule(normalized);
+    }
+    safeRules = await listEventRules(serverConfig.id);
+  }
   let playerStatusRule = safeRules.find((rule) => String(rule?.event || '') === 'player_status');
   if (!playerStatusRule) {
     playerStatusRule = await saveEventRule({
@@ -530,7 +620,6 @@ async function bootstrapRuntimeForConnectedServer(serverConfig) {
       enabled: true,
       _meta: {
         doNotify: false,
-        doDiscord: false,
         doChat: true,
         message: '{player_status_message}',
         playerStatusMessages: { ...DEFAULT_PLAYER_STATUS_MESSAGES },
@@ -922,12 +1011,14 @@ const invokeIpc = createIpcInvoker({
         serverInfo: rawServerInfo,
         mapSize: rawServerInfo?.mapSize || runtime.latestServerSnapshot?.mapSize,
       });
-      return await enrichMapDataWithRustMaps(normalized, {
+      const enriched = await enrichMapDataWithRustMaps(normalized, {
         mapSize: rawServerInfo?.mapSize || runtime.latestServerSnapshot?.mapSize,
         seed: rawServerInfo?.seed,
         serverName: rawServerInfo?.name || runtime.currentServer?.name,
         mapName: rawServerInfo?.map,
       });
+      if (rawServerInfo?.seed != null) enriched.seed = rawServerInfo.seed;
+      return enriched;
     } catch (err) {
       return { error: err.message };
     }
@@ -1045,20 +1136,16 @@ const invokeIpc = createIpcInvoker({
     return persisted.map(normalizeCommandListRecord);
   },
   'commands:toggle': async (args) => {
-    if (!cmdParser || !runtime.currentServerId) return { success: false };
+    if (!cmdParser || !runtime.currentServerId) return { success: false, error: '未连接服务器或指令不存在' };
     const payload = args[0] || {};
     const key = String(payload.keyword || '').toLowerCase().trim();
-    if (!key) return { success: false };
+    if (!key) return { success: false, error: '缺少指令关键词' };
     const ok = cmdParser.setCommandEnabled(key, payload.enabled);
-    if (!ok) return { success: false };
-    const current = (await listCommandRules(runtime.currentServerId)).find((r) => String(r.id) === key || String(r.keyword) === key) || {};
-    await saveCommandRule({
-      ...current,
-      id: key,
-      keyword: key,
-      serverId: runtime.currentServerId,
-      enabled: !!payload.enabled,
-    });
+    if (!ok) return { success: false, error: `指令不存在：${key}` };
+    const snapshot = buildPersistedCommandSnapshot(key, runtime.currentServerId);
+    if (!snapshot) return { success: false, error: `无法生成指令快照：${key}` };
+    snapshot.enabled = !!payload.enabled;
+    await saveCommandRule(snapshot);
     return { success: true };
   },
   'commands:saveRule': async (args) => {
@@ -1076,15 +1163,36 @@ const invokeIpc = createIpcInvoker({
       id: String(payload.id || keyword),
       keyword,
       serverId: runtime.currentServerId,
+      deleted: false,
     });
     return { success: true };
   },
   'commands:removeRule': async (args) => {
     if (!runtime.currentServerId) return { success: false, error: '未连接服务器' };
     const key = String(args[0] || '').toLowerCase().trim();
-    if (!key) return { success: false };
+    if (!key) return { success: false, error: '缺少指令关键词' };
+    const current = cmdParser?.getCommand(key, { includeDeleted: true });
+    if (!current) return { success: false, error: '指令不存在' };
     cmdParser?.removeCommandRule(key);
-    await removeCommandRule(key, runtime.currentServerId);
+    if (current.isBuiltin) {
+      const snapshot = buildPersistedCommandSnapshot(key, runtime.currentServerId) || {
+        id: key,
+        keyword: key,
+        type: current.type || null,
+        name: String(current.description || '').trim(),
+        permission: current.permission || 'all',
+        meta: current.meta || {},
+        trigger: current.trigger || { cooldownMs: 3_000 },
+        serverId: runtime.currentServerId,
+      };
+      await saveCommandRule({
+        ...snapshot,
+        enabled: false,
+        deleted: true,
+      });
+    } else {
+      await removeCommandRule(key, runtime.currentServerId);
+    }
     return { success: true };
   },
 
@@ -1124,21 +1232,33 @@ const invokeIpc = createIpcInvoker({
         const existing = await listCommandRules(runtime.currentServerId);
         for (const rule of existing) await removeCommandRule(rule.id || rule.keyword, runtime.currentServerId);
         if (cmdParser) {
+          cmdParser.restoreBuiltinCommands?.();
           for (const command of cmdParser.getCommands()) {
-            cmdParser.setCommandEnabled(command.keyword, false);
+            if (command.isBuiltin) cmdParser.setCommandEnabled(command.keyword, false);
+            else cmdParser.removeCommandRule(command.keyword);
           }
         }
       }
-      for (const rule of preset.commandRules || []) {
-        const normalized = normalizeCommandRuleInput(rule, runtime.currentServerId);
+      const rulesToApply = buildSystemCommandRulesFromParser(runtime.currentServerId);
+      for (const rule of rulesToApply.length ? rulesToApply : (preset.commandRules || [])) {
+        const normalized = normalizeCommandRuleInput({
+          ...rule,
+          enabled: true,
+          meta: {
+            ...(rule.meta || {}),
+            doNotify: false,
+            doChat: true,
+            actions: [{ type: 'team_chat' }],
+          },
+        }, runtime.currentServerId);
         if (!normalized) continue;
         if (cmdParser) {
           if (normalized.type || normalized.name || normalized.meta) cmdParser.setCommandRule(normalized);
           else cmdParser.setCommandEnabled(normalized.keyword, normalized.enabled !== false);
         }
-        await saveCommandRule(normalized);
+        await saveCommandRule({ ...normalized, deleted: false });
       }
-      return { success: true, applied: (preset.commandRules || []).length };
+      return { success: true, applied: (rulesToApply.length ? rulesToApply : (preset.commandRules || [])).length };
     }
 
     return { success: false, error: '不支持的预设类型' };

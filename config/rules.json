@@ -39,1707 +39,10 @@
       "createdAt": "2026-02-27T15:15:08.576Z"
     },
     {
-      "id": "hourly",
-      "name": "整点报时",
-      "event": "hourly_tick",
-      "serverId": "server_1772205331307",
-      "trigger": {},
-      "enabled": true,
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "当前游戏时间{hourly_time} ｜{day_phase}｜距离{phase_target}还有{time_to_phase_real}"
-      },
-      "updatedAt": "2026-02-28T00:02:02.425Z",
-      "createdAt": "2026-02-27T15:15:40.137Z"
-    },
-    {
-      "id": "vending_new_notify",
-      "name": "新售货机出现事件",
-      "event": "vending_new",
-      "trigger": {
-        "cooldownMs": 30000,
-        "vendingWatchItemIds": [
-          -1607980696,
-          -41896755,
-          -143481979,
-          -1896395719,
-          -1581843485,
-          -1157596551,
-          -742865266,
-          -592016202,
-          -265876753,
-          1545779598,
-          -2069578888,
-          -778367295,
-          317398316,
-          69511070,
-          -4031221,
-          -1982036270
-        ],
-        "vendingWatchItemNames": [
-          "三级工作台",
-          "二级工作台",
-          "基础蓝图碎片",
-          "高级蓝图碎片",
-          "硫磺",
-          "硫磺矿石",
-          "火箭弹",
-          "炸药",
-          "火药",
-          "AK-47突击步枪",
-          "M249",
-          "L96狙击步枪",
-          "高级金属",
-          "金属碎片",
-          "金属矿石",
-          "高级金属矿石"
-        ]
-      },
-      "enabled": true,
-      "serverId": "server_1772205331307",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "发现 {vending_items}上架售货机 | 坐标:[{marker_grid}]"
-      },
-      "updatedAt": "2026-03-03T04:49:23.242Z",
-      "createdAt": "2026-02-28T00:31:44.472Z"
-    },
-    {
-      "id": "player_status_notify",
-      "name": "队友状态整合事件",
-      "event": "player_status",
-      "trigger": {
-        "cooldownMs": 5000
-      },
-      "enabled": true,
-      "serverId": "server_1772205331307",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "{player_status_message}",
-        "playerStatusMessages": {
-          "online": "{member}已上线｜上线位置:{member_grid}",
-          "offline": "{member}已离线｜离线位置:{member_grid}",
-          "dead": "{member}已死亡｜死亡位置:{member_grid}",
-          "respawn": "{member}已重生｜当前位置:{member_grid}",
-          "afk": "{member}挂机已持续15分钟｜当前位置:{member_grid}"
-        }
-      },
-      "updatedAt": "2026-03-03T04:49:23.247Z",
-      "createdAt": "2026-02-28T12:00:59.611Z"
-    },
-    {
-      "id": "cargo_status_notify",
-      "name": "货船事件整合",
-      "event": "cargo_ship_status",
-      "serverId": "server_1772205331307",
-      "trigger": {
-        "cooldownMs": 30000,
-        "cargoNotifyEnter": true,
-        "cargoNotifyLeave": true,
-        "cargoNotifyActive": false,
-        "cargoNotifyDock": true
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "{cargo_status_message}",
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "actions": [
-          {
-            "type": "team_chat"
-          }
-        ],
-        "cargoMessages": {
-          "enter": "货船进入地图｜当前位置:{cargo_grid}",
-          "leave": "货船已离开地图｜最后位置:{cargo_grid}",
-          "active": "货船航行中｜当前位置:{cargo_grid}",
-          "dock": "货船已停靠 ｜{cargo_harbor} [{cargo_harbor_grid}]"
-        }
-      },
-      "updatedAt": "2026-03-03T04:49:23.242Z",
-      "createdAt": "2026-02-28T12:19:16.761Z"
-    },
-    {
-      "id": "oil_status_notify",
-      "name": "石油事件整合",
-      "event": "oil_rig_status",
-      "serverId": "server_1772205331307",
-      "trigger": {
-        "cooldownMs": 30000,
-        "oilNotifyLargeHeavy": true,
-        "oilNotifySmallHeavy": true,
-        "oilNotifyLargeUnlock": true,
-        "oilNotifySmallUnlock": true
-      },
-      "enabled": true,
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "actions": [
-          {
-            "type": "team_chat"
-          }
-        ],
-        "message": "{oil_status_message}",
-        "oilMessages": {
-          "large_heavy": "大石油重装已呼叫｜位置:{oil_grid}",
-          "small_heavy": "小石油重装已呼叫｜位置:{oil_grid}",
-          "large_unlock": "大石油箱子已解锁｜位置:{oil_grid}",
-          "small_unlock": "小石油箱子已解锁｜位置:{oil_grid}"
-        }
-      },
-      "updatedAt": "2026-03-03T04:49:23.243Z",
-      "createdAt": "2026-02-28T12:33:30.497Z"
-    },
-    {
-      "id": "ch47_status_notify",
-      "name": "军用运输直升机事件整合",
-      "event": "ch47_status",
-      "serverId": "server_1772205331307",
-      "trigger": {
-        "cooldownMs": 30000,
-        "ch47NotifyEnter": true,
-        "ch47NotifyActive": false,
-        "ch47NotifyLeave": true
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "{ch47_status_message}",
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "actions": [
-          {
-            "type": "team_chat"
-          }
-        ],
-        "ch47Messages": {
-          "enter": "军用运输直升机进入地图｜当前位置:{marker_grid}",
-          "active": "军用运输直升机巡逻中｜当前位置:{marker_grid}",
-          "leave": "军用运输直升机已离开地图｜最后位置:{marker_grid}"
-        }
-      },
-      "updatedAt": "2026-03-03T04:49:23.244Z",
-      "createdAt": "2026-02-28T12:44:56.485Z"
-    },
-    {
-      "id": "patrol_heli_status_notify",
-      "name": "武装直升机事件整合",
-      "event": "patrol_heli_status",
-      "serverId": "server_1772205331307",
-      "trigger": {
-        "cooldownMs": 30000,
-        "heliNotifyEnter": true,
-        "heliNotifyActive": false,
-        "heliNotifyLeave": true,
-        "heliNotifyExplode": true
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "{heli_status_message}",
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "actions": [
-          {
-            "type": "team_chat"
-          }
-        ],
-        "heliMessages": {
-          "enter": "武直进入地图｜当前位置:{marker_grid}",
-          "active": "武直巡逻中｜当前位置:{marker_grid}",
-          "leave": "武直已离开地图｜最后位置:{marker_grid}",
-          "explode": "武直已被击落｜坠落位置:{marker_grid}"
-        }
-      },
-      "updatedAt": "2026-03-03T04:49:23.245Z",
-      "createdAt": "2026-02-28T12:44:56.486Z"
-    },
-    {
-      "id": "vendor_status_notify",
-      "name": "流浪商人事件整合",
-      "event": "vendor_status",
-      "serverId": "server_1772205331307",
-      "trigger": {
-        "cooldownMs": 60000,
-        "vendorNotifyEnter": true,
-        "vendorNotifyMove": true,
-        "vendorNotifyStopped": true,
-        "vendorNotifyLeave": true
-      },
-      "enabled": true,
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "{vendor_status_message}",
-        "vendorMessages": {
-          "enter": "流浪商人进入地图｜当前位置:{marker_grid}",
-          "move": "流浪商人移动中｜当前位置:{marker_grid}",
-          "stopped": "流浪商人停留｜停留位置:{marker_grid}",
-          "leave": "流浪商人离开地图｜最后位置:{marker_grid}"
-        }
-      },
-      "updatedAt": "2026-03-03T04:49:23.246Z",
-      "createdAt": "2026-02-28T12:44:56.486Z"
-    },
-    {
-      "id": "deepsea_status_notify",
-      "name": "深海整合",
-      "event": "deep_sea_status",
-      "serverId": "server_1772205331307",
-      "trigger": {
-        "cooldownMs": 30000,
-        "deepSeaNotifyOpen": true,
-        "deepSeaNotifyClose": true
-      },
-      "enabled": true,
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "{deep_sea_status_message}",
-        "deepSeaMessages": {
-          "open": "深海已开启｜位于地图[{deep_sea_direction}]方向深处",
-          "close": "深海已关闭"
-        }
-      },
-      "updatedAt": "2026-03-03T04:49:23.246Z",
-      "createdAt": "2026-02-28T12:44:56.486Z"
-    },
-    {
-      "id": "vending_new_notify",
-      "name": "新售货机出现事件",
-      "event": "vending_new",
-      "trigger": {
-        "cooldownMs": 30000,
-        "vendingWatchItemIds": [
-          -1607980696,
-          -41896755,
-          -143481979,
-          -1896395719,
-          -1581843485,
-          -1157596551,
-          -742865266,
-          -592016202,
-          -265876753,
-          1545779598,
-          -2069578888,
-          -778367295,
-          317398316,
-          69511070,
-          -4031221,
-          -1982036270
-        ],
-        "vendingWatchItemNames": [
-          "三级工作台",
-          "二级工作台",
-          "基础蓝图碎片",
-          "高级蓝图碎片",
-          "硫磺",
-          "硫磺矿石",
-          "火箭弹",
-          "炸药",
-          "火药",
-          "AK-47突击步枪",
-          "M249",
-          "L96狙击步枪",
-          "高级金属",
-          "金属碎片",
-          "金属矿石",
-          "高级金属矿石"
-        ]
-      },
-      "enabled": true,
-      "serverId": "server_1772456941925",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "发现 {vending_items}上架售货机 | 坐标:[{marker_grid}]"
-      },
-      "updatedAt": "2026-03-02T13:09:02.491Z",
-      "createdAt": "2026-03-02T13:09:02.491Z"
-    },
-    {
-      "id": "hourly",
-      "name": "整点报时",
-      "event": "hourly_tick",
-      "trigger": {},
-      "enabled": true,
-      "serverId": "server_1772456941925",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "当前游戏时间{hourly_time} ｜{day_phase}｜距离{phase_target}还有{time_to_phase_real}"
-      },
-      "updatedAt": "2026-03-02T13:09:02.492Z",
-      "createdAt": "2026-03-02T13:09:02.492Z"
-    },
-    {
-      "id": "day_phase_notice",
-      "name": "天黑天亮提醒",
-      "event": "day_phase_notice",
-      "trigger": {
-        "cooldownMs": 30000
-      },
-      "enabled": true,
-      "serverId": "server_1772456941925",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "当前游戏时间{hourly_time} ｜{day_phase}｜距离{phase_target}还有{time_to_phase_real}"
-      },
-      "updatedAt": "2026-03-02T13:09:02.492Z",
-      "createdAt": "2026-03-02T13:09:02.492Z"
-    },
-    {
-      "id": "ch47_status_notify",
-      "name": "军用运输直升机事件整合",
-      "event": "ch47_status",
-      "trigger": {
-        "cooldownMs": 30000,
-        "ch47NotifyEnter": true,
-        "ch47NotifyActive": true,
-        "ch47NotifyLeave": true
-      },
-      "enabled": true,
-      "serverId": "server_1772456941925",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "{ch47_status_message}",
-        "ch47Messages": {
-          "enter": "军用运输直升机进入地图｜当前位置:{marker_grid}",
-          "active": "军用运输直升机巡逻中｜当前位置:{marker_grid}",
-          "leave": "军用运输直升机已离开地图｜最后位置:{marker_grid}"
-        }
-      },
-      "updatedAt": "2026-03-02T13:09:02.493Z",
-      "createdAt": "2026-03-02T13:09:02.493Z"
-    },
-    {
-      "id": "patrol_heli_status_notify",
-      "name": "武装直升机事件整合",
-      "event": "patrol_heli_status",
-      "trigger": {
-        "cooldownMs": 30000,
-        "heliNotifyEnter": true,
-        "heliNotifyActive": true,
-        "heliNotifyLeave": true,
-        "heliNotifyExplode": true
-      },
-      "enabled": true,
-      "serverId": "server_1772456941925",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "{heli_status_message}",
-        "heliMessages": {
-          "enter": "武直进入地图｜当前位置:{marker_grid}",
-          "active": "武直巡逻中｜当前位置:{marker_grid}",
-          "leave": "武直已离开地图｜最后位置:{marker_grid}",
-          "explode": "武直已被击落｜坠落位置:{marker_grid}"
-        }
-      },
-      "updatedAt": "2026-03-02T13:09:02.493Z",
-      "createdAt": "2026-03-02T13:09:02.493Z"
-    },
-    {
-      "id": "vendor_status_notify",
-      "name": "流浪商人事件整合",
-      "event": "vendor_status",
-      "trigger": {
-        "cooldownMs": 60000,
-        "vendorNotifyEnter": true,
-        "vendorNotifyMove": true,
-        "vendorNotifyStopped": true,
-        "vendorNotifyLeave": true
-      },
-      "enabled": true,
-      "serverId": "server_1772456941925",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "{vendor_status_message}",
-        "vendorMessages": {
-          "enter": "流浪商人进入地图｜当前位置:{marker_grid}",
-          "move": "流浪商人移动中｜当前位置:{marker_grid}",
-          "stopped": "流浪商人停留｜停留位置:{marker_grid}",
-          "leave": "流浪商人离开地图｜最后位置:{marker_grid}"
-        }
-      },
-      "updatedAt": "2026-03-02T13:09:02.494Z",
-      "createdAt": "2026-03-02T13:09:02.494Z"
-    },
-    {
-      "id": "deepsea_status_notify",
-      "name": "深海整合",
-      "event": "deep_sea_status",
-      "trigger": {
-        "cooldownMs": 30000,
-        "deepSeaNotifyOpen": true,
-        "deepSeaNotifyClose": true
-      },
-      "enabled": true,
-      "serverId": "server_1772456941925",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "{deep_sea_status_message}",
-        "deepSeaMessages": {
-          "open": "深海已开启｜位于地图[{deep_sea_direction}]方向深处",
-          "close": "深海已关闭"
-        }
-      },
-      "updatedAt": "2026-03-02T13:09:02.495Z",
-      "createdAt": "2026-03-02T13:09:02.495Z"
-    },
-    {
-      "id": "cargo_status_notify",
-      "name": "货船事件整合",
-      "event": "cargo_ship_status",
-      "trigger": {
-        "cooldownMs": 30000,
-        "cargoNotifyEnter": true,
-        "cargoNotifyLeave": true,
-        "cargoNotifyActive": true,
-        "cargoNotifyDock": true
-      },
-      "enabled": true,
-      "serverId": "server_1772456941925",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "{cargo_status_message}",
-        "cargoMessages": {
-          "enter": "货船进入地图｜当前位置:{cargo_grid}",
-          "leave": "货船已离开地图｜最后位置:{cargo_grid}",
-          "active": "货船航行中｜当前位置:{cargo_grid}",
-          "dock": "货船已停靠 ｜{cargo_harbor} [{cargo_harbor_grid}]"
-        }
-      },
-      "updatedAt": "2026-03-02T13:09:02.495Z",
-      "createdAt": "2026-03-02T13:09:02.495Z"
-    },
-    {
-      "id": "oil_status_notify",
-      "name": "石油事件整合",
-      "event": "oil_rig_status",
-      "trigger": {
-        "cooldownMs": 30000,
-        "oilNotifyLargeHeavy": true,
-        "oilNotifySmallHeavy": true,
-        "oilNotifyLargeUnlock": true,
-        "oilNotifySmallUnlock": true
-      },
-      "enabled": true,
-      "serverId": "server_1772456941925",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "{oil_status_message}",
-        "oilMessages": {
-          "large_heavy": "大石油重装已呼叫｜位置:{oil_grid}",
-          "small_heavy": "小石油重装已呼叫｜位置:{oil_grid}",
-          "large_unlock": "大石油箱子已解锁｜位置:{oil_grid}",
-          "small_unlock": "小石油箱子已解锁｜位置:{oil_grid}"
-        }
-      },
-      "updatedAt": "2026-03-02T13:09:02.496Z",
-      "createdAt": "2026-03-02T13:09:02.496Z"
-    },
-    {
-      "id": "player_status_notify",
-      "name": "队友状态整合事件",
-      "event": "player_status",
-      "trigger": {
-        "cooldownMs": 5000
-      },
-      "enabled": true,
-      "serverId": "server_1772456941925",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "{player_status_message}",
-        "playerStatusMessages": {
-          "online": "{member}已上线｜上线位置:{member_grid}",
-          "offline": "{member}已离线｜离线位置:{member_grid}",
-          "dead": "{member}已死亡｜死亡位置:{member_grid}",
-          "respawn": "{member}已重生｜当前位置:{member_grid}",
-          "afk": "{member}挂机已持续15分钟｜当前位置:{member_grid}"
-        }
-      },
-      "updatedAt": "2026-03-02T13:09:02.496Z",
-      "createdAt": "2026-03-02T13:09:02.496Z"
-    },
-    {
-      "id": "vending_new_notify",
-      "name": "新售货机出现事件",
-      "event": "vending_new",
-      "trigger": {
-        "cooldownMs": 30000,
-        "vendingWatchItemIds": [
-          -1607980696,
-          -41896755,
-          -143481979,
-          -1896395719,
-          -1581843485,
-          -1157596551,
-          -742865266,
-          -592016202,
-          -265876753,
-          1545779598,
-          -2069578888,
-          -778367295,
-          317398316,
-          69511070,
-          -4031221,
-          -1982036270
-        ],
-        "vendingWatchItemNames": [
-          "三级工作台",
-          "二级工作台",
-          "基础蓝图碎片",
-          "高级蓝图碎片",
-          "硫磺",
-          "硫磺矿石",
-          "火箭弹",
-          "炸药",
-          "火药",
-          "AK-47突击步枪",
-          "M249",
-          "L96狙击步枪",
-          "高级金属",
-          "金属碎片",
-          "金属矿石",
-          "高级金属矿石"
-        ]
-      },
-      "enabled": true,
-      "serverId": "server_1772457269081",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "发现 {vending_items}上架售货机 | 坐标:[{marker_grid}]"
-      },
-      "updatedAt": "2026-03-13T16:21:24.510Z",
-      "createdAt": "2026-03-02T13:14:29.628Z"
-    },
-    {
-      "id": "hourly",
-      "name": "整点报时",
-      "event": "hourly_tick",
-      "trigger": {},
-      "enabled": true,
-      "serverId": "server_1772457269081",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "当前游戏时间{hourly_time} ｜{day_phase}｜距离{phase_target}还有{time_to_phase_real}"
-      },
-      "updatedAt": "2026-03-02T13:14:29.630Z",
-      "createdAt": "2026-03-02T13:14:29.630Z"
-    },
-    {
-      "id": "day_phase_notice",
-      "name": "天黑天亮提醒",
-      "event": "day_phase_notice",
-      "trigger": {
-        "cooldownMs": 30000
-      },
-      "enabled": true,
-      "serverId": "server_1772457269081",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "当前游戏时间{hourly_time} ｜{day_phase}｜距离{phase_target}还有{time_to_phase_real}"
-      },
-      "updatedAt": "2026-03-02T13:14:29.630Z",
-      "createdAt": "2026-03-02T13:14:29.630Z"
-    },
-    {
-      "id": "ch47_status_notify",
-      "name": "军用运输直升机事件整合",
-      "event": "ch47_status",
-      "trigger": {
-        "cooldownMs": 30000,
-        "ch47NotifyEnter": true,
-        "ch47NotifyActive": true,
-        "ch47NotifyLeave": true
-      },
-      "enabled": true,
-      "serverId": "server_1772457269081",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "{ch47_status_message}",
-        "ch47Messages": {
-          "enter": "军用运输直升机进入地图｜当前位置:{marker_grid}",
-          "active": "军用运输直升机巡逻中｜当前位置:{marker_grid}",
-          "leave": "军用运输直升机已离开地图｜最后位置:{marker_grid}"
-        }
-      },
-      "updatedAt": "2026-03-13T16:21:24.514Z",
-      "createdAt": "2026-03-02T13:14:29.631Z"
-    },
-    {
-      "id": "patrol_heli_status_notify",
-      "name": "武装直升机事件整合",
-      "event": "patrol_heli_status",
-      "trigger": {
-        "cooldownMs": 30000,
-        "heliNotifyEnter": true,
-        "heliNotifyActive": true,
-        "heliNotifyLeave": true,
-        "heliNotifyExplode": true
-      },
-      "enabled": true,
-      "serverId": "server_1772457269081",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "{heli_status_message}",
-        "heliMessages": {
-          "enter": "武直进入地图｜当前位置:{marker_grid}",
-          "active": "武直巡逻中｜当前位置:{marker_grid}",
-          "leave": "武直已离开地图｜最后位置:{marker_grid}",
-          "explode": "武直已被击落｜坠落位置:{marker_grid}"
-        }
-      },
-      "updatedAt": "2026-03-13T16:21:24.515Z",
-      "createdAt": "2026-03-02T13:14:29.631Z"
-    },
-    {
-      "id": "vendor_status_notify",
-      "name": "流浪商人事件整合",
-      "event": "vendor_status",
-      "trigger": {
-        "cooldownMs": 60000,
-        "vendorNotifyEnter": true,
-        "vendorNotifyMove": true,
-        "vendorNotifyStopped": true,
-        "vendorNotifyLeave": true
-      },
-      "enabled": true,
-      "serverId": "server_1772457269081",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "{vendor_status_message}",
-        "vendorMessages": {
-          "enter": "流浪商人进入地图｜当前位置:{marker_grid}",
-          "move": "流浪商人移动中｜当前位置:{marker_grid}",
-          "stopped": "流浪商人停留｜停留位置:{marker_grid}",
-          "leave": "流浪商人离开地图｜最后位置:{marker_grid}"
-        }
-      },
-      "updatedAt": "2026-03-13T16:21:24.517Z",
-      "createdAt": "2026-03-02T13:14:29.631Z"
-    },
-    {
-      "id": "deepsea_status_notify",
-      "name": "深海整合",
-      "event": "deep_sea_status",
-      "trigger": {
-        "cooldownMs": 30000,
-        "deepSeaNotifyOpen": true,
-        "deepSeaNotifyClose": true
-      },
-      "enabled": true,
-      "serverId": "server_1772457269081",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "{deep_sea_status_message}",
-        "deepSeaMessages": {
-          "open": "｜ 深海已开启｜",
-          "close": "深海已关闭"
-        }
-      },
-      "updatedAt": "2026-03-13T16:21:24.518Z",
-      "createdAt": "2026-03-02T13:14:29.632Z"
-    },
-    {
-      "id": "cargo_status_notify",
-      "name": "货船事件整合",
-      "event": "cargo_ship_status",
-      "trigger": {
-        "cooldownMs": 30000,
-        "cargoNotifyEnter": true,
-        "cargoNotifyLeave": true,
-        "cargoNotifyActive": true,
-        "cargoNotifyDock": true
-      },
-      "enabled": true,
-      "serverId": "server_1772457269081",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "{cargo_status_message}",
-        "cargoMessages": {
-          "enter": "货船进入地图｜当前位置:{cargo_grid}",
-          "leave": "货船已离开地图｜最后位置:{cargo_grid}",
-          "active": "货船航行中｜当前位置:{cargo_grid}",
-          "dock": "货船已停靠 ｜{cargo_harbor} [{cargo_harbor_grid}]"
-        }
-      },
-      "updatedAt": "2026-03-13T16:21:24.512Z",
-      "createdAt": "2026-03-02T13:14:29.632Z"
-    },
-    {
-      "id": "oil_status_notify",
-      "name": "石油事件整合",
-      "event": "oil_rig_status",
-      "trigger": {
-        "cooldownMs": 30000,
-        "oilNotifyLargeHeavy": true,
-        "oilNotifySmallHeavy": true,
-        "oilNotifyLargeUnlock": true,
-        "oilNotifySmallUnlock": true
-      },
-      "enabled": true,
-      "serverId": "server_1772457269081",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "{oil_status_message}",
-        "oilMessages": {
-          "large_heavy": "大石油重装已呼叫｜位置:{oil_grid}",
-          "small_heavy": "小石油重装已呼叫｜位置:{oil_grid}",
-          "large_unlock": "大石油箱子已解锁｜位置:{oil_grid}",
-          "small_unlock": "小石油箱子已解锁｜位置:{oil_grid}"
-        }
-      },
-      "updatedAt": "2026-03-13T16:21:24.513Z",
-      "createdAt": "2026-03-02T13:14:29.633Z"
-    },
-    {
-      "id": "player_status_notify",
-      "name": "队友状态整合事件",
-      "event": "player_status",
-      "trigger": {
-        "cooldownMs": 5000
-      },
-      "enabled": true,
-      "serverId": "server_1772457269081",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "{player_status_message}",
-        "playerStatusMessages": {
-          "online": "{member}已上线｜上线位置:{member_grid}",
-          "offline": "{member}已离线｜离线位置:{member_grid}",
-          "dead": "{member}已死亡｜死亡位置:{member_grid}",
-          "respawn": "{member}已重生｜当前位置:{member_grid}",
-          "afk": "{member}挂机已持续15分钟｜当前位置:{member_grid}"
-        }
-      },
-      "updatedAt": "2026-03-13T16:21:24.519Z",
-      "createdAt": "2026-03-02T13:14:29.633Z"
-    },
-    {
-      "id": "day_phase_notice",
-      "name": "天黑天亮提醒",
-      "event": "day_phase_notice",
-      "trigger": {
-        "cooldownMs": 30000
-      },
-      "enabled": true,
-      "serverId": "server_1772205331307",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "当前游戏时间{hourly_time} ｜{day_phase}｜距离{phase_target}还有{time_to_phase_real}"
-      },
-      "updatedAt": "2026-03-03T04:49:23.241Z",
-      "createdAt": "2026-03-03T04:49:23.241Z"
-    },
-    {
       "id": "preset_alarm_on_notify",
       "name": "警报触发通知",
       "event": "alarm_on",
-      "serverId": "server_1772288283456",
-      "trigger": {
-        "cooldownMs": 30000
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "⚠️ 警报器触发，请注意基地安全",
-        "actions": [
-          {
-            "type": "notify_desktop"
-          },
-          {
-            "type": "team_chat"
-          }
-        ]
-      },
-      "updatedAt": "2026-03-04T01:54:16.856Z",
-      "createdAt": "2026-03-04T01:54:16.856Z"
-    },
-    {
-      "id": "preset_heli_status",
-      "name": "武装直升机整合通知",
-      "event": "patrol_heli_status",
-      "serverId": "server_1772288283456",
-      "trigger": {
-        "cooldownMs": 60000,
-        "heliNotifyEnter": true,
-        "heliNotifyActive": true,
-        "heliNotifyLeave": true,
-        "heliNotifyExplode": true
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "{heli_status_message}",
-        "actions": [
-          {
-            "type": "notify_desktop"
-          }
-        ],
-        "heliMessages": {
-          "enter": "武直进入地图｜当前位置:{marker_grid}",
-          "active": "武直巡逻中｜当前位置:{marker_grid}",
-          "leave": "武直已离开地图｜最后位置:{marker_grid}",
-          "explode": "武直已被击落｜坠落位置:{marker_grid}"
-        }
-      },
-      "updatedAt": "2026-03-13T16:21:11.239Z",
-      "createdAt": "2026-03-04T01:54:16.858Z"
-    },
-    {
-      "id": "preset_ch47_status",
-      "name": "军用运输直升机整合通知",
-      "event": "ch47_status",
-      "serverId": "server_1772288283456",
-      "trigger": {
-        "cooldownMs": 60000,
-        "ch47NotifyEnter": true,
-        "ch47NotifyActive": true,
-        "ch47NotifyLeave": true
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "{ch47_status_message}",
-        "actions": [
-          {
-            "type": "notify_desktop"
-          }
-        ],
-        "ch47Messages": {
-          "enter": "军用运输直升机进入地图｜当前位置:{marker_grid}",
-          "active": "军用运输直升机巡逻中｜当前位置:{marker_grid}",
-          "leave": "军用运输直升机已离开地图｜最后位置:{marker_grid}"
-        }
-      },
-      "updatedAt": "2026-03-13T16:21:11.238Z",
-      "createdAt": "2026-03-04T01:54:16.858Z"
-    },
-    {
-      "id": "preset_cargo_status",
-      "name": "货船事件整合通知",
-      "event": "cargo_ship_status",
-      "serverId": "server_1772288283456",
-      "trigger": {
-        "cooldownMs": 60000,
-        "cargoNotifyEnter": true,
-        "cargoNotifyLeave": true,
-        "cargoNotifyActive": false,
-        "cargoNotifyDock": true
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "{cargo_status_message}",
-        "actions": [
-          {
-            "type": "notify_desktop"
-          }
-        ],
-        "cargoMessages": {
-          "enter": "货船进入地图｜当前位置:{cargo_grid}",
-          "leave": "货船已离开地图｜最后位置:{cargo_grid}",
-          "active": "货船航行中｜当前位置:{cargo_grid}",
-          "dock": "货船已停靠 ｜{cargo_harbor} [{cargo_harbor_grid}]"
-        }
-      },
-      "updatedAt": "2026-03-13T16:21:11.236Z",
-      "createdAt": "2026-03-04T01:54:16.859Z"
-    },
-    {
-      "id": "preset_oil_status",
-      "name": "石油事件整合通知",
-      "event": "oil_rig_status",
-      "serverId": "server_1772288283456",
-      "trigger": {
-        "cooldownMs": 60000,
-        "oilNotifyLargeHeavy": true,
-        "oilNotifySmallHeavy": true,
-        "oilNotifyLargeUnlock": true,
-        "oilNotifySmallUnlock": true
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "{oil_status_message}",
-        "actions": [
-          {
-            "type": "notify_desktop"
-          }
-        ],
-        "oilMessages": {
-          "large_heavy": "大石油重装已呼叫｜位置:{oil_grid}",
-          "small_heavy": "小石油重装已呼叫｜位置:{oil_grid}",
-          "large_unlock": "大石油箱子已解锁｜位置:{oil_grid}",
-          "small_unlock": "小石油箱子已解锁｜位置:{oil_grid}"
-        }
-      },
-      "updatedAt": "2026-03-13T16:21:11.237Z",
-      "createdAt": "2026-03-04T01:54:16.860Z"
-    },
-    {
-      "id": "preset_vendor_status",
-      "name": "流浪商人整合通知",
-      "event": "vendor_status",
-      "serverId": "server_1772288283456",
-      "trigger": {
-        "cooldownMs": 120000,
-        "vendorNotifyEnter": true,
-        "vendorNotifyMove": true,
-        "vendorNotifyStopped": true,
-        "vendorNotifyLeave": true
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "{vendor_status_message}",
-        "actions": [
-          {
-            "type": "notify_desktop"
-          }
-        ],
-        "vendorMessages": {
-          "enter": "流浪商人进入地图｜当前位置:{marker_grid}",
-          "move": "流浪商人移动中｜当前位置:{marker_grid}",
-          "stopped": "流浪商人停留｜停留位置:{marker_grid}",
-          "leave": "流浪商人离开地图｜最后位置:{marker_grid}"
-        }
-      },
-      "updatedAt": "2026-03-13T16:21:11.240Z",
-      "createdAt": "2026-03-04T01:54:16.861Z"
-    },
-    {
-      "id": "preset_deepsea_status",
-      "name": "深海整合通知",
-      "event": "deep_sea_status",
-      "serverId": "server_1772288283456",
-      "trigger": {
-        "cooldownMs": 30000,
-        "deepSeaNotifyOpen": true,
-        "deepSeaNotifyClose": true
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "{deep_sea_status_message}",
-        "actions": [
-          {
-            "type": "team_chat"
-          }
-        ],
-        "deepSeaMessages": {
-          "open": "｜ 深海已开启｜",
-          "close": "深海已关闭"
-        }
-      },
-      "updatedAt": "2026-03-13T16:21:11.241Z",
-      "createdAt": "2026-03-04T01:54:16.861Z"
-    },
-    {
-      "id": "preset_hourly",
-      "name": "整点播报",
-      "event": "hourly_tick",
-      "serverId": "server_1772288283456",
-      "trigger": {
-        "cooldownMs": 0
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "当前游戏时间{hourly_time} ｜{day_phase}｜距离{phase_target}还有{time_to_phase_real}",
-        "actions": [
-          {
-            "type": "team_chat"
-          }
-        ]
-      },
-      "updatedAt": "2026-03-04T01:54:16.862Z",
-      "createdAt": "2026-03-04T01:54:16.862Z"
-    },
-    {
-      "id": "preset_day_phase_notice",
-      "name": "天黑天亮提醒",
-      "event": "day_phase_notice",
-      "serverId": "server_1772288283456",
-      "trigger": {
-        "cooldownMs": 30000
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "当前游戏时间{hourly_time} ｜{day_phase}｜距离{phase_target}还有{time_to_phase_real}",
-        "actions": [
-          {
-            "type": "team_chat"
-          }
-        ]
-      },
-      "updatedAt": "2026-03-04T01:54:16.863Z",
-      "createdAt": "2026-03-04T01:54:16.863Z"
-    },
-    {
-      "id": "player_status_notify",
-      "name": "队友状态整合事件",
-      "event": "player_status",
-      "serverId": "server_1772288283456",
-      "trigger": {
-        "cooldownMs": 5000
-      },
-      "enabled": true,
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "{player_status_message}",
-        "playerStatusMessages": {
-          "online": "{member}已上线｜上线位置:{member_grid}",
-          "offline": "{member}已离线｜离线位置:{member_grid}",
-          "dead": "{member}已死亡｜死亡位置:{member_grid}",
-          "respawn": "{member}已重生｜当前位置:{member_grid}",
-          "afk": "{member}挂机已持续15分钟｜当前位置:{member_grid}"
-        }
-      },
-      "updatedAt": "2026-03-13T16:21:11.242Z",
-      "createdAt": "2026-03-04T02:21:26.524Z"
-    },
-    {
-      "id": "vending_new_notify",
-      "name": "新售货机出现事件",
-      "event": "vending_new",
-      "trigger": {
-        "cooldownMs": 30000,
-        "vendingWatchItemIds": [
-          -1607980696,
-          -41896755,
-          -143481979,
-          -1896395719,
-          -1581843485,
-          -1157596551,
-          -742865266,
-          -592016202,
-          -265876753,
-          1545779598,
-          -2069578888,
-          -778367295,
-          317398316,
-          69511070,
-          -4031221,
-          -1982036270
-        ],
-        "vendingWatchItemNames": [
-          "三级工作台",
-          "二级工作台",
-          "基础蓝图碎片",
-          "高级蓝图碎片",
-          "硫磺",
-          "硫磺矿石",
-          "火箭弹",
-          "炸药",
-          "火药",
-          "AK-47突击步枪",
-          "M249",
-          "L96狙击步枪",
-          "高级金属",
-          "金属碎片",
-          "金属矿石",
-          "高级金属矿石"
-        ]
-      },
-      "enabled": true,
-      "serverId": "server_1772737610657",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "发现 {vending_items}上架售货机 | 坐标:[{marker_grid}]"
-      },
-      "updatedAt": "2026-03-07T12:46:54.787Z",
-      "createdAt": "2026-03-05T19:06:51.226Z"
-    },
-    {
-      "id": "hourly",
-      "name": "整点报时",
-      "event": "hourly_tick",
-      "trigger": {},
-      "enabled": true,
-      "serverId": "server_1772737610657",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "当前游戏时间{hourly_time} ｜{day_phase}｜距离{phase_target}还有{time_to_phase_real}"
-      },
-      "updatedAt": "2026-03-05T19:06:51.227Z",
-      "createdAt": "2026-03-05T19:06:51.227Z"
-    },
-    {
-      "id": "day_phase_notice",
-      "name": "天黑天亮提醒",
-      "event": "day_phase_notice",
-      "trigger": {
-        "cooldownMs": 30000
-      },
-      "enabled": true,
-      "serverId": "server_1772737610657",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "当前游戏时间{hourly_time} ｜{day_phase}｜距离{phase_target}还有{time_to_phase_real}"
-      },
-      "updatedAt": "2026-03-05T19:06:51.227Z",
-      "createdAt": "2026-03-05T19:06:51.227Z"
-    },
-    {
-      "id": "ch47_status_notify",
-      "name": "军用运输直升机事件整合",
-      "event": "ch47_status",
-      "serverId": "server_1772737610657",
-      "trigger": {
-        "cooldownMs": 30000,
-        "ch47NotifyEnter": true,
-        "ch47NotifyActive": false,
-        "ch47NotifyLeave": true
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "{ch47_status_message}",
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "actions": [
-          {
-            "type": "team_chat"
-          }
-        ],
-        "ch47Messages": {
-          "enter": "军用运输直升机进入地图｜当前位置:{marker_grid}",
-          "active": "军用运输直升机巡逻中｜当前位置:{marker_grid}",
-          "leave": "军用运输直升机已离开地图｜最后位置:{marker_grid}"
-        }
-      },
-      "updatedAt": "2026-03-07T12:46:54.791Z",
-      "createdAt": "2026-03-05T19:06:51.228Z"
-    },
-    {
-      "id": "patrol_heli_status_notify",
-      "name": "武装直升机事件整合",
-      "event": "patrol_heli_status",
-      "serverId": "server_1772737610657",
-      "trigger": {
-        "cooldownMs": 30000,
-        "heliNotifyEnter": true,
-        "heliNotifyActive": false,
-        "heliNotifyLeave": true,
-        "heliNotifyExplode": true
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "{heli_status_message}",
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "actions": [
-          {
-            "type": "team_chat"
-          }
-        ],
-        "heliMessages": {
-          "enter": "武直进入地图｜当前位置:{marker_grid}",
-          "active": "武直巡逻中｜当前位置:{marker_grid}",
-          "leave": "武直已离开地图｜最后位置:{marker_grid}",
-          "explode": "武直已被击落｜坠落位置:{marker_grid}"
-        }
-      },
-      "updatedAt": "2026-03-07T12:46:54.792Z",
-      "createdAt": "2026-03-05T19:06:51.228Z"
-    },
-    {
-      "id": "vendor_status_notify",
-      "name": "流浪商人事件整合",
-      "event": "vendor_status",
-      "serverId": "server_1772737610657",
-      "trigger": {
-        "cooldownMs": 60000,
-        "vendorNotifyEnter": true,
-        "vendorNotifyMove": false,
-        "vendorNotifyStopped": true,
-        "vendorNotifyLeave": true
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "{vendor_status_message}",
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "actions": [
-          {
-            "type": "team_chat"
-          }
-        ],
-        "vendorMessages": {
-          "enter": "流浪商人进入地图｜当前位置:{marker_grid}",
-          "move": "流浪商人移动中｜当前位置:{marker_grid}",
-          "stopped": "流浪商人停留｜停留位置:{marker_grid}",
-          "leave": "流浪商人离开地图｜最后位置:{marker_grid}"
-        }
-      },
-      "updatedAt": "2026-03-07T12:46:54.792Z",
-      "createdAt": "2026-03-05T19:06:51.229Z"
-    },
-    {
-      "id": "deepsea_status_notify",
-      "name": "深海整合",
-      "event": "deep_sea_status",
-      "trigger": {
-        "cooldownMs": 30000,
-        "deepSeaNotifyOpen": true,
-        "deepSeaNotifyClose": true
-      },
-      "enabled": true,
-      "serverId": "server_1772737610657",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "{deep_sea_status_message}",
-        "deepSeaMessages": {
-          "open": "｜ 深海已开启｜",
-          "close": "深海已关闭"
-        }
-      },
-      "updatedAt": "2026-03-07T12:46:54.793Z",
-      "createdAt": "2026-03-05T19:06:51.229Z"
-    },
-    {
-      "id": "cargo_status_notify",
-      "name": "货船事件整合",
-      "event": "cargo_ship_status",
-      "serverId": "server_1772737610657",
-      "trigger": {
-        "cooldownMs": 30000,
-        "cargoNotifyEnter": true,
-        "cargoNotifyLeave": true,
-        "cargoNotifyActive": false,
-        "cargoNotifyDock": true
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "{cargo_status_message}",
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "actions": [
-          {
-            "type": "team_chat"
-          }
-        ],
-        "cargoMessages": {
-          "enter": "货船进入地图｜当前位置:{cargo_grid}",
-          "leave": "货船已离开地图｜最后位置:{cargo_grid}",
-          "active": "货船航行中｜当前位置:{cargo_grid}",
-          "dock": "货船已停靠 ｜{cargo_harbor} [{cargo_harbor_grid}]"
-        }
-      },
-      "updatedAt": "2026-03-07T12:46:54.789Z",
-      "createdAt": "2026-03-05T19:06:51.230Z"
-    },
-    {
-      "id": "oil_status_notify",
-      "name": "石油事件整合",
-      "event": "oil_rig_status",
-      "trigger": {
-        "cooldownMs": 30000,
-        "oilNotifyLargeHeavy": true,
-        "oilNotifySmallHeavy": true,
-        "oilNotifyLargeUnlock": true,
-        "oilNotifySmallUnlock": true
-      },
-      "enabled": true,
-      "serverId": "server_1772737610657",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "{oil_status_message}",
-        "oilMessages": {
-          "large_heavy": "大石油重装已呼叫｜位置:{oil_grid}",
-          "small_heavy": "小石油重装已呼叫｜位置:{oil_grid}",
-          "large_unlock": "大石油箱子已解锁｜位置:{oil_grid}",
-          "small_unlock": "小石油箱子已解锁｜位置:{oil_grid}"
-        }
-      },
-      "updatedAt": "2026-03-07T12:46:54.790Z",
-      "createdAt": "2026-03-05T19:06:51.230Z"
-    },
-    {
-      "id": "player_status_notify",
-      "name": "队友状态整合事件",
-      "event": "player_status",
-      "trigger": {
-        "cooldownMs": 5000
-      },
-      "enabled": true,
-      "serverId": "server_1772737610657",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "{player_status_message}",
-        "playerStatusMessages": {
-          "online": "{member}已上线｜上线位置:{member_grid}",
-          "offline": "{member}已离线｜离线位置:{member_grid}",
-          "dead": "{member}已死亡｜死亡位置:{member_grid}",
-          "respawn": "{member}已重生｜当前位置:{member_grid}",
-          "afk": "{member}挂机已持续15分钟｜当前位置:{member_grid}"
-        }
-      },
-      "updatedAt": "2026-03-07T12:46:54.794Z",
-      "createdAt": "2026-03-05T19:06:51.231Z"
-    },
-    {
-      "id": "vending_new_notify",
-      "name": "新售货机出现事件",
-      "event": "vending_new",
-      "trigger": {
-        "cooldownMs": 30000,
-        "vendingWatchItemIds": [
-          -1607980696,
-          -41896755,
-          -143481979,
-          -1896395719,
-          -1581843485,
-          -1157596551,
-          -742865266,
-          -592016202,
-          -265876753,
-          1545779598,
-          -2069578888,
-          -778367295,
-          317398316,
-          69511070,
-          -4031221,
-          -1982036270
-        ],
-        "vendingWatchItemNames": [
-          "三级工作台",
-          "二级工作台",
-          "基础蓝图碎片",
-          "高级蓝图碎片",
-          "硫磺",
-          "硫磺矿石",
-          "火箭弹",
-          "炸药",
-          "火药",
-          "AK-47突击步枪",
-          "M249",
-          "L96狙击步枪",
-          "高级金属",
-          "金属碎片",
-          "金属矿石",
-          "高级金属矿石"
-        ]
-      },
-      "enabled": true,
-      "serverId": "server_1772900499072",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "发现 {vending_items}上架售货机 | 坐标:[{marker_grid}]"
-      },
-      "updatedAt": "2026-03-14T06:02:50.243Z",
-      "createdAt": "2026-03-07T16:21:39.766Z"
-    },
-    {
-      "id": "hourly",
-      "name": "整点报时",
-      "event": "hourly_tick",
-      "trigger": {},
-      "enabled": true,
-      "serverId": "server_1772900499072",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "当前游戏时间{hourly_time} ｜{day_phase}｜距离{phase_target}还有{time_to_phase_real}"
-      },
-      "updatedAt": "2026-03-07T16:21:39.768Z",
-      "createdAt": "2026-03-07T16:21:39.768Z"
-    },
-    {
-      "id": "day_phase_notice",
-      "name": "天黑天亮提醒",
-      "event": "day_phase_notice",
-      "trigger": {
-        "cooldownMs": 30000
-      },
-      "enabled": true,
-      "serverId": "server_1772900499072",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "当前游戏时间{hourly_time} ｜{day_phase}｜距离{phase_target}还有{time_to_phase_real}"
-      },
-      "updatedAt": "2026-03-07T16:21:39.768Z",
-      "createdAt": "2026-03-07T16:21:39.768Z"
-    },
-    {
-      "id": "ch47_status_notify",
-      "name": "军用运输直升机事件整合",
-      "event": "ch47_status",
-      "serverId": "server_1772900499072",
-      "trigger": {
-        "cooldownMs": 30000,
-        "ch47NotifyEnter": true,
-        "ch47NotifyActive": false,
-        "ch47NotifyLeave": true
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "{ch47_status_message}",
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "actions": [
-          {
-            "type": "team_chat"
-          }
-        ],
-        "ch47Messages": {
-          "enter": "军用运输直升机进入地图｜当前位置:{marker_grid}",
-          "active": "军用运输直升机巡逻中｜当前位置:{marker_grid}",
-          "leave": "军用运输直升机已离开地图｜最后位置:{marker_grid}"
-        }
-      },
-      "updatedAt": "2026-03-14T06:02:50.246Z",
-      "createdAt": "2026-03-07T16:21:39.769Z"
-    },
-    {
-      "id": "patrol_heli_status_notify",
-      "name": "武装直升机事件整合",
-      "event": "patrol_heli_status",
-      "serverId": "server_1772900499072",
-      "trigger": {
-        "cooldownMs": 30000,
-        "heliNotifyEnter": true,
-        "heliNotifyActive": false,
-        "heliNotifyLeave": true,
-        "heliNotifyExplode": true
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "{heli_status_message}",
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "actions": [
-          {
-            "type": "team_chat"
-          }
-        ],
-        "heliMessages": {
-          "enter": "武直进入地图｜当前位置:{marker_grid}",
-          "active": "武直巡逻中｜当前位置:{marker_grid}",
-          "leave": "武直已离开地图｜最后位置:{marker_grid}",
-          "explode": "武直已被击落｜坠落位置:{marker_grid}"
-        }
-      },
-      "updatedAt": "2026-03-14T06:02:50.247Z",
-      "createdAt": "2026-03-07T16:21:39.770Z"
-    },
-    {
-      "id": "vendor_status_notify",
-      "name": "流浪商人事件整合",
-      "event": "vendor_status",
-      "serverId": "server_1772900499072",
-      "trigger": {
-        "cooldownMs": 60000,
-        "vendorNotifyEnter": true,
-        "vendorNotifyMove": false,
-        "vendorNotifyStopped": true,
-        "vendorNotifyLeave": true
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "{vendor_status_message}",
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "actions": [
-          {
-            "type": "team_chat"
-          }
-        ],
-        "vendorMessages": {
-          "enter": "流浪商人进入地图｜当前位置:{marker_grid}",
-          "move": "流浪商人移动中｜当前位置:{marker_grid}",
-          "stopped": "流浪商人停留｜停留位置:{marker_grid}",
-          "leave": "流浪商人离开地图｜最后位置:{marker_grid}"
-        }
-      },
-      "updatedAt": "2026-03-14T06:02:50.249Z",
-      "createdAt": "2026-03-07T16:21:39.771Z"
-    },
-    {
-      "id": "deepsea_status_notify",
-      "name": "深海整合",
-      "event": "deep_sea_status",
-      "trigger": {
-        "cooldownMs": 30000,
-        "deepSeaNotifyOpen": true,
-        "deepSeaNotifyClose": true
-      },
-      "enabled": true,
-      "serverId": "server_1772900499072",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "{deep_sea_status_message}",
-        "deepSeaMessages": {
-          "open": "｜ 深海已开启｜",
-          "close": "深海已关闭"
-        }
-      },
-      "updatedAt": "2026-03-14T06:02:50.250Z",
-      "createdAt": "2026-03-07T16:21:39.772Z"
-    },
-    {
-      "id": "cargo_status_notify",
-      "name": "货船事件整合",
-      "event": "cargo_ship_status",
-      "serverId": "server_1772900499072",
-      "trigger": {
-        "cooldownMs": 30000,
-        "cargoNotifyEnter": true,
-        "cargoNotifyLeave": true,
-        "cargoNotifyActive": false,
-        "cargoNotifyDock": true
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "{cargo_status_message}",
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "actions": [
-          {
-            "type": "team_chat"
-          }
-        ],
-        "cargoMessages": {
-          "enter": "货船进入地图｜当前位置:{cargo_grid}",
-          "leave": "货船已离开地图｜最后位置:{cargo_grid}",
-          "active": "货船航行中｜当前位置:{cargo_grid}",
-          "dock": "货船已停靠 ｜{cargo_harbor} [{cargo_harbor_grid}]"
-        }
-      },
-      "updatedAt": "2026-03-14T06:02:50.245Z",
-      "createdAt": "2026-03-07T16:21:39.772Z"
-    },
-    {
-      "id": "oil_status_notify",
-      "name": "石油事件整合",
-      "event": "oil_rig_status",
-      "trigger": {
-        "cooldownMs": 30000,
-        "oilNotifyLargeHeavy": true,
-        "oilNotifySmallHeavy": true,
-        "oilNotifyLargeUnlock": true,
-        "oilNotifySmallUnlock": true
-      },
-      "enabled": true,
-      "serverId": "server_1772900499072",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "{oil_status_message}",
-        "oilMessages": {
-          "large_heavy": "大石油重装已呼叫｜位置:{oil_grid}",
-          "small_heavy": "小石油重装已呼叫｜位置:{oil_grid}",
-          "large_unlock": "大石油箱子已解锁｜位置:{oil_grid}",
-          "small_unlock": "小石油箱子已解锁｜位置:{oil_grid}"
-        }
-      },
-      "updatedAt": "2026-03-14T06:02:50.246Z",
-      "createdAt": "2026-03-07T16:21:39.773Z"
-    },
-    {
-      "id": "player_status_notify",
-      "name": "队友状态整合事件",
-      "event": "player_status",
-      "trigger": {
-        "cooldownMs": 5000
-      },
-      "enabled": true,
-      "serverId": "server_1772900499072",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "{player_status_message}",
-        "playerStatusMessages": {
-          "online": "{member}已上线｜上线位置:{member_grid}",
-          "offline": "{member}已离线｜离线位置:{member_grid}",
-          "dead": "{member}已死亡｜死亡位置:{member_grid}",
-          "respawn": "{member}已重生｜当前位置:{member_grid}",
-          "afk": "{member}挂机已持续15分钟｜当前位置:{member_grid}"
-        }
-      },
-      "updatedAt": "2026-03-14T06:02:50.251Z",
-      "createdAt": "2026-03-07T16:21:39.774Z"
-    },
-    {
-      "id": "preset_alarm_on_notify",
-      "name": "警报触发通知",
-      "event": "alarm_on",
-      "serverId": "server_1773192895572",
+      "serverId": "server_1773632567536",
       "trigger": {
         "cooldownMs": 30000
       },
@@ -1750,16 +53,19 @@
           {
             "type": "team_chat"
           }
-        ]
+        ],
+        "doNotify": false,
+        "doDiscord": false,
+        "doChat": true
       },
-      "updatedAt": "2026-03-11T04:41:48.117Z",
-      "createdAt": "2026-03-11T04:41:48.117Z"
+      "updatedAt": "2026-03-16T04:53:12.957Z",
+      "createdAt": "2026-03-16T04:52:33.826Z"
     },
     {
       "id": "preset_player_status",
       "name": "队友状态整合通知",
       "event": "player_status",
-      "serverId": "server_1773192895572",
+      "serverId": "server_1773632567536",
       "trigger": {
         "cooldownMs": 5000
       },
@@ -1771,6 +77,9 @@
             "type": "team_chat"
           }
         ],
+        "doNotify": false,
+        "doDiscord": false,
+        "doChat": true,
         "playerStatusMessages": {
           "online": "{member}已上线｜上线位置:{member_grid}",
           "offline": "{member}已离线｜离线位置:{member_grid}",
@@ -1779,14 +88,14 @@
           "afk": "{member}挂机已持续15分钟｜当前位置:{member_grid}"
         }
       },
-      "updatedAt": "2026-03-15T14:43:23.065Z",
-      "createdAt": "2026-03-11T04:41:48.119Z"
+      "updatedAt": "2026-03-16T06:12:27.508Z",
+      "createdAt": "2026-03-16T04:52:33.826Z"
     },
     {
       "id": "preset_heli_status",
       "name": "武装直升机整合通知",
       "event": "patrol_heli_status",
-      "serverId": "server_1773192895572",
+      "serverId": "server_1773632567536",
       "trigger": {
         "cooldownMs": 60000,
         "heliNotifyEnter": true,
@@ -1802,21 +111,18 @@
             "type": "team_chat"
           }
         ],
-        "heliMessages": {
-          "enter": "武直进入地图｜当前位置:{marker_grid}",
-          "active": "武直巡逻中｜当前位置:{marker_grid}",
-          "leave": "武直已离开地图｜最后位置:{marker_grid}",
-          "explode": "武直已被击落｜坠落位置:{marker_grid}"
-        }
+        "doNotify": false,
+        "doDiscord": false,
+        "doChat": true
       },
-      "updatedAt": "2026-03-15T10:46:09.482Z",
-      "createdAt": "2026-03-11T04:41:48.120Z"
+      "updatedAt": "2026-03-16T04:52:33.827Z",
+      "createdAt": "2026-03-16T04:52:33.827Z"
     },
     {
       "id": "preset_ch47_status",
       "name": "军用运输直升机整合通知",
       "event": "ch47_status",
-      "serverId": "server_1773192895572",
+      "serverId": "server_1773632567536",
       "trigger": {
         "cooldownMs": 60000,
         "ch47NotifyEnter": true,
@@ -1831,20 +137,18 @@
             "type": "team_chat"
           }
         ],
-        "ch47Messages": {
-          "enter": "军用运输直升机进入地图｜当前位置:{marker_grid}",
-          "active": "军用运输直升机巡逻中｜当前位置:{marker_grid}",
-          "leave": "军用运输直升机已离开地图｜最后位置:{marker_grid}"
-        }
+        "doNotify": false,
+        "doDiscord": false,
+        "doChat": true
       },
-      "updatedAt": "2026-03-15T10:46:09.481Z",
-      "createdAt": "2026-03-11T04:41:48.121Z"
+      "updatedAt": "2026-03-16T04:52:33.828Z",
+      "createdAt": "2026-03-16T04:52:33.828Z"
     },
     {
       "id": "preset_cargo_status",
       "name": "货船事件整合通知",
       "event": "cargo_ship_status",
-      "serverId": "server_1773192895572",
+      "serverId": "server_1773632567536",
       "trigger": {
         "cooldownMs": 60000,
         "cargoNotifyEnter": true,
@@ -1860,21 +164,18 @@
             "type": "team_chat"
           }
         ],
-        "cargoMessages": {
-          "enter": "货船进入地图｜当前位置:{cargo_grid}",
-          "leave": "货船已离开地图｜最后位置:{cargo_grid}",
-          "active": "货船航行中｜当前位置:{cargo_grid}",
-          "dock": "货船已停靠 ｜{cargo_harbor} [{cargo_harbor_grid}]"
-        }
+        "doNotify": false,
+        "doDiscord": false,
+        "doChat": true
       },
-      "updatedAt": "2026-03-15T10:46:09.479Z",
-      "createdAt": "2026-03-11T04:41:48.121Z"
+      "updatedAt": "2026-03-16T04:52:33.828Z",
+      "createdAt": "2026-03-16T04:52:33.828Z"
     },
     {
       "id": "preset_oil_status",
       "name": "石油事件整合通知",
       "event": "oil_rig_status",
-      "serverId": "server_1773192895572",
+      "serverId": "server_1773632567536",
       "trigger": {
         "cooldownMs": 60000,
         "oilNotifyLargeHeavy": true,
@@ -1890,21 +191,18 @@
             "type": "team_chat"
           }
         ],
-        "oilMessages": {
-          "large_heavy": "大石油重装已呼叫｜位置:{oil_grid}",
-          "small_heavy": "小石油重装已呼叫｜位置:{oil_grid}",
-          "large_unlock": "大石油箱子已解锁｜位置:{oil_grid}",
-          "small_unlock": "小石油箱子已解锁｜位置:{oil_grid}"
-        }
+        "doNotify": false,
+        "doDiscord": false,
+        "doChat": true
       },
-      "updatedAt": "2026-03-15T10:46:09.480Z",
-      "createdAt": "2026-03-11T04:41:48.122Z"
+      "updatedAt": "2026-03-16T04:52:33.829Z",
+      "createdAt": "2026-03-16T04:52:33.829Z"
     },
     {
       "id": "preset_vendor_status",
       "name": "流浪商人整合通知",
       "event": "vendor_status",
-      "serverId": "server_1773192895572",
+      "serverId": "server_1773632567536",
       "trigger": {
         "cooldownMs": 120000,
         "vendorNotifyEnter": true,
@@ -1920,21 +218,18 @@
             "type": "team_chat"
           }
         ],
-        "vendorMessages": {
-          "enter": "流浪商人进入地图｜当前位置:{marker_grid}",
-          "move": "流浪商人移动中｜当前位置:{marker_grid}",
-          "stopped": "流浪商人停留｜停留位置:{marker_grid}",
-          "leave": "流浪商人离开地图｜最后位置:{marker_grid}"
-        }
+        "doNotify": false,
+        "doDiscord": false,
+        "doChat": true
       },
-      "updatedAt": "2026-03-15T10:46:09.483Z",
-      "createdAt": "2026-03-11T04:41:48.123Z"
+      "updatedAt": "2026-03-16T04:52:33.830Z",
+      "createdAt": "2026-03-16T04:52:33.830Z"
     },
     {
       "id": "preset_deepsea_status",
       "name": "深海整合通知",
       "event": "deep_sea_status",
-      "serverId": "server_1773192895572",
+      "serverId": "server_1773632567536",
       "trigger": {
         "cooldownMs": 30000,
         "deepSeaNotifyOpen": true,
@@ -1948,19 +243,18 @@
             "type": "team_chat"
           }
         ],
-        "deepSeaMessages": {
-          "open": "｜ 深海已开启｜",
-          "close": "深海已关闭"
-        }
+        "doNotify": false,
+        "doDiscord": false,
+        "doChat": true
       },
-      "updatedAt": "2026-03-15T10:46:09.484Z",
-      "createdAt": "2026-03-11T04:41:48.124Z"
+      "updatedAt": "2026-03-16T04:52:33.831Z",
+      "createdAt": "2026-03-16T04:52:33.831Z"
     },
     {
       "id": "preset_hourly",
       "name": "整点播报",
       "event": "hourly_tick",
-      "serverId": "server_1773192895572",
+      "serverId": "server_1773632567536",
       "trigger": {
         "cooldownMs": 0
       },
@@ -1971,16 +265,19 @@
           {
             "type": "team_chat"
           }
-        ]
+        ],
+        "doNotify": false,
+        "doDiscord": false,
+        "doChat": true
       },
-      "updatedAt": "2026-03-11T04:41:48.124Z",
-      "createdAt": "2026-03-11T04:41:48.124Z"
+      "updatedAt": "2026-03-16T04:52:33.831Z",
+      "createdAt": "2026-03-16T04:52:33.831Z"
     },
     {
       "id": "preset_day_phase_notice",
       "name": "天黑天亮提醒",
       "event": "day_phase_notice",
-      "serverId": "server_1773192895572",
+      "serverId": "server_1773632567536",
       "trigger": {
         "cooldownMs": 30000
       },
@@ -1991,433 +288,13 @@
           {
             "type": "team_chat"
           }
-        ]
-      },
-      "updatedAt": "2026-03-11T04:41:48.125Z",
-      "createdAt": "2026-03-11T04:41:48.125Z"
-    },
-    {
-      "id": "vending_new_notify",
-      "name": "新售货机出现事件",
-      "event": "vending_new",
-      "trigger": {
-        "cooldownMs": 30000,
-        "vendingWatchItemIds": [
-          -1607980696,
-          -41896755,
-          -143481979,
-          -1896395719,
-          -1581843485,
-          -1157596551,
-          -742865266,
-          -592016202,
-          -265876753,
-          1545779598,
-          -2069578888,
-          -778367295,
-          317398316,
-          69511070,
-          -4031221,
-          -1982036270
         ],
-        "vendingWatchItemNames": [
-          "三级工作台",
-          "二级工作台",
-          "基础蓝图碎片",
-          "高级蓝图碎片",
-          "硫磺",
-          "硫磺矿石",
-          "火箭弹",
-          "炸药",
-          "火药",
-          "AK-47突击步枪",
-          "M249",
-          "L96狙击步枪",
-          "高级金属",
-          "金属碎片",
-          "金属矿石",
-          "高级金属矿石"
-        ]
-      },
-      "enabled": true,
-      "serverId": "server_1773192895572",
-      "_meta": {
         "doNotify": false,
         "doDiscord": false,
-        "doChat": true,
-        "message": "发现 {vending_items}上架售货机 | 坐标:[{marker_grid}]"
+        "doChat": true
       },
-      "updatedAt": "2026-03-15T10:46:09.478Z",
-      "createdAt": "2026-03-11T12:30:41.108Z"
-    },
-    {
-      "id": "vending_new_notify",
-      "name": "新售货机出现事件",
-      "event": "vending_new",
-      "trigger": {
-        "cooldownMs": 30000,
-        "vendingWatchItemIds": [
-          -1607980696,
-          -41896755,
-          -143481979,
-          -1896395719,
-          -1581843485,
-          -1157596551,
-          -742865266,
-          -592016202,
-          -265876753,
-          1545779598,
-          -2069578888,
-          -778367295,
-          317398316,
-          69511070,
-          -4031221,
-          -1982036270
-        ],
-        "vendingWatchItemNames": [
-          "三级工作台",
-          "二级工作台",
-          "基础蓝图碎片",
-          "高级蓝图碎片",
-          "硫磺",
-          "硫磺矿石",
-          "火箭弹",
-          "炸药",
-          "火药",
-          "AK-47突击步枪",
-          "M249",
-          "L96狙击步枪",
-          "高级金属",
-          "金属碎片",
-          "金属矿石",
-          "高级金属矿石"
-        ]
-      },
-      "enabled": true,
-      "serverId": "server_1772288283456",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "发现 {vending_items}上架售货机 | 坐标:[{marker_grid}]"
-      },
-      "updatedAt": "2026-03-13T16:21:11.235Z",
-      "createdAt": "2026-03-13T16:21:11.234Z"
-    },
-    {
-      "id": "preset_alarm_on_notify",
-      "name": "警报触发通知",
-      "event": "alarm_on",
-      "serverId": "server_1772743534793",
-      "trigger": {
-        "cooldownMs": 30000
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "⚠️ 警报器触发，请注意基地安全",
-        "actions": [
-          {
-            "type": "team_chat"
-          }
-        ]
-      },
-      "updatedAt": "2026-03-13T16:45:23.114Z",
-      "createdAt": "2026-03-13T16:45:23.114Z"
-    },
-    {
-      "id": "preset_player_status",
-      "name": "队友状态整合通知",
-      "event": "player_status",
-      "serverId": "server_1772743534793",
-      "trigger": {
-        "cooldownMs": 5000
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "{player_status_message}",
-        "actions": [
-          {
-            "type": "team_chat"
-          }
-        ],
-        "playerStatusMessages": {
-          "online": "{member}已上线｜上线位置:{member_grid}",
-          "offline": "{member}已离线｜离线位置:{member_grid}",
-          "dead": "{member}已死亡｜死亡位置:{member_grid}",
-          "respawn": "{member}已重生｜当前位置:{member_grid}",
-          "afk": "{member}挂机已持续15分钟｜当前位置:{member_grid}"
-        }
-      },
-      "updatedAt": "2026-03-14T14:54:46.928Z",
-      "createdAt": "2026-03-13T16:45:23.114Z"
-    },
-    {
-      "id": "preset_heli_status",
-      "name": "武装直升机整合通知",
-      "event": "patrol_heli_status",
-      "serverId": "server_1772743534793",
-      "trigger": {
-        "cooldownMs": 60000,
-        "heliNotifyEnter": true,
-        "heliNotifyActive": false,
-        "heliNotifyLeave": true,
-        "heliNotifyExplode": true
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "{heli_status_message}",
-        "actions": [
-          {
-            "type": "team_chat"
-          }
-        ],
-        "heliMessages": {
-          "enter": "武直进入地图｜当前位置:{marker_grid}",
-          "active": "武直巡逻中｜当前位置:{marker_grid}",
-          "leave": "武直已离开地图｜最后位置:{marker_grid}",
-          "explode": "武直已被击落｜坠落位置:{marker_grid}"
-        }
-      },
-      "updatedAt": "2026-03-14T14:54:46.925Z",
-      "createdAt": "2026-03-13T16:45:23.115Z"
-    },
-    {
-      "id": "preset_ch47_status",
-      "name": "军用运输直升机整合通知",
-      "event": "ch47_status",
-      "serverId": "server_1772743534793",
-      "trigger": {
-        "cooldownMs": 60000,
-        "ch47NotifyEnter": true,
-        "ch47NotifyActive": false,
-        "ch47NotifyLeave": true
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "{ch47_status_message}",
-        "actions": [
-          {
-            "type": "team_chat"
-          }
-        ],
-        "ch47Messages": {
-          "enter": "军用运输直升机进入地图｜当前位置:{marker_grid}",
-          "active": "军用运输直升机巡逻中｜当前位置:{marker_grid}",
-          "leave": "军用运输直升机已离开地图｜最后位置:{marker_grid}"
-        }
-      },
-      "updatedAt": "2026-03-14T14:54:46.924Z",
-      "createdAt": "2026-03-13T16:45:23.116Z"
-    },
-    {
-      "id": "preset_cargo_status",
-      "name": "货船事件整合通知",
-      "event": "cargo_ship_status",
-      "serverId": "server_1772743534793",
-      "trigger": {
-        "cooldownMs": 60000,
-        "cargoNotifyEnter": true,
-        "cargoNotifyLeave": true,
-        "cargoNotifyActive": false,
-        "cargoNotifyDock": true
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "{cargo_status_message}",
-        "actions": [
-          {
-            "type": "team_chat"
-          }
-        ],
-        "cargoMessages": {
-          "enter": "货船进入地图｜当前位置:{cargo_grid}",
-          "leave": "货船已离开地图｜最后位置:{cargo_grid}",
-          "active": "货船航行中｜当前位置:{cargo_grid}",
-          "dock": "货船已停靠 ｜{cargo_harbor} [{cargo_harbor_grid}]"
-        }
-      },
-      "updatedAt": "2026-03-14T14:54:46.921Z",
-      "createdAt": "2026-03-13T16:45:23.116Z"
-    },
-    {
-      "id": "preset_oil_status",
-      "name": "石油事件整合通知",
-      "event": "oil_rig_status",
-      "serverId": "server_1772743534793",
-      "trigger": {
-        "cooldownMs": 60000,
-        "oilNotifyLargeHeavy": true,
-        "oilNotifySmallHeavy": true,
-        "oilNotifyLargeUnlock": true,
-        "oilNotifySmallUnlock": true
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "{oil_status_message}",
-        "actions": [
-          {
-            "type": "team_chat"
-          }
-        ],
-        "oilMessages": {
-          "large_heavy": "大石油重装已呼叫｜位置:{oil_grid}",
-          "small_heavy": "小石油重装已呼叫｜位置:{oil_grid}",
-          "large_unlock": "大石油箱子已解锁｜位置:{oil_grid}",
-          "small_unlock": "小石油箱子已解锁｜位置:{oil_grid}"
-        }
-      },
-      "updatedAt": "2026-03-14T14:54:46.923Z",
-      "createdAt": "2026-03-13T16:45:23.117Z"
-    },
-    {
-      "id": "preset_vendor_status",
-      "name": "流浪商人整合通知",
-      "event": "vendor_status",
-      "serverId": "server_1772743534793",
-      "trigger": {
-        "cooldownMs": 120000,
-        "vendorNotifyEnter": true,
-        "vendorNotifyMove": false,
-        "vendorNotifyStopped": true,
-        "vendorNotifyLeave": true
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "{vendor_status_message}",
-        "actions": [
-          {
-            "type": "team_chat"
-          }
-        ],
-        "vendorMessages": {
-          "enter": "流浪商人进入地图｜当前位置:{marker_grid}",
-          "move": "流浪商人移动中｜当前位置:{marker_grid}",
-          "stopped": "流浪商人停留｜停留位置:{marker_grid}",
-          "leave": "流浪商人离开地图｜最后位置:{marker_grid}"
-        }
-      },
-      "updatedAt": "2026-03-14T14:54:46.926Z",
-      "createdAt": "2026-03-13T16:45:23.118Z"
-    },
-    {
-      "id": "preset_deepsea_status",
-      "name": "深海整合通知",
-      "event": "deep_sea_status",
-      "serverId": "server_1772743534793",
-      "trigger": {
-        "cooldownMs": 30000,
-        "deepSeaNotifyOpen": true,
-        "deepSeaNotifyClose": true
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "{deep_sea_status_message}",
-        "actions": [
-          {
-            "type": "team_chat"
-          }
-        ],
-        "deepSeaMessages": {
-          "open": "｜ 深海已开启｜",
-          "close": "深海已关闭"
-        }
-      },
-      "updatedAt": "2026-03-14T14:54:46.927Z",
-      "createdAt": "2026-03-13T16:45:23.118Z"
-    },
-    {
-      "id": "preset_hourly",
-      "name": "整点播报",
-      "event": "hourly_tick",
-      "serverId": "server_1772743534793",
-      "trigger": {
-        "cooldownMs": 0
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "当前游戏时间{hourly_time} ｜{day_phase}｜距离{phase_target}还有{time_to_phase_real}",
-        "actions": [
-          {
-            "type": "team_chat"
-          }
-        ]
-      },
-      "updatedAt": "2026-03-13T16:45:23.119Z",
-      "createdAt": "2026-03-13T16:45:23.119Z"
-    },
-    {
-      "id": "preset_day_phase_notice",
-      "name": "天黑天亮提醒",
-      "event": "day_phase_notice",
-      "serverId": "server_1772743534793",
-      "trigger": {
-        "cooldownMs": 30000
-      },
-      "enabled": true,
-      "_meta": {
-        "message": "当前游戏时间{hourly_time} ｜{day_phase}｜距离{phase_target}还有{time_to_phase_real}",
-        "actions": [
-          {
-            "type": "team_chat"
-          }
-        ]
-      },
-      "updatedAt": "2026-03-13T16:45:23.120Z",
-      "createdAt": "2026-03-13T16:45:23.120Z"
-    },
-    {
-      "id": "vending_new_notify",
-      "name": "新售货机出现事件",
-      "event": "vending_new",
-      "trigger": {
-        "cooldownMs": 30000,
-        "vendingWatchItemIds": [
-          -1607980696,
-          -41896755,
-          -143481979,
-          -1896395719,
-          -1581843485,
-          -1157596551,
-          -742865266,
-          -592016202,
-          -265876753,
-          1545779598,
-          -2069578888,
-          -778367295,
-          317398316,
-          69511070,
-          -4031221,
-          -1982036270
-        ],
-        "vendingWatchItemNames": [
-          "三级工作台",
-          "二级工作台",
-          "基础蓝图碎片",
-          "高级蓝图碎片",
-          "硫磺",
-          "硫磺矿石",
-          "火箭弹",
-          "炸药",
-          "火药",
-          "AK-47突击步枪",
-          "M249",
-          "L96狙击步枪",
-          "高级金属",
-          "金属碎片",
-          "金属矿石",
-          "高级金属矿石"
-        ]
-      },
-      "enabled": true,
-      "serverId": "server_1772743534793",
-      "_meta": {
-        "doNotify": false,
-        "doDiscord": false,
-        "doChat": true,
-        "message": "发现 {vending_items}上架售货机 | 坐标:[{marker_grid}]"
-      },
-      "updatedAt": "2026-03-14T14:54:46.920Z",
-      "createdAt": "2026-03-13T16:45:54.822Z"
+      "updatedAt": "2026-03-16T04:52:33.832Z",
+      "createdAt": "2026-03-16T04:52:33.832Z"
     }
   ],
   "commandRules": [
@@ -2471,52 +348,572 @@
       "createdAt": "2026-02-26T10:17:06.839Z"
     },
     {
-      "id": "dz",
-      "keyword": "dz",
-      "serverId": "server_1772205331307",
-      "type": "change_leader",
-      "name": "更改队长",
-      "permission": "all",
+      "id": "verify_18",
+      "keyword": "verify_18",
+      "serverId": "verify_tmp_server",
       "enabled": true,
-      "meta": {},
-      "updatedAt": "2026-02-27T16:12:33.033Z",
-      "createdAt": "2026-02-27T16:12:33.033Z"
+      "meta": {
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "updatedAt": "2026-03-16T05:49:14.184Z",
+      "createdAt": "2026-03-16T05:49:14.184Z"
+    },
+    {
+      "id": "verify_0",
+      "keyword": "verify_0",
+      "serverId": "verify_tmp_server_2",
+      "enabled": true,
+      "meta": {
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "updatedAt": "2026-03-16T05:56:23.867Z",
+      "createdAt": "2026-03-16T05:56:23.868Z"
+    },
+    {
+      "id": "verify_1",
+      "keyword": "verify_1",
+      "serverId": "verify_tmp_server_2",
+      "enabled": false,
+      "meta": {
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "updatedAt": "2026-03-16T05:56:23.869Z",
+      "createdAt": "2026-03-16T05:56:23.869Z"
+    },
+    {
+      "id": "verify_2",
+      "keyword": "verify_2",
+      "serverId": "verify_tmp_server_2",
+      "enabled": true,
+      "meta": {
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "updatedAt": "2026-03-16T05:56:23.870Z",
+      "createdAt": "2026-03-16T05:56:23.870Z"
+    },
+    {
+      "id": "verify_3",
+      "keyword": "verify_3",
+      "serverId": "verify_tmp_server_2",
+      "enabled": false,
+      "meta": {
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "updatedAt": "2026-03-16T05:56:23.870Z",
+      "createdAt": "2026-03-16T05:56:23.870Z"
+    },
+    {
+      "id": "verify_4",
+      "keyword": "verify_4",
+      "serverId": "verify_tmp_server_2",
+      "enabled": true,
+      "meta": {
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "updatedAt": "2026-03-16T05:56:23.870Z",
+      "createdAt": "2026-03-16T05:56:23.870Z"
+    },
+    {
+      "id": "verify_5",
+      "keyword": "verify_5",
+      "serverId": "verify_tmp_server_2",
+      "enabled": false,
+      "meta": {
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "updatedAt": "2026-03-16T05:56:23.871Z",
+      "createdAt": "2026-03-16T05:56:23.871Z"
+    },
+    {
+      "id": "verify_6",
+      "keyword": "verify_6",
+      "serverId": "verify_tmp_server_2",
+      "enabled": true,
+      "meta": {
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "updatedAt": "2026-03-16T05:56:23.872Z",
+      "createdAt": "2026-03-16T05:56:23.872Z"
+    },
+    {
+      "id": "verify_7",
+      "keyword": "verify_7",
+      "serverId": "verify_tmp_server_2",
+      "enabled": false,
+      "meta": {
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "updatedAt": "2026-03-16T05:56:23.872Z",
+      "createdAt": "2026-03-16T05:56:23.872Z"
+    },
+    {
+      "id": "verify_8",
+      "keyword": "verify_8",
+      "serverId": "verify_tmp_server_2",
+      "enabled": true,
+      "meta": {
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "updatedAt": "2026-03-16T05:56:23.873Z",
+      "createdAt": "2026-03-16T05:56:23.873Z"
+    },
+    {
+      "id": "verify_9",
+      "keyword": "verify_9",
+      "serverId": "verify_tmp_server_2",
+      "enabled": false,
+      "meta": {
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "updatedAt": "2026-03-16T05:56:23.873Z",
+      "createdAt": "2026-03-16T05:56:23.873Z"
+    },
+    {
+      "id": "verify_10",
+      "keyword": "verify_10",
+      "serverId": "verify_tmp_server_2",
+      "enabled": true,
+      "meta": {
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "updatedAt": "2026-03-16T05:56:23.874Z",
+      "createdAt": "2026-03-16T05:56:23.874Z"
+    },
+    {
+      "id": "verify_11",
+      "keyword": "verify_11",
+      "serverId": "verify_tmp_server_2",
+      "enabled": false,
+      "meta": {
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "updatedAt": "2026-03-16T05:56:23.875Z",
+      "createdAt": "2026-03-16T05:56:23.875Z"
+    },
+    {
+      "id": "verify_12",
+      "keyword": "verify_12",
+      "serverId": "verify_tmp_server_2",
+      "enabled": true,
+      "meta": {
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "updatedAt": "2026-03-16T05:56:23.875Z",
+      "createdAt": "2026-03-16T05:56:23.875Z"
+    },
+    {
+      "id": "verify_13",
+      "keyword": "verify_13",
+      "serverId": "verify_tmp_server_2",
+      "enabled": false,
+      "meta": {
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "updatedAt": "2026-03-16T05:56:23.876Z",
+      "createdAt": "2026-03-16T05:56:23.876Z"
+    },
+    {
+      "id": "verify_14",
+      "keyword": "verify_14",
+      "serverId": "verify_tmp_server_2",
+      "enabled": true,
+      "meta": {
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "updatedAt": "2026-03-16T05:56:23.876Z",
+      "createdAt": "2026-03-16T05:56:23.876Z"
+    },
+    {
+      "id": "verify_15",
+      "keyword": "verify_15",
+      "serverId": "verify_tmp_server_2",
+      "enabled": false,
+      "meta": {
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "updatedAt": "2026-03-16T05:56:23.877Z",
+      "createdAt": "2026-03-16T05:56:23.877Z"
+    },
+    {
+      "id": "verify_16",
+      "keyword": "verify_16",
+      "serverId": "verify_tmp_server_2",
+      "enabled": true,
+      "meta": {
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "updatedAt": "2026-03-16T05:56:23.878Z",
+      "createdAt": "2026-03-16T05:56:23.878Z"
+    },
+    {
+      "id": "verify_17",
+      "keyword": "verify_17",
+      "serverId": "verify_tmp_server_2",
+      "enabled": false,
+      "meta": {
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "updatedAt": "2026-03-16T05:56:23.878Z",
+      "createdAt": "2026-03-16T05:56:23.878Z"
+    },
+    {
+      "id": "verify_18",
+      "keyword": "verify_18",
+      "serverId": "verify_tmp_server_2",
+      "enabled": true,
+      "meta": {
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "updatedAt": "2026-03-16T05:56:23.879Z",
+      "createdAt": "2026-03-16T05:56:23.879Z"
+    },
+    {
+      "id": "verify_19",
+      "keyword": "verify_19",
+      "serverId": "verify_tmp_server_2",
+      "enabled": false,
+      "meta": {
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "updatedAt": "2026-03-16T05:56:23.879Z",
+      "createdAt": "2026-03-16T05:56:23.879Z"
     },
     {
       "id": "fwq",
       "keyword": "fwq",
-      "serverId": "server_1772205331307",
       "type": "server_info",
-      "name": "服务器信息",
+      "name": "",
       "permission": "all",
       "enabled": true,
-      "meta": {},
-      "updatedAt": "2026-02-28T13:01:40.523Z",
-      "createdAt": "2026-02-28T13:01:40.523Z"
+      "meta": {
+        "doNotify": false,
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "serverId": "server_1773632567536",
+      "deleted": false,
+      "updatedAt": "2026-03-16T06:18:01.696Z",
+      "createdAt": "2026-03-16T06:18:01.696Z"
+    },
+    {
+      "id": "fk",
+      "keyword": "fk",
+      "type": "switch",
+      "name": "防空",
+      "permission": "all",
+      "enabled": true,
+      "meta": {
+        "action": "toggle",
+        "doNotify": false,
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "serverId": "server_1773632567536",
+      "deleted": false,
+      "updatedAt": "2026-03-16T06:18:01.697Z",
+      "createdAt": "2026-03-16T06:18:01.697Z"
+    },
+    {
+      "id": "hc",
+      "keyword": "hc",
+      "type": "query_cargo",
+      "name": "",
+      "permission": "all",
+      "enabled": true,
+      "meta": {
+        "doNotify": false,
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "serverId": "server_1773632567536",
+      "deleted": false,
+      "updatedAt": "2026-03-16T06:18:01.698Z",
+      "createdAt": "2026-03-16T06:18:01.698Z"
+    },
+    {
+      "id": "wz",
+      "keyword": "wz",
+      "type": "query_heli",
+      "name": "",
+      "permission": "all",
+      "enabled": true,
+      "meta": {
+        "doNotify": false,
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "serverId": "server_1773632567536",
+      "deleted": false,
+      "updatedAt": "2026-03-16T06:18:01.699Z",
+      "createdAt": "2026-03-16T06:18:01.699Z"
+    },
+    {
+      "id": "sh",
+      "keyword": "sh",
+      "type": "deep_sea_status",
+      "name": "",
+      "permission": "all",
+      "enabled": true,
+      "meta": {
+        "doNotify": false,
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "serverId": "server_1773632567536",
+      "deleted": false,
+      "updatedAt": "2026-03-16T06:18:01.700Z",
+      "createdAt": "2026-03-16T06:18:01.700Z"
+    },
+    {
+      "id": "fy",
+      "keyword": "fy",
+      "type": "translate",
+      "name": "",
+      "permission": "all",
+      "enabled": true,
+      "meta": {
+        "doNotify": false,
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "serverId": "server_1773632567536",
+      "deleted": false,
+      "updatedAt": "2026-03-16T06:18:01.701Z",
+      "createdAt": "2026-03-16T06:18:01.701Z"
     },
     {
       "id": "ai",
       "keyword": "ai",
-      "serverId": "server_1772205331307",
       "type": "ai",
       "name": "AI 问答",
       "permission": "all",
       "enabled": true,
-      "meta": {},
-      "updatedAt": "2026-02-28T13:25:16.059Z",
-      "createdAt": "2026-02-28T13:25:16.059Z"
-    },
-    {
-      "id": "ai",
-      "keyword": "ai",
-      "type": "ai",
-      "name": "",
-      "permission": "all",
-      "enabled": true,
-      "meta": {},
-      "serverId": "server_1772288283456",
-      "updatedAt": "2026-03-04T01:54:38.077Z",
-      "createdAt": "2026-03-04T01:54:38.077Z"
+      "meta": {
+        "doNotify": false,
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "serverId": "server_1773632567536",
+      "deleted": false,
+      "updatedAt": "2026-03-16T06:18:05.191Z",
+      "createdAt": "2026-03-16T06:18:01.702Z"
     },
     {
       "id": "shj",
@@ -2525,46 +922,22 @@
       "name": "",
       "permission": "all",
       "enabled": true,
-      "meta": {},
-      "serverId": "server_1772288283456",
-      "updatedAt": "2026-03-04T01:54:38.078Z",
-      "createdAt": "2026-03-04T01:54:38.078Z"
-    },
-    {
-      "id": "fwq",
-      "keyword": "fwq",
-      "type": "server_info",
-      "name": "",
-      "permission": "all",
-      "enabled": true,
-      "meta": {},
-      "serverId": "server_1772288283456",
-      "updatedAt": "2026-03-04T01:54:38.079Z",
-      "createdAt": "2026-03-04T01:54:38.079Z"
-    },
-    {
-      "id": "sh",
-      "keyword": "sh",
-      "type": "deep_sea_status",
-      "name": "",
-      "permission": "all",
-      "enabled": true,
-      "meta": {},
-      "serverId": "server_1772288283456",
-      "updatedAt": "2026-03-04T01:54:38.079Z",
-      "createdAt": "2026-03-04T01:54:38.079Z"
-    },
-    {
-      "id": "fy",
-      "keyword": "fy",
-      "type": "translate",
-      "name": "",
-      "permission": "all",
-      "enabled": true,
-      "meta": {},
-      "serverId": "server_1772288283456",
-      "updatedAt": "2026-03-04T01:54:38.080Z",
-      "createdAt": "2026-03-04T01:54:38.080Z"
+      "meta": {
+        "doNotify": false,
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "serverId": "server_1773632567536",
+      "deleted": false,
+      "updatedAt": "2026-03-16T06:18:01.703Z",
+      "createdAt": "2026-03-16T06:18:01.703Z"
     },
     {
       "id": "dz",
@@ -2573,276 +946,70 @@
       "name": "",
       "permission": "all",
       "enabled": true,
-      "meta": {},
-      "serverId": "server_1772288283456",
-      "updatedAt": "2026-03-04T01:54:38.080Z",
-      "createdAt": "2026-03-04T01:54:38.080Z"
-    },
-    {
-      "id": "fk",
-      "keyword": "fk",
-      "type": "switch",
-      "name": "防空",
-      "permission": "all",
-      "enabled": true,
       "meta": {
-        "action": "toggle"
+        "doNotify": false,
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
       },
-      "serverId": "server_1772288283456",
-      "updatedAt": "2026-03-04T01:54:38.081Z",
-      "createdAt": "2026-03-04T01:54:38.081Z"
-    },
-    {
-      "id": "hc",
-      "keyword": "hc",
-      "type": "query_cargo",
-      "name": "",
-      "permission": "all",
-      "enabled": true,
-      "meta": {},
-      "serverId": "server_1772288283456",
-      "updatedAt": "2026-03-04T01:54:38.081Z",
-      "createdAt": "2026-03-04T01:54:38.081Z"
-    },
-    {
-      "id": "wz",
-      "keyword": "wz",
-      "type": "query_heli",
-      "name": "",
-      "permission": "all",
-      "enabled": true,
-      "meta": {},
-      "serverId": "server_1772288283456",
-      "updatedAt": "2026-03-04T01:54:38.082Z",
-      "createdAt": "2026-03-04T01:54:38.082Z"
-    },
-    {
-      "id": "ai",
-      "keyword": "ai",
-      "serverId": "server_1772743534793",
-      "type": "ai",
-      "name": "",
-      "permission": "all",
-      "enabled": true,
-      "meta": {},
-      "updatedAt": "2026-03-13T16:45:30.298Z",
-      "createdAt": "2026-03-13T16:45:30.298Z"
-    },
-    {
-      "id": "shj",
-      "keyword": "shj",
-      "serverId": "server_1772743534793",
-      "type": "query_vendor",
-      "name": "",
-      "permission": "all",
-      "enabled": true,
-      "meta": {},
-      "updatedAt": "2026-03-13T16:45:30.299Z",
-      "createdAt": "2026-03-13T16:45:30.299Z"
-    },
-    {
-      "id": "fwq",
-      "keyword": "fwq",
-      "serverId": "server_1772743534793",
-      "type": "server_info",
-      "name": "",
-      "permission": "all",
-      "enabled": true,
-      "meta": {},
-      "updatedAt": "2026-03-13T16:45:30.299Z",
-      "createdAt": "2026-03-13T16:45:30.299Z"
-    },
-    {
-      "id": "sh",
-      "keyword": "sh",
-      "serverId": "server_1772743534793",
-      "type": "deep_sea_status",
-      "name": "",
-      "permission": "all",
-      "enabled": true,
-      "meta": {},
-      "updatedAt": "2026-03-13T16:45:30.300Z",
-      "createdAt": "2026-03-13T16:45:30.300Z"
-    },
-    {
-      "id": "fy",
-      "keyword": "fy",
-      "serverId": "server_1772743534793",
-      "type": "translate",
-      "name": "",
-      "permission": "all",
-      "enabled": true,
-      "meta": {},
-      "updatedAt": "2026-03-13T16:45:30.301Z",
-      "createdAt": "2026-03-13T16:45:30.301Z"
-    },
-    {
-      "id": "dz",
-      "keyword": "dz",
-      "serverId": "server_1772743534793",
-      "type": "change_leader",
-      "name": "",
-      "permission": "all",
-      "enabled": true,
-      "meta": {},
-      "updatedAt": "2026-03-13T16:45:30.301Z",
-      "createdAt": "2026-03-13T16:45:30.301Z"
-    },
-    {
-      "id": "fk",
-      "keyword": "fk",
-      "serverId": "server_1772743534793",
-      "type": "switch",
-      "name": "防空",
-      "permission": "all",
-      "enabled": true,
-      "meta": {
-        "action": "toggle"
+      "trigger": {
+        "cooldownMs": 3000
       },
-      "updatedAt": "2026-03-13T16:45:30.303Z",
-      "createdAt": "2026-03-13T16:45:30.303Z"
-    },
-    {
-      "id": "hc",
-      "keyword": "hc",
-      "serverId": "server_1772743534793",
-      "type": "query_cargo",
-      "name": "",
-      "permission": "all",
-      "enabled": true,
-      "meta": {},
-      "updatedAt": "2026-03-13T16:45:30.303Z",
-      "createdAt": "2026-03-13T16:45:30.303Z"
-    },
-    {
-      "id": "wz",
-      "keyword": "wz",
-      "serverId": "server_1772743534793",
-      "type": "query_heli",
-      "name": "",
-      "permission": "all",
-      "enabled": true,
-      "meta": {},
-      "updatedAt": "2026-03-13T16:45:30.304Z",
-      "createdAt": "2026-03-13T16:45:30.304Z"
-    },
-    {
-      "id": "ai",
-      "keyword": "ai",
-      "serverId": "server_1773192895572",
-      "type": "ai",
-      "name": "",
-      "permission": "all",
-      "enabled": true,
-      "meta": {},
-      "updatedAt": "2026-03-14T15:54:31.512Z",
-      "createdAt": "2026-03-14T15:54:31.512Z"
-    },
-    {
-      "id": "shj",
-      "keyword": "shj",
-      "serverId": "server_1773192895572",
-      "type": "query_vendor",
-      "name": "",
-      "permission": "all",
-      "enabled": true,
-      "meta": {},
-      "updatedAt": "2026-03-14T15:54:31.513Z",
-      "createdAt": "2026-03-14T15:54:31.513Z"
-    },
-    {
-      "id": "fwq",
-      "keyword": "fwq",
-      "serverId": "server_1773192895572",
-      "type": "server_info",
-      "name": "",
-      "permission": "all",
-      "enabled": true,
-      "meta": {},
-      "updatedAt": "2026-03-14T15:54:31.514Z",
-      "createdAt": "2026-03-14T15:54:31.514Z"
-    },
-    {
-      "id": "sh",
-      "keyword": "sh",
-      "serverId": "server_1773192895572",
-      "type": "deep_sea_status",
-      "name": "",
-      "permission": "all",
-      "enabled": true,
-      "meta": {},
-      "updatedAt": "2026-03-14T15:54:31.515Z",
-      "createdAt": "2026-03-14T15:54:31.515Z"
-    },
-    {
-      "id": "fy",
-      "keyword": "fy",
-      "serverId": "server_1773192895572",
-      "type": "translate",
-      "name": "",
-      "permission": "all",
-      "enabled": true,
-      "meta": {},
-      "updatedAt": "2026-03-14T15:54:31.516Z",
-      "createdAt": "2026-03-14T15:54:31.516Z"
-    },
-    {
-      "id": "dz",
-      "keyword": "dz",
-      "serverId": "server_1773192895572",
-      "type": "change_leader",
-      "name": "",
-      "permission": "all",
-      "enabled": true,
-      "meta": {},
-      "updatedAt": "2026-03-14T15:54:31.516Z",
-      "createdAt": "2026-03-14T15:54:31.516Z"
-    },
-    {
-      "id": "fk",
-      "keyword": "fk",
-      "serverId": "server_1773192895572",
-      "type": "switch",
-      "name": "防空",
-      "permission": "all",
-      "enabled": true,
-      "meta": {
-        "action": "toggle"
-      },
-      "updatedAt": "2026-03-14T15:54:31.517Z",
-      "createdAt": "2026-03-14T15:54:31.517Z"
-    },
-    {
-      "id": "hc",
-      "keyword": "hc",
-      "serverId": "server_1773192895572",
-      "type": "query_cargo",
-      "name": "",
-      "permission": "all",
-      "enabled": true,
-      "meta": {},
-      "updatedAt": "2026-03-14T15:54:31.518Z",
-      "createdAt": "2026-03-14T15:54:31.518Z"
-    },
-    {
-      "id": "wz",
-      "keyword": "wz",
-      "serverId": "server_1773192895572",
-      "type": "query_heli",
-      "name": "",
-      "permission": "all",
-      "enabled": true,
-      "meta": {},
-      "updatedAt": "2026-03-14T15:54:31.519Z",
-      "createdAt": "2026-03-14T15:54:31.519Z"
+      "serverId": "server_1773632567536",
+      "deleted": false,
+      "updatedAt": "2026-03-16T06:18:01.704Z",
+      "createdAt": "2026-03-16T06:18:01.704Z"
     },
     {
       "id": "jk",
       "keyword": "jk",
-      "serverId": "server_1773192895572",
+      "type": "cctv_codes",
+      "name": "",
+      "permission": "all",
       "enabled": true,
-      "updatedAt": "2026-03-14T15:54:35.552Z",
-      "createdAt": "2026-03-14T15:54:35.550Z"
+      "meta": {
+        "doNotify": false,
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "serverId": "server_1773632567536",
+      "deleted": false,
+      "updatedAt": "2026-03-16T06:18:01.705Z",
+      "createdAt": "2026-03-16T06:18:01.705Z"
+    },
+    {
+      "id": "help",
+      "keyword": "help",
+      "type": null,
+      "name": "",
+      "permission": "all",
+      "enabled": true,
+      "meta": {
+        "doNotify": false,
+        "doChat": true,
+        "actions": [
+          {
+            "type": "team_chat"
+          }
+        ]
+      },
+      "trigger": {
+        "cooldownMs": 3000
+      },
+      "serverId": "server_1773632567536",
+      "deleted": false,
+      "updatedAt": "2026-03-16T06:18:01.706Z",
+      "createdAt": "2026-03-16T06:18:01.706Z"
     }
   ],
   "callGroups": [
@@ -2867,14 +1034,14 @@
     }
   ],
   "appState": {
-    "lastServerId": "server_1773192895572",
+    "lastServerId": "server_1773632567536",
     "deepSea": {
-      "lastOpenAt": "2026-03-14T19:05:25.980Z",
-      "lastCloseAt": "2026-03-14T22:05:25.980Z",
+      "lastOpenAt": "2026-03-16T03:42:59.353Z",
+      "lastCloseAt": "2026-03-16T06:42:59.353Z",
       "lastDirection": "南",
-      "lastEntryGrid": "A10",
-      "lastEntryCoord": "x=0, y=1927",
-      "updatedAt": "2026-03-14T22:11:10.296Z"
+      "lastEntryGrid": "A12",
+      "lastEntryCoord": "x=0, y=2655",
+      "updatedAt": "2026-03-16T06:43:08.961Z"
     }
   }
 }

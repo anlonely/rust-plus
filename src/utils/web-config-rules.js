@@ -10,14 +10,44 @@ function resolveScopedServerId({ runtimeServerId, requestedServerId } = {}) {
   return String(runtimeServerId || '').trim();
 }
 
+function normalizeRuleActions(actions = [], meta = {}) {
+  if (Array.isArray(actions) && actions.length) {
+    return actions
+      .filter((item) => item && typeof item === 'object' && !Array.isArray(item))
+      .map((item) => ({
+        ...item,
+        type: String(item.type || '').trim().toLowerCase(),
+        ...(String(item.type || '').trim().toLowerCase() === 'call_group'
+          ? {
+              groupId: String(item.groupId || '').trim(),
+              channels: Array.isArray(item.channels)
+                ? item.channels.map((channel) => String(channel || '').trim().toLowerCase()).filter(Boolean)
+                : [],
+              ...(item.message != null ? { message: String(item.message || '').trim() } : {}),
+            }
+          : {}),
+      }))
+      .filter((item) => {
+        if (!item.type) return false;
+        if (item.type === 'call_group') return !!item.groupId;
+        return ['notify_desktop', 'team_chat', 'send_game_message'].includes(item.type);
+      });
+  }
+
+  return [
+    ...(meta.doNotify ? [{ type: 'notify_desktop' }] : []),
+    ...(meta.doChat !== false ? [{ type: 'team_chat' }] : []),
+  ];
+}
+
 function normalizeEventRuleInput(raw = {}, serverId = '') {
   const input = safeObject(raw);
   const event = String(input.event || '').trim() || 'alarm_on';
   const trigger = safeObject(input.trigger);
   const meta = safeObject(input._meta);
   meta.doNotify = meta.doNotify === true;
-  meta.doDiscord = meta.doDiscord === true;
   meta.doChat = meta.doChat !== false;
+  meta.actions = normalizeRuleActions(meta.actions, meta);
 
   if (event === 'cargo_ship_status') {
     trigger.cargoNotifyEnter = trigger.cargoNotifyEnter !== false;
@@ -61,34 +91,8 @@ function normalizeCommandRuleInput(raw = {}, serverId = '') {
   const trigger = safeObject(input.trigger);
   const meta = safeObject(input.meta);
   meta.doNotify = meta.doNotify === true;
-  meta.doDiscord = meta.doDiscord === true;
   meta.doChat = meta.doChat !== false;
-  meta.actions = Array.isArray(meta.actions)
-    ? meta.actions
-        .filter((item) => item && typeof item === 'object' && !Array.isArray(item))
-        .map((item) => ({
-          ...item,
-          type: String(item.type || '').trim().toLowerCase(),
-          ...(item.type === 'call_group'
-            ? {
-                groupId: String(item.groupId || '').trim(),
-                channels: Array.isArray(item.channels)
-                  ? item.channels.map((channel) => String(channel || '').trim().toLowerCase()).filter(Boolean)
-                  : [],
-                ...(item.message != null ? { message: String(item.message || '').trim() } : {}),
-              }
-            : {}),
-        }))
-        .filter((item) => {
-          if (!item.type) return false;
-          if (item.type === 'call_group') return !!item.groupId;
-          return ['notify_desktop', 'notify_discord', 'team_chat', 'send_game_message'].includes(item.type);
-        })
-    : [
-        ...(meta.doNotify ? [{ type: 'notify_desktop' }] : []),
-        ...(meta.doDiscord ? [{ type: 'notify_discord' }] : []),
-        ...(meta.doChat !== false ? [{ type: 'team_chat' }] : []),
-      ];
+  meta.actions = normalizeRuleActions(meta.actions, meta);
   trigger.cooldownMs = Math.max(0, Number(trigger.cooldownMs) || 3_000);
 
   return {

@@ -36,6 +36,10 @@ async function applyPersistedCommandRules({ parser, persistedRules = [], removeR
     const keyword = normalizeKeyword(rule.keyword || rule.id);
     if (!keyword) continue;
     if (isDeprecatedCommandRule(rule)) continue;
+    if (rule.deleted === true) {
+      parser.removeCommandRule?.(keyword);
+      continue;
+    }
 
     const payload = {
       ...rule,
@@ -57,4 +61,3 @@ module.exports = {
   isDeprecatedCommandRule,
   applyPersistedCommandRules,
 };
-

@@ -9,7 +9,6 @@ function commandDefaults(meta = {}, trigger = {}) {
   return {
     meta: {
       doNotify: false,
-      doDiscord: false,
       doChat: true,
       actions: [{ type: 'team_chat' }],
       ...meta,
@@ -148,6 +147,20 @@ const EVENT_RULESET_PATROL_VENDOR = [
 
 const EVENT_SYSTEM_RULESET = [...EVENT_RULESET_DEFENSE_BASIC, ...EVENT_RULESET_PATROL_VENDOR];
 
+const COMMAND_TYPE_BY_KEYWORD = {
+  ai: 'ai',
+  shj: 'query_vendor',
+  fwq: 'server_info',
+  sh: 'deep_sea_status',
+  fy: 'translate',
+  dz: 'change_leader',
+  fk: 'switch',
+  hc: 'query_cargo',
+  wz: 'query_heli',
+  jk: 'cctv_codes',
+  help: null,
+};
+
 const COMMAND_RULESET_CORE_DEFAULT = [
   'ai',
   'shj',
@@ -158,20 +171,12 @@ const COMMAND_RULESET_CORE_DEFAULT = [
   'fk',
   'hc',
   'wz',
+  'jk',
+  'help',
 ].map((keyword) => ({
   id: keyword,
   keyword,
-  type: ({
-    ai: 'ai',
-    shj: 'query_vendor',
-    fwq: 'server_info',
-    sh: 'deep_sea_status',
-    fy: 'translate',
-    dz: 'change_leader',
-    fk: 'switch',
-    hc: 'query_cargo',
-    wz: 'query_heli',
-  })[keyword] || null,
+  type: COMMAND_TYPE_BY_KEYWORD[keyword] || null,
   name: keyword === 'fk' ? '防空' : undefined,
   permission: keyword === 'fk' ? 'all' : undefined,
   ...commandDefaults(keyword === 'fk' ? { action: 'toggle' } : {}),
@@ -188,6 +193,8 @@ const COMMAND_RULESET_SAFE_MINIMAL = [
   { id: 'fk', keyword: 'fk', type: 'switch', name: '防空', permission: 'all', ...commandDefaults({ action: 'toggle' }), enabled: false },
   { id: 'hc', keyword: 'hc', type: 'query_cargo', ...commandDefaults(), enabled: true },
   { id: 'wz', keyword: 'wz', type: 'query_heli', ...commandDefaults(), enabled: true },
+  { id: 'jk', keyword: 'jk', type: 'cctv_codes', ...commandDefaults(), enabled: true },
+  { id: 'help', keyword: 'help', type: null, ...commandDefaults(), enabled: true },
 ];
 
 const EVENT_PRESETS = [

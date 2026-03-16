@@ -17,6 +17,7 @@ class JsonDb {
     this.filePath = filePath;
     this.defaults = defaults;
     this.data = JSON.parse(JSON.stringify(defaults));
+    this._queue = Promise.resolve();
   }
 
   async read() {
@@ -33,9 +34,16 @@ class JsonDb {
   }
 
   async write() {
-    const tmp = this.filePath + '.tmp';
+    await fsp.mkdir(path.dirname(this.filePath), { recursive: true });
+    const tmp = `${this.filePath}.${process.pid}.${Date.now()}.${Math.random().toString(16).slice(2)}.tmp`;
     await fsp.writeFile(tmp, JSON.stringify(this.data, null, 2), 'utf8');
     await fsp.rename(tmp, this.filePath);
+  }
+
+  async withLock(task) {
+    const run = this._queue.then(() => task(), () => task());
+    this._queue = run.catch(() => {});
+    return run;
   }
 }
 
@@ -239,38 +247,46 @@ async function removeServerCascade(serverId) {
 }
 
 async function getLastServerId() {
-  await rulesDb.read();
-  return rulesDb.data?.appState?.lastServerId || null;
+  return rulesDb.withLock(async () => {
+    await rulesDb.read();
+    return rulesDb.data?.appState?.lastServerId || null;
+  });
 }
 
 async function setLastServerId(serverId) {
-  await rulesDb.read();
-  rulesDb.data.appState ||= {};
-  rulesDb.data.appState.lastServerId = serverId || null;
-  await rulesDb.write();
+  return rulesDb.withLock(async () => {
+    await rulesDb.read();
+    rulesDb.data.appState ||= {};
+    rulesDb.data.appState.lastServerId = serverId || null;
+    await rulesDb.write();
+  });
 }
 
 async function getDeepSeaState() {
-  await rulesDb.read();
-  const ds = rulesDb.data?.appState?.deepSea || {};
-  return {
-    lastOpenAt: ds.lastOpenAt || null,
-    lastCloseAt: ds.lastCloseAt || null,
-    lastDirection: ds.lastDirection || null,
-    lastEntryGrid: ds.lastEntryGrid || null,
-    lastEntryCoord: ds.lastEntryCoord || null,
-    updatedAt: ds.updatedAt || null,
-  };
+  return rulesDb.withLock(async () => {
+    await rulesDb.read();
+    const ds = rulesDb.data?.appState?.deepSea || {};
+    return {
+      lastOpenAt: ds.lastOpenAt || null,
+      lastCloseAt: ds.lastCloseAt || null,
+      lastDirection: ds.lastDirection || null,
+      lastEntryGrid: ds.lastEntryGrid || null,
+      lastEntryCoord: ds.lastEntryCoord || null,
+      updatedAt: ds.updatedAt || null,
+    };
+  });
 }
 
 async function saveDeepSeaState(patch = {}) {
-  await rulesDb.read();
-  rulesDb.data.appState ||= {};
-  const base = rulesDb.data.appState.deepSea || {};
-  const next = { ...base, ...patch, updatedAt: new Date().toISOString() };
-  rulesDb.data.appState.deepSea = next;
-  await rulesDb.write();
-  return next;
+  return rulesDb.withLock(async () => {
+    await rulesDb.read();
+    rulesDb.data.appState ||= {};
+    const base = rulesDb.data.appState.deepSea || {};
+    const next = { ...base, ...patch, updatedAt: new Date().toISOString() };
+    rulesDb.data.appState.deepSea = next;
+    await rulesDb.write();
+    return next;
+  });
 }
 
 // ════════════════════════════════════════════
@@ -365,125 +381,147 @@ async function removeDevice(entityId, serverId = null) {
 // ════════════════════════════════════════════
 
 async function listEventRules(serverId = null) {
-  await rulesDb.read();
-  const rules = rulesDb.data.eventRules || [];
-  if (!serverId) return rules;
-  return rules.filter((r) => String(r.serverId || '') === String(serverId));
+  return rulesDb.withLock(async () => {
+    await rulesDb.read();
+    const rules = rulesDb.data.eventRules || [];
+    if (!serverId) return rules;
+    return rules.filter((r) => String(r.serverId || '') === String(serverId));
+  });
 }
 
 async function saveEventRule(rule) {
-  await rulesDb.read();
-  const rules = rulesDb.data.eventRules || [];
-  const serverId = rule.serverId || null;
-  const idx = rules.findIndex(r => r.id === rule.id && (r.serverId || null) === serverId);
-  const record = {
-    ...rule,
-    updatedAt: new Date().toISOString(),
-    createdAt: idx >= 0 ? rules[idx].createdAt : new Date().toISOString(),
-  };
-  if (idx >= 0) rules[idx] = record;
-  else rules.push(record);
-  rulesDb.data.eventRules = rules;
-  await rulesDb.write();
-  return record;
+  return rulesDb.withLock(async () => {
+    await rulesDb.read();
+    const rules = rulesDb.data.eventRules || [];
+    const serverId = rule.serverId || null;
+    const idx = rules.findIndex(r => r.id === rule.id && (r.serverId || null) === serverId);
+    const record = {
+      ...rule,
+      updatedAt: new Date().toISOString(),
+      createdAt: idx >= 0 ? rules[idx].createdAt : new Date().toISOString(),
+    };
+    if (idx >= 0) rules[idx] = record;
+    else rules.push(record);
+    rulesDb.data.eventRules = rules;
+    await rulesDb.write();
+    return record;
+  });
 }
 
 async function removeEventRule(ruleId, serverId = null) {
-  await rulesDb.read();
-  const before = rulesDb.data.eventRules.length;
-  rulesDb.data.eventRules = rulesDb.data.eventRules.filter(r => {
-    if (r.id !== ruleId) return true;
-    if (serverId == null) return false;
-    return String(r.serverId || '') !== String(serverId);
+  return rulesDb.withLock(async () => {
+    await rulesDb.read();
+    const before = rulesDb.data.eventRules.length;
+    rulesDb.data.eventRules = rulesDb.data.eventRules.filter(r => {
+      if (r.id !== ruleId) return true;
+      if (serverId == null) return false;
+      return String(r.serverId || '') !== String(serverId);
+    });
+    await rulesDb.write();
+    return rulesDb.data.eventRules.length < before;
   });
-  await rulesDb.write();
-  return rulesDb.data.eventRules.length < before;
 }
 
 async function setEventRuleEnabled(ruleId, enabled, serverId = null) {
-  await rulesDb.read();
-  const rule = (rulesDb.data.eventRules || []).find(r =>
-    r.id === ruleId && (serverId == null || String(r.serverId || '') === String(serverId))
-  );
-  if (!rule) return false;
-  rule.enabled = !!enabled;
-  rule.updatedAt = new Date().toISOString();
-  await rulesDb.write();
-  return true;
+  return rulesDb.withLock(async () => {
+    await rulesDb.read();
+    const rule = (rulesDb.data.eventRules || []).find(r =>
+      r.id === ruleId && (serverId == null || String(r.serverId || '') === String(serverId))
+    );
+    if (!rule) return false;
+    rule.enabled = !!enabled;
+    rule.updatedAt = new Date().toISOString();
+    await rulesDb.write();
+    return true;
+  });
 }
 
 async function listCommandRules(serverId = null) {
-  await rulesDb.read();
-  const rules = rulesDb.data.commandRules || [];
-  if (!serverId) return rules;
-  return rules.filter((r) => String(r.serverId || '') === String(serverId));
+  return rulesDb.withLock(async () => {
+    await rulesDb.read();
+    const rules = rulesDb.data.commandRules || [];
+    if (!serverId) return rules;
+    return rules.filter((r) => String(r.serverId || '') === String(serverId));
+  });
 }
 
 async function saveCommandRule(rule) {
-  await rulesDb.read();
-  const rules = rulesDb.data.commandRules || [];
-  const serverId = rule.serverId || null;
-  const idx = rules.findIndex(r => r.id === rule.id && (r.serverId || null) === serverId);
-  const record = {
-    ...rule,
-    updatedAt: new Date().toISOString(),
-    createdAt: idx >= 0 ? rules[idx].createdAt : new Date().toISOString(),
-  };
-  if (idx >= 0) rules[idx] = record;
-  else rules.push(record);
-  rulesDb.data.commandRules = rules;
-  await rulesDb.write();
-  return record;
+  return rulesDb.withLock(async () => {
+    await rulesDb.read();
+    const rules = rulesDb.data.commandRules || [];
+    const serverId = rule.serverId || null;
+    const idx = rules.findIndex(r => r.id === rule.id && (r.serverId || null) === serverId);
+    const record = {
+      ...rule,
+      updatedAt: new Date().toISOString(),
+      createdAt: idx >= 0 ? rules[idx].createdAt : new Date().toISOString(),
+    };
+    if (idx >= 0) rules[idx] = record;
+    else rules.push(record);
+    rulesDb.data.commandRules = rules;
+    await rulesDb.write();
+    return record;
+  });
 }
 
 async function removeCommandRule(ruleId, serverId = null) {
-  await rulesDb.read();
-  const before = rulesDb.data.commandRules.length;
-  rulesDb.data.commandRules = rulesDb.data.commandRules.filter(r => {
-    if (r.id !== ruleId) return true;
-    if (serverId == null) return false;
-    return String(r.serverId || '') !== String(serverId);
+  return rulesDb.withLock(async () => {
+    await rulesDb.read();
+    const before = rulesDb.data.commandRules.length;
+    rulesDb.data.commandRules = rulesDb.data.commandRules.filter(r => {
+      if (r.id !== ruleId) return true;
+      if (serverId == null) return false;
+      return String(r.serverId || '') !== String(serverId);
+    });
+    await rulesDb.write();
+    return rulesDb.data.commandRules.length < before;
   });
-  await rulesDb.write();
-  return rulesDb.data.commandRules.length < before;
 }
 
 async function listCallGroupsDb() {
-  await rulesDb.read();
-  return rulesDb.data.callGroups || [];
+  return rulesDb.withLock(async () => {
+    await rulesDb.read();
+    return rulesDb.data.callGroups || [];
+  });
 }
 
 async function saveCallGroupDb(group) {
-  await rulesDb.read();
-  const groups = rulesDb.data.callGroups || [];
-  const idx = groups.findIndex(g => g.id === group.id);
-  const record = {
-    ...group,
-    updatedAt: new Date().toISOString(),
-    createdAt: idx >= 0 ? groups[idx].createdAt : new Date().toISOString(),
-  };
-  if (idx >= 0) groups[idx] = record;
-  else groups.push(record);
-  rulesDb.data.callGroups = groups;
-  await rulesDb.write();
-  return record;
+  return rulesDb.withLock(async () => {
+    await rulesDb.read();
+    const groups = rulesDb.data.callGroups || [];
+    const idx = groups.findIndex(g => g.id === group.id);
+    const record = {
+      ...group,
+      updatedAt: new Date().toISOString(),
+      createdAt: idx >= 0 ? groups[idx].createdAt : new Date().toISOString(),
+    };
+    if (idx >= 0) groups[idx] = record;
+    else groups.push(record);
+    rulesDb.data.callGroups = groups;
+    await rulesDb.write();
+    return record;
+  });
 }
 
 async function removeCallGroupDb(groupId) {
-  await rulesDb.read();
-  const before = rulesDb.data.callGroups.length;
-  rulesDb.data.callGroups = rulesDb.data.callGroups.filter(g => g.id !== groupId);
-  await rulesDb.write();
-  return rulesDb.data.callGroups.length < before;
+  return rulesDb.withLock(async () => {
+    await rulesDb.read();
+    const before = rulesDb.data.callGroups.length;
+    rulesDb.data.callGroups = rulesDb.data.callGroups.filter(g => g.id !== groupId);
+    await rulesDb.write();
+    return rulesDb.data.callGroups.length < before;
+  });
 }
 
 async function replaceAllRulesData(nextData = {}) {
-  await rulesDb.read();
-  rulesDb.data.eventRules = Array.isArray(nextData.eventRules) ? nextData.eventRules : [];
-  rulesDb.data.commandRules = Array.isArray(nextData.commandRules) ? nextData.commandRules : [];
-  rulesDb.data.callGroups = Array.isArray(nextData.callGroups) ? nextData.callGroups : [];
-  rulesDb.data.appState = nextData.appState || rulesDb.data.appState || {};
-  await rulesDb.write();
+  return rulesDb.withLock(async () => {
+    await rulesDb.read();
+    rulesDb.data.eventRules = Array.isArray(nextData.eventRules) ? nextData.eventRules : [];
+    rulesDb.data.commandRules = Array.isArray(nextData.commandRules) ? nextData.commandRules : [];
+    rulesDb.data.callGroups = Array.isArray(nextData.callGroups) ? nextData.callGroups : [];
+    rulesDb.data.appState = nextData.appState || rulesDb.data.appState || {};
+    await rulesDb.write();
+  });
 }
 
 module.exports = {

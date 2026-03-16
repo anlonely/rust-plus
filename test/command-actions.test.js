@@ -21,12 +21,10 @@ test('command-parser: builtins default to team chat action with 3s cooldown', as
 
 test('command-parser: command rules dispatch desktop discord and call group actions', async () => {
   const desktop = [];
-  const discord = [];
   const teamMessages = [];
   const callGroups = [];
   const parser = new CommandParser({
     notifyDesktopRunner: async (payload) => desktop.push(payload),
-    notifyDiscordRunner: async (payload) => discord.push(payload),
     teamChatRunner: async (message) => teamMessages.push(message),
     callGroupRunner: async (groupId, message, options) => {
       callGroups.push({ groupId, message, options });
@@ -41,11 +39,9 @@ test('command-parser: command rules dispatch desktop discord and call group acti
     permission: 'all',
     meta: {
       doNotify: true,
-      doDiscord: true,
       doChat: false,
       actions: [
         { type: 'notify_desktop' },
-        { type: 'notify_discord' },
         { type: 'call_group', groupId: 'group_1', channels: ['discord'] },
       ],
     },
@@ -57,9 +53,19 @@ test('command-parser: command rules dispatch desktop discord and call group acti
 
   assert.equal(teamMessages.length, 0);
   assert.equal(desktop.length, 1);
-  assert.equal(discord.length, 1);
   assert.equal(callGroups.length, 1);
   assert.equal(callGroups[0].groupId, 'group_1');
   assert.deepEqual(callGroups[0].options, { channels: ['discord'] });
   assert.match(String(callGroups[0].message || ''), /可用指令/);
+});
+
+test('command-parser: builtin command can be deleted and restored', () => {
+  const parser = new CommandParser();
+  assert.ok(parser.getCommands().some((item) => item.keyword === 'help'));
+
+  assert.equal(parser.removeCommandRule('help'), true);
+  assert.equal(parser.getCommands().some((item) => item.keyword === 'help'), false);
+
+  assert.equal(parser.setCommandEnabled('help', true), true);
+  assert.equal(parser.getCommands().some((item) => item.keyword === 'help'), true);
 });

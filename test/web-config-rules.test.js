@@ -23,8 +23,8 @@ test('web-config-rules: normalizeEventRuleInput fills defaults', () => {
   assert.deepEqual(rule.trigger, {});
   assert.deepEqual(rule._meta, {
     doNotify: false,
-    doDiscord: false,
     doChat: true,
+    actions: [{ type: 'team_chat' }],
   });
   assert.ok(String(rule.id).startsWith('web_event_'));
 });
@@ -38,7 +38,6 @@ test('web-config-rules: normalizeCommandRuleInput keeps keyword and defaults', (
   assert.equal(rule.permission, 'all');
   assert.deepEqual(rule.meta, {
     doNotify: false,
-    doDiscord: false,
     doChat: true,
     actions: [{ type: 'team_chat' }],
   });

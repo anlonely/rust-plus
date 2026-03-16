@@ -7,6 +7,7 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('rustAPI', {
+  platform: process.platform,
 
   // ── 应用初始化 ──────────────────────────
   init: ()                    => ipcRenderer.invoke('app:init'),

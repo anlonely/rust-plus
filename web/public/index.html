@@ -1132,9 +1132,6 @@ input, textarea, select { font-family:inherit; }
           <input type="checkbox" id="ev-act-notify" style="accent-color:var(--blue)"> 桌面通知
         </label>
         <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);cursor:pointer">
-          <input type="checkbox" id="ev-act-discord" style="accent-color:var(--blue)"> Discord Webhook
-        </label>
-        <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);cursor:pointer">
           <input type="checkbox" id="ev-act-chat" checked style="accent-color:var(--blue)"> 发送到团队聊天
         </label>
         <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);cursor:pointer">
@@ -1194,9 +1191,6 @@ input, textarea, select { font-family:inherit; }
       <div style="display:flex;flex-direction:column;gap:6px" id="cmd-actions">
         <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);cursor:pointer">
           <input type="checkbox" id="cmd-act-notify" style="accent-color:var(--blue)"> 桌面通知
-        </label>
-        <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);cursor:pointer">
-          <input type="checkbox" id="cmd-act-discord" style="accent-color:var(--blue)"> Discord Webhook
         </label>
         <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);cursor:pointer">
           <input type="checkbox" id="cmd-act-chat" checked style="accent-color:var(--blue)"> 发送到团队聊天
@@ -1324,11 +1318,15 @@ const state = {
   editingRuleId: null,
   editingCallGroupId: null,
   pendingPairingDevice: null,
+  pendingPairingOptions: null,
+  steamReauthPrompted: false,
   helpDocLoaded: false,
   healthPollTimer: null,
   mapPollTimer: null,
   serverMap: null,
   serverMapServerId: '',
+  serverMapSeed: null,
+  serverMapWipeTime: null,
   serverMapImageUrl: '',
   serverMapLastAt: 0,
   latestMapSize: 0,
@@ -1511,10 +1509,15 @@ function getGridReferenceAnchors() {
 }
 
 function buildMetaActionsFromToggles(meta = {}) {
-  if (Array.isArray(meta.actions) && meta.actions.length) return meta.actions;
+  if (Array.isArray(meta.actions) && meta.actions.length) {
+    return meta.actions.filter((action) => {
+      const type = String(action?.type || '').toLowerCase();
+      if (type === 'call_group') return !!String(action?.groupId || '').trim();
+      return ['notify_desktop', 'team_chat', 'send_game_message'].includes(type);
+    });
+  }
   const actions = [];
   if (meta.doNotify === true) actions.push({ type: 'notify_desktop' });
-  if (meta.doDiscord) actions.push({ type: 'notify_discord' });
   if (meta.doChat !== false) actions.push({ type: 'team_chat' });
   return actions;
 }
@@ -2023,7 +2026,8 @@ async function init() {
       document.getElementById('server-name-title').textContent = state.currentServer.name || '';
     }
     renderSteamUserCard(state.steam);
-    refreshSteamUserCard({ silent: true });
+    await refreshSteamUserCard({ silent: true });
+    await promptSteamReauthIfNeeded({ source: 'startup', autoQueuePairing: true });
     updateConnectionUI(state.connected, state.currentServer?.name);
     updateScopedPageState();
     setPairingStatus(true);
@@ -2035,6 +2039,30 @@ async function init() {
     addLog('error', '初始化失败: ' + e.message);
     setPairingStatus(false);
   }
+}
+
+function getSteamTokenIssue(steam = state.steam) {
+  if (!steam?.hasLogin) return '未检测到有效的 Steam 登录凭证';
+  if (steam?.tokenMeta?.isExpired) return 'Steam 登录凭证已过期';
+  if (!String(steam?.tokenMeta?.steamId || '').trim()) return 'Steam 登录状态异常，未解析到有效 SteamID';
+  return '';
+}
+
+async function promptSteamReauthIfNeeded({ source = 'manual', autoQueuePairing = false, retryPairingOptions = null } = {}) {
+  const issue = getSteamTokenIssue(state.steam);
+  if (!issue) {
+    state.steamReauthPrompted = false;
+    return false;
+  }
+  if (source === 'startup' && state.steamReauthPrompted) return false;
+  state.steamReauthPrompted = source === 'startup';
+  const confirmed = confirm(`${issue}。\n需要重新登录 Steam 才能继续 Rust+ 配对，是否现在重新登录？`);
+  if (!confirmed) return false;
+  if (autoQueuePairing || retryPairingOptions) {
+    state.pendingPairingOptions = retryPairingOptions || { forceRegister: true };
+  }
+  await beginSteamAuthFlow();
+  return true;
 }
 
 async function refreshSteamUserCard({ silent = false } = {}) {
@@ -2056,9 +2084,11 @@ async function refreshSteamUserCard({ silent = false } = {}) {
       if (steamId) toast('success', `资料已刷新：${steamId}`);
       else toast('warning', '已刷新，但未解析到 SteamID');
     }
+    return remote;
   } catch (e) {
     if (!silent) toast('error', '刷新失败：' + (e?.message || '未知错误'));
     addLog('warn', 'Steam 资料刷新失败: ' + (e?.message || e));
+    return null;
   } finally {
     if (refreshBtn) {
       refreshBtn.disabled = false;
@@ -2189,6 +2219,7 @@ async function logoutSteam() {
     return;
   }
   state.steam = res.steam || null;
+  state.steamReauthPrompted = false;
   renderSteamUserCard(state.steam);
   renderSteamProfileModal(state.steam);
   toast('success', '已注销 Steam 登录');
@@ -2208,6 +2239,13 @@ async function beginSteamAuthFlow() {
   state.steam = res.steam || null;
   renderSteamUserCard(state.steam);
   closeModal('modal-steam-profile');
+  const pendingPairing = state.pendingPairingOptions;
+  state.pendingPairingOptions = null;
+  if (pendingPairing) {
+    toast('success', 'Steam 登录已恢复，正在重新开始配对');
+    await startPairing({ ...pendingPairing, skipSteamCheck: true });
+    return;
+  }
   openModal('modal-steam-credential-success');
 }
 
@@ -2241,6 +2279,7 @@ function updateConnectionUI(connected, serverName) {
     state.currentServer = null;
     state.serverMap = null;
     state.serverMapServerId = '';
+    state.serverMapSeed = null;
     state.serverMapImageUrl = '';
     state.latestMapSize = 0;
     state.serverMapLastAt = 0;
@@ -3928,24 +3967,34 @@ async function refreshServerMap(forceMapReload = false) {
   const mapBelongsToCurrentServer = !!serverId && state.serverMapServerId === serverId;
 
   try {
-    if (forceMapReload || !state.serverMap || !state.serverMapImageUrl || !mapBelongsToCurrentServer) {
-      const mapRes = await rustAPI.getMapData();
-      if (mapRes?.error) throw new Error(mapRes.error);
-      if (mapRes) {
-        state.serverMap = mapRes;
-        state.serverMapServerId = serverId;
-        state.serverMapImageUrl = mapRes.imageBase64
-          ? `data:image/jpeg;base64,${mapRes.imageBase64}`
-          : '';
-      }
-    }
-
     const [markerRes, teamRes, infoRes] = await Promise.all([
       rustAPI.getMapMarkers().catch(() => null),
       rustAPI.getTeamInfo().catch(() => null),
       rustAPI.getServerInfo().catch(() => null),
     ]);
     const info = extractServerInfo(infoRes);
+
+    // 用已拿到的 serverInfo 检查 seed，判断是否擦档换图
+    const currentSeed = info?.seed != null ? Number(info.seed) : null;
+    const seedChanged = currentSeed != null
+      && state.serverMapSeed != null
+      && currentSeed !== state.serverMapSeed;
+
+    if (forceMapReload || !state.serverMap || !state.serverMapImageUrl || !mapBelongsToCurrentServer || seedChanged) {
+      const mapRes = await rustAPI.getMapData();
+      if (mapRes?.error) throw new Error(mapRes.error);
+      if (mapRes) {
+        state.serverMap = mapRes;
+        state.serverMapServerId = serverId;
+        state.serverMapSeed = mapRes.seed != null ? Number(mapRes.seed) : null;
+        state.serverMapImageUrl = mapRes.imageBase64
+          ? `data:image/jpeg;base64,${mapRes.imageBase64}`
+          : '';
+      }
+    } else if (currentSeed != null && state.serverMapSeed == null) {
+      // 首次拿到 seed，补存（避免下次无法比较）
+      state.serverMapSeed = currentSeed;
+    }
     const infoWorldSize = Number(info?.mapSize ?? info?.worldSize ?? 0);
     const mapWorldSize = Number(
       state.serverMap?.worldSize
@@ -4247,6 +4296,9 @@ async function startPairing(options = {}) {
   const btn    = document.getElementById('btn-pair');
   const repairBtn = document.getElementById('btn-pair-repair');
   const status = document.getElementById('pairing-status');
+  const pairingOptions = { ...(options || {}) };
+  const skipSteamCheck = pairingOptions.skipSteamCheck === true;
+  delete pairingOptions.skipSteamCheck;
 
   btn.disabled = true;
   if (repairBtn) repairBtn.disabled = true;
@@ -4257,11 +4309,29 @@ async function startPairing(options = {}) {
     const diag = await rustAPI.diagnosePairing().catch(() => null);
     if (diag) {
       addLog('info', `配对诊断: listener=${diag.listenerRunning ? 'on' : 'off'} steam=${diag?.steam?.steamId || '-'} expired=${diag?.steam?.isExpired}`);
-      if (diag?.steam?.isExpired) {
-        toast('error', 'Rust+ 凭证已过期，请重新进行 Steam 登录授权');
+      if (diag?.steam) {
+        state.steam = {
+          ...(state.steam || {}),
+          hasLogin: !!diag.steam.hasLogin,
+          tokenMeta: {
+            ...(state.steam?.tokenMeta || {}),
+            steamId: diag.steam.steamId || '',
+            expiresAt: diag.steam.expiresAt || null,
+            isExpired: diag.steam.isExpired === true,
+          },
+        };
+        renderSteamUserCard(state.steam);
+      }
+      if (!skipSteamCheck && getSteamTokenIssue(state.steam)) {
+        status.textContent = '等待重新登录 Steam 后自动重新配对';
+        await promptSteamReauthIfNeeded({
+          source: 'pairing',
+          retryPairingOptions: { forceRegister: true, ...pairingOptions },
+        });
+        return;
       }
     }
-    const res = await rustAPI.startPairing(options);
+    const res = await rustAPI.startPairing(pairingOptions);
     if (res.success) {
       if (res.server?.name) {
         toast('success', `✓ 配对成功：${res.server.name}`);
@@ -4620,7 +4690,6 @@ function openAddEventModal() {
   document.getElementById('ev-message').value = '';
   document.getElementById('ev-cooldown').value = '30';
   document.getElementById('ev-act-notify').checked = false;
-  document.getElementById('ev-act-discord').checked = false;
   document.getElementById('ev-act-chat').checked = true;
   document.getElementById('ev-act-callgroup').checked = false;
   renderEventDynamicFields();
@@ -4640,7 +4709,6 @@ function editRule(ruleId) {
   renderEventDynamicFields(rule);
   const actions = buildMetaActionsFromToggles(rule._meta || {});
   document.getElementById('ev-act-notify').checked = actions.some(a => a.type === 'notify_desktop');
-  document.getElementById('ev-act-discord').checked = actions.some(a => a.type === 'notify_discord');
   document.getElementById('ev-act-chat').checked = actions.some(a => a.type === 'team_chat' || a.type === 'send_game_message');
   document.getElementById('ev-act-callgroup').checked = actions.some(a => a.type === 'call_group');
   renderEventCallGroupFields(rule);
@@ -4652,7 +4720,6 @@ async function saveEventRule() {
   const cooldown = parseInt(document.getElementById('ev-cooldown').value, 10) || 30;
   const message  = document.getElementById('ev-message').value.trim();
   const doNotify = document.getElementById('ev-act-notify').checked;
-  const doDiscord= document.getElementById('ev-act-discord').checked;
   const doChat   = document.getElementById('ev-act-chat').checked;
   const doCallGroup = document.getElementById('ev-act-callgroup').checked;
 
@@ -4763,11 +4830,9 @@ async function saveEventRule() {
     _meta: {
       message: normalizedMessage,
       doNotify,
-      doDiscord,
       doChat,
       actions: [
         ...(doNotify ? [{ type: 'notify_desktop' }] : []),
-        ...(doDiscord ? [{ type: 'notify_discord' }] : []),
         ...(doChat ? [{ type: 'team_chat' }] : []),
         ...(doCallGroup
           ? [{
@@ -4933,7 +4998,7 @@ async function loadCommands() {
             <div class="toggle-track"><div class="toggle-thumb"></div></div>
           </label>
           <button class="btn btn-ghost btn-xs" onclick="editCommandRule(${jsArg(c.keyword)})">编辑</button>
-          ${c.isBuiltin ? '' : `<button class="btn btn-danger btn-xs" onclick="deleteCommandRule(${jsArg(c.keyword)})">删除</button>`}
+          <button class="btn btn-danger btn-xs" onclick="deleteCommandRule(${jsArg(c.keyword)})">删除</button>
         </div>
       </div>`;
   }).join('');
@@ -4942,7 +5007,7 @@ async function loadCommands() {
 async function toggleCommand(keyword, enabled) {
   const res = await rustAPI.toggleCommand(keyword, enabled).catch(e => ({ success: false, error: e.message }));
   if (!res?.success) {
-    toast('error', '指令状态更新失败');
+    toast('error', '指令状态更新失败：' + (res?.error || '未知错误'));
     return;
   }
   loadCommands();
@@ -4983,7 +5048,6 @@ async function saveCmdRule() {
   const keyword = (keywordRaw || DEFAULT_KEYWORD_BY_TYPE[type] || '').toLowerCase();
   const cooldown = Math.max(0, parseInt(document.getElementById('cmd-cooldown')?.value, 10) || 3);
   const doNotify = !!document.getElementById('cmd-act-notify')?.checked;
-  const doDiscord = !!document.getElementById('cmd-act-discord')?.checked;
   const doChat = !!document.getElementById('cmd-act-chat')?.checked;
   const doCallGroup = type !== 'call_group' && !!document.getElementById('cmd-act-callgroup')?.checked;
   if (!keyword) {
@@ -4993,11 +5057,9 @@ async function saveCmdRule() {
 
   const meta = {
     doNotify,
-    doDiscord,
     doChat,
     actions: [
       ...(doNotify ? [{ type: 'notify_desktop' }] : []),
-      ...(doDiscord ? [{ type: 'notify_discord' }] : []),
       ...(doChat ? [{ type: 'team_chat' }] : []),
     ],
   };
@@ -5073,7 +5135,6 @@ function openAddCmdModal() {
   document.getElementById('cmd-keyword').value = DEFAULT_KEYWORD_BY_TYPE.ai;
   document.getElementById('cmd-cooldown').value = '3';
   document.getElementById('cmd-act-notify').checked = false;
-  document.getElementById('cmd-act-discord').checked = false;
   document.getElementById('cmd-act-chat').checked = true;
   document.getElementById('cmd-act-callgroup').checked = false;
   renderCommandDynamicFields();
@@ -5091,7 +5152,6 @@ function editCommandRule(keyword) {
   document.getElementById('cmd-cooldown').value = Math.max(0, Math.round((rule.trigger?.cooldownMs ?? 3000) / 1000));
   const actions = buildMetaActionsFromToggles(rule.meta || {});
   document.getElementById('cmd-act-notify').checked = actions.some((item) => item?.type === 'notify_desktop');
-  document.getElementById('cmd-act-discord').checked = actions.some((item) => item?.type === 'notify_discord');
   document.getElementById('cmd-act-chat').checked = actions.some((item) => item?.type === 'team_chat' || item?.type === 'send_game_message');
   document.getElementById('cmd-act-callgroup').checked = actions.some((item) => item?.type === 'call_group');
   renderCommandDynamicFields(rule);
@@ -5412,6 +5472,7 @@ rustAPI.on('server:status', ({ connected, name, serverId, server }) => {
   if (connected && prevServerId && nextServerId && prevServerId !== nextServerId) {
     state.serverMap = null;
     state.serverMapServerId = '';
+    state.serverMapSeed = null;
     state.serverMapImageUrl = '';
     state.serverMapLastAt = 0;
     state.selectedVendingId = '';
@@ -5420,6 +5481,23 @@ rustAPI.on('server:status', ({ connected, name, serverId, server }) => {
   updateConnectionUI(connected, name);
   addLog(connected ? 'success' : 'warn', `服务器${connected ? '已连接' : '已断开'}: ${name || ''}`);
   if (!connected) toast('warning', `与服务器断开连接，正在重连...`);
+});
+
+rustAPI.on('server:info', (snapshot) => {
+  if (!snapshot) return;
+  const newWipeTime = snapshot.wipeTime != null ? Number(snapshot.wipeTime) : null;
+  const newSeed = snapshot.seed != null ? Number(snapshot.seed) : null;
+  const wipeDetected =
+    (newWipeTime != null && state.serverMapWipeTime != null && newWipeTime !== state.serverMapWipeTime) ||
+    (newSeed != null && state.serverMapSeed != null && newSeed !== state.serverMapSeed);
+  if (newWipeTime != null) state.serverMapWipeTime = newWipeTime;
+  if (wipeDetected) {
+    state.serverMap = null;
+    state.serverMapImageUrl = '';
+    state.serverMapSeed = null;
+    state.serverMapWipeTime = newWipeTime;
+    addLog('info', '检测到服务器擦档，地图缓存已清除');
+  }
 });
 
 rustAPI.on('entity:changed', ({ entityId, payload }) => {
@@ -5497,6 +5575,9 @@ rustAPI.on('pairing:listener-status', (status) => {
 rustAPI.on('notification', ({ type, title, message }) => {
   addNotif(type, title, message);
   addLog('info', `通知: ${title} - ${message}`);
+  if (type === 'error') {
+    toast('error', `${title}：${message}`, 5200);
+  }
 });
 
 // ═══════════════════════════════════════════════
@@ -5517,7 +5598,15 @@ function jsArg(value) {
     .replace(/</g, '\\u003C');
 }
 
+function syncWindowControlsVisibility() {
+  const controls = document.querySelector('#titlebar .win-btns');
+  if (!controls) return;
+  const platform = String(rustAPI?.platform || 'web');
+  controls.classList.toggle('hidden', platform !== 'win32');
+}
+
 // ── 启动 ─────────────────────────────────────
+syncWindowControlsVisibility();
 setTeamChatComposerEnabled(false);
 init();
 addLog('info', 'Rust 工具箱界面已加载');

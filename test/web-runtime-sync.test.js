@@ -16,6 +16,7 @@ test('web-runtime-sync: applies persisted rules to parser and removes deprecated
   const removed = [];
   const setRules = [];
   const toggled = [];
+  const deleted = [];
   const parser = {
     setCommandRule(rule) {
       setRules.push(rule);
@@ -23,6 +24,10 @@ test('web-runtime-sync: applies persisted rules to parser and removes deprecated
     },
     setCommandEnabled(keyword, enabled) {
       toggled.push({ keyword, enabled });
+      return true;
+    },
+    removeCommandRule(keyword) {
+      deleted.push(keyword);
       return true;
     },
   };
@@ -33,6 +38,7 @@ test('web-runtime-sync: applies persisted rules to parser and removes deprecated
       { keyword: 'dw', enabled: true },
       { keyword: 'mycmd', type: 'translate', name: '翻译', enabled: true, meta: { promptPrefix: 'x' } },
       { keyword: 'fwq', enabled: false },
+      { keyword: 'help', deleted: true, enabled: false },
     ],
     removeRule: async (keyword) => {
       removed.push(keyword);
@@ -43,5 +49,5 @@ test('web-runtime-sync: applies persisted rules to parser and removes deprecated
   assert.equal(setRules.length, 1);
   assert.equal(setRules[0].keyword, 'mycmd');
   assert.deepEqual(toggled, [{ keyword: 'fwq', enabled: false }]);
+  assert.deepEqual(deleted, ['help']);
 });
-

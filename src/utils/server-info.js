@@ -174,12 +174,19 @@ function buildServerInfoSnapshot(serverPayload, timePayload) {
     }
   }
 
+  const wipeTime = pickNumber(server.wipeTime);
+  const seed = pickNumber(server.seed);
+  const salt = pickNumber(server.salt);
+
   return {
     name,
     players,
     maxPlayers,
     queued,
     mapSize,
+    wipeTime: wipeTime > 0 ? wipeTime : null,
+    seed: seed > 0 ? seed : null,
+    salt: salt > 0 ? salt : null,
     gameSeconds,
     hhmm,
     phase: phase.period,

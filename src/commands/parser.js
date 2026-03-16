@@ -41,6 +41,7 @@ class CommandParser {
     this._cargoHarborsCache = { at: 0, mapSize: 0, items: [] };
     this._heliTrack = new Map(); // heliId -> { lastGrid, lastSeenAt }
     this._commandCooldownAt = new Map();
+    this._deletedBuiltinKeywords = new Set();
     this._boundTeamMessageHandler = null;
     this._registerBuiltins();
   }
@@ -286,7 +287,6 @@ class CommandParser {
       ? { ...meta }
       : {};
     base.doNotify = base.doNotify === true;
-    base.doDiscord = base.doDiscord === true;
     base.doChat = base.doChat !== false;
     const actions = Array.isArray(base.actions) ? base.actions : [];
     base.actions = actions.map((action) => {
@@ -301,7 +301,7 @@ class CommandParser {
     }).filter((action) => {
       if (!action.type) return false;
       if (action.type === 'call_group') return !!action.groupId;
-      return ['notify_desktop', 'notify_discord', 'team_chat', 'send_game_message'].includes(action.type);
+      return ['notify_desktop', 'team_chat', 'send_game_message'].includes(action.type);
     });
     return base;
   }
@@ -312,9 +312,6 @@ class CommandParser {
     const hasType = (type) => existing.some((action) => String(action?.type || '').toLowerCase() === type);
     if (normalizedMeta.doNotify && !hasType('notify_desktop')) {
       existing.push({ type: 'notify_desktop' });
-    }
-    if (normalizedMeta.doDiscord && !hasType('notify_discord')) {
-      existing.push({ type: 'notify_discord' });
     }
     if (normalizedMeta.doChat !== false && !hasType('team_chat') && !hasType('send_game_message')) {
       existing.push({ type: 'team_chat' });
@@ -356,12 +353,6 @@ class CommandParser {
       if (type === 'notify_desktop') {
         if (typeof this._notifyDesktopRunner === 'function') {
           await this._notifyDesktopRunner({ title: `⌨️ ${keyword}`, message });
-        }
-        continue;
-      }
-      if (type === 'notify_discord') {
-        if (typeof this._notifyDiscordRunner === 'function') {
-          await this._notifyDiscordRunner({ title: `⌨️ ${keyword}`, message });
         }
         continue;
       }
@@ -1273,7 +1264,9 @@ class CommandParser {
   }
 
   getCommands() {
-    return Object.entries(this._commands).map(([keyword, cmd]) => ({
+    return Object.entries(this._commands)
+      .filter(([keyword]) => !(this._builtinKeywords.has(keyword) && this._deletedBuiltinKeywords.has(keyword)))
+      .map(([keyword, cmd]) => ({
       keyword,
       description: cmd.description,
       permission: cmd.permission,
@@ -1285,9 +1278,34 @@ class CommandParser {
     }));
   }
 
+  getCommand(keyword, { includeDeleted = false } = {}) {
+    const key = String(keyword || '').toLowerCase().trim();
+    const cmd = this._commands[key];
+    if (!cmd) return null;
+    const isBuiltin = this._builtinKeywords.has(key);
+    if (!includeDeleted && isBuiltin && this._deletedBuiltinKeywords.has(key)) return null;
+    return {
+      keyword: key,
+      description: cmd.description,
+      permission: cmd.permission,
+      enabled: cmd.enabled !== false,
+      type: cmd.type || null,
+      isBuiltin,
+      meta: this._normalizeCommandMeta(cmd.meta || {}),
+      trigger: this._normalizeCommandTrigger(cmd.trigger),
+    };
+  }
+
+  restoreBuiltinCommands() {
+    this._deletedBuiltinKeywords.clear();
+  }
+
   setCommandEnabled(keyword, enabled) {
     const key = String(keyword || '').toLowerCase();
     if (!this._commands[key]) return false;
+    if (this._builtinKeywords.has(key)) {
+      this._deletedBuiltinKeywords.delete(key);
+    }
     this._commands[key].enabled = !!enabled;
     return true;
   }
@@ -1319,6 +1337,9 @@ class CommandParser {
     const normalizedTrigger = this._normalizeCommandTrigger(rule.trigger);
     const targetCmd = this._commands[target];
     const effectiveType = type || targetCmd?.type || null;
+    if (this._builtinKeywords.has(keyword)) {
+      this._deletedBuiltinKeywords.delete(keyword);
+    }
 
     if (effectiveType === 'call_group') {
       const groupId = String(normalizedMeta.groupId || '').trim();
@@ -1396,6 +1417,7 @@ class CommandParser {
     const key = String(keyword || '').toLowerCase().trim();
     if (!key || !this._commands[key]) return false;
     if (this._builtinKeywords.has(key)) {
+      this._deletedBuiltinKeywords.add(key);
       this._commands[key].enabled = false;
       return true;
     }

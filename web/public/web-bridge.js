@@ -88,6 +88,10 @@
       emit('pairing:listener-status', payload);
       return;
     }
+    if (type === 'server:info') {
+      emit('server:info', payload);
+      return;
+    }
     if (type === 'rule:auto-toggled') {
       emit('rule:auto-toggled', payload);
       return;
@@ -151,6 +155,7 @@
   }
 
   global.rustAPI = {
+    platform: 'web',
     init: () => invoke('app:init'),
 
     minimize: () => Promise.resolve(true),

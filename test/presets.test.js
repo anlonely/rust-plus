@@ -94,3 +94,22 @@ test('presets: event defaults should send team_chat without desktop notify', () 
     assert.equal(hasDesktop, false, `should not include notify_desktop: ${String(rule?.id || rule?.event || '-')}`);
   }
 });
+
+test('presets: command system preset should include all builtins and only team chat', () => {
+  const system = getCommandPreset('command_system_default');
+  assert.ok(system, 'command_system_default not found');
+
+  const keywords = new Set((system.commandRules || []).map((rule) => String(rule?.keyword || '')));
+  for (const keyword of ['ai', 'shj', 'fwq', 'sh', 'fy', 'dz', 'fk', 'hc', 'wz', 'jk', 'help']) {
+    assert.equal(keywords.has(keyword), true, `missing command preset: ${keyword}`);
+  }
+
+  for (const rule of system.commandRules || []) {
+    assert.equal(rule.enabled, true, `command preset should default enabled: ${String(rule?.keyword || '-')}`);
+    const actions = Array.isArray(rule?.meta?.actions) ? rule.meta.actions : [];
+    const hasTeamChat = actions.some((a) => String(a?.type || '') === 'team_chat');
+    const hasDesktop = actions.some((a) => String(a?.type || '') === 'notify_desktop');
+    assert.equal(hasTeamChat, true, `missing team_chat action: ${String(rule?.keyword || '-')}`);
+    assert.equal(hasDesktop, false, `should not include notify_desktop: ${String(rule?.keyword || '-')}`);
+  }
+});
