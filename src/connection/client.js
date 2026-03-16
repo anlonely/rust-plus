@@ -280,6 +280,25 @@ class RustClient {
     return this;
   }
 
+  /** 移除事件监听器 */
+  off(event, callback) {
+    const list = this._listeners[event];
+    if (!list) return this;
+    const idx = list.indexOf(callback);
+    if (idx !== -1) list.splice(idx, 1);
+    return this;
+  }
+
+  /** 移除指定事件（或所有事件）的全部监听器 */
+  removeAllListeners(event) {
+    if (event) {
+      delete this._listeners[event];
+    } else {
+      this._listeners = {};
+    }
+    return this;
+  }
+
   /** 触发事件 */
   _emit(event, ...args) {
     (this._listeners[event] || []).forEach(cb => {

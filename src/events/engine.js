@@ -258,13 +258,28 @@ class EventEngine {
    * @param {RustClient} client
    */
   bind(client) {
+    // 先清理旧的客户端监听器
+    if (this._client && this._boundHandlers) {
+      for (const [event, handler] of this._boundHandlers) {
+        if (typeof this._client.off === 'function') this._client.off(event, handler);
+      }
+    }
+
     this._client = client;
 
+    // 保存绑定的处理器引用，以便 unbind 时移除
+    this._boundEntityHandler = (data) => this._onEntityChanged(data);
+    this._boundTeamHandler   = (data) => this._onTeamChanged(data);
+    this._boundHandlers = [
+      ['entityChanged', this._boundEntityHandler],
+      ['teamChanged',   this._boundTeamHandler],
+    ];
+
     // 监听实体状态变化（警报器/开关）
-    client.on('entityChanged', (data) => this._onEntityChanged(data));
+    client.on('entityChanged', this._boundEntityHandler);
 
     // 监听队伍变化（队友上线/下线/挂机）
-    client.on('teamChanged',   (data) => this._onTeamChanged(data));
+    client.on('teamChanged',   this._boundTeamHandler);
 
     // 启动地图标记轮询（10 秒间隔）
     this._mapPollTimer = setInterval(() => this._pollMapMarkers(), 10_000);
@@ -280,6 +295,15 @@ class EventEngine {
   }
 
   unbind() {
+    // 移除注册在客户端上的事件监听器
+    if (this._client && this._boundHandlers) {
+      for (const [event, handler] of this._boundHandlers) {
+        if (typeof this._client.off === 'function') this._client.off(event, handler);
+      }
+      this._boundHandlers = null;
+    }
+    this._client = null;
+
     if (this._mapPollTimer)  clearInterval(this._mapPollTimer);
     this._stopDeepSeaReminderTimer();
     stopDeepSeaCountdown();

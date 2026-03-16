@@ -1451,9 +1451,14 @@ function formatRustConnectionErrorMessage(error) {
   return raw || '未知错误';
 }
 
+let _startServicesSeq = 0;
+
 async function startServices(serverConfig, options = {}) {
+  const seq = ++_startServicesSeq;
+
   if (rustClient) {
     eventEngine?.unbind();
+    rustClient.removeAllListeners();
     rustClient.disconnect();
   }
   if (serverInfoRefreshTimer) {
@@ -1540,6 +1545,10 @@ async function startServices(serverConfig, options = {}) {
   });
 
   await rustClient.connect();
+  if (seq !== _startServicesSeq) {
+    logger.warn('[Main] startServices 被更新的调用取代，中止当前初始化');
+    return;
+  }
   eventEngine.bind(rustClient);
   cmdParser.bind(rustClient);
   const boundDevices = await listDevices(activeServerId);
@@ -1580,10 +1589,12 @@ async function startServices(serverConfig, options = {}) {
     cmdParser.setCommandEnabled(fixedRule.keyword, fixedRule.enabled !== false);
   });
 
+  if (seq !== _startServicesSeq) return;
   await registerPersistedRules(serverConfig.id);
   await setLastServerId(serverConfig.id || null);
   await refreshLatestServerInfoText();
   await bootstrapTeamChatCache();
+  if (seq !== _startServicesSeq) return;
   startTeamSyncPolling();
   startTeamSyncStatusTimer();
   emitTeamSyncStatus('polling');
@@ -1883,18 +1894,20 @@ function setupIPC() {
           existed = upsert.existed;
         }
 
+        let alreadyReconnecting = false;
         if (tokenChanged && rustClient?.connected && server) {
           const sameServer = String(rustClient.config?.ip) === String(server.ip)
             && String(rustClient.config?.port) === String(server.port)
             && String(rustClient.config?.playerId) === String(server.playerId);
           if (sameServer) {
+            alreadyReconnecting = true;
             logger.info('[Pairing] 检测到服务器 token 刷新，正在重建连接...');
             startServices(server).catch((e) => logger.warn('[Pairing] token 刷新重连失败: ' + e.message));
           }
         }
 
         if (serverPayload) {
-          if (server) {
+          if (server && !alreadyReconnecting) {
             const sameAsCurrent = !!(rustClient?.connected
               && String(rustClient.config?.ip) === String(server.ip)
               && String(rustClient.config?.port) === String(server.port)

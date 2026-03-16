@@ -82,7 +82,7 @@
           "afk": "{member}挂机已持续15分钟｜当前位置:{member_grid}"
         }
       },
-      "updatedAt": "2026-03-16T11:13:40.048Z",
+      "updatedAt": "2026-03-16T12:00:05.788Z",
       "createdAt": "2026-03-16T09:28:06.273Z"
     },
     {
@@ -112,7 +112,7 @@
           "explode": "武直已被击落｜坠落位置:{marker_grid}"
         }
       },
-      "updatedAt": "2026-03-16T11:13:40.045Z",
+      "updatedAt": "2026-03-16T12:00:05.786Z",
       "createdAt": "2026-03-16T09:28:06.273Z"
     },
     {
@@ -140,7 +140,7 @@
           "leave": "军用运输直升机已离开地图｜最后位置:{marker_grid}"
         }
       },
-      "updatedAt": "2026-03-16T11:13:40.044Z",
+      "updatedAt": "2026-03-16T12:00:05.784Z",
       "createdAt": "2026-03-16T09:28:06.274Z"
     },
     {
@@ -170,7 +170,7 @@
           "dock": "货船已停靠 ｜{cargo_harbor} [{cargo_harbor_grid}]"
         }
       },
-      "updatedAt": "2026-03-16T11:13:40.041Z",
+      "updatedAt": "2026-03-16T12:00:05.782Z",
       "createdAt": "2026-03-16T09:28:06.275Z"
     },
     {
@@ -200,7 +200,7 @@
           "small_unlock": "小石油箱子已解锁｜方向：{oil_direction}"
         }
       },
-      "updatedAt": "2026-03-16T11:13:40.042Z",
+      "updatedAt": "2026-03-16T12:00:05.783Z",
       "createdAt": "2026-03-16T09:28:06.276Z"
     },
     {
@@ -230,7 +230,7 @@
           "leave": "流浪商人离开地图｜最后位置:{marker_grid}"
         }
       },
-      "updatedAt": "2026-03-16T11:13:40.046Z",
+      "updatedAt": "2026-03-16T12:00:05.786Z",
       "createdAt": "2026-03-16T09:28:06.277Z"
     },
     {
@@ -286,7 +286,7 @@
           }
         ]
       },
-      "updatedAt": "2026-03-16T11:13:40.039Z",
+      "updatedAt": "2026-03-16T12:00:05.780Z",
       "createdAt": "2026-03-16T09:28:06.278Z"
     },
     {
@@ -312,7 +312,7 @@
           "close": "深海已关闭"
         }
       },
-      "updatedAt": "2026-03-16T11:13:40.047Z",
+      "updatedAt": "2026-03-16T12:00:05.787Z",
       "createdAt": "2026-03-16T09:28:06.279Z"
     },
     {
@@ -809,7 +809,7 @@
       "id": "fwq",
       "keyword": "fwq",
       "type": "server_info",
-      "name": "",
+      "name": "服务器信息",
       "permission": "all",
       "enabled": true,
       "meta": {
@@ -826,7 +826,7 @@
       },
       "serverId": "server_1773632567536",
       "deleted": false,
-      "updatedAt": "2026-03-16T06:18:01.696Z",
+      "updatedAt": "2026-03-16T11:27:44.897Z",
       "createdAt": "2026-03-16T06:18:01.696Z"
     },
     {
@@ -1098,7 +1098,7 @@
       "locked": true,
       "name": "团队聊天",
       "enabled": true,
-      "intervalMs": 3000,
+      "intervalMs": 5000,
       "phone": {
         "enabled": false,
         "members": []
@@ -1112,19 +1112,19 @@
         "webhookUrl": ""
       },
       "members": [],
-      "updatedAt": "2026-03-16T11:11:38.426Z",
+      "updatedAt": "2026-03-16T11:29:03.956Z",
       "createdAt": "2026-03-16T11:11:38.427Z"
     }
   ],
   "appState": {
     "lastServerId": "server_1773632567536",
     "deepSea": {
-      "lastOpenAt": "2026-03-16T10:55:14.267Z",
+      "lastOpenAt": "2026-03-16T10:55:14.601Z",
       "lastCloseAt": "2026-03-16T06:42:59.353Z",
       "lastDirection": "南",
       "lastEntryGrid": "A12",
       "lastEntryCoord": "x=0, y=2691",
-      "updatedAt": "2026-03-16T11:13:51.274Z"
+      "updatedAt": "2026-03-16T12:00:16.604Z"
     }
   }
 }
