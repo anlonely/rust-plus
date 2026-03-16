@@ -47,7 +47,6 @@ const {
   VENDING_NEW_WATCH_ITEM_IDS,
   VENDING_NEW_WATCH_ITEM_NAMES,
 } = require('../src/utils/vending-watchlist');
-const PERSON_GRID_X_OFFSET = -1 / 6; // 人物定位向左偏移半个九宫格
 const TEAM_CHAT_MAX_CHARS = Math.max(32, Number(process.env.RUST_TEAM_MESSAGE_MAX_CHARS || 128) || 128);
 const TEAM_CHAT_RPM_LIMIT = Math.max(1, Number(process.env.GUI_TEAM_CHAT_RPM || 20) || 20);
 
@@ -403,9 +402,7 @@ function renderMessageTemplate(template, eventType, context = {}) {
   const markerId = context.marker?.id || '';
   const markerGridDetail = markerToGrid9(context.marker || {}, latestServerInfo.mapSize || 0);
   const markerGrid = String(markerGridDetail || '').split('-')[0] || markerGridDetail;
-  const memberGridDetail = markerToGrid9(context.member || {}, latestServerInfo.mapSize || 0, {
-    gridXOffset: PERSON_GRID_X_OFFSET,
-  });
+  const memberGridDetail = markerToGrid9(context.member || {}, latestServerInfo.mapSize || 0);
   const memberGrid = String(memberGridDetail || '').split('-')[0] || memberGridDetail;
   const cargoGrid = String((context.grid || markerGridDetail || '')).split('-')[0] || (context.grid || markerGridDetail || '');
   const cargoHarbor = context.harbor?.name || '';

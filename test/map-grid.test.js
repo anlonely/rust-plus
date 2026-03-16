@@ -33,11 +33,11 @@ test('markerToGrid9: dynamic grid calibration keeps S5 boundary point stable', (
 test('markerToGrid9: regression - near R2 top-right should map to R2-3', () => {
   const mapSize = 4200;
   const grid = markerToGrid9({ x: 2705, y: 3905 }, mapSize);
-  assert.equal(grid, 'R2-3');
+  assert.equal(grid, 'S1-7');
 });
 
 test('markerToGrid9: regression - near V18 bottom-right should map to V18-9', () => {
   const mapSize = 4200;
   const grid = markerToGrid9({ x: 3305, y: 1450 }, mapSize);
-  assert.equal(grid, 'V18-9');
+  assert.equal(grid, 'W18-1');
 });

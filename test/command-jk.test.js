@@ -59,6 +59,8 @@ test('jk: cargo query returns cargo ship CCTV codes with locations', async () =>
   });
 
   assert.deepEqual(client.sent, [
-    '货轮监控代码：[CARGODECK - 前甲板]  [CARGOBRIDGE - 通道]  [CARGOSTERN - 后甲板]  [CARGOHOLD1 - 舱内1]  [CARGOHOLD2 - 舱内2]',
+    '货轮监控代码：[CARGODECK - 前甲板]  [CARGOBRIDGE - 通道]',
+    '[CARGOSTERN - 后甲板]  [CARGOHOLD1 - 舱内1]',
+    '[CARGOHOLD2 - 舱内2]',
   ]);
 });

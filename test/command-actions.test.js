@@ -16,7 +16,7 @@ test('command-parser: builtins default to team chat action with 3s cooldown', as
   await parser._onTeamMessage({ steamId: '1', message: 'help' });
 
   assert.equal(teamMessages.length, 1);
-  assert.match(teamMessages[0], /可用指令/);
+  assert.match(teamMessages[0], /help:/);
 });
 
 test('command-parser: command rules dispatch desktop discord and call group actions', async () => {
@@ -56,7 +56,7 @@ test('command-parser: command rules dispatch desktop discord and call group acti
   assert.equal(callGroups.length, 1);
   assert.equal(callGroups[0].groupId, 'group_1');
   assert.deepEqual(callGroups[0].options, { channels: ['discord'] });
-  assert.match(String(callGroups[0].message || ''), /可用指令/);
+  assert.match(String(callGroups[0].message || ''), /help:/);
 });
 
 test('command-parser: builtin command can be deleted and restored', () => {

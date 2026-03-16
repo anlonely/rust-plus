@@ -528,6 +528,10 @@ input, textarea, select { font-family:inherit; }
 .server-map-monument-icon img { width:100%; height:100%; object-fit:contain; display:block; }
 .server-map-monument-fallback { width:10px; height:10px; border-radius:50%; background:var(--orange); border:1.5px solid #fff; display:none; }
 .server-map-point-label { position:absolute; left:50%; top:14px; transform:translateX(-50%); white-space:nowrap; font-size:10px; color:#fff; text-shadow:0 1px 3px #000; pointer-events:none; }
+.server-map-label { position:absolute; left:50%; top:12px; transform:translateX(-50%); white-space:nowrap; font-size:10px; color:#fff; text-shadow:0 1px 3px #000; pointer-events:none; z-index:2; }
+.server-map-label.monument { color:#000; font-size:8.5px; text-shadow:none; z-index:1; }
+.server-map-label.safe-zone { color:#32cd32; font-size:10px; text-shadow:0 1px 3px #000; }
+.server-map-label.player { text-shadow:0 0 4px #fff, 0 0 6px rgba(255,255,255,0.8); font-weight:bold; z-index:3; }
 .server-map-vending-icon { width:24px; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer; filter:drop-shadow(0 2px 6px rgba(0,0,0,.55)); opacity:.76; }
 .server-map-vending-icon img { width:100%; height:100%; object-fit:contain; display:block; }
 .server-map-vending-fallback { width:20px; height:20px; border-radius:4px; background:var(--bg3); border:1px solid var(--border); display:none; }
@@ -3863,7 +3867,7 @@ function renderServerMapLayer(teamMembers = state.serverMapView.teamMembers, ven
     points.push(`
       <div class="server-map-point" ${multi ? `data-team-cluster-id="${clusterId}"` : ''} style="left:${pos.x}px;top:${pos.y}px;" title="${esc(detail)}">
         <div class="server-map-dot team ${stateClass}"></div>
-        <div class="server-map-label ${multi ? 'cluster' : ''}">${esc(label)}</div>
+        <div class="server-map-label player ${multi ? 'cluster' : ''}">${esc(label)}</div>
       </div>
     `);
   }
@@ -3872,10 +3876,21 @@ function renderServerMapLayer(teamMembers = state.serverMapView.teamMembers, ven
     const normalized = monumentToNormalized(mon?.x, mon?.y, mapContext);
     const pos = normalizedToPixel(normalized, renderedRect, { clamp: false });
     if (!normalized || !pos) continue;
+    const tokenStr = String(mon.token || '').toLowerCase();
+    const isSubway = tokenStr.includes('train_tunnel') || tokenStr.includes('tunnel_entrance') || tokenStr.includes('subway') || tokenStr.includes('metro');
+    const isSafeZone = ['前哨站', '强盗营地', '渔村', '大型渔村', '牧场', '大型谷仓', '马厩', '前哨站B3'].includes(mon.label);
+    
+    let labelHtml = '';
+    if (!isSubway) {
+        let labelClass = 'server-map-label monument';
+        if (isSafeZone) labelClass += ' safe-zone';
+        labelHtml = `<div class="${labelClass}">${esc(mon.label)}</div>`;
+    }
+
     points.push(`
       <div class="server-map-point" style="left:${pos.x}px;top:${pos.y}px;" title="${esc(mon.label)} · ${esc(mon.token)}">
         ${renderServerMapMonumentIcon(mon)}
-        <div class="server-map-label">${esc(mon.label)}</div>
+        ${labelHtml}
       </div>
     `);
   }

@@ -51,10 +51,10 @@ test('shj: default query keeps all matched grids and groups payment methods by c
     getTime: async () => ({ time: {} }),
   };
 
-  const gridA = String(markerToGrid9(markers[0], mapSize, { gridXOffset: 0, gridYOffset: 0 }) || '').split('-')[0];
-  const gridB = String(markerToGrid9(markers[1], mapSize, { gridXOffset: 0, gridYOffset: 0 }) || '').split('-')[0];
-  const gridC = String(markerToGrid9(markers[2], mapSize, { gridXOffset: 0, gridYOffset: 0 }) || '').split('-')[0];
-  const gridD = String(markerToGrid9(markers[3], mapSize, { gridXOffset: 0, gridYOffset: 0 }) || '').split('-')[0];
+  const gridA = String(markerToGrid9(markers[0], mapSize) || '').split('-')[0];
+  const gridB = String(markerToGrid9(markers[1], mapSize) || '').split('-')[0];
+  const gridC = String(markerToGrid9(markers[2], mapSize) || '').split('-')[0];
+  const gridD = String(markerToGrid9(markers[3], mapSize) || '').split('-')[0];
 
   const result = await parser._commands.shj.handler(['高级蓝图碎片'], { client });
   const lines = result.split('\n');
@@ -112,10 +112,10 @@ test('shj: default query merges same-price sulfur grids into one bracketed segme
     getTime: async () => ({ time: {} }),
   };
 
-  const gridA = String(markerToGrid9(markers[0], mapSize, { gridXOffset: 0, gridYOffset: 0 }) || '').split('-')[0];
-  const gridB = String(markerToGrid9(markers[1], mapSize, { gridXOffset: 0, gridYOffset: 0 }) || '').split('-')[0];
-  const gridC = String(markerToGrid9(markers[2], mapSize, { gridXOffset: 0, gridYOffset: 0 }) || '').split('-')[0];
-  const gridD = String(markerToGrid9(markers[3], mapSize, { gridXOffset: 0, gridYOffset: 0 }) || '').split('-')[0];
+  const gridA = String(markerToGrid9(markers[0], mapSize) || '').split('-')[0];
+  const gridB = String(markerToGrid9(markers[1], mapSize) || '').split('-')[0];
+  const gridC = String(markerToGrid9(markers[2], mapSize) || '').split('-')[0];
+  const gridD = String(markerToGrid9(markers[3], mapSize) || '').split('-')[0];
 
   const result = await parser._commands.shj.handler(['高级蓝图'], { client });
   const lines = result.split('\n');

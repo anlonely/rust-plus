@@ -34,7 +34,7 @@ const {
   stopDeepSeaCountdown,
 } = require('../utils/deep-sea');
 const { extractGameSecondsFromPayload, buildServerInfoSnapshot } = require('../utils/server-info');
-const { markerToGrid, markerToGrid9 } = require('../utils/map-grid');
+const { markerToGrid, markerToGrid9, markerToNearestEdgeDirection } = require('../utils/map-grid');
 const { normalizeSteamId64 } = require('../utils/steam-id');
 const { getDeepSeaState, saveDeepSeaState } = require('../storage/config');
 const { pickVendingWatchMatches } = require('../utils/vending-watchlist');
@@ -55,6 +55,7 @@ const MAP_ANCHOR_REFRESH_MS = Number(process.env.MAP_ANCHOR_REFRESH_MS || 15 * 6
 const MAP_ANCHOR_RETRY_MS = Number(process.env.MAP_ANCHOR_RETRY_MS || 30 * 1000);
 const HELI_CRASH_CHECK_WINDOW_MS = Number(process.env.HELI_CRASH_CHECK_WINDOW_MS || 30_000);
 const HELI_CRASH_DISTANCE = Number(process.env.HELI_CRASH_DISTANCE || 300);
+const HELI_EDGE_MARGIN_RATIO = 0.08; // 8% of map size = near edge
 const CH47_LEAVE_MISSING_TICKS = Number(process.env.CH47_LEAVE_MISSING_TICKS || 2);
 const TEAM_AFK_IDLE_MS = Number(process.env.TEAM_AFK_IDLE_MS || 15 * 60 * 1000);
 const VENDOR_MOVE_EPSILON = Number(process.env.VENDOR_MOVE_EPSILON || 3);
@@ -1120,6 +1121,16 @@ class EventEngine {
     return null;
   }
 
+  _isHeliNearMapEdge(marker = {}) {
+    const size = Number(this._mapSize);
+    if (!Number.isFinite(size) || size <= 0) return true; // 没有地图尺寸信息时默认当作离场
+    const mx = Number(marker?.x);
+    const my = Number(marker?.y);
+    if (!Number.isFinite(mx) || !Number.isFinite(my)) return true;
+    const margin = size * HELI_EDGE_MARGIN_RATIO;
+    return mx < margin || mx > size - margin || my < margin || my > size - margin;
+  }
+
   _bootstrapHeliState(markers = []) {
     const helis = this._getHeliMarkers(markers);
     this._heliLast = new Map(helis.map((m) => [String(m.id), m]));
@@ -1156,10 +1167,12 @@ class EventEngine {
       const elapsed = now - Number(rec?.disappearedAt || now);
       const nearby = this._findNearbyExplosion(rec?.lastMarker || {}, explosions);
       if (nearby) {
+        const grid = markerToGrid9(nearby.marker, this._mapSize || 0) || markerToGrid9(rec?.lastMarker || {}, this._mapSize || 0);
         const payload = {
           marker: nearby.marker,
           heliLastMarker: rec?.lastMarker || {},
           crashDistance: nearby.distance,
+          grid: String(grid || '').split('-')[0] || '',
         };
         this._fire('patrol_heli_explode', payload);
         this._fire('patrol_heli_status', { ...payload, heliStage: 'explode' });
@@ -1167,9 +1180,25 @@ class EventEngine {
         continue;
       }
       if (elapsed >= HELI_CRASH_CHECK_WINDOW_MS) {
-        const payload = { marker: rec?.lastMarker || {} };
-        this._fire('patrol_heli_leave', payload);
-        this._fire('patrol_heli_status', { ...payload, heliStage: 'leave' });
+        const lastMarker = rec?.lastMarker || {};
+        const nearEdge = this._isHeliNearMapEdge(lastMarker);
+        if (nearEdge) {
+          // 在地图边缘消失 → 离开
+          const payload = { marker: lastMarker };
+          this._fire('patrol_heli_leave', payload);
+          this._fire('patrol_heli_status', { ...payload, heliStage: 'leave' });
+        } else {
+          // 在地图中部消失但没有爆炸标记 → 推定坠落，使用最后已知位置
+          const grid = markerToGrid9(lastMarker, this._mapSize || 0);
+          const payload = {
+            marker: lastMarker,
+            heliLastMarker: lastMarker,
+            crashDistance: 0,
+            grid: String(grid || '').split('-')[0] || '',
+          };
+          this._fire('patrol_heli_explode', payload);
+          this._fire('patrol_heli_status', { ...payload, heliStage: 'explode' });
+        }
         resolved.push(id);
       }
     }

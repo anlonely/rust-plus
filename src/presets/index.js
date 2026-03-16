@@ -116,6 +116,14 @@ const EVENT_RULESET_PATROL_VENDOR = [
     _meta: { message: '{vendor_status_message}', actions: [{ type: 'team_chat' }] },
   },
   {
+    id: 'preset_vending_new',
+    name: '新售货机出现通知',
+    event: 'vending_new',
+    trigger: { cooldownMs: 10_000 },
+    enabled: true,
+    _meta: { message: '新售货机出现｜位置:{marker_grid} 出售:{vending_items}', actions: [{ type: 'team_chat' }] },
+  },
+  {
     id: 'preset_deepsea_status',
     name: '深海整合通知',
     event: 'deep_sea_status',

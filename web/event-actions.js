@@ -1,6 +1,5 @@
 const { markerToGrid9, markerToNearestEdgeDirection } = require('../src/utils/map-grid');
 
-const PERSON_GRID_X_OFFSET = -1 / 6;
 const DEFAULT_CARGO_STAGE_MESSAGES = {
   enter: '货船进入地图｜当前位置:{cargo_grid}',
   leave: '货船已离开地图｜最后位置:{cargo_grid}',
@@ -33,9 +32,7 @@ function toSafeText(value) {
 function renderMessageTemplate(template, context = {}, { mapSize = 0 } = {}) {
   const markerGridDetail = markerToGrid9(context.marker || {}, mapSize || 0);
   const markerGrid = String(markerGridDetail || '').split('-')[0] || markerGridDetail || '';
-  const memberGridDetail = markerToGrid9(context.member || {}, mapSize || 0, {
-    gridXOffset: PERSON_GRID_X_OFFSET,
-  });
+  const memberGridDetail = markerToGrid9(context.member || {}, mapSize || 0);
   const memberGrid = String(memberGridDetail || '').split('-')[0] || memberGridDetail || '';
   const oilGrid = toSafeText(String((context.grid || markerGridDetail || '')).split('-')[0] || context.grid || markerGridDetail || '');
   const oilRefMarker = (() => {

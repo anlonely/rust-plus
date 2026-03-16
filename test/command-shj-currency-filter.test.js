@@ -60,13 +60,13 @@ test('shj: currency query groups same-price grids and formats alternate payments
     getTime: async () => ({ time: {} }),
   };
 
-  const primaryGridA = String(markerToGrid9(matchedMarkerA, mapSize, { gridXOffset: 0, gridYOffset: 0 }) || '').split('-')[0];
-  const primaryGridB = String(markerToGrid9(matchedMarkerB, mapSize, { gridXOffset: 0, gridYOffset: 0 }) || '').split('-')[0];
-  const primaryGridC = String(markerToGrid9(matchedMarkerC, mapSize, { gridXOffset: 0, gridYOffset: 0 }) || '').split('-')[0];
-  const primaryGridD = String(markerToGrid9(matchedMarkerD, mapSize, { gridXOffset: 0, gridYOffset: 0 }) || '').split('-')[0];
+  const primaryGridA = String(markerToGrid9(matchedMarkerA, mapSize) || '').split('-')[0];
+  const primaryGridB = String(markerToGrid9(matchedMarkerB, mapSize) || '').split('-')[0];
+  const primaryGridC = String(markerToGrid9(matchedMarkerC, mapSize) || '').split('-')[0];
+  const primaryGridD = String(markerToGrid9(matchedMarkerD, mapSize) || '').split('-')[0];
   const altGrid1 = primaryGridA;
   const altGrid2 = primaryGridC;
-  const altGrid3 = String(markerToGrid9(altMarker, mapSize, { gridXOffset: 0, gridYOffset: 0 }) || '').split('-')[0];
+  const altGrid3 = String(markerToGrid9(altMarker, mapSize) || '').split('-')[0];
 
   const result = await parser._commands.shj.handler(['itemId:1001/itemId:2001'], { client });
   const lines = result.split('\n');
@@ -114,8 +114,8 @@ test('shj: filters sold-out orders from all query modes', async () => {
     getTime: async () => ({ time: {} }),
   };
 
-  const activeGrid = String(markerToGrid9(activeMarker, mapSize, { gridXOffset: 0, gridYOffset: 0 }) || '').split('-')[0];
-  const soldOutGrid = String(markerToGrid9(soldOutOrderMarker, mapSize, { gridXOffset: 0, gridYOffset: 0 }) || '').split('-')[0];
+  const activeGrid = String(markerToGrid9(activeMarker, mapSize) || '').split('-')[0];
+  const soldOutGrid = String(markerToGrid9(soldOutOrderMarker, mapSize) || '').split('-')[0];
 
   const result = await parser._commands.shj.handler(['itemId:1001/itemId:2001'], { client });
 

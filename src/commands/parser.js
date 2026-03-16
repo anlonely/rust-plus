@@ -12,10 +12,6 @@ const { normalizeSteamId64 } = require('../utils/steam-id');
 const { matchItems, getItemById } = require('../utils/item-catalog');
 const { matchCctvEntries } = require('../utils/cctv-codes');
 const RUST_TEAM_MESSAGE_MAX_CHARS = Math.max(32, parseInt(process.env.RUST_TEAM_MESSAGE_MAX_CHARS || '128', 10) || 128);
-const SHJ_GRID_X_OFFSET_RAW = Number(process.env.RUST_SHJ_GRID_X_OFFSET);
-const SHJ_GRID_X_OFFSET = Number.isFinite(SHJ_GRID_X_OFFSET_RAW) ? SHJ_GRID_X_OFFSET_RAW : 0;
-const SHJ_GRID_Y_OFFSET_RAW = Number(process.env.RUST_SHJ_GRID_Y_OFFSET);
-const SHJ_GRID_Y_OFFSET = Number.isFinite(SHJ_GRID_Y_OFFSET_RAW) ? SHJ_GRID_Y_OFFSET_RAW : 0;
 
 class CommandParser {
   constructor({
@@ -243,25 +239,25 @@ class CommandParser {
       : (snap.remainMinutes * 60 + snap.remainSeconds);
     const dayRemainText = formatMinutesSeconds(dayRemainSec);
     const phaseTarget = snap.phaseTargetShort || (snap.phaseTarget === '天亮' ? '天亮' : '天黑');
+    const phaseStr = snap.phase || '白天';
+    const targetStr = phaseTarget || '天黑';
     if (status.isOpen) {
-      const remain = formatDurationFixedHms(status.countdownSeconds ?? status.realSecondsUntilNext ?? 0);
-      return `深海状态:开启. 距离关闭还有约${remain}（深海时间）. 当前${snap.phase}.距离${phaseTarget}:${dayRemainText}`;
+      return `深海状态 | 开启 | ｜${phaseStr}｜ 距离${targetStr}:${dayRemainText}`;
     }
-    if (!Number.isFinite(status.realSecondsUntilNext) || status.realSecondsUntilNext == null) {
-      return '深海状态:关闭. 未获取到上次开启时间. 请等待深海开启提醒';
-    }
-    const nextText = formatDurationFixedHms(status.realSecondsUntilNext);
-    return `深海状态:关闭. 距离开启还有约${nextText}（真实时间）.`;
+    return `深海状态 | 关闭 | ｜${phaseStr}｜ 距离${targetStr}:${dayRemainText}`;
   }
 
   async _reply(message) {
     if (!this._client?.connected) return;
     const lines = String(message).split('\n');
-    for (const line of lines) {
-      const clean = this._stripEmoji(line).trim();
+    for (let i = 0; i < lines.length; i++) {
+      const clean = this._stripEmoji(lines[i]).trim();
       if (clean) {
         try { await this._client.sendTeamMessage(clean); }
         catch (e) { logger.error('[CMD] 发送失败: ' + e.message); }
+        if (i < lines.length - 1) {
+          await new Promise((r) => setTimeout(r, 1500));
+        }
       }
     }
   }
@@ -414,12 +410,16 @@ class CommandParser {
         return `[${id}${location ? ` - ${location}` : ''}]`;
       })
       .filter(Boolean);
-    return this._chunkTokensByLine(
-      tokens,
-      `${label}监控代码：`,
-      `${label}监控代码(续)：`,
-      '  ',
-    );
+    const lines = [];
+    for (let i = 0; i < tokens.length; i += 2) {
+      const pair = tokens.slice(i, i + 2).join('  ');
+      if (i === 0) {
+        lines.push(`${label}监控代码：${pair}`);
+      } else {
+        lines.push(pair);
+      }
+    }
+    return lines;
   }
 
   _normalizeSwitchAction(value) {
@@ -643,10 +643,7 @@ class CommandParser {
   }
 
   _markerToQueryGrid9(marker, mapSize) {
-    return markerToGrid9(marker, mapSize, {
-      gridXOffset: SHJ_GRID_X_OFFSET,
-      gridYOffset: SHJ_GRID_Y_OFFSET,
-    });
+    return markerToGrid9(marker, mapSize);
   }
 
   _markerToQueryGridBase(marker, mapSize) {
@@ -994,10 +991,7 @@ class CommandParser {
           markerMatched = true;
           soldItemIds.add(String(soldId));
           if (targetCurrencyIdSet) {
-            const grid = String(markerToGrid9(marker, mapSize, {
-              gridXOffset: SHJ_GRID_X_OFFSET,
-              gridYOffset: SHJ_GRID_Y_OFFSET,
-            }) || '').split('-')[0] || '-';
+            const grid = String(markerToGrid9(marker, mapSize) || '').split('-')[0] || '-';
             if (grid === '-') continue;
             const offer = {
               grid,
@@ -1021,10 +1015,7 @@ class CommandParser {
               }
             }
           } else {
-            const grid = String(markerToGrid9(marker, mapSize, {
-              gridXOffset: SHJ_GRID_X_OFFSET,
-              gridYOffset: SHJ_GRID_Y_OFFSET,
-            }) || '').split('-')[0] || '-';
+            const grid = String(markerToGrid9(marker, mapSize) || '').split('-')[0] || '-';
             if (grid === '-') continue;
             const offer = {
               grid,
@@ -1048,10 +1039,7 @@ class CommandParser {
           }
         }
         if (!markerMatched) continue;
-        const grid = String(markerToGrid9(marker, mapSize, {
-          gridXOffset: SHJ_GRID_X_OFFSET,
-          gridYOffset: SHJ_GRID_Y_OFFSET,
-        }) || '').split('-')[0] || '-';
+        const grid = String(markerToGrid9(marker, mapSize) || '').split('-')[0] || '-';
         if (grid === '-' || seen.has(grid)) continue;
         seen.add(grid);
         grids.push(grid);
@@ -1132,7 +1120,10 @@ class CommandParser {
           const topOffers = pricedOffers.slice(0, 3);
           const tags = topOffers.map((offer) => offer.grid);
           const detailGroups = groupOfferDetails(topOffers);
-          lines.push(`[${tags.join(' - ')}]正在出售[${sellKeyword}/${currencyKeyword}]`);
+          const uniqueCurrencyNames = [...new Set(topOffers.map(o => this._getVendingItemLabel(o.currencyId, { isBlueprint: o.currencyIsBlueprint })))];
+          const sellNameStr = uniqueNames.length ? uniqueNames.join('/') : sellKeyword;
+          const currNameStr = uniqueCurrencyNames.length ? uniqueCurrencyNames.join('/') : currencyKeyword;
+          lines.push(`[${tags.join(' - ')}]正在出售[${sellNameStr}/${currNameStr}]`);
           lines.push(detailGroups.map((group) => {
             const gridText = group.grids.length > 1 ? `[${group.grids.join(' - ')}]` : `[${group.grids[0]}]`;
             return `${gridText}需要[${group.currencyLabel}]*${group.costPerItem}`;
@@ -1254,12 +1245,10 @@ class CommandParser {
         jk: '监控代码查询 <地点关键词> 例: jk 强盗',
         help: '显示帮助',
       };
-      return ['可用指令',
-        ...Object.entries(this._commands)
+      const cmds = Object.entries(this._commands)
         .filter(([k, v]) => k !== 'dz' && String(v?.type || '') !== 'change_leader')
-        .map(([k, v]) => `- ${k}: ${helpOverrides[k] || v.description}${v.permission === 'leader' ? '（仅队长）' : ''}`),
-        '文档: GUI/Web -> 帮助文档']
-        .join('\n');
+        .map(([k, v]) => `${k}: ${helpOverrides[k] || v.description}${v.permission === 'leader' ? '（仅队长）' : ''}`);
+      return cmds.join('\n');
     }, { description: '帮助' });
   }
 

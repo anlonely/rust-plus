@@ -23,7 +23,7 @@ test('wz: uses the same base-grid offsets as shj', async () => {
 
   const text = await parser._buildHeliStatusText(client);
 
-  assert.equal(text, '武装直升机巡逻中｜网格:B1');
+  assert.equal(text, '武装直升机巡逻中｜网格:B2');
 });
 
 test('hc: uses the same base-grid offsets as shj', async () => {
@@ -35,5 +35,5 @@ test('hc: uses the same base-grid offsets as shj', async () => {
 
   const text = await parser._buildCargoStatusText(client);
 
-  assert.equal(text, '货船航行中｜当前位置:B1');
+  assert.equal(text, '货船航行中｜当前位置:B2');
 });
