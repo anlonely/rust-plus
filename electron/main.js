@@ -77,7 +77,7 @@ let lastTeamPollAt = 0;
 let teamSyncStatusTimer = null;
 let activeServerId = null;
 let pairingNoNotificationTimer = null;
-const VERSION = '1.0.0';
+const VERSION = '1.2.0';
 const LEGACY_CARGO_STAGE_BY_EVENT = {
   cargo_ship_enter: 'enter',
   cargo_ship_leave: 'leave',
@@ -307,14 +307,14 @@ function createTray() {
 
     tray = new Tray(img);
     tray.setContextMenu(Menu.buildFromTemplate([
-      { label: 'Rust 工具箱', enabled: false },
+      { label: '安静的Rust工具箱', enabled: false },
       { type: 'separator' },
       { label: '显示主窗口', click: () => mainWindow?.show() },
       { label: '重新连接', click: () => autoConnect() },
       { type: 'separator' },
       { label: '退出', click: () => app.quit() },
     ]));
-    tray.setToolTip('Rust 工具箱');
+    tray.setToolTip('安静的Rust工具箱');
     tray.on('double-click', () => mainWindow?.show());
   } catch (e) {
     logger.debug('[Main] 托盘图标未找到: ' + e.message);
@@ -989,18 +989,6 @@ function buildSystemEventTemplates(serverId) {
       _meta: {
         ...chatMeta('{oil_status_message}'),
         oilMessages: { ...DEFAULT_OIL_STAGE_MESSAGES },
-      },
-    },
-    {
-      id: 'player_status_notify',
-      name: '队友状态整合事件',
-      event: 'player_status',
-      trigger: { cooldownMs: globalCooldownMs },
-      enabled: false,
-      serverId,
-      _meta: {
-        ...chatMeta('{player_status_message}'),
-        playerStatusMessages: { ...DEFAULT_PLAYER_STATUS_MESSAGES },
       },
     },
     {
@@ -2550,6 +2538,9 @@ function setupIPC() {
 
   logger.info('[Main] IPC 处理器已注册');
 }
+
+// 提高 GPU 可用内存上限，防止地图缩放时 tile_manager 报内存超限
+app.commandLine.appendSwitch('--force-gpu-mem-available-mb', '512');
 
 app.whenReady().then(async () => {
   await initDbs();

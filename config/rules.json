@@ -57,8 +57,8 @@
         "doNotify": false,
         "doChat": true
       },
-      "updatedAt": "2026-03-16T12:28:33.221Z",
-      "createdAt": "2026-03-16T12:28:33.221Z"
+      "updatedAt": "2026-03-17T03:25:09.780Z",
+      "createdAt": "2026-03-17T03:25:09.780Z"
     },
     {
       "id": "preset_player_online",
@@ -79,8 +79,8 @@
         "doNotify": false,
         "doChat": true
       },
-      "updatedAt": "2026-03-16T12:28:33.221Z",
-      "createdAt": "2026-03-16T12:28:33.221Z"
+      "updatedAt": "2026-03-17T03:25:09.781Z",
+      "createdAt": "2026-03-17T03:25:09.781Z"
     },
     {
       "id": "preset_player_offline",
@@ -101,8 +101,8 @@
         "doNotify": false,
         "doChat": true
       },
-      "updatedAt": "2026-03-16T12:28:33.222Z",
-      "createdAt": "2026-03-16T12:28:33.222Z"
+      "updatedAt": "2026-03-17T03:25:09.782Z",
+      "createdAt": "2026-03-17T03:25:09.782Z"
     },
     {
       "id": "preset_player_dead",
@@ -123,8 +123,8 @@
         "doNotify": false,
         "doChat": true
       },
-      "updatedAt": "2026-03-16T12:28:33.223Z",
-      "createdAt": "2026-03-16T12:28:33.223Z"
+      "updatedAt": "2026-03-17T03:25:09.783Z",
+      "createdAt": "2026-03-17T03:25:09.783Z"
     },
     {
       "id": "preset_player_respawn",
@@ -145,8 +145,8 @@
         "doNotify": false,
         "doChat": true
       },
-      "updatedAt": "2026-03-16T12:28:33.223Z",
-      "createdAt": "2026-03-16T12:28:33.223Z"
+      "updatedAt": "2026-03-17T03:25:09.784Z",
+      "createdAt": "2026-03-17T03:25:09.784Z"
     },
     {
       "id": "preset_player_afk",
@@ -168,8 +168,8 @@
         "doNotify": false,
         "doChat": true
       },
-      "updatedAt": "2026-03-16T12:28:33.224Z",
-      "createdAt": "2026-03-16T12:28:33.224Z"
+      "updatedAt": "2026-03-17T03:25:09.785Z",
+      "createdAt": "2026-03-17T03:25:09.785Z"
     },
     {
       "id": "preset_player_afk_recover",
@@ -190,8 +190,8 @@
         "doNotify": false,
         "doChat": true
       },
-      "updatedAt": "2026-03-16T12:28:33.224Z",
-      "createdAt": "2026-03-16T12:28:33.224Z"
+      "updatedAt": "2026-03-17T03:25:09.785Z",
+      "createdAt": "2026-03-17T03:25:09.785Z"
     },
     {
       "id": "preset_heli_status",
@@ -222,8 +222,8 @@
           "explode": "武直已被击落｜坠落位置:{marker_grid}"
         }
       },
-      "updatedAt": "2026-03-16T13:52:28.509Z",
-      "createdAt": "2026-03-16T12:28:33.225Z"
+      "updatedAt": "2026-03-17T04:29:25.743Z",
+      "createdAt": "2026-03-17T03:25:09.786Z"
     },
     {
       "id": "preset_ch47_status",
@@ -252,8 +252,8 @@
           "leave": "军用运输直升机已离开地图｜最后位置:{marker_grid}"
         }
       },
-      "updatedAt": "2026-03-16T13:52:28.508Z",
-      "createdAt": "2026-03-16T12:28:33.226Z"
+      "updatedAt": "2026-03-17T04:29:25.743Z",
+      "createdAt": "2026-03-17T03:25:09.787Z"
     },
     {
       "id": "preset_cargo_status",
@@ -284,8 +284,8 @@
           "dock": "货船已停靠 ｜{cargo_harbor} [{cargo_harbor_grid}]"
         }
       },
-      "updatedAt": "2026-03-16T13:52:28.506Z",
-      "createdAt": "2026-03-16T12:28:33.227Z"
+      "updatedAt": "2026-03-17T04:29:25.740Z",
+      "createdAt": "2026-03-17T03:25:09.788Z"
     },
     {
       "id": "preset_oil_status",
@@ -316,8 +316,8 @@
           "small_unlock": "小石油箱子已解锁｜方向：{oil_direction}"
         }
       },
-      "updatedAt": "2026-03-16T13:52:28.507Z",
-      "createdAt": "2026-03-16T12:28:33.228Z"
+      "updatedAt": "2026-03-17T04:29:25.741Z",
+      "createdAt": "2026-03-17T03:25:09.788Z"
     },
     {
       "id": "preset_vendor_status",
@@ -348,8 +348,8 @@
           "leave": "流浪商人离开地图｜最后位置:{marker_grid}"
         }
       },
-      "updatedAt": "2026-03-16T13:52:28.510Z",
-      "createdAt": "2026-03-16T12:28:33.228Z"
+      "updatedAt": "2026-03-17T04:29:25.744Z",
+      "createdAt": "2026-03-17T03:25:09.789Z"
     },
     {
       "id": "preset_vending_new",
@@ -406,8 +406,8 @@
         "doNotify": false,
         "doChat": true
       },
-      "updatedAt": "2026-03-16T13:52:28.504Z",
-      "createdAt": "2026-03-16T12:28:33.229Z"
+      "updatedAt": "2026-03-17T04:29:25.739Z",
+      "createdAt": "2026-03-17T03:25:09.790Z"
     },
     {
       "id": "preset_deepsea_status",
@@ -434,8 +434,8 @@
           "close": "深海已关闭"
         }
       },
-      "updatedAt": "2026-03-16T13:52:28.511Z",
-      "createdAt": "2026-03-16T12:28:33.229Z"
+      "updatedAt": "2026-03-17T04:29:25.745Z",
+      "createdAt": "2026-03-17T03:25:09.791Z"
     },
     {
       "id": "preset_hourly",
@@ -456,8 +456,8 @@
         "doNotify": false,
         "doChat": true
       },
-      "updatedAt": "2026-03-16T12:28:33.230Z",
-      "createdAt": "2026-03-16T12:28:33.230Z"
+      "updatedAt": "2026-03-17T03:25:09.792Z",
+      "createdAt": "2026-03-17T03:25:09.792Z"
     },
     {
       "id": "preset_day_phase_notice",
@@ -478,33 +478,8 @@
         "doNotify": false,
         "doChat": true
       },
-      "updatedAt": "2026-03-16T12:28:33.230Z",
-      "createdAt": "2026-03-16T12:28:33.230Z"
-    },
-    {
-      "id": "player_status_notify",
-      "name": "队友状态整合事件",
-      "event": "player_status",
-      "serverId": "server_1773632567536",
-      "trigger": {
-        "cooldownMs": 3000
-      },
-      "enabled": true,
-      "_meta": {
-        "doNotify": false,
-        "doChat": true,
-        "message": "{player_status_message}",
-        "playerStatusMessages": {
-          "online": "{member}已上线｜上线位置:{member_grid}",
-          "offline": "{member}已离线｜离线位置:{member_grid}",
-          "dead": "{member}已死亡｜死亡位置:{member_grid}",
-          "respawn": "{member}已重生｜当前位置:{member_grid}",
-          "afk": "{member}已挂机{afk_duration}｜当前位置:{member_grid}",
-          "afk_recover": "{member}已恢复活动｜当前位置:{member_grid}"
-        }
-      },
-      "updatedAt": "2026-03-16T13:52:28.512Z",
-      "createdAt": "2026-03-16T12:46:32.010Z"
+      "updatedAt": "2026-03-17T03:25:09.793Z",
+      "createdAt": "2026-03-17T03:25:09.793Z"
     }
   ],
   "commandRules": [
@@ -977,8 +952,8 @@
       },
       "serverId": "server_1773632567536",
       "deleted": false,
-      "updatedAt": "2026-03-16T12:28:38.820Z",
-      "createdAt": "2026-03-16T12:28:38.820Z"
+      "updatedAt": "2026-03-17T03:03:51.164Z",
+      "createdAt": "2026-03-17T03:03:51.164Z"
     },
     {
       "id": "fk",
@@ -1002,8 +977,8 @@
       },
       "serverId": "server_1773632567536",
       "deleted": false,
-      "updatedAt": "2026-03-16T12:28:38.821Z",
-      "createdAt": "2026-03-16T12:28:38.821Z"
+      "updatedAt": "2026-03-17T03:03:51.165Z",
+      "createdAt": "2026-03-17T03:03:51.165Z"
     },
     {
       "id": "hc",
@@ -1026,8 +1001,8 @@
       },
       "serverId": "server_1773632567536",
       "deleted": false,
-      "updatedAt": "2026-03-16T12:28:38.821Z",
-      "createdAt": "2026-03-16T12:28:38.821Z"
+      "updatedAt": "2026-03-17T03:03:51.165Z",
+      "createdAt": "2026-03-17T03:03:51.165Z"
     },
     {
       "id": "wz",
@@ -1050,8 +1025,8 @@
       },
       "serverId": "server_1773632567536",
       "deleted": false,
-      "updatedAt": "2026-03-16T12:28:38.822Z",
-      "createdAt": "2026-03-16T12:28:38.822Z"
+      "updatedAt": "2026-03-17T03:03:51.166Z",
+      "createdAt": "2026-03-17T03:03:51.166Z"
     },
     {
       "id": "sh",
@@ -1074,8 +1049,8 @@
       },
       "serverId": "server_1773632567536",
       "deleted": false,
-      "updatedAt": "2026-03-16T12:28:38.823Z",
-      "createdAt": "2026-03-16T12:28:38.823Z"
+      "updatedAt": "2026-03-17T03:03:51.167Z",
+      "createdAt": "2026-03-17T03:03:51.167Z"
     },
     {
       "id": "fy",
@@ -1098,8 +1073,8 @@
       },
       "serverId": "server_1773632567536",
       "deleted": false,
-      "updatedAt": "2026-03-16T12:28:38.824Z",
-      "createdAt": "2026-03-16T12:28:38.824Z"
+      "updatedAt": "2026-03-17T03:03:51.167Z",
+      "createdAt": "2026-03-17T03:03:51.167Z"
     },
     {
       "id": "ai",
@@ -1122,8 +1097,8 @@
       },
       "serverId": "server_1773632567536",
       "deleted": false,
-      "updatedAt": "2026-03-16T12:28:38.825Z",
-      "createdAt": "2026-03-16T12:28:38.825Z"
+      "updatedAt": "2026-03-17T03:03:51.168Z",
+      "createdAt": "2026-03-17T03:03:51.168Z"
     },
     {
       "id": "shj",
@@ -1146,8 +1121,8 @@
       },
       "serverId": "server_1773632567536",
       "deleted": false,
-      "updatedAt": "2026-03-16T12:28:38.826Z",
-      "createdAt": "2026-03-16T12:28:38.826Z"
+      "updatedAt": "2026-03-17T03:03:51.169Z",
+      "createdAt": "2026-03-17T03:03:51.169Z"
     },
     {
       "id": "dz",
@@ -1170,8 +1145,8 @@
       },
       "serverId": "server_1773632567536",
       "deleted": false,
-      "updatedAt": "2026-03-16T12:28:38.827Z",
-      "createdAt": "2026-03-16T12:28:38.827Z"
+      "updatedAt": "2026-03-17T03:03:51.170Z",
+      "createdAt": "2026-03-17T03:03:51.170Z"
     },
     {
       "id": "jk",
@@ -1194,8 +1169,8 @@
       },
       "serverId": "server_1773632567536",
       "deleted": false,
-      "updatedAt": "2026-03-16T12:28:38.828Z",
-      "createdAt": "2026-03-16T12:28:38.828Z"
+      "updatedAt": "2026-03-17T03:03:51.170Z",
+      "createdAt": "2026-03-17T03:03:51.170Z"
     },
     {
       "id": "help",
@@ -1218,8 +1193,8 @@
       },
       "serverId": "server_1773632567536",
       "deleted": false,
-      "updatedAt": "2026-03-16T12:28:38.828Z",
-      "createdAt": "2026-03-16T12:28:38.828Z"
+      "updatedAt": "2026-03-17T03:03:51.171Z",
+      "createdAt": "2026-03-17T03:03:51.171Z"
     }
   ],
   "callGroups": [
@@ -1270,12 +1245,12 @@
   "appState": {
     "lastServerId": "server_1773632567536",
     "deepSea": {
-      "lastOpenAt": "2026-03-16T10:55:16.481Z",
-      "lastCloseAt": "2026-03-16T06:42:59.353Z",
+      "lastOpenAt": "2026-03-17T03:03:19.159Z",
+      "lastCloseAt": "2026-03-16T13:55:15.545Z",
       "lastDirection": "南",
-      "lastEntryGrid": "A12",
-      "lastEntryCoord": "x=0, y=2691",
-      "updatedAt": "2026-03-16T13:52:39.496Z"
+      "lastEntryGrid": "A13",
+      "lastEntryCoord": "x=0, y=2507",
+      "updatedAt": "2026-03-17T04:03:50.170Z"
     }
   }
 }

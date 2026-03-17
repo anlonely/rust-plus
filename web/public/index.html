@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Rust 工具箱</title>
+<title>安静的Rust工具箱</title>
 <style>
 /* ═══════════════════════════════════════════════
    全局 & 变量
@@ -28,6 +28,754 @@
   --radius:    14px;
   --sidebar-w: 210px;
 }
+
+/* ── 极简白 (Light) 主题 ─────────────────────── */
+[data-theme="light"] {
+  --bg:        #f5f6fa;
+  --bg2:       #ffffff;
+  --bg3:       #eef0f6;
+  --bg4:       #dfe3ed;
+  --border:    #d0d5e0;
+  --blue:      #4a5cdb;
+  --blue-dim:  #dde1ff;
+  --green:     #1ba854;
+  --green-dim: #d4f5e0;
+  --red:       #e5395d;
+  --red-dim:   #fde0e8;
+  --orange:    #d98a12;
+  --purple:    #8b5cf6;
+  --text:      #1a1d2e;
+  --text2:     #5a6178;
+  --text3:     #8c95ab;
+  --map-bg:    #e8eaf2;
+}
+[data-theme="light"] body {
+  background: #f0f2f8 !important;
+}
+[data-theme="light"] body::before,
+[data-theme="light"] body::after {
+  display: none !important;
+}
+[data-theme="light"] #titlebar {
+  background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(245,246,250,.96)) !important;
+  border-bottom-color: var(--border) !important;
+}
+[data-theme="light"] #titlebar .brand span { color: #2a2f4a; }
+[data-theme="light"] #titlebar .brand-center span { color: #2a2f4a; }
+[data-theme="light"] #titlebar .win-btn { color: var(--text2); }
+[data-theme="light"] #titlebar .win-btn:hover { background: rgba(0,0,0,.06); }
+[data-theme="light"] #sidebar {
+  background: rgba(255,255,255,.92) !important;
+  border-right-color: var(--border) !important;
+}
+[data-theme="light"] .nav-item {
+  background: rgba(0,0,0,.02);
+  border-color: transparent;
+  color: var(--text2);
+}
+[data-theme="light"] .nav-item:hover {
+  background: rgba(74,92,219,.06);
+  border-color: rgba(74,92,219,.18);
+  color: var(--text);
+}
+[data-theme="light"] .nav-item.active {
+  color: #fff;
+  background: linear-gradient(120deg, #4a5cdb, #7c5ce6) !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 14px rgba(74,92,219,.3);
+}
+[data-theme="light"] #main {
+  background: transparent !important;
+}
+[data-theme="light"] .card {
+  background: #fff !important;
+  border-color: var(--border) !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06) !important;
+}
+[data-theme="light"] .status-card {
+  background: #fff !important;
+  border-color: var(--border) !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06) !important;
+}
+[data-theme="light"] .quick-btn {
+  background: #fff !important;
+  border-color: var(--border) !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,.04) !important;
+}
+[data-theme="light"] .quick-btn:hover {
+  background: linear-gradient(120deg, rgba(74,92,219,.06), rgba(139,92,246,.06)) !important;
+  border-color: rgba(74,92,219,.3) !important;
+}
+[data-theme="light"] .list-row {
+  background: #fff;
+  border-color: var(--border);
+}
+[data-theme="light"] .list-row:hover {
+  background: #f8f9ff;
+  border-color: rgba(74,92,219,.3);
+}
+[data-theme="light"] .rule-card {
+  background: #fff;
+  border-color: var(--border);
+}
+[data-theme="light"] .rule-card:hover {
+  background: #f8f9ff;
+  border-color: rgba(74,92,219,.3);
+}
+[data-theme="light"] .call-group-card {
+  background: #fff;
+  border-color: var(--border);
+}
+[data-theme="light"] .input {
+  background: #fff;
+  border-color: var(--border);
+}
+[data-theme="light"] .input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(74,92,219,.12);
+}
+[data-theme="light"] .form-row select {
+  background: #fff;
+  border-color: var(--border);
+  color: var(--text);
+}
+[data-theme="light"] .modal-overlay {
+  background: rgba(0,0,0,.32);
+}
+[data-theme="light"] .modal {
+  background: #fff !important;
+  border-color: var(--border) !important;
+  box-shadow: 0 16px 48px rgba(0,0,0,.12) !important;
+}
+[data-theme="light"] .toast {
+  background: #fff;
+  border-color: var(--border);
+  box-shadow: 0 4px 20px rgba(0,0,0,.1);
+}
+[data-theme="light"] .user-card {
+  background: rgba(0,0,0,.03);
+  border-color: var(--border);
+}
+[data-theme="light"] .user-card:hover {
+  background: rgba(74,92,219,.06);
+  border-color: rgba(74,92,219,.25);
+}
+[data-theme="light"] .sidebar-bottom {
+  border-top-color: var(--border);
+  background: linear-gradient(180deg, transparent, rgba(255,255,255,.95) 22%);
+}
+[data-theme="light"] .member-chip {
+  background: rgba(74,92,219,.06);
+  border-color: rgba(74,92,219,.18);
+}
+[data-theme="light"] .tag-blue   { background: rgba(74,92,219,.1); color: #3a4cc0; border-color: rgba(74,92,219,.25); }
+[data-theme="light"] .tag-green  { background: rgba(27,168,84,.1); color: #158a45; border-color: rgba(27,168,84,.25); }
+[data-theme="light"] .tag-red    { background: rgba(229,57,93,.1); color: #c72e4e; border-color: rgba(229,57,93,.25); }
+[data-theme="light"] .tag-purple { background: rgba(139,92,246,.1); color: #6d3fd4; border-color: rgba(139,92,246,.25); }
+[data-theme="light"] .tag-gray   { background: rgba(0,0,0,.04); color: var(--text2); border-color: rgba(0,0,0,.1); }
+[data-theme="light"] .tag-orange { background: rgba(217,138,18,.1); color: #b37310; border-color: rgba(217,138,18,.25); }
+[data-theme="light"] .btn-primary::after {
+  background: #fff !important;
+}
+[data-theme="light"] .btn-primary:hover::after {
+  background: #f0f0ff !important;
+}
+[data-theme="light"] .btn-primary { color: #2a2f6a; }
+[data-theme="light"] .btn-ghost {
+  background: #fff;
+  border-color: var(--border);
+  color: var(--text2);
+}
+[data-theme="light"] .btn-ghost:hover {
+  background: #f4f5ff;
+  border-color: rgba(74,92,219,.3);
+  color: var(--text);
+}
+[data-theme="light"] .btn-danger {
+  background: rgba(229,57,93,.08);
+  color: #c72e4e;
+  border-color: rgba(229,57,93,.3);
+}
+[data-theme="light"] .btn-danger:hover { background: var(--red); color: #fff; }
+[data-theme="light"] .btn-green {
+  background: rgba(27,168,84,.08);
+  color: #158a45;
+  border-color: rgba(27,168,84,.3);
+}
+[data-theme="light"] .btn-green:hover { background: var(--green); color: #fff; }
+[data-theme="light"] #log-panel {
+  background: #fff;
+  border-color: var(--border);
+}
+[data-theme="light"] ::-webkit-scrollbar-thumb { background: #c8cdd8; }
+/* ── 极简白 流光 & 玻璃霓虹增强 ─────────────── */
+[data-theme="light"] body {
+  background:
+    radial-gradient(ellipse 60% 50% at 10% 0%, rgba(74,92,219,.10), transparent 60%),
+    radial-gradient(ellipse 50% 45% at 90% 5%, rgba(139,92,246,.09), transparent 55%),
+    radial-gradient(ellipse 40% 35% at 50% 100%, rgba(236,72,153,.07), transparent 50%),
+    #f0f2f8 !important;
+}
+[data-theme="light"] #titlebar {
+  background: linear-gradient(90deg,
+    rgba(255,255,255,.96) 0%,
+    rgba(240,242,255,.96) 40%,
+    rgba(248,246,255,.96) 70%,
+    rgba(255,255,255,.96) 100%) !important;
+  border-bottom: 1px solid rgba(74,92,219,.15) !important;
+  box-shadow: 0 1px 12px rgba(74,92,219,.06);
+}
+[data-theme="light"] #sidebar {
+  background: rgba(255,255,255,.88) !important;
+  border-right: 1px solid rgba(74,92,219,.12) !important;
+  box-shadow: 1px 0 20px rgba(74,92,219,.04);
+  backdrop-filter: blur(16px) saturate(1.6);
+}
+[data-theme="light"] .card {
+  background: rgba(255,255,255,.82) !important;
+  border: 1px solid rgba(74,92,219,.12) !important;
+  box-shadow: 0 1px 3px rgba(74,92,219,.05), 0 4px 16px rgba(139,92,246,.04), inset 0 1px 0 rgba(255,255,255,.9) !important;
+  backdrop-filter: blur(12px) saturate(1.4);
+}
+[data-theme="light"] .status-card {
+  background: rgba(255,255,255,.78) !important;
+  border: 1px solid rgba(74,92,219,.10) !important;
+  box-shadow: 0 2px 8px rgba(74,92,219,.05), inset 0 1px 0 rgba(255,255,255,.85) !important;
+  backdrop-filter: blur(10px) saturate(1.3);
+  position: relative;
+  overflow: hidden;
+}
+[data-theme="light"] .status-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -75%;
+  width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(74,92,219,.06), rgba(139,92,246,.06), transparent);
+  animation: light-shimmer 4s ease-in-out infinite;
+}
+@keyframes light-shimmer {
+  0%   { left: -75%; }
+  100% { left: 125%; }
+}
+[data-theme="light"] .nav-item.active {
+  color: #fff;
+  background: linear-gradient(120deg, #4a5cdb, #7c5ce6, #ec4899) !important;
+  background-size: 200% 200%;
+  animation: light-nav-gradient 3s ease infinite;
+  border-color: transparent !important;
+  box-shadow: 0 4px 18px rgba(74,92,219,.28), 0 0 0 1px rgba(139,92,246,.15);
+}
+@keyframes light-nav-gradient {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+[data-theme="light"] .btn-primary::before {
+  background: conic-gradient(from 0deg, #4a5cdb 0deg, #ec4899 120deg, #8b5cf6 240deg, #4a5cdb 360deg);
+}
+[data-theme="light"] .btn-primary::after {
+  background: #fff !important;
+}
+[data-theme="light"] .btn-primary:hover::after {
+  background: #f5f0ff !important;
+}
+[data-theme="light"] .btn-primary { color: #3a2f7a; }
+[data-theme="light"] .quick-btn {
+  background: rgba(255,255,255,.82) !important;
+  border: 1px solid rgba(74,92,219,.12) !important;
+  box-shadow: 0 1px 6px rgba(74,92,219,.06), inset 0 1px 0 rgba(255,255,255,.85) !important;
+  backdrop-filter: blur(8px);
+  position: relative;
+  overflow: hidden;
+}
+[data-theme="light"] .quick-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(74,92,219,.0), rgba(139,92,246,.03), rgba(236,72,153,.03), transparent);
+  opacity: 0;
+  transition: opacity .25s ease;
+}
+[data-theme="light"] .quick-btn:hover::before { opacity: 1; }
+[data-theme="light"] .quick-btn:hover {
+  border-color: rgba(74,92,219,.28) !important;
+  box-shadow: 0 4px 16px rgba(74,92,219,.08), 0 0 0 1px rgba(139,92,246,.08) !important;
+  transform: translateY(-2px);
+}
+[data-theme="light"] .toast {
+  background: rgba(255,255,255,.92);
+  border: 1px solid rgba(74,92,219,.12);
+  box-shadow: 0 4px 24px rgba(74,92,219,.08);
+  backdrop-filter: blur(12px);
+}
+[data-theme="light"] .modal {
+  background: rgba(255,255,255,.95) !important;
+  border: 1px solid rgba(74,92,219,.12) !important;
+  box-shadow: 0 20px 60px rgba(74,92,219,.10), inset 0 1px 0 rgba(255,255,255,.9) !important;
+  backdrop-filter: blur(16px);
+}
+[data-theme="light"] #server-map-wrap {
+  box-shadow: inset 0 0 20px rgba(74,92,219,.04);
+}
+[data-theme="light"] .server-map-grid-surface {
+  background-image: linear-gradient(to right, rgba(74,92,219,.12) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(74,92,219,.12) 1px, transparent 1px) !important;
+}
+[data-theme="light"] .server-map-grid-cell-label {
+  color: rgba(74,92,219,.35) !important;
+}
+
+/* ── 赛博朋克 (Cyberpunk) 主题 ────────────────── */
+[data-theme="cyberpunk"] {
+  --bg:        #0a0014;
+  --bg2:       #120024;
+  --bg3:       #1a0038;
+  --bg4:       #28004f;
+  --border:    rgba(255,0,200,.25);
+  --blue:      #00f0ff;
+  --blue-dim:  #002a33;
+  --green:     #39ff14;
+  --green-dim: #0a2e06;
+  --red:       #ff003c;
+  --red-dim:   #3d000f;
+  --orange:    #ff8c00;
+  --purple:    #bf00ff;
+  --text:      #f0e6ff;
+  --text2:     #c8a8e8;
+  --text3:     #8a6aaa;
+  --map-bg:    #0a0014;
+}
+[data-theme="cyberpunk"] body {
+  background:
+    radial-gradient(ellipse 70% 60% at 5% 0%, rgba(191,0,255,.18), transparent 65%),
+    radial-gradient(ellipse 60% 55% at 95% 10%, rgba(0,240,255,.14), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 50% 100%, rgba(255,0,60,.10), transparent 50%),
+    linear-gradient(160deg, #0a0014, #0e001e 50%, #08000f) !important;
+}
+[data-theme="cyberpunk"] body::before {
+  background: #bf00ff !important;
+  opacity: .22 !important;
+}
+[data-theme="cyberpunk"] body::after {
+  background: #00f0ff !important;
+  opacity: .18 !important;
+}
+[data-theme="cyberpunk"] #titlebar {
+  background: linear-gradient(180deg, rgba(18,0,40,.94), rgba(10,0,20,.94)) !important;
+  border-bottom: 1px solid rgba(255,0,200,.25) !important;
+  box-shadow: 0 1px 20px rgba(191,0,255,.12);
+}
+[data-theme="cyberpunk"] #titlebar .brand span { color: #00f0ff; text-shadow: 0 0 8px rgba(0,240,255,.4); }
+[data-theme="cyberpunk"] #titlebar .brand-center span { color: #00f0ff; text-shadow: 0 0 8px rgba(0,240,255,.4); }
+[data-theme="cyberpunk"] #sidebar {
+  background: rgba(12,0,28,.85) !important;
+  border-right: 1px solid rgba(255,0,200,.2) !important;
+  box-shadow: 1px 0 30px rgba(191,0,255,.08);
+  backdrop-filter: blur(12px);
+}
+[data-theme="cyberpunk"] .nav-item {
+  background: rgba(18,0,40,.5);
+  border-color: rgba(191,0,255,.12);
+  color: var(--text2);
+}
+[data-theme="cyberpunk"] .nav-item:hover {
+  background: rgba(40,0,80,.6);
+  border-color: rgba(0,240,255,.35);
+  color: var(--text);
+  text-shadow: 0 0 6px rgba(0,240,255,.3);
+}
+[data-theme="cyberpunk"] .nav-item.active {
+  color: #fff;
+  background: linear-gradient(120deg, rgba(191,0,255,.55), rgba(0,240,255,.35)) !important;
+  border-color: rgba(0,240,255,.6) !important;
+  box-shadow: 0 0 15px rgba(0,240,255,.25), 0 0 30px rgba(191,0,255,.15), inset 0 1px 0 rgba(255,255,255,.08);
+  text-shadow: 0 0 8px rgba(0,240,255,.5);
+}
+[data-theme="cyberpunk"] .card {
+  background: rgba(15,0,32,.8) !important;
+  border: 1px solid rgba(191,0,255,.2) !important;
+  box-shadow: 0 0 15px rgba(191,0,255,.06), inset 0 1px 0 rgba(255,0,200,.05) !important;
+  backdrop-filter: blur(10px);
+}
+[data-theme="cyberpunk"] .status-card {
+  background: rgba(15,0,32,.8) !important;
+  border: 1px solid rgba(0,240,255,.15) !important;
+  box-shadow: 0 0 12px rgba(0,240,255,.05), inset 0 1px 0 rgba(0,240,255,.04) !important;
+  position: relative;
+  overflow: hidden;
+}
+[data-theme="cyberpunk"] .status-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -75%;
+  width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0,240,255,.08), rgba(191,0,255,.06), transparent);
+  animation: cyber-shimmer 3s ease-in-out infinite;
+}
+@keyframes cyber-shimmer {
+  0%   { left: -75%; }
+  100% { left: 125%; }
+}
+[data-theme="cyberpunk"] .quick-btn {
+  background: rgba(15,0,32,.75) !important;
+  border: 1px solid rgba(191,0,255,.18) !important;
+  box-shadow: 0 0 10px rgba(191,0,255,.04) !important;
+}
+[data-theme="cyberpunk"] .quick-btn:hover {
+  background: linear-gradient(120deg, rgba(60,0,120,.5), rgba(0,80,100,.3)) !important;
+  border-color: rgba(0,240,255,.45) !important;
+  box-shadow: 0 0 20px rgba(0,240,255,.1) !important;
+}
+[data-theme="cyberpunk"] .btn-primary::before {
+  background: conic-gradient(from 0deg, #00f0ff 0deg, #bf00ff 120deg, #ff003c 240deg, #00f0ff 360deg);
+}
+[data-theme="cyberpunk"] .btn-primary::after {
+  background: rgba(10,0,20,1) !important;
+}
+[data-theme="cyberpunk"] .btn-primary:hover::after {
+  background: rgba(10,0,20,.8) !important;
+}
+[data-theme="cyberpunk"] .btn-primary { color: #00f0ff; text-shadow: 0 0 4px rgba(0,240,255,.4); }
+[data-theme="cyberpunk"] .btn-ghost {
+  background: rgba(15,0,32,.7);
+  border-color: rgba(191,0,255,.3);
+  color: var(--text2);
+}
+[data-theme="cyberpunk"] .btn-ghost:hover {
+  background: rgba(40,0,80,.6);
+  border-color: rgba(0,240,255,.5);
+  color: #00f0ff;
+}
+[data-theme="cyberpunk"] .input {
+  background: rgba(10,0,22,.9);
+  border-color: rgba(191,0,255,.3);
+}
+[data-theme="cyberpunk"] .input:focus {
+  border-color: #00f0ff;
+  box-shadow: 0 0 0 3px rgba(0,240,255,.15), 0 0 12px rgba(0,240,255,.08);
+}
+[data-theme="cyberpunk"] .list-row {
+  background: rgba(15,0,32,.7);
+  border-color: rgba(191,0,255,.2);
+}
+[data-theme="cyberpunk"] .list-row:hover {
+  background: rgba(30,0,60,.7);
+  border-color: rgba(0,240,255,.4);
+}
+[data-theme="cyberpunk"] .rule-card {
+  background: rgba(15,0,32,.7);
+  border-color: rgba(191,0,255,.2);
+}
+[data-theme="cyberpunk"] .rule-card:hover {
+  background: rgba(30,0,60,.7);
+  border-color: rgba(0,240,255,.4);
+}
+[data-theme="cyberpunk"] .call-group-card {
+  background: rgba(15,0,32,.7);
+  border-color: rgba(191,0,255,.2);
+}
+[data-theme="cyberpunk"] .toast {
+  background: rgba(12,0,28,.92);
+  border: 1px solid rgba(191,0,255,.25);
+  box-shadow: 0 4px 24px rgba(191,0,255,.1);
+}
+[data-theme="cyberpunk"] .modal {
+  background: rgba(12,0,28,.95) !important;
+  border: 1px solid rgba(191,0,255,.3) !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,.5), 0 0 40px rgba(191,0,255,.08) !important;
+}
+[data-theme="cyberpunk"] .modal-overlay {
+  background: rgba(5,0,12,.8);
+}
+[data-theme="cyberpunk"] #log-panel {
+  background: rgba(10,0,22,.9);
+  border-color: rgba(191,0,255,.2);
+}
+[data-theme="cyberpunk"] .user-card {
+  background: rgba(18,0,40,.7);
+  border-color: rgba(191,0,255,.25);
+}
+[data-theme="cyberpunk"] .user-card:hover {
+  background: rgba(30,0,60,.7);
+  border-color: rgba(0,240,255,.4);
+}
+[data-theme="cyberpunk"] .sidebar-bottom {
+  border-top-color: rgba(191,0,255,.2);
+  background: linear-gradient(180deg, transparent, rgba(10,0,20,.95) 22%);
+}
+[data-theme="cyberpunk"] .member-chip {
+  background: rgba(40,0,80,.4);
+  border-color: rgba(191,0,255,.3);
+}
+[data-theme="cyberpunk"] .tag-blue   { background: rgba(0,180,200,.15); color: #00f0ff; border-color: rgba(0,240,255,.35); }
+[data-theme="cyberpunk"] .tag-green  { background: rgba(57,255,20,.1); color: #39ff14; border-color: rgba(57,255,20,.3); }
+[data-theme="cyberpunk"] .tag-red    { background: rgba(255,0,60,.12); color: #ff5080; border-color: rgba(255,0,60,.35); }
+[data-theme="cyberpunk"] .tag-purple { background: rgba(191,0,255,.12); color: #d580ff; border-color: rgba(191,0,255,.35); }
+[data-theme="cyberpunk"] .tag-gray   { background: rgba(80,60,110,.25); color: #c8a8e8; border-color: rgba(140,100,180,.3); }
+[data-theme="cyberpunk"] .tag-orange { background: rgba(255,140,0,.12); color: #ffb040; border-color: rgba(255,140,0,.3); }
+[data-theme="cyberpunk"] ::-webkit-scrollbar-thumb { background: rgba(191,0,255,.35); }
+[data-theme="cyberpunk"] .server-map-grid-surface {
+  background-image: linear-gradient(to right, rgba(0,240,255,.12) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(0,240,255,.12) 1px, transparent 1px) !important;
+}
+[data-theme="cyberpunk"] .server-map-grid-cell-label {
+  color: rgba(0,240,255,.35) !important;
+}
+[data-theme="cyberpunk"] .form-row select {
+  background: rgba(10,0,22,.9);
+  border-color: rgba(191,0,255,.3);
+  color: var(--text);
+}
+[data-theme="cyberpunk"] .vending-modal {
+  background: var(--bg2);
+}
+
+/* ── 落日熔金 (Sunset) 主题 ───────────────────── */
+[data-theme="sunset"] {
+  --bg:        #1a0e08;
+  --bg2:       #221408;
+  --bg3:       #2e1a0c;
+  --bg4:       #3d2412;
+  --border:    rgba(255,140,50,.22);
+  --blue:      #ffa040;
+  --blue-dim:  #3d2010;
+  --green:     #4ade80;
+  --green-dim: #0f3020;
+  --red:       #ff5050;
+  --red-dim:   #401414;
+  --orange:    #ffb74d;
+  --purple:    #ff7070;
+  --text:      #fff5eb;
+  --text2:     #d4b896;
+  --text3:     #9a7e60;
+  --map-bg:    #1a0e08;
+}
+[data-theme="sunset"] body {
+  background:
+    radial-gradient(ellipse 70% 65% at 0% 0%, rgba(255,100,20,.18), transparent 60%),
+    radial-gradient(ellipse 65% 55% at 100% 15%, rgba(255,50,80,.14), transparent 55%),
+    radial-gradient(ellipse 50% 40% at 50% 100%, rgba(255,180,60,.08), transparent 50%),
+    linear-gradient(155deg, #1a0e08, #1e1008 45%, #140a04) !important;
+}
+[data-theme="sunset"] body::before {
+  background: #ff6020 !important;
+  opacity: .20 !important;
+}
+[data-theme="sunset"] body::after {
+  background: #ff3050 !important;
+  opacity: .16 !important;
+}
+[data-theme="sunset"] #titlebar {
+  background: linear-gradient(180deg, rgba(30,18,8,.94), rgba(20,10,4,.94)) !important;
+  border-bottom: 1px solid rgba(255,140,50,.22) !important;
+  box-shadow: 0 1px 18px rgba(255,100,20,.08);
+}
+[data-theme="sunset"] #titlebar .brand span { color: #ffc070; text-shadow: 0 0 6px rgba(255,160,64,.3); }
+[data-theme="sunset"] #titlebar .brand-center span { color: #ffc070; text-shadow: 0 0 6px rgba(255,160,64,.3); }
+[data-theme="sunset"] #sidebar {
+  background: rgba(22,14,6,.82) !important;
+  border-right: 1px solid rgba(255,140,50,.18) !important;
+  box-shadow: 1px 0 24px rgba(255,100,20,.05);
+  backdrop-filter: blur(12px);
+}
+[data-theme="sunset"] .nav-item {
+  background: rgba(30,18,8,.5);
+  border-color: rgba(255,140,50,.1);
+  color: var(--text2);
+}
+[data-theme="sunset"] .nav-item:hover {
+  background: rgba(50,30,15,.6);
+  border-color: rgba(255,160,64,.35);
+  color: var(--text);
+}
+[data-theme="sunset"] .nav-item.active {
+  color: #fff;
+  background: linear-gradient(120deg, rgba(255,100,20,.6), rgba(255,50,80,.4)) !important;
+  border-color: rgba(255,160,64,.6) !important;
+  box-shadow: 0 0 14px rgba(255,100,20,.25), 0 0 28px rgba(255,50,80,.12), inset 0 1px 0 rgba(255,255,255,.08);
+}
+[data-theme="sunset"] .card {
+  background: rgba(28,16,6,.78) !important;
+  border: 1px solid rgba(255,140,50,.18) !important;
+  box-shadow: 0 0 14px rgba(255,100,20,.04), inset 0 1px 0 rgba(255,200,120,.04) !important;
+  backdrop-filter: blur(8px);
+}
+[data-theme="sunset"] .status-card {
+  background: rgba(28,16,6,.78) !important;
+  border: 1px solid rgba(255,140,50,.15) !important;
+  box-shadow: 0 0 12px rgba(255,100,20,.04), inset 0 1px 0 rgba(255,200,120,.03) !important;
+  position: relative;
+  overflow: hidden;
+}
+[data-theme="sunset"] .status-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -75%;
+  width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,160,64,.07), rgba(255,80,40,.05), transparent);
+  animation: sunset-shimmer 4.5s ease-in-out infinite;
+}
+@keyframes sunset-shimmer {
+  0%   { left: -75%; }
+  100% { left: 125%; }
+}
+[data-theme="sunset"] .quick-btn {
+  background: rgba(28,16,6,.72) !important;
+  border: 1px solid rgba(255,140,50,.16) !important;
+}
+[data-theme="sunset"] .quick-btn:hover {
+  background: linear-gradient(120deg, rgba(80,40,10,.5), rgba(100,30,30,.3)) !important;
+  border-color: rgba(255,160,64,.42) !important;
+}
+[data-theme="sunset"] .btn-primary::before {
+  background: conic-gradient(from 0deg, #ffa040 0deg, #ff3050 120deg, #ffb74d 240deg, #ffa040 360deg);
+}
+[data-theme="sunset"] .btn-primary::after {
+  background: rgba(20,10,4,1) !important;
+}
+[data-theme="sunset"] .btn-primary:hover::after {
+  background: rgba(20,10,4,.8) !important;
+}
+[data-theme="sunset"] .btn-primary { color: #ffc070; }
+[data-theme="sunset"] .btn-ghost {
+  background: rgba(28,16,6,.65);
+  border-color: rgba(255,140,50,.3);
+  color: var(--text2);
+}
+[data-theme="sunset"] .btn-ghost:hover {
+  background: rgba(50,28,10,.6);
+  border-color: rgba(255,160,64,.5);
+  color: var(--text);
+}
+[data-theme="sunset"] .btn-danger {
+  background: rgba(80,16,16,.5);
+  color: #ff8080;
+  border-color: rgba(255,80,80,.4);
+}
+[data-theme="sunset"] .btn-danger:hover { background: var(--red); color: #fff; }
+[data-theme="sunset"] .btn-green {
+  background: rgba(15,60,35,.5);
+  color: #70e8a0;
+  border-color: rgba(74,222,128,.35);
+}
+[data-theme="sunset"] .btn-green:hover { background: var(--green); color: #082010; }
+[data-theme="sunset"] .input {
+  background: rgba(18,10,4,.88);
+  border-color: rgba(255,140,50,.3);
+}
+[data-theme="sunset"] .input:focus {
+  border-color: #ffa040;
+  box-shadow: 0 0 0 3px rgba(255,160,64,.15), 0 0 10px rgba(255,100,20,.06);
+}
+[data-theme="sunset"] .list-row {
+  background: rgba(28,16,6,.7);
+  border-color: rgba(255,140,50,.18);
+}
+[data-theme="sunset"] .list-row:hover {
+  background: rgba(45,25,10,.7);
+  border-color: rgba(255,160,64,.4);
+}
+[data-theme="sunset"] .rule-card {
+  background: rgba(28,16,6,.7);
+  border-color: rgba(255,140,50,.18);
+}
+[data-theme="sunset"] .rule-card:hover {
+  background: rgba(45,25,10,.7);
+  border-color: rgba(255,160,64,.4);
+}
+[data-theme="sunset"] .call-group-card {
+  background: rgba(28,16,6,.7);
+  border-color: rgba(255,140,50,.18);
+}
+[data-theme="sunset"] .toast {
+  background: rgba(22,12,4,.92);
+  border: 1px solid rgba(255,140,50,.22);
+  box-shadow: 0 4px 20px rgba(255,100,20,.08);
+}
+[data-theme="sunset"] .modal-overlay {
+  background: rgba(10,4,0,.78);
+}
+[data-theme="sunset"] .modal {
+  background: rgba(22,12,4,.95) !important;
+  border: 1px solid rgba(255,140,50,.25) !important;
+  box-shadow: 0 16px 48px rgba(0,0,0,.5), 0 0 36px rgba(255,100,20,.06) !important;
+}
+[data-theme="sunset"] #log-panel {
+  background: rgba(18,10,4,.88);
+  border-color: rgba(255,140,50,.18);
+}
+[data-theme="sunset"] .user-card {
+  background: rgba(30,18,8,.7);
+  border-color: rgba(255,140,50,.22);
+}
+[data-theme="sunset"] .user-card:hover {
+  background: rgba(50,28,10,.7);
+  border-color: rgba(255,160,64,.4);
+}
+[data-theme="sunset"] .sidebar-bottom {
+  border-top-color: rgba(255,140,50,.18);
+  background: linear-gradient(180deg, transparent, rgba(18,10,4,.95) 22%);
+}
+[data-theme="sunset"] .member-chip {
+  background: rgba(60,30,10,.4);
+  border-color: rgba(255,140,50,.3);
+}
+[data-theme="sunset"] .tag-blue   { background: rgba(255,160,64,.12); color: #ffc070; border-color: rgba(255,160,64,.35); }
+[data-theme="sunset"] .tag-green  { background: rgba(74,222,128,.1); color: #70e8a0; border-color: rgba(74,222,128,.3); }
+[data-theme="sunset"] .tag-red    { background: rgba(255,80,80,.12); color: #ff9090; border-color: rgba(255,80,80,.3); }
+[data-theme="sunset"] .tag-purple { background: rgba(255,112,112,.1); color: #ffa0a0; border-color: rgba(255,112,112,.3); }
+[data-theme="sunset"] .tag-gray   { background: rgba(80,60,40,.3); color: #d4b896; border-color: rgba(154,126,96,.35); }
+[data-theme="sunset"] .tag-orange { background: rgba(255,183,77,.12); color: #ffd090; border-color: rgba(255,183,77,.35); }
+[data-theme="sunset"] ::-webkit-scrollbar-thumb { background: rgba(255,140,50,.32); }
+[data-theme="sunset"] .server-map-grid-surface {
+  background-image: linear-gradient(to right, rgba(255,160,64,.12) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255,160,64,.12) 1px, transparent 1px) !important;
+}
+[data-theme="sunset"] .server-map-grid-cell-label {
+  color: rgba(255,160,64,.32) !important;
+}
+[data-theme="sunset"] .form-row select {
+  background: rgba(18,10,4,.88);
+  border-color: rgba(255,140,50,.3);
+  color: var(--text);
+}
+[data-theme="sunset"] .vending-modal {
+  background: var(--bg2);
+}
+
+/* 主题选择卡片 */
+.theme-card {
+  width: 200px; cursor: pointer; border-radius: 12px; overflow: hidden;
+  border: 2px solid var(--border); transition: .2s; position: relative;
+}
+.theme-card:hover { border-color: var(--blue); transform: translateY(-2px); }
+.theme-card.active { border-color: var(--blue); box-shadow: 0 0 0 2px rgba(74,92,219,.25); }
+.theme-card .preview {
+  height: 88px; display: flex; border-bottom: 1px solid var(--border); overflow: hidden;
+}
+.theme-card .preview-sidebar {
+  width: 36px; display: flex; flex-direction: column; gap: 4px; padding: 8px 4px;
+}
+.theme-card .preview-dot {
+  width: 100%; height: 5px; border-radius: 3px;
+}
+.theme-card .preview-main {
+  flex: 1; padding: 8px; display: flex; flex-direction: column; gap: 5px;
+}
+.theme-card .preview-bar {
+  height: 8px; border-radius: 4px; width: 80%;
+}
+.theme-card .preview-block {
+  flex: 1; border-radius: 4px;
+}
+.theme-card .label {
+  padding: 10px; text-align: center; font-size: 13px; font-weight: 600; color: var(--text);
+}
+.theme-card .check {
+  position: absolute; top: 6px; right: 6px; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--blue); color: #fff; display: none; align-items: center; justify-content: center;
+  font-size: 12px;
+}
+.theme-card.active .check { display: flex; }
 * { margin:0; padding:0; box-sizing:border-box; }
 html,body { height:100%; min-height:100dvh; overflow:hidden; font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif; background:var(--bg); color:var(--text); font-size:14px; }
 body {
@@ -77,6 +825,11 @@ input, textarea, select { font-family:inherit; }
 #titlebar .brand { display:flex; align-items:center; gap:8px; }
 #titlebar .brand img { width:20px; height:20px; }
 #titlebar .brand span { font-weight:700; font-size:15px; color:#bcc8ff; }
+#titlebar .brand-center {
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  display:flex; align-items:center; gap:6px; pointer-events:none;
+}
+#titlebar .brand-center span { font-weight:700; font-size:14px; color:#bcc8ff; }
 #titlebar .status-bar { display:flex; align-items:center; gap:14px; }
 #titlebar .status-dot { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text2); }
 #titlebar .dot { width:8px; height:8px; border-radius:50%; background:var(--text3); }
@@ -591,11 +1344,12 @@ input, textarea, select { font-family:inherit; }
 
 <!-- ── 标题栏 ───────────────────────────────── -->
 <div id="titlebar">
-  <div class="brand">
-    <span style="font-size:20px">🎮</span>
-    <span>Rust 工具箱</span>
-    <span style="font-size:11px;color:var(--text3);margin-left:4px">v1.0.0</span>
+  <div class="brand-center">
+    <span style="font-size:18px">🎮</span>
+    <span>安静的Rust工具箱</span>
+    <span style="font-size:11px;color:var(--text3);margin-left:4px">v1.2</span>
   </div>
+  <div class="brand"></div>
   <div class="status-bar">
     <div class="status-dot">
       <div class="dot" id="dot-pairing"></div>
@@ -655,6 +1409,9 @@ input, textarea, select { font-family:inherit; }
     </div>
     <div class="nav-item" data-page="help" onclick="navigate('help',this)">
       <span class="icon">📘</span> 帮助文档
+    </div>
+    <div class="nav-item" data-page="settings" onclick="navigate('settings',this)">
+      <span class="icon">⚙️</span> 系统设置
     </div>
 
     <div class="spacer"></div>
@@ -988,8 +1745,9 @@ input, textarea, select { font-family:inherit; }
       </div>
 
       <!-- 地图容器 -->
-      <div id="server-map-wrap" style="flex:1;position:relative;overflow:hidden;border-radius:10px;border:1px solid var(--border);background:#000;min-height:300px">
-        <canvas id="server-map-image" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;display:none"></canvas>
+      <div id="server-map-wrap" style="flex:1;position:relative;overflow:hidden;border-radius:10px;border:1px solid var(--border);background:var(--map-bg, #000);min-height:300px;will-change:transform;contain:strict">
+        <canvas id="server-map-image" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;display:none;will-change:transform;contain:strict"></canvas>
+        <canvas id="server-map-overlay-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;display:none;will-change:transform;contain:strict"></canvas>
         <div id="server-map-layer" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none"></div>
         <div id="server-map-empty" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;color:var(--text3);font-size:14px">未连接服务器，无法加载地图</div>
         <div id="server-map-reticle"></div>
@@ -1007,6 +1765,15 @@ input, textarea, select { font-family:inherit; }
           <button class="btn btn-ghost btn-xs" onclick="loadHelpDoc()">🔄 刷新</button>
         </div>
         <pre id="help-doc-content" class="page-fill-list" style="white-space:pre-wrap;word-break:break-word;line-height:1.75;color:var(--text2);font-size:13px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px;overflow:auto">加载中...</pre>
+      </div>
+    </div>
+
+    <!-- ══ 系统设置 ════════════════════════════════ -->
+    <div class="page" id="page-settings">
+      <div class="page-title">⚙️ 系统设置</div>
+      <div class="card" style="max-width:920px">
+        <div style="font-size:15px;font-weight:600;margin-bottom:16px">主题外观</div>
+        <div id="theme-picker" style="display:flex;gap:16px;flex-wrap:wrap"></div>
       </div>
     </div>
 
@@ -1093,7 +1860,12 @@ input, textarea, select { font-family:inherit; }
           <option value="alarm_off">警报断电（解除）</option>
         </optgroup>
         <optgroup label="队伍">
-          <option value="player_status">队友状态整合（上线/下线/重生/死亡/挂机）</option>
+          <option value="player_online">队友上线</option>
+          <option value="player_offline">队友下线</option>
+          <option value="player_dead">队友死亡</option>
+          <option value="player_respawn">队友重生</option>
+          <option value="player_afk">队友挂机</option>
+          <option value="player_afk_recover">队友恢复活动</option>
           <option value="team_online_guard">在线人数联动启停规则</option>
         </optgroup>
         <optgroup label="载具">
@@ -1141,6 +1913,10 @@ input, textarea, select { font-family:inherit; }
           <input type="checkbox" id="ev-act-callgroup" style="accent-color:var(--blue)" onchange="renderEventCallGroupFields()"> 呼叫组联动
         </label>
         <div id="ev-callgroup-fields"></div>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);cursor:pointer">
+          <input type="checkbox" id="ev-act-switch" style="accent-color:var(--blue)" onchange="renderEventSwitchFields()"> 设备控制（开关）
+        </label>
+        <div id="ev-switch-fields"></div>
       </div>
     </div>
     <div class="form-row">
@@ -1341,6 +2117,7 @@ const state = {
   serverMapImageUrl: '',
   serverMapImageAsset: null,
   serverMapImageLoadSeq: 0,
+  serverMapOverlayIconCache: {},
   serverMapLastAt: 0,
   latestMapSize: 0,
   serverMapView: { teamMembers: [], vendingMarkers: [] },
@@ -1371,13 +2148,18 @@ const state = {
   },
 };
 const TEAM_CHAT_SETTINGS_GROUP_ID = '__team_chat_settings__';
-const SERVER_MAP_MAX_ZOOM = 2.5;
+const SERVER_MAP_MAX_ZOOM = 2.0;
 
 // ── 事件类型 → 中文标签映射 ────────────────────
 const EVENT_LABELS = {
   alarm_on:             { label:'警报通电',       color:'red',    icon:'⚠️' },
   alarm_off:            { label:'警报断电',       color:'gray',   icon:'🔕' },
-  player_status:        { label:'队友状态整合',   color:'blue',   icon:'👤' },
+  player_online:        { label:'队友上线',       color:'green',  icon:'🟢' },
+  player_offline:       { label:'队友下线',       color:'gray',   icon:'⚫' },
+  player_dead:          { label:'队友死亡',       color:'red',    icon:'💀' },
+  player_respawn:       { label:'队友重生',       color:'green',  icon:'💚' },
+  player_afk:           { label:'队友挂机',       color:'orange', icon:'💤' },
+  player_afk_recover:   { label:'队友恢复',       color:'blue',   icon:'⚡' },
   team_online_guard:    { label:'队伍在线人数联动', color:'blue', icon:'👥' },
   patrol_heli_status:   { label:'武装直升机整合', color:'orange', icon:'🚁' },
   patrol_heli_enter:    { label:'武装直升机进入', color:'red',    icon:'🚁' },
@@ -1459,7 +2241,12 @@ const DEFAULT_KEYWORD_BY_TYPE = {
 const EVENT_DYNAMIC_CONFIG = {
   alarm_on: { needsEntity: true, entityTypes: ['alarm', 'switch'] },
   alarm_off: { needsEntity: true, entityTypes: ['alarm', 'switch'] },
-  player_status: { needsMember: true },
+  player_online: { needsMember: true },
+  player_offline: { needsMember: true },
+  player_dead: { needsMember: true },
+  player_respawn: { needsMember: true },
+  player_afk: { needsMember: true, needsAfkMinutes: true },
+  player_afk_recover: { needsMember: true },
   cargo_ship_status: { needsCargoStages: true },
   oil_rig_status: { needsOilStages: true },
   ch47_status: { needsCh47Stages: true },
@@ -1528,6 +2315,7 @@ function buildMetaActionsFromToggles(meta = {}) {
     return meta.actions.filter((action) => {
       const type = String(action?.type || '').toLowerCase();
       if (type === 'call_group') return !!String(action?.groupId || '').trim();
+      if (type === 'switch_control') return !!(action?.entityId || (Array.isArray(action?.entityIds) && action.entityIds.length));
       return ['notify_desktop', 'team_chat', 'send_game_message'].includes(type);
     });
   }
@@ -1675,6 +2463,42 @@ function renderEventCallGroupFields(rule = null) {
     </div>`;
 }
 
+async function renderEventSwitchFields(rule = null) {
+  const wrap = document.getElementById('ev-switch-fields');
+  if (!wrap) return;
+  const enabled = !!document.getElementById('ev-act-switch')?.checked;
+  if (!enabled) { wrap.innerHTML = ''; return; }
+  const devices = await ensureDevicesForCurrentServer();
+  const switchDevices = (devices || []).filter((d) => String(d?.type || '').toLowerCase() === 'switch');
+  const actions = Array.isArray(rule?._meta?.actions) ? rule._meta.actions : [];
+  const switchAction = actions.find((a) => a?.type === 'switch_control') || {};
+  const selectedIds = new Set(
+    (Array.isArray(switchAction.entityIds) ? switchAction.entityIds : (switchAction.entityId ? [switchAction.entityId] : []))
+      .map((id) => String(id)).filter(Boolean)
+  );
+  const options = switchDevices.map((d) => {
+    const id = String(d.entityId);
+    return `<option value="${id}" ${selectedIds.has(id) ? 'selected' : ''}>${esc(d.alias || `开关_${id}`)} (${id})</option>`;
+  }).join('') || '<option value="" disabled>暂无已配对开关</option>';
+  wrap.innerHTML = `
+    <div style="margin-top:8px;padding:10px;border:1px solid rgba(106,126,169,.35);border-radius:10px;background:rgba(9,16,32,.45)">
+      <div class="form-row" style="margin-bottom:8px">
+        <div class="form-label">控制方式</div>
+        <select class="input" id="ev-switch-action">
+          <option value="on" ${switchAction.state === 'on' ? 'selected' : ''}>开启</option>
+          <option value="off" ${switchAction.state === 'off' ? 'selected' : ''}>关闭</option>
+        </select>
+      </div>
+      <div class="form-row" style="margin-bottom:0">
+        <div class="form-label">目标开关（可多选）</div>
+        <select class="input" id="ev-switch-entity-ids" multiple size="4">
+          ${options}
+        </select>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px">按住 Ctrl / Command 可多选</div>
+      </div>
+    </div>`;
+}
+
 function renderCommandActionCallGroupFields(rule = null) {
   const wrap = document.getElementById('cmd-callgroup-action-fields');
   if (!wrap) return;
@@ -1737,6 +2561,13 @@ function renderEventDynamicFields(rule = null) {
       <div class="form-row">
         <div class="form-label">队员名称（留空=任意）</div>
         <input class="input" id="ev-member-name" placeholder="例如：AnJing">
+      </div>`;
+  }
+  if (cfg.needsAfkMinutes) {
+    html += `
+      <div class="form-row">
+        <div class="form-label">挂机判定分钟数</div>
+        <input class="input" id="ev-afk-minutes" type="number" value="15" min="1" max="120">
       </div>`;
   }
   if (cfg.needsItem) {
@@ -1901,6 +2732,10 @@ function renderEventDynamicFields(rule = null) {
     const member = document.getElementById('ev-member-name');
     if (member) member.value = trigger.memberName || '';
   }
+  if (cfg.needsAfkMinutes) {
+    const afkEl = document.getElementById('ev-afk-minutes');
+    if (afkEl) afkEl.value = String(trigger.afkMinutes ?? 15);
+  }
   if (cfg.needsItem) {
     const item = document.getElementById('ev-item-shortname');
     if (item) item.value = trigger.itemShortName || '';
@@ -2035,6 +2870,7 @@ function navigate(pageId, el) {
   }
   if (pageId === 'teamchat')   renderTeamChat();
   if (pageId === 'help')       loadHelpDoc();
+  if (pageId === 'settings')   renderSettingsPage();
   if (pageId === 'servermap') {
     hydrateServerMapSettingsFromStorage();
     bindServerMapInteractions(document.getElementById('server-map-wrap'));
@@ -2718,6 +3554,7 @@ function getMapRenderedRect() {
 function syncServerMapImageLayout() {
   const wrap = document.getElementById('server-map-wrap');
   const mapImage = document.getElementById('server-map-image');
+  const overlayCanvas = document.getElementById('server-map-overlay-canvas');
   if (!wrap || !mapImage) return null;
   const cw = Number(wrap.clientWidth || 0);
   const ch = Number(wrap.clientHeight || 0);
@@ -2730,10 +3567,18 @@ function syncServerMapImageLayout() {
   mapImage.style.height = `${layout.imageRect.height}px`;
   if (mapImage instanceof HTMLCanvasElement) {
     const dpr = clamp(Number(window.devicePixelRatio || 1), 1, 2);
-    const canvasWidth = Math.max(1, Math.round(layout.imageRect.width * dpr));
-    const canvasHeight = Math.max(1, Math.round(layout.imageRect.height * dpr));
+    let canvasWidth = Math.max(1, Math.round(layout.imageRect.width * dpr));
+    let canvasHeight = Math.max(1, Math.round(layout.imageRect.height * dpr));
     if (mapImage.width !== canvasWidth) mapImage.width = canvasWidth;
     if (mapImage.height !== canvasHeight) mapImage.height = canvasHeight;
+    if (overlayCanvas instanceof HTMLCanvasElement) {
+      overlayCanvas.style.left = `${layout.imageRect.left}px`;
+      overlayCanvas.style.top = `${layout.imageRect.top}px`;
+      overlayCanvas.style.width = `${layout.imageRect.width}px`;
+      overlayCanvas.style.height = `${layout.imageRect.height}px`;
+      if (overlayCanvas.width !== canvasWidth) overlayCanvas.width = canvasWidth;
+      if (overlayCanvas.height !== canvasHeight) overlayCanvas.height = canvasHeight;
+    }
   }
   return layout;
 }
@@ -2742,10 +3587,16 @@ function resetServerMapImageState() {
   state.serverMapImageUrl = '';
   state.serverMapImageAsset = null;
   state.serverMapImageLoadSeq += 1;
+  state.serverMapOverlayIconCache = {};
   const mapImage = document.getElementById('server-map-image');
   if (mapImage instanceof HTMLCanvasElement) {
     const ctx = mapImage.getContext('2d');
     ctx?.clearRect(0, 0, mapImage.width || 0, mapImage.height || 0);
+  }
+  const overlayCanvas = document.getElementById('server-map-overlay-canvas');
+  if (overlayCanvas instanceof HTMLCanvasElement) {
+    const ctx = overlayCanvas.getContext('2d');
+    ctx?.clearRect(0, 0, overlayCanvas.width || 0, overlayCanvas.height || 0);
   }
 }
 
@@ -3738,6 +4589,152 @@ function resolveMonumentIconFile(tokenRaw) {
   return 'icon.png';
 }
 
+function getOverlayMonumentIconImage(fileName = '') {
+  const name = String(fileName || '').trim();
+  if (!name) return null;
+  const cache = state.serverMapOverlayIconCache || {};
+  const hit = cache[name];
+  if (hit?.state === 'loaded' && hit.img) return hit.img;
+  if (hit?.state === 'loading') return null;
+  const img = new Image();
+  cache[name] = { state: 'loading', img };
+  state.serverMapOverlayIconCache = cache;
+  img.onload = () => {
+    const current = state.serverMapOverlayIconCache?.[name];
+    if (current) current.state = 'loaded';
+    if (state.activePage === 'servermap') renderServerMapLayer();
+  };
+  img.onerror = () => {
+    const current = state.serverMapOverlayIconCache?.[name];
+    if (current) current.state = 'error';
+  };
+  img.src = getServerMapIconUrl(name);
+  return null;
+}
+
+function drawServerMapOverlayCanvas(mapContext, renderedRect, imageRect, monuments = [], camera = state.serverMapCamera, wrapEl = null) {
+  const overlayCanvas = document.getElementById('server-map-overlay-canvas');
+  if (!(overlayCanvas instanceof HTMLCanvasElement)) return;
+  const ctx = overlayCanvas.getContext('2d');
+  if (!ctx) return;
+  const canvasWidth = Number(overlayCanvas.width || 0);
+  const canvasHeight = Number(overlayCanvas.height || 0);
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+  if (!state.serverMapImageUrl || !state.connected) return;
+  if (!renderedRect || !imageRect || !mapContext) return;
+
+  const wrap = wrapEl || document.getElementById('server-map-wrap');
+  const wrapWidth = Number(wrap?.clientWidth || 0);
+  const wrapHeight = Number(wrap?.clientHeight || 0);
+  if (!Number.isFinite(wrapWidth) || !Number.isFinite(wrapHeight) || wrapWidth <= 0 || wrapHeight <= 0) return;
+  const cam = camera || state.serverMapCamera;
+  const dpr = clamp(Number(window.devicePixelRatio || 1), 1, 2);
+
+  const toLocal = (basePoint) => {
+    const projected = projectServerMapPixel(basePoint, wrapWidth, wrapHeight, camera);
+    if (!projected) return null;
+    return {
+      x: (projected.x - imageRect.left) * dpr,
+      y: (projected.y - imageRect.top) * dpr,
+    };
+  };
+
+  if (state.serverMapSettings.showGrid) {
+    const worldSize = Number(mapContext?.worldSize || mapContext?.coordinateSize || 0);
+    const meta = Number.isFinite(worldSize) && worldSize > 0 ? getRustGridMeta(worldSize) : null;
+    if (meta) {
+      const gridSize = meta.cellSize;
+      const cols = meta.cols;
+      const rows = meta.rows;
+      ctx.save();
+      ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+      ctx.lineWidth = dpr;
+
+      for (let c = 0; c <= cols; c += 1) {
+        const worldX = Math.min(worldSize, c * gridSize);
+        const topBase = normalizedToPixel(worldToNormalized(worldX, worldSize, mapContext), renderedRect);
+        const bottomBase = normalizedToPixel(worldToNormalized(worldX, 0, mapContext), renderedRect);
+        const p1 = toLocal(topBase);
+        const p2 = toLocal(bottomBase);
+        if (!p1 || !p2) continue;
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.stroke();
+      }
+      for (let r = 0; r <= rows; r += 1) {
+        const worldY = Math.max(0, worldSize - (r * gridSize));
+        const leftBase = normalizedToPixel(worldToNormalized(0, worldY, mapContext), renderedRect);
+        const rightBase = normalizedToPixel(worldToNormalized(worldSize, worldY, mapContext), renderedRect);
+        const p1 = toLocal(leftBase);
+        const p2 = toLocal(rightBase);
+        if (!p1 || !p2) continue;
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.stroke();
+      }
+
+      if ((cols * rows) <= 1400) {
+        ctx.fillStyle = 'rgba(255,255,255,0.48)';
+        ctx.font = `bold ${Math.max(12, Math.round(10 * dpr))}px ui-sans-serif, system-ui, -apple-system`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        for (let c = 0; c < cols; c += 1) {
+          const colLabel = toMapGridColumnLabel(c);
+          for (let r = 0; r < rows; r += 1) {
+            const worldX = Math.min(worldSize, (c + 0.5) * gridSize);
+            const worldY = Math.max(0, worldSize - ((r + 0.5) * gridSize));
+            const centerBase = normalizedToPixel(worldToNormalized(worldX, worldY, mapContext), renderedRect);
+            const center = toLocal(centerBase);
+            if (!center) continue;
+            ctx.fillText(`${colLabel}${r}`, center.x, center.y);
+          }
+        }
+      }
+      ctx.restore();
+    }
+  }
+
+  if (state.serverMapSettings.showMonuments) {
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (const mon of (Array.isArray(monuments) ? monuments : [])) {
+      const normalized = monumentToNormalized(mon?.x, mon?.y, mapContext);
+      const basePos = normalizedToPixel(normalized, renderedRect, { clamp: false });
+      const pos = toLocal(basePos);
+      if (!normalized || !pos) continue;
+
+      const iconName = resolveMonumentIconFile(mon?.token || mon?.name || mon?.label);
+      const iconImg = getOverlayMonumentIconImage(iconName);
+      const iconSize = Math.max(16, Math.round(20 * dpr));
+      if (iconImg) {
+        ctx.drawImage(iconImg, pos.x - (iconSize / 2), pos.y - (iconSize / 2), iconSize, iconSize);
+      } else {
+        ctx.fillStyle = '#ffb86b';
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, Math.max(3, Math.floor(4 * dpr)), 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      const tokenStr = String(mon?.token || '').toLowerCase();
+      const isSubway = tokenStr.includes('train_tunnel') || tokenStr.includes('tunnel_entrance') || tokenStr.includes('subway') || tokenStr.includes('metro');
+      if (!isSubway && mon?.label) {
+        ctx.shadowColor = 'rgba(0,0,0,0.7)';
+        ctx.shadowBlur = 3 * dpr;
+        ctx.fillStyle = '#f6b26b';
+        ctx.font = `bold ${Math.max(12, Math.round(11 * dpr))}px ui-sans-serif, system-ui, -apple-system`;
+        ctx.fillText(String(mon.label), pos.x, pos.y + Math.max(12, Math.round(12 * dpr)));
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur = 0;
+      }
+    }
+    ctx.restore();
+  }
+}
+
 function renderServerMapMonumentIcon(monument = {}) {
   const iconUrl = getServerMapIconUrl(resolveMonumentIconFile(monument?.token || monument?.name || monument?.label));
   return `
@@ -3871,6 +4868,7 @@ function getMapResourceMonuments() {
 function renderServerMapLayer(teamMembers = state.serverMapView.teamMembers, vendingMarkers = state.serverMapView.vendingMarkers) {
   const subtitle = document.getElementById('server-map-subtitle');
   const mapImage = document.getElementById('server-map-image');
+  const overlayCanvas = document.getElementById('server-map-overlay-canvas');
   const mapLayer = document.getElementById('server-map-layer');
   const emptyEl = document.getElementById('server-map-empty');
   const teamChip = document.getElementById('map-chip-team');
@@ -3904,6 +4902,7 @@ function renderServerMapLayer(teamMembers = state.serverMapView.teamMembers, ven
     state.serverMapLayout = { renderedRect: null, imageRect: null, mapContext: null };
     mapLayer.innerHTML = '';
     mapImage.style.display = 'none';
+    if (overlayCanvas) overlayCanvas.style.display = 'none';
     emptyEl.style.display = 'flex';
     emptyEl.textContent = '未连接服务器，无法加载地图';
     state.vendingById = {};
@@ -3921,6 +4920,7 @@ function renderServerMapLayer(teamMembers = state.serverMapView.teamMembers, ven
     state.serverMapLayout = { renderedRect: null, imageRect: null, mapContext: null };
     mapLayer.innerHTML = '';
     mapImage.style.display = 'none';
+    if (overlayCanvas) overlayCanvas.style.display = 'none';
     emptyEl.style.display = 'flex';
     emptyEl.textContent = '暂无地图数据，请点击刷新地图';
     state.vendingById = {};
@@ -3936,6 +4936,7 @@ function renderServerMapLayer(teamMembers = state.serverMapView.teamMembers, ven
   }
 
   mapImage.style.display = 'block';
+  if (overlayCanvas) overlayCanvas.style.display = 'block';
   emptyEl.style.display = 'none';
 
   const monuments = getMapResourceMonuments();
@@ -3964,7 +4965,7 @@ function renderServerMapLayer(teamMembers = state.serverMapView.teamMembers, ven
   const camera = state.serverMapCamera;
   const points = [];
   const clusterById = {};
-  points.push(buildMapGridOverlayHtml(mapContext, renderedRect, camera, wrap));
+  drawServerMapOverlayCanvas(mapContext, renderedRect, imageRect, monuments, camera, wrap);
 
   const teamClusters = clusterTeamMembers(state.serverMapView.teamMembers, mapContext, renderedRect);
   for (let idx = 0; idx < teamClusters.length; idx += 1) {
@@ -3985,30 +4986,6 @@ function renderServerMapLayer(teamMembers = state.serverMapView.teamMembers, ven
       <div class="server-map-point" ${multi ? `data-team-cluster-id="${clusterId}"` : ''} style="left:${pos.x}px;top:${pos.y}px;" title="${esc(detail)}">
         <div class="server-map-dot team ${stateClass}"></div>
         <div class="server-map-label player ${multi ? 'cluster' : ''}">${esc(label)}</div>
-      </div>
-    `);
-  }
-
-  for (const mon of monuments) {
-    const normalized = monumentToNormalized(mon?.x, mon?.y, mapContext);
-    const basePos = normalizedToPixel(normalized, renderedRect, { clamp: false });
-    const pos = projectServerMapPixel(basePos, wrapWidth, wrapHeight, camera);
-    if (!normalized || !pos) continue;
-    const tokenStr = String(mon.token || '').toLowerCase();
-    const isSubway = tokenStr.includes('train_tunnel') || tokenStr.includes('tunnel_entrance') || tokenStr.includes('subway') || tokenStr.includes('metro');
-    const isSafeZone = ['前哨站', '强盗营地', '渔村', '大型渔村', '牧场', '大型谷仓', '马厩', '前哨站B3'].includes(mon.label);
-    
-    let labelHtml = '';
-    if (!isSubway) {
-        let labelClass = 'server-map-label monument';
-        if (isSafeZone) labelClass += ' safe-zone';
-        labelHtml = `<div class="${labelClass}">${esc(mon.label)}</div>`;
-    }
-
-    points.push(`
-      <div class="server-map-point" style="left:${pos.x}px;top:${pos.y}px;" title="${esc(mon.label)} · ${esc(mon.token)}">
-        ${renderServerMapMonumentIcon(mon)}
-        ${labelHtml}
       </div>
     `);
   }
@@ -4717,10 +5694,6 @@ function buildRuleTriggerSummary(rule) {
     const targetName = target?.name || targetId || '-';
     return `在线人数阈值:${threshold} · 目标规则:${targetName}`;
   }
-  if (rule?.event === 'player_status') {
-    const member = String(rule?.trigger?.memberName || '').trim();
-    return member ? `成员:${member} · 上线/下线/重生/死亡/挂机` : '上线/下线/重生/死亡/挂机';
-  }
   if (rule?.event === 'cargo_ship_status') {
     const trigger = rule?.trigger || {};
     const labels = [];
@@ -4782,6 +5755,18 @@ function buildRuleTriggerSummary(rule) {
   }
   if (rule?.event === 'hourly_tick') return '每4h整点';
   if (rule?.event === 'day_phase_notice') return '距离天黑/天亮 5分钟、1分钟提醒（真实时间）';
+  const PLAYER_EVENT_LABELS = {
+    player_online: '队友上线',
+    player_offline: '队友下线',
+    player_dead: '队友死亡',
+    player_respawn: '队友重生',
+    player_afk: '队友挂机',
+    player_afk_recover: '队友恢复活动',
+  };
+  if (PLAYER_EVENT_LABELS[rule?.event]) {
+    const member = String(rule?.trigger?.memberName || '').trim();
+    return member ? `成员:${member} · ${PLAYER_EVENT_LABELS[rule.event]}` : PLAYER_EVENT_LABELS[rule.event];
+  }
   if (rule?.trigger?.entityId) return `ID:${rule.trigger.entityId}`;
   return '-';
 }
@@ -4814,8 +5799,10 @@ function openAddEventModal() {
   document.getElementById('ev-act-notify').checked = false;
   document.getElementById('ev-act-chat').checked = true;
   document.getElementById('ev-act-callgroup').checked = false;
+  document.getElementById('ev-act-switch').checked = false;
   renderEventDynamicFields();
   renderEventCallGroupFields();
+  renderEventSwitchFields();
 }
 
 function editRule(ruleId) {
@@ -4833,7 +5820,9 @@ function editRule(ruleId) {
   document.getElementById('ev-act-notify').checked = actions.some(a => a.type === 'notify_desktop');
   document.getElementById('ev-act-chat').checked = actions.some(a => a.type === 'team_chat' || a.type === 'send_game_message');
   document.getElementById('ev-act-callgroup').checked = actions.some(a => a.type === 'call_group');
+  document.getElementById('ev-act-switch').checked = actions.some(a => a.type === 'switch_control');
   renderEventCallGroupFields(rule);
+  renderEventSwitchFields(rule);
 }
 
 async function saveEventRule() {
@@ -4855,8 +5844,10 @@ async function saveEventRule() {
   const evThreshold = document.getElementById('ev-threshold')?.value;
   const evOnlineThreshold = document.getElementById('ev-online-threshold')?.value;
   const evTargetRuleId = document.getElementById('ev-target-rule-id')?.value;
+  const evAfkMinutes = document.getElementById('ev-afk-minutes')?.value;
   if (evEntityId) trigger.entityId = Number(evEntityId);
   if (evMemberName) trigger.memberName = evMemberName;
+  if (evAfkMinutes != null && evAfkMinutes !== '') trigger.afkMinutes = Math.max(1, Number(evAfkMinutes) || 15);
   if (evItemShortName) trigger.itemShortName = evItemShortName;
   if (evThreshold != null && evThreshold !== '') trigger.threshold = Number(evThreshold);
   if (evOnlineThreshold != null && evOnlineThreshold !== '') trigger.onlineThreshold = Number(evOnlineThreshold);
@@ -4927,11 +5918,19 @@ async function saveEventRule() {
       return;
     }
   }
+  const doSwitch = !!document.getElementById('ev-act-switch')?.checked;
   const callGroupId = String(document.getElementById('ev-callgroup-id')?.value || '').trim();
   const callGroupChannels = getCallChannelsFromInputs('ev-callgroup');
   const callGroupMessage = String(document.getElementById('ev-callgroup-message')?.value || '').trim();
   if (doCallGroup && !callGroupId) {
     toast('warning', '已启用呼叫组联动，请选择目标呼叫组');
+    return;
+  }
+  const switchAction = document.getElementById('ev-switch-action')?.value || 'on';
+  const switchEntitySelect = document.getElementById('ev-switch-entity-ids');
+  const switchEntityIds = switchEntitySelect ? Array.from(switchEntitySelect.selectedOptions).map((o) => o.value).filter(Boolean) : [];
+  if (doSwitch && !switchEntityIds.length) {
+    toast('warning', '已启用设备控制，请选择目标开关');
     return;
   }
   const editing = state.rules.find(r => r.id === state.editingRuleId);
@@ -4964,6 +5963,13 @@ async function saveEventRule() {
               channels: callGroupChannels,
               ...(callGroupMessage ? { message: callGroupMessage } : {}),
             }]
+          : []),
+        ...(doSwitch
+          ? switchEntityIds.map((eid) => ({
+              type: 'switch_control',
+              entityId: Number(eid),
+              state: switchAction,
+            }))
           : []),
       ],
       ...(event === 'cargo_ship_status'
@@ -5766,7 +6772,80 @@ function syncWindowControlsVisibility() {
   controls.classList.toggle('hidden', platform !== 'win32');
 }
 
+// ═══════════════════════════════════════════════
+// 主题系统
+// ═══════════════════════════════════════════════
+const THEMES = [
+  {
+    id: 'dark', name: '暗夜蓝',
+    sidebar: '#0a0e1c', main: '#0c1120', card: '#0b1224',
+    dot: '#3d55db', bar: '#8e9dff', block: '#121b2f'
+  },
+  {
+    id: 'light', name: '极简白',
+    sidebar: '#ffffff', main: '#f0f2f8', card: '#ffffff',
+    dot: '#4a5cdb', bar: '#4a5cdb', block: '#eef0f6'
+  },
+  {
+    id: 'cyberpunk', name: '赛博朋克',
+    sidebar: '#120024', main: '#0e001e', card: '#150030',
+    dot: '#00f0ff', bar: '#bf00ff', block: '#1a0038'
+  },
+  {
+    id: 'sunset', name: '落日熔金',
+    sidebar: '#1e1208', main: '#1a0e08', card: '#221408',
+    dot: '#ff6020', bar: '#ffa040', block: '#2e1a0c'
+  }
+];
+
+function setTheme(themeId) {
+  if (themeId === 'dark') {
+    document.documentElement.removeAttribute('data-theme');
+  } else {
+    document.documentElement.setAttribute('data-theme', themeId);
+  }
+  localStorage.setItem('rust-plus-theme', themeId);
+  renderSettingsPage();
+}
+
+function renderSettingsPage() {
+  const picker = document.getElementById('theme-picker');
+  if (!picker) return;
+  const current = localStorage.getItem('rust-plus-theme') || 'dark';
+  function previewBorder(t) {
+    if (t.id === 'light') return '#d0d5e0';
+    return 'rgba(255,255,255,.08)';
+  }
+  function previewLabelColor(t) {
+    if (t.id === 'light') return '#1a1d2e';
+    return '#edf2ff';
+  }
+  picker.innerHTML = THEMES.map(t => `
+    <div class="theme-card ${t.id === current ? 'active' : ''}" onclick="setTheme('${t.id}')">
+      <div class="check">✓</div>
+      <div class="preview" style="background:${t.main}">
+        <div class="preview-sidebar" style="background:${t.sidebar};border-right:1px solid ${previewBorder(t)}">
+          <div class="preview-dot" style="background:${t.dot};opacity:.7"></div>
+          <div class="preview-dot" style="background:${t.dot};opacity:.4"></div>
+          <div class="preview-dot" style="background:${t.dot};opacity:.3"></div>
+          <div class="preview-dot" style="background:${t.dot};opacity:.2"></div>
+        </div>
+        <div class="preview-main">
+          <div class="preview-bar" style="background:${t.bar};opacity:.6"></div>
+          <div class="preview-block" style="background:${t.card};border:1px solid ${previewBorder(t)}"></div>
+        </div>
+      </div>
+      <div class="label" style="background:${t.card};color:${previewLabelColor(t)}">${t.name}</div>
+    </div>
+  `).join('');
+}
+
 // ── 启动 ─────────────────────────────────────
+// 立即应用已保存的主题（防止闪烁）
+(function(){
+  const saved = localStorage.getItem('rust-plus-theme');
+  if (saved && saved !== 'dark') document.documentElement.setAttribute('data-theme', saved);
+})();
 syncWindowControlsVisibility();
 setTeamChatComposerEnabled(false);
 init();

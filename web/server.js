@@ -650,41 +650,6 @@ async function bootstrapRuntimeForConnectedServer(serverConfig) {
     }
     safeRules = await listEventRules(serverConfig.id);
   }
-  let playerStatusRule = safeRules.find((rule) => String(rule?.event || '') === 'player_status');
-  if (!playerStatusRule) {
-    playerStatusRule = await saveEventRule({
-      id: 'player_status_notify',
-      name: '队友状态整合事件',
-      event: 'player_status',
-      serverId: serverConfig.id,
-      trigger: { cooldownMs: getGlobalTeamChatIntervalMs() },
-      enabled: true,
-      _meta: {
-        doNotify: false,
-        doChat: true,
-        message: '{player_status_message}',
-        playerStatusMessages: { ...DEFAULT_PLAYER_STATUS_MESSAGES },
-      },
-    });
-    safeRules = await listEventRules(serverConfig.id);
-  } else {
-    const merged = {
-      ...playerStatusRule,
-      _meta: {
-        ...(playerStatusRule._meta || {}),
-        message: String(playerStatusRule?._meta?.message || '').trim() || '{player_status_message}',
-        playerStatusMessages: {
-          ...DEFAULT_PLAYER_STATUS_MESSAGES,
-          ...((playerStatusRule._meta || {}).playerStatusMessages || {}),
-        },
-      },
-    };
-    if (String(merged._meta.message || '').includes('{member}{player_status}')) {
-      merged._meta.message = '{player_status_message}';
-    }
-    await saveEventRule(merged);
-    safeRules = await listEventRules(serverConfig.id);
-  }
   const actionDeps = createRuleActionDeps();
   for (const rule of safeRules) {
     eventEngine.addRule(hydrateRule(rule, actionDeps));

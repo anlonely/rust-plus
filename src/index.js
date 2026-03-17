@@ -23,12 +23,12 @@ const { notify, render } = require('./notify/service');
 const { getSteamProfileStatus } = require('./steam/profile');
 
 // ── 版本信息 ─────────────────────────────────
-const VERSION = '1.0.0';
+const VERSION = '1.2.0';
 
 function printBanner() {
   console.log(chalk.blueBright(`
 ╔══════════════════════════════════════╗
-║     Rust 工具箱  v${VERSION}          ║
+║   安静的Rust工具箱  v${VERSION}        ║
 ║     Rust+ 智能设备管理平台            ║
 ╚══════════════════════════════════════╝
 `));
