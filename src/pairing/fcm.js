@@ -14,11 +14,9 @@ const fs     = require('fs');
 const logger = require('../utils/logger');
 const { redactSensitiveText } = require('../utils/security');
 const { getConfigDir } = require('../utils/runtime-paths');
+const { createRustplusConfigStore } = require('../storage/rustplus-config');
 
 const CONFIG_DIR = getConfigDir();
-const RUSTPLUS_CONFIG_FILE = path.join(CONFIG_DIR, 'rustplus.config.json');
-const FCM_LISTEN_LAST_LOG_FILE = path.join(CONFIG_DIR, 'fcm-listen-last.log');
-const FCM_LISTENER_STATE_FILE = path.join(CONFIG_DIR, 'fcm-listener-state.json');
 const PAIRING_MAX_AGE_MS = 3 * 60 * 1000;
 
 function resolveRustplusCli() {
@@ -31,20 +29,30 @@ function resolveRustplusCli() {
 
 const RUSTPLUS_CLI = resolveRustplusCli();
 
-function readRustplusConfig() {
-  try {
-    return JSON.parse(fs.readFileSync(RUSTPLUS_CONFIG_FILE, 'utf8'));
-  } catch (_) {
-    return {};
-  }
-}
-
 function hasFcmCredentials(config) {
   return !!(config && config.fcm_credentials && config.rustplus_auth_token && config.expo_push_token);
 }
 
-function rustplusArgs(command) {
-  return [RUSTPLUS_CLI, '--config-file', RUSTPLUS_CONFIG_FILE, command];
+function resolveRustplusConfigFile(configFile = '') {
+  return createRustplusConfigStore({ configFile }).filePath;
+}
+
+function getFcmListenLastLogFile(configFile = '') {
+  const resolved = resolveRustplusConfigFile(configFile);
+  return path.join(path.dirname(resolved), 'fcm-listen-last.log');
+}
+
+function getFcmListenerStateFile(configFile = '') {
+  const resolved = resolveRustplusConfigFile(configFile);
+  return path.join(path.dirname(resolved), 'fcm-listener-state.json');
+}
+
+function readRustplusConfig(configFile = '') {
+  return createRustplusConfigStore({ configFile }).read();
+}
+
+function rustplusArgs(command, configFile = '') {
+  return [RUSTPLUS_CLI, '--config-file', resolveRustplusConfigFile(configFile), command];
 }
 
 function parsePairingPayload(input) {
@@ -145,9 +153,10 @@ function extractPersistentId(text) {
   return m ? m[1] : null;
 }
 
-function readListenerState() {
+function readListenerState(configFile = '') {
+  const stateFile = getFcmListenerStateFile(configFile);
   try {
-    const data = JSON.parse(fs.readFileSync(FCM_LISTENER_STATE_FILE, 'utf8'));
+    const data = JSON.parse(fs.readFileSync(stateFile, 'utf8'));
     return {
       processedPersistentIds: Array.isArray(data?.processedPersistentIds) ? data.processedPersistentIds : [],
       lastProcessedSentAtMs: Number.isFinite(Number(data?.lastProcessedSentAtMs)) ? Number(data.lastProcessedSentAtMs) : 0,
@@ -158,7 +167,8 @@ function readListenerState() {
   }
 }
 
-function writeListenerState(next = {}) {
+function writeListenerState(next = {}, configFile = '') {
+  const stateFile = getFcmListenerStateFile(configFile);
   const ids = Array.isArray(next.processedPersistentIds) ? next.processedPersistentIds.slice(-200) : [];
   const payload = {
     processedPersistentIds: ids,
@@ -166,21 +176,22 @@ function writeListenerState(next = {}) {
     updatedAt: new Date().toISOString(),
   };
   try {
-    fs.writeFileSync(FCM_LISTENER_STATE_FILE, JSON.stringify(payload, null, 2), 'utf8');
+    fs.writeFileSync(stateFile, JSON.stringify(payload, null, 2), 'utf8');
   } catch (_) {
     // ignore
   }
 }
 
-function appendListenRaw(text) {
+function appendListenRaw(text, configFile = '') {
+  const logFile = getFcmListenLastLogFile(configFile);
   try {
     const safeText = redactSensitiveText(text);
     const line = `[${new Date().toISOString()}] ${safeText}\n`;
-    fs.appendFileSync(FCM_LISTEN_LAST_LOG_FILE, line, 'utf8');
-    const stat = fs.statSync(FCM_LISTEN_LAST_LOG_FILE);
+    fs.appendFileSync(logFile, line, 'utf8');
+    const stat = fs.statSync(logFile);
     if (stat.size > 2 * 1024 * 1024) {
-      const buf = fs.readFileSync(FCM_LISTEN_LAST_LOG_FILE, 'utf8');
-      fs.writeFileSync(FCM_LISTEN_LAST_LOG_FILE, buf.slice(-800 * 1024), 'utf8');
+      const buf = fs.readFileSync(logFile, 'utf8');
+      fs.writeFileSync(logFile, buf.slice(-800 * 1024), 'utf8');
     }
   } catch (_) {
     // ignore log write errors
@@ -303,8 +314,9 @@ function splitCompleteNotifications(buffer) {
  * 会打开浏览器让用户完成 Steam 登录
  * 完成后凭据自动保存到本地
  */
-async function registerFCM({ force = false } = {}) {
-  const existing = readRustplusConfig();
+async function registerFCM({ force = false, configFile = '' } = {}) {
+  const existing = readRustplusConfig(configFile);
+  const resolvedConfigFile = resolveRustplusConfigFile(configFile);
   if (!force && hasFcmCredentials(existing)) {
     logger.info('[FCM] 已检测到本地凭据，跳过注册。');
     return;
@@ -315,7 +327,7 @@ async function registerFCM({ force = false } = {}) {
 
   try {
     await new Promise((resolve, reject) => {
-      const proc = spawn(process.execPath, rustplusArgs('fcm-register'), {
+      const proc = spawn(process.execPath, rustplusArgs('fcm-register', resolvedConfigFile), {
         stdio: 'inherit',
       });
 
@@ -336,11 +348,11 @@ async function registerFCM({ force = false } = {}) {
       });
     });
 
-    const updated = readRustplusConfig();
+    const updated = readRustplusConfig(resolvedConfigFile);
     if (!hasFcmCredentials(updated)) {
-      throw new Error(`注册流程结束，但未写入凭据文件: ${RUSTPLUS_CONFIG_FILE}`);
+      throw new Error(`注册流程结束，但未写入凭据文件: ${resolvedConfigFile}`);
     }
-    logger.info(`[FCM] FCM 注册成功，凭据已写入: ${RUSTPLUS_CONFIG_FILE}`);
+    logger.info(`[FCM] FCM 注册成功，凭据已写入: ${resolvedConfigFile}`);
   } catch (err) {
     logger.error('[FCM] 注册失败: ' + err.message);
     throw err;
@@ -366,9 +378,10 @@ async function registerFCM({ force = false } = {}) {
  * @returns {Function} stopListening - 调用此函数停止监听
  */
 function listenForPairing(onPairing, options = {}) {
+  const resolvedConfigFile = resolveRustplusConfigFile(options.configFile);
   const onStatus = typeof options.onStatus === 'function' ? options.onStatus : () => {};
-  if (!hasFcmCredentials(readRustplusConfig())) {
-    throw new Error(`FCM 凭据缺失，请先完成 Steam 登录注册（${RUSTPLUS_CONFIG_FILE}）`);
+  if (!hasFcmCredentials(readRustplusConfig(resolvedConfigFile))) {
+    throw new Error(`FCM 凭据缺失，请先完成 Steam 登录注册（${resolvedConfigFile}）`);
   }
 
   logger.info('[FCM] 开始监听配对推送...');
@@ -376,7 +389,7 @@ function listenForPairing(onPairing, options = {}) {
   logger.info('[FCM] 等待推送通知（Ctrl+C 退出）...');
   const seen = new Set();
   const seenPersistentIds = new Set();
-  const persisted = readListenerState();
+  const persisted = readListenerState(resolvedConfigFile);
   const persistedIds = new Set(persisted.processedPersistentIds || []);
   let lastProcessedSentAtMs = persisted.lastProcessedSentAtMs || 0;
   const listenStartedAtMs = Date.now();
@@ -403,7 +416,7 @@ function listenForPairing(onPairing, options = {}) {
   const spawnListener = () => {
     if (stopped) return;
     buffer = '';
-    proc = spawn(process.execPath, rustplusArgs('fcm-listen'), {
+    proc = spawn(process.execPath, rustplusArgs('fcm-listen', resolvedConfigFile), {
       stdio: ['ignore', 'pipe', 'pipe'],
     });
 
@@ -412,7 +425,7 @@ function listenForPairing(onPairing, options = {}) {
     proc.stdout.on('data', (chunk) => {
       const text = chunk.toString();
       logger.debug('[FCM RAW] ' + redactSensitiveText(text).trim());
-      appendListenRaw(text);
+      appendListenRaw(text, resolvedConfigFile);
       if (text.includes('Notification Received')) {
         logger.info('[FCM] 收到推送通知，正在解析配对数据...');
         onStatus({ type: 'notification-received', at: new Date().toISOString() });
@@ -443,7 +456,7 @@ function listenForPairing(onPairing, options = {}) {
           writeListenerState({
             processedPersistentIds: Array.from(persistedIds),
             lastProcessedSentAtMs,
-          });
+          }, resolvedConfigFile);
           logger.info(`[FCM] 丢弃缺少 sent 时间戳的配对推送，避免历史误触发: type=${payload.type || 'server'}`);
           continue;
         }
@@ -455,7 +468,7 @@ function listenForPairing(onPairing, options = {}) {
           writeListenerState({
             processedPersistentIds: Array.from(persistedIds),
             lastProcessedSentAtMs,
-          });
+          }, resolvedConfigFile);
           logger.info(`[FCM] 丢弃 sent 时间戳非法的配对推送: type=${payload.type || 'server'} sent=${payload._sentEpochSec}`);
           continue;
         }
@@ -465,7 +478,7 @@ function listenForPairing(onPairing, options = {}) {
           writeListenerState({
             processedPersistentIds: Array.from(persistedIds),
             lastProcessedSentAtMs,
-          });
+          }, resolvedConfigFile);
           logger.info(`[FCM] 丢弃已处理历史配对推送: type=${payload.type || 'server'} sentAt=${sentAtMs}`);
           continue;
         }
@@ -476,7 +489,7 @@ function listenForPairing(onPairing, options = {}) {
           writeListenerState({
             processedPersistentIds: Array.from(persistedIds),
             lastProcessedSentAtMs,
-          });
+          }, resolvedConfigFile);
           logger.info(`[FCM] 丢弃监听前历史配对推送: type=${payload.type || 'server'} sentAt=${sentAtMs}`);
           continue;
         }
@@ -487,7 +500,7 @@ function listenForPairing(onPairing, options = {}) {
           writeListenerState({
             processedPersistentIds: Array.from(persistedIds),
             lastProcessedSentAtMs,
-          });
+          }, resolvedConfigFile);
           logger.info(`[FCM] 丢弃历史配对推送（超过3分钟）: type=${payload.type || 'server'} ageMs=${ageMs}`);
           continue;
         }
@@ -498,7 +511,7 @@ function listenForPairing(onPairing, options = {}) {
         writeListenerState({
           processedPersistentIds: Array.from(persistedIds),
           lastProcessedSentAtMs,
-        });
+        }, resolvedConfigFile);
         const playerIdSafe = payload.playerId ? `***${String(payload.playerId).slice(-6)}` : '-';
         logger.info(`[FCM] 收到配对数据！type=${payload.type || 'server'} entityId=${payload.entityId || '-'} ${payload.ip || '-'}:${payload.port || '-'} playerId=${playerIdSafe}`);
         onStatus({ type: 'pairing-payload', pairingType: payload.type || 'server' });

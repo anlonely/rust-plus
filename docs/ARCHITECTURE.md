@@ -8,6 +8,13 @@
 
 **Rust 工具箱**是一个基于 Rust+（游戏官方伴侣协议）的智能设备管理平台，支持三种运行模式：CLI、Web 服务、Electron GUI。
 
+但三种模式不是同一层级的产品：
+
+- `Electron GUI / CLI` 属于单机本地场景
+- `Web` 属于公网账号场景
+
+产品边界基线见 [PRODUCT-BOUNDARIES.md](./PRODUCT-BOUNDARIES.md)。
+
 核心能力：
 - 通过 WebSocket 与 Rust 游戏服务器实时通信
 - 监听地图事件（直升机、货船、商人等）并触发自动化规则
@@ -42,10 +49,11 @@ graph TB
     end
 
     subgraph 存储
-        STORE["JsonDb<br/>src/storage/config.js<br/>原子写入 JSON 文件"]
+        STORE["JsonDb / ConfigStore<br/>src/storage/config.js<br/>默认桌面单机 + Web scoped store"]
         S[(servers.json)]
         D[(devices.json)]
         R[(rules.json)]
+        RP[(rustplus.config.json)]
     end
 
     subgraph 外部服务
@@ -71,7 +79,7 @@ graph TB
     TRANS --> GEMINI
     NOTIFY --> DISCORD & KOOK
     FCM --> FCM_PUSH
-    STORE --> S & D & R
+    STORE --> S & D & R & RP
 ```
 
 ---
@@ -93,8 +101,12 @@ rust-plus/
 │   ├── notify/service.js   # 多渠道通知服务
 │   ├── pairing/fcm.js      # FCM 推送配对
 │   ├── presets/index.js    # 规则预设模板
-│   ├── steam/profile.js    # Steam 资料查询
-│   ├── storage/config.js   # JSON 文件数据库
+│   ├── steam/profile.js    # Steam 资料查询（支持 scoped rustplus config）
+│   ├── storage/config.js   # 默认桌面 store + 工厂化 scoped store
+│   ├── storage/create-config-store.js
+│   ├── storage/rustplus-config.js
+│   ├── auth/store.js       # Web 账号/会话/root 管理
+│   ├── auth/user-workspace.js # Web 用户工作区路径与清理
 │   ├── translate/client.js # 翻译服务
 │   └── utils/              # 工具集
 │       ├── cctv-codes.js   # CCTV 摄像头代码库
@@ -125,14 +137,32 @@ rust-plus/
 │   ├── rules.json          # 事件/指令/呼叫组规则
 │   ├── item-catalog.json   # 游戏物品目录
 │   └── cctv-codes.json     # CCTV 代码数据库
+│   └── web-users/          # Web 多租户工作区根目录
+│       └── <userId>/       # 每用户独立 servers/devices/rules/rustplus.config
 ├── assets/                 # 图标与地图资源
 ├── test/                   # 单元测试（Node.js 内置 test runner）
 └── docs/                   # 文档
 ```
 
+## 四、产品边界
+
+### 桌面端
+
+- 默认单用户
+- 本地配置目录即可满足需求
+- 不需要外围邮箱账号层
+
+### Web 端
+
+- 目标是多用户公有服务
+- 必须按用户隔离 Rust+ 运行时、Steam token、FCM 配对状态、服务器/设备/规则数据
+- 不能直接复用桌面单机的全局配置模型
+- 当前实现已落地到 `config/web-users/<userId>/`
+- 禁用/删除用户时会同步关闭该用户 WebSocket / Rust+ runtime，并按需清理工作区
+
 ---
 
-## 四、核心数据流
+## 五、核心数据流
 
 ### 事件监听流程
 
@@ -181,7 +211,7 @@ sequenceDiagram
 
 ---
 
-## 五、聊天指令系统
+## 六、聊天指令系统
 
 | 指令 | 类型 | 权限 | 功能 |
 |------|------|------|------|
@@ -199,7 +229,7 @@ sequenceDiagram
 
 ---
 
-## 六、事件类型
+## 七、事件类型
 
 | 类别 | 事件 ID | 说明 |
 |------|---------|------|
@@ -216,7 +246,7 @@ sequenceDiagram
 
 ---
 
-## 七、存储结构
+## 八、存储结构
 
 ### servers.json
 ```json
@@ -245,7 +275,7 @@ sequenceDiagram
 
 ---
 
-## 八、环境变量配置
+## 九、环境变量配置
 
 | 变量 | 必须 | 说明 |
 |------|------|------|

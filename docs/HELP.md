@@ -210,3 +210,23 @@
 - GUI 版和 web 版是两个独立系统。
 - 如果两边同时连接到同一个 Rust+ 服务器，队伍聊天指令和事件通知会各自发送一次。
 - 只测试 GUI 时，请停掉 `web/server.js`；只测试 web 时，请关闭 GUI。
+
+---
+
+## 9. 云端无图形化 Steam 登录（Chrome 插件桥接）
+
+适用场景：`rust-plus-web` 部署在 Ubuntu 云服务器（无桌面环境，无法直接弹出浏览器登录 Steam）。
+
+流程：
+1. 在 Web 端点击 Steam 登录，生成一次性会话码（`RPTK-...`）。
+2. 在本机 Chrome 安装扩展目录：`platforms/chrome-rustplus-bridge`。
+3. 扩展里填写云端地址 + 会话码，点击“开始 Steam 登录并回传”。
+4. 本机 Chrome 完成 Steam 登录后，扩展将 token 回传至云端 `/steam-bridge/complete`。
+5. 云端自动写入 `rustplus.config.json`，并自动尝试启动配对监听。
+
+教程页面：
+- Web 内置教程：`/docs-static/tutorial-steam-bridge.html`
+
+排错：
+- 会话过期：重新在 Web 端发起一次登录获取新会话码。
+- 回传失败：先访问 `<你的域名>/steam-bridge/ping`，确认返回 `{\"ok\":true}`。

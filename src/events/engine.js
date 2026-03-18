@@ -173,6 +173,15 @@ class EventEngine {
     this._onRuleEnabledChanged = typeof options.onRuleEnabledChanged === 'function'
       ? options.onRuleEnabledChanged
       : null;
+    this._bindContext = typeof options.bindContext === 'function'
+      ? options.bindContext
+      : ((fn) => fn);
+    this._getDeepSeaState = typeof options.getDeepSeaState === 'function'
+      ? options.getDeepSeaState
+      : getDeepSeaState;
+    this._saveDeepSeaState = typeof options.saveDeepSeaState === 'function'
+      ? options.saveDeepSeaState
+      : saveDeepSeaState;
 
     this._lastHourlyGameHour = null;
     this._dayPhaseReminderState = {
@@ -268,8 +277,8 @@ class EventEngine {
     this._client = client;
 
     // 保存绑定的处理器引用，以便 unbind 时移除
-    this._boundEntityHandler = (data) => this._onEntityChanged(data);
-    this._boundTeamHandler   = (data) => this._onTeamChanged(data);
+    this._boundEntityHandler = this._bindContext((data) => this._onEntityChanged(data));
+    this._boundTeamHandler   = this._bindContext((data) => this._onTeamChanged(data));
     this._boundHandlers = [
       ['entityChanged', this._boundEntityHandler],
       ['teamChanged',   this._boundTeamHandler],
@@ -282,7 +291,7 @@ class EventEngine {
     client.on('teamChanged',   this._boundTeamHandler);
 
     // 启动地图标记轮询（10 秒间隔）
-    this._mapPollTimer = setInterval(() => this._pollMapMarkers(), 10_000);
+    this._mapPollTimer = setInterval(this._bindContext(() => this._pollMapMarkers()), 10_000);
     this._loadCargoHarbors().catch((e) => {
       logger.warn('[EventEngine] 货船港口数据加载失败: ' + e.message);
     });
@@ -612,7 +621,7 @@ class EventEngine {
   async _loadDeepSeaState() {
     if (this._deepSeaStateLoaded) return;
     try {
-      this._deepSeaPersist = await getDeepSeaState();
+      this._deepSeaPersist = await this._getDeepSeaState();
     } catch (e) {
       logger.warn('[EventEngine] 深海状态加载失败: ' + e.message);
     } finally {
@@ -622,7 +631,7 @@ class EventEngine {
 
   async _persistDeepSeaState(patch = {}) {
     try {
-      this._deepSeaPersist = await saveDeepSeaState({ ...this._deepSeaPersist, ...patch });
+      this._deepSeaPersist = await this._saveDeepSeaState({ ...this._deepSeaPersist, ...patch });
     } catch (e) {
       logger.warn('[EventEngine] 深海状态保存失败: ' + e.message);
     }

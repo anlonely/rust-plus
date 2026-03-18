@@ -835,6 +835,28 @@ input, textarea, select { font-family:inherit; }
 #titlebar .dot { width:8px; height:8px; border-radius:50%; background:var(--text3); }
 #titlebar .dot.online { background:var(--green); box-shadow:0 0 6px var(--green); animation:pulse 2s infinite; }
 @keyframes pulse { 0%,100%{ opacity:1 } 50%{ opacity:.5 } }
+#titlebar .account-toolbar { display:flex; align-items:center; gap:10px; -webkit-app-region:no-drag; }
+#titlebar .account-pill {
+  display:flex; align-items:center; gap:10px; min-width:220px;
+  border:1px solid rgba(151,168,232,.26);
+  background:linear-gradient(180deg, rgba(10,17,33,.92), rgba(13,19,37,.78));
+  border-radius:999px; padding:6px 10px 6px 8px; color:var(--text);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05), 0 8px 24px rgba(4,8,20,.35);
+}
+#titlebar .account-pill:hover { border-color:rgba(188,201,255,.46); background:linear-gradient(180deg, rgba(16,24,44,.96), rgba(17,26,48,.84)); }
+.account-pill-avatar,
+.account-avatar-lg {
+  width:32px; height:32px; border-radius:50%;
+  background:linear-gradient(135deg, #4f74ff, #8a5eff);
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden; color:#fff; font-weight:700; flex-shrink:0;
+}
+.account-avatar-lg { width:56px; height:56px; font-size:22px; }
+.account-pill-avatar img,
+.account-avatar-lg img { width:100%; height:100%; object-fit:cover; display:block; }
+.account-pill-text { display:flex; flex-direction:column; min-width:0; text-align:left; }
+.account-pill-text strong { font-size:12px; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.account-pill-text small { font-size:11px; color:var(--text3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 #titlebar .win-btns { display:flex; gap:6px; -webkit-app-region:no-drag; }
 #titlebar .win-btn {
   width:30px; height:23px; border:1px solid transparent; background:transparent; border-radius:7px;
@@ -1338,6 +1360,36 @@ input, textarea, select { font-family:inherit; }
 .server-map-vending-content::-webkit-scrollbar-thumb,
 .server-map-vending-side::-webkit-scrollbar-thumb { background:rgba(255,255,255,.12); border-radius:999px; }
 .hidden { display:none !important; }
+.guide-article {
+  max-height:42vh;
+  overflow:auto;
+  padding:14px;
+  border-radius:12px;
+  border:1px solid rgba(108,127,174,.28);
+  background:rgba(8,15,31,.76);
+  font-size:13px;
+  line-height:1.8;
+  color:var(--text2);
+}
+.guide-article h4 {
+  margin:0 0 8px;
+  font-size:14px;
+  color:var(--text);
+}
+.guide-article p,
+.guide-article li { margin:0 0 8px; }
+.guide-article ol,
+.guide-article ul { margin:0 0 10px 18px; padding:0; }
+.guide-warning {
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid rgba(255,176,107,.35);
+  background:rgba(89,48,11,.22);
+  color:#ffd5a5;
+  font-size:12px;
+  line-height:1.7;
+}
 </style>
 </head>
 <body>
@@ -1359,6 +1411,15 @@ input, textarea, select { font-family:inherit; }
       <div class="dot" id="dot-server"></div>
       <span id="label-server">未连接</span>
     </div>
+  </div>
+  <div class="account-toolbar">
+    <button class="account-pill" id="account-pill" onclick="openAccountCenterModal()">
+      <div class="account-pill-avatar" id="account-pill-avatar">U</div>
+      <div class="account-pill-text">
+        <strong id="account-pill-name">未登录</strong>
+        <small id="account-pill-email">-</small>
+      </div>
+    </button>
   </div>
   <div class="win-btns">
     <button class="win-btn" onclick="rustAPI.minimize()">&#x2212;</button>
@@ -1838,6 +1899,127 @@ input, textarea, select { font-family:inherit; }
   </div>
 </div>
 
+<!-- ══ 模态框：云端 Steam 登录桥接 ═══════════════ -->
+<div class="modal-overlay" id="modal-steam-remote-auth">
+  <div class="modal" style="max-width:700px">
+    <div class="modal-title">
+      云端 Steam 登录（本机 Chrome 插件）
+      <button class="modal-close" onclick="closeRemoteSteamAuthModal()">✕</button>
+    </div>
+    <div style="font-size:13px;color:var(--text2);line-height:1.8">
+      <div>1. 在本机 Chrome 安装扩展：<code>platforms/chrome-rustplus-bridge</code></div>
+      <div>2. 在扩展中填写服务器地址：<code id="steam-bridge-server-url">-</code></div>
+      <div>3. 粘贴会话码并点击扩展内“开始 Steam 登录并回传”</div>
+      <div>4. 等待当前窗口状态变为“已完成”</div>
+    </div>
+    <div class="card" style="padding:12px;margin-top:12px">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:6px">会话码（一次性）</div>
+      <div id="steam-remote-session-code" style="font-family:ui-monospace, Menlo, monospace;font-size:12px;line-height:1.6;word-break:break-all;color:var(--text)">-</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+        <button class="btn btn-ghost btn-sm" onclick="copyRemoteSteamSessionCode()">复制会话码</button>
+        <button class="btn btn-ghost btn-sm" onclick="openSteamBridgeGuide()">查看插件教程</button>
+      </div>
+    </div>
+    <div class="card" style="padding:12px;margin-top:10px">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:6px">状态</div>
+      <div id="steam-remote-status" style="font-size:13px;color:var(--text)">等待中...</div>
+      <div id="steam-remote-expire" style="font-size:12px;color:var(--text3);margin-top:4px">-</div>
+      <div id="steam-remote-steps" style="margin-top:10px;max-height:180px;overflow:auto;font-size:12px;line-height:1.6;color:var(--text2)"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="refreshRemoteSteamAuthNow()">立即刷新</button>
+      <button class="btn btn-danger" onclick="cancelRemoteSteamAuthFlow()">取消会话</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-account-center">
+  <div class="modal" style="max-width:720px">
+    <div class="modal-title">
+      个人中心
+      <button class="modal-close" onclick="closeModal('modal-account-center')">✕</button>
+    </div>
+    <div style="display:grid;grid-template-columns:120px minmax(0,1fr);gap:14px;align-items:start">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+        <div class="account-avatar-lg" id="account-center-avatar">U</div>
+        <input type="file" id="account-avatar-file" accept="image/png,image/jpeg,image/webp,image/gif" onchange="handleAccountAvatarFile(event)">
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="form-row" style="margin:0">
+          <div class="form-label">邮箱账号</div>
+          <input class="input" id="account-email" disabled>
+        </div>
+        <div class="form-row" style="margin:0">
+          <div class="form-label">昵称</div>
+          <input class="input" id="account-nickname" maxlength="24" placeholder="输入昵称">
+        </div>
+        <div class="form-row" style="margin:0">
+          <div class="form-label">Steam 绑定</div>
+          <input class="input" id="account-steam-binding" disabled>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer" style="justify-content:flex-end">
+      <button class="btn btn-primary" onclick="saveAccountProfile()">保存资料</button>
+    </div>
+    <div class="card" style="padding:14px;margin-top:8px">
+      <div class="card-title">修改密码</div>
+      <div class="form-row" style="margin:0 0 10px">
+        <div class="form-label">当前密码</div>
+        <input class="input" id="account-password-current" type="password" placeholder="请输入当前密码">
+      </div>
+      <div class="form-row" style="margin:0 0 10px">
+        <div class="form-label">新密码</div>
+        <input class="input" id="account-password-next" type="password" placeholder="至少12位，含大小写、数字、特殊字符">
+      </div>
+      <div class="modal-footer" style="justify-content:space-between">
+        <button class="btn btn-danger" onclick="logoutAccount()">退出登录</button>
+        <button class="btn btn-primary" onclick="changeAccountPassword()">更新密码</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-guide-required">
+  <div class="modal" style="max-width:780px">
+    <div class="modal-title">
+      首次使用说明与免责声明
+      <button class="modal-close" onclick="toast('warning','请先阅读并确认后继续')">✕</button>
+    </div>
+    <div class="guide-article" id="guide-article" onscroll="handleGuideArticleScroll()">
+      <h4>Google Chrome 插件下载、导入、认证教程</h4>
+      <p>此系统部署在云服务器，Steam 登录需要借助你本机 Chrome 插件完成授权回传。</p>
+      <ol>
+        <li>点击下方“下载插件压缩包”，下载 `chrome-rustplus-bridge.zip`。</li>
+        <li>本机 Chrome 打开 `chrome://extensions`，开启右上角“开发者模式”。</li>
+        <li>解压下载包，点击“加载已解压的扩展程序”，选择解压后的插件目录。</li>
+        <li>回到系统主界面，点击 Steam 登录，系统会生成一次性会话码。</li>
+        <li>打开 Chrome 扩展，填写你的云端地址与会话码，点击“开始 Steam 登录并回传”。</li>
+        <li>在本机浏览器按正常流程完成 Steam 与 Rust+ 登录。</li>
+        <li>回传成功后，云端会自动写入 token，并继续后续配对监听。</li>
+      </ol>
+      <p>认证完成后，你的 Steam 绑定摘要会记录到账号资料，便于后台管理和排查问题。</p>
+      <div class="guide-warning">
+        免责声明：你需要确认自己有权使用对应 Steam / Rust+ 账号与服务器。系统会保存必要的登录凭据与绑定摘要，用于 Rust+ 功能运行和问题排查。未经授权的使用、共享账号、违规调用或对第三方服务造成的风险，由使用者自行承担。
+      </div>
+      <p style="margin-top:12px">继续前请完整阅读到本区域底部，再勾选确认。</p>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+      <button class="btn btn-ghost" onclick="rustAPI.openUrl('/docs-static/chrome-rustplus-bridge.zip')">下载插件压缩包</button>
+      <button class="btn btn-ghost" onclick="openSteamBridgeGuide()">查看详细教程页</button>
+    </div>
+    <div class="form-row" style="margin-top:12px">
+      <label style="display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--text2);cursor:pointer">
+        <input type="checkbox" id="guide-disclaimer-check" style="margin-top:3px;accent-color:var(--blue)" disabled>
+        我已完整阅读以上教程与免责声明，理解插件登录与 Rust+ 配对的风险和责任。
+      </label>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" id="guide-confirm-btn" onclick="confirmGuideAcceptance()" disabled>我已阅读并确认</button>
+    </div>
+  </div>
+</div>
+
 <!-- Toast 区域 -->
 <div id="toast-area"></div>
 
@@ -2092,6 +2274,7 @@ const state = {
   activePage:    'dashboard',
   connected:     false,
   currentServer: null,
+  currentUser:   null,
   steam:         null,
   servers:       [],
   devices:       [],
@@ -2107,7 +2290,16 @@ const state = {
   pendingPairingDevice: null,
   pendingPairingOptions: null,
   steamReauthPrompted: false,
+  accountAvatarDraft: '',
+  guideScrolledToEnd: false,
   helpDocLoaded: false,
+  remoteSteamAuth: {
+    sessionId: '',
+    sessionCode: '',
+    status: 'idle',
+    expiresAt: '',
+    timer: null,
+  },
   healthPollTimer: null,
   mapPollTimer: null,
   serverMap: null,
@@ -2884,6 +3076,7 @@ function navigate(pageId, el) {
 // ═══════════════════════════════════════════════
 async function init() {
   try {
+    await ensureCurrentUserSession();
     const data = await rustAPI.init();
     state.servers    = data.servers    || [];
     state.devices    = data.devices    || [];
@@ -2898,6 +3091,7 @@ async function init() {
     renderSteamUserCard(state.steam);
     await refreshSteamUserCard({ silent: true });
     await promptSteamReauthIfNeeded({ source: 'startup', autoQueuePairing: true });
+    maybeShowGuideModal();
     updateConnectionUI(state.connected, state.currentServer?.name);
     updateScopedPageState();
     setPairingStatus(true);
@@ -2977,6 +3171,171 @@ async function loadHelpDoc() {
   const text = await rustAPI.getHelpDoc().catch((e) => `帮助文档读取失败: ${e.message}`);
   el.textContent = String(text || '暂无帮助文档');
   state.helpDocLoaded = true;
+}
+
+function renderCurrentUser(user = null) {
+  const avatarEl = document.getElementById('account-pill-avatar');
+  const nameEl = document.getElementById('account-pill-name');
+  const emailEl = document.getElementById('account-pill-email');
+  if (!avatarEl || !nameEl || !emailEl) return;
+
+  if (!user) {
+    avatarEl.textContent = 'U';
+    avatarEl.innerHTML = 'U';
+    nameEl.textContent = '未登录';
+    emailEl.textContent = '-';
+    return;
+  }
+
+  const avatar = String(user.avatarDataUrl || '').trim();
+  if (avatar) avatarEl.innerHTML = `<img src="${avatar}" alt="avatar">`;
+  else avatarEl.textContent = String(user.nickname || user.email || 'U').slice(0, 1).toUpperCase();
+  nameEl.textContent = user.nickname || '未命名账号';
+  emailEl.textContent = user.email || '-';
+}
+
+async function ensureCurrentUserSession() {
+  const session = await rustAPI.getAuthSession().catch(() => null);
+  if (!session?.authenticated || !session.user) {
+    location.href = '/auth';
+    throw new Error('登录状态已失效');
+  }
+  state.currentUser = session.user;
+  renderCurrentUser(state.currentUser);
+  return state.currentUser;
+}
+
+function renderAccountCenterModal() {
+  const user = state.currentUser;
+  const avatarEl = document.getElementById('account-center-avatar');
+  const emailEl = document.getElementById('account-email');
+  const nicknameEl = document.getElementById('account-nickname');
+  const bindingEl = document.getElementById('account-steam-binding');
+  if (!avatarEl || !emailEl || !nicknameEl || !bindingEl) return;
+
+  const avatar = String(state.accountAvatarDraft || user?.avatarDataUrl || '').trim();
+  if (avatar) avatarEl.innerHTML = `<img src="${avatar}" alt="avatar">`;
+  else avatarEl.textContent = String(user?.nickname || user?.email || 'U').slice(0, 1).toUpperCase();
+  emailEl.value = user?.email || '';
+  nicknameEl.value = user?.nickname || '';
+  const steamBinding = user?.steamBinding;
+  bindingEl.value = steamBinding?.steamId
+    ? `${steamBinding.steamName || 'Steam'} / ${steamBinding.steamId}`
+    : '未绑定 Steam';
+}
+
+function openAccountCenterModal() {
+  if (!state.currentUser) return;
+  state.accountAvatarDraft = String(state.currentUser.avatarDataUrl || '').trim();
+  renderAccountCenterModal();
+  openModal('modal-account-center');
+}
+
+function handleAccountAvatarFile(event) {
+  const file = event?.target?.files?.[0];
+  if (!file) return;
+  if (!String(file.type || '').startsWith('image/')) {
+    toast('error', '请选择图片文件');
+    return;
+  }
+  if (file.size > 512 * 1024) {
+    toast('error', '头像大小不能超过 512KB');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = () => {
+    state.accountAvatarDraft = String(reader.result || '');
+    renderAccountCenterModal();
+  };
+  reader.onerror = () => {
+    toast('error', '头像读取失败');
+  };
+  reader.readAsDataURL(file);
+}
+
+async function saveAccountProfile() {
+  try {
+    const nickname = String(document.getElementById('account-nickname')?.value || '').trim();
+    const res = await rustAPI.updateAuthProfile({
+      nickname,
+      avatarDataUrl: state.accountAvatarDraft || '',
+    });
+    if (!res?.success || !res.user) throw new Error(res?.error || '保存失败');
+    state.currentUser = res.user;
+    renderCurrentUser(state.currentUser);
+    renderAccountCenterModal();
+    toast('success', '个人资料已更新');
+  } catch (e) {
+    toast('error', '保存失败：' + (e?.message || '未知错误'));
+  }
+}
+
+async function changeAccountPassword() {
+  const currentPassword = String(document.getElementById('account-password-current')?.value || '').trim();
+  const nextPassword = String(document.getElementById('account-password-next')?.value || '').trim();
+  if (!currentPassword || !nextPassword) {
+    toast('warning', '请填写当前密码和新密码');
+    return;
+  }
+  try {
+    const res = await rustAPI.updateAuthPassword({ currentPassword, nextPassword });
+    if (!res?.success) throw new Error(res?.error || '修改失败');
+    toast('success', '密码已更新，请重新登录');
+    location.href = '/auth?reason=password-updated';
+  } catch (e) {
+    toast('error', '修改失败：' + (e?.message || '未知错误'));
+  }
+}
+
+async function logoutAccount() {
+  await rustAPI.logoutAuth().catch(() => null);
+  location.href = '/auth';
+}
+
+function handleGuideArticleScroll() {
+  const article = document.getElementById('guide-article');
+  const check = document.getElementById('guide-disclaimer-check');
+  if (!article || !check) return;
+  const reached = article.scrollTop + article.clientHeight >= article.scrollHeight - 8;
+  if (!reached) return;
+  state.guideScrolledToEnd = true;
+  check.disabled = false;
+}
+
+function updateGuideConfirmState() {
+  const check = document.getElementById('guide-disclaimer-check');
+  const btn = document.getElementById('guide-confirm-btn');
+  if (!check || !btn) return;
+  btn.disabled = !(state.guideScrolledToEnd && check.checked);
+}
+
+async function confirmGuideAcceptance() {
+  try {
+    const res = await rustAPI.acceptAuthGuide();
+    if (!res?.success || !res.user) throw new Error(res?.error || '确认失败');
+    state.currentUser = res.user;
+    renderCurrentUser(state.currentUser);
+    closeModal('modal-guide-required');
+    toast('success', '已确认首次使用说明');
+  } catch (e) {
+    toast('error', '确认失败：' + (e?.message || '未知错误'));
+  }
+}
+
+function maybeShowGuideModal() {
+  if (!state.currentUser || state.currentUser.hasAcceptedGuide) return;
+  state.guideScrolledToEnd = false;
+  const article = document.getElementById('guide-article');
+  const check = document.getElementById('guide-disclaimer-check');
+  const btn = document.getElementById('guide-confirm-btn');
+  if (article) article.scrollTop = 0;
+  if (check) {
+    check.checked = false;
+    check.disabled = true;
+    check.onchange = updateGuideConfirmState;
+  }
+  if (btn) btn.disabled = true;
+  openModal('modal-guide-required');
 }
 
 function renderSteamUserCard(steam) {
@@ -3082,6 +3441,172 @@ function navigateToSteamLogin() {
   beginSteamAuthFlow();
 }
 
+function isWebRemoteSteamAuthSupported() {
+  return rustAPI?.platform === 'web'
+    && typeof rustAPI.createRemoteSteamAuthSession === 'function'
+    && typeof rustAPI.getRemoteSteamAuthSession === 'function';
+}
+
+function stopRemoteSteamAuthPolling() {
+  if (!state.remoteSteamAuth?.timer) return;
+  clearInterval(state.remoteSteamAuth.timer);
+  state.remoteSteamAuth.timer = null;
+}
+
+function closeRemoteSteamAuthModal() {
+  stopRemoteSteamAuthPolling();
+  closeModal('modal-steam-remote-auth');
+}
+
+function openSteamBridgeGuide() {
+  rustAPI.openUrl('/docs-static/tutorial-steam-bridge.html');
+}
+
+function renderRemoteSteamAuthSession(session = null) {
+  const codeEl = document.getElementById('steam-remote-session-code');
+  const statusEl = document.getElementById('steam-remote-status');
+  const expireEl = document.getElementById('steam-remote-expire');
+  const stepsEl = document.getElementById('steam-remote-steps');
+  const serverUrlEl = document.getElementById('steam-bridge-server-url');
+  if (serverUrlEl) serverUrlEl.textContent = location.origin;
+  if (!codeEl || !statusEl || !expireEl || !stepsEl) return;
+
+  if (!session) {
+    codeEl.textContent = '-';
+    statusEl.textContent = '等待创建会话...';
+    expireEl.textContent = '-';
+    stepsEl.innerHTML = '';
+    return;
+  }
+
+  const statusMap = {
+    pending: '等待本机插件回传 token',
+    processing: '云端处理中...',
+    completed: '已完成',
+    failed: '失败',
+    expired: '会话已过期',
+    cancelled: '会话已取消',
+  };
+  const steps = Array.isArray(session.steps) ? session.steps : [];
+  codeEl.textContent = state.remoteSteamAuth.sessionCode || '-';
+  statusEl.textContent = statusMap[session.status] || String(session.status || 'unknown');
+  expireEl.textContent = session.expiresAt ? `会话有效期至：${session.expiresAt}` : '-';
+  stepsEl.innerHTML = steps.length
+    ? steps.map((item) => `<div>${esc(item.at || '-')} · ${esc(item.message || '-')}</div>`).join('')
+    : '<div style="color:var(--text3)">暂无步骤日志</div>';
+}
+
+async function copyRemoteSteamSessionCode() {
+  const code = String(state.remoteSteamAuth?.sessionCode || '').trim();
+  if (!code) {
+    toast('warning', '当前没有可复制的会话码');
+    return;
+  }
+  try {
+    await copyTextToClipboard(code);
+    toast('success', '会话码已复制');
+  } catch (e) {
+    toast('error', '复制失败: ' + (e?.message || '未知错误'));
+  }
+}
+
+async function refreshRemoteSteamAuthNow() {
+  const sessionId = String(state.remoteSteamAuth?.sessionId || '').trim();
+  if (!sessionId) return;
+  try {
+    const resp = await rustAPI.getRemoteSteamAuthSession(sessionId);
+    if (!resp?.success || !resp?.session) throw new Error(resp?.error || '会话状态获取失败');
+    await onRemoteSteamAuthSessionUpdate(resp.session);
+  } catch (e) {
+    toast('error', '刷新远程授权状态失败: ' + (e?.message || '未知错误'));
+  }
+}
+
+async function onRemoteSteamAuthSessionUpdate(session) {
+  if (!session) return;
+  state.remoteSteamAuth.status = session.status || 'pending';
+  state.remoteSteamAuth.expiresAt = session.expiresAt || '';
+  renderRemoteSteamAuthSession(session);
+
+  if (session.status === 'completed') {
+    stopRemoteSteamAuthPolling();
+    state.steam = session?.result?.steam || (await refreshSteamUserCard({ silent: true })) || state.steam;
+    renderSteamUserCard(state.steam);
+    closeModal('modal-steam-remote-auth');
+    closeModal('modal-steam-profile');
+
+    const pendingPairing = state.pendingPairingOptions;
+    state.pendingPairingOptions = null;
+    if (pendingPairing) {
+      toast('success', 'Steam 远程登录完成，正在自动开始配对监听');
+      await startPairing({ ...pendingPairing, skipSteamCheck: true });
+      return;
+    }
+    openModal('modal-steam-credential-success');
+    return;
+  }
+
+  if (session.status === 'failed') {
+    stopRemoteSteamAuthPolling();
+    toast('error', '远程登录失败：' + (session.error || '未知错误'));
+    return;
+  }
+  if (session.status === 'expired') {
+    stopRemoteSteamAuthPolling();
+    toast('warning', '远程登录会话已过期，请重新发起登录');
+    return;
+  }
+  if (session.status === 'cancelled') {
+    stopRemoteSteamAuthPolling();
+    toast('info', '远程登录会话已取消');
+  }
+}
+
+async function cancelRemoteSteamAuthFlow() {
+  const sessionId = String(state.remoteSteamAuth?.sessionId || '').trim();
+  const sessionCode = String(state.remoteSteamAuth?.sessionCode || '').trim();
+  stopRemoteSteamAuthPolling();
+  if (sessionId) {
+    await rustAPI.cancelRemoteSteamAuthSession(sessionId, { sessionCode }).catch(() => null);
+  }
+  state.remoteSteamAuth = {
+    sessionId: '',
+    sessionCode: '',
+    status: 'cancelled',
+    expiresAt: '',
+    timer: null,
+  };
+  closeModal('modal-steam-remote-auth');
+}
+
+async function beginWebRemoteSteamAuthFlow() {
+  const createRes = await rustAPI.createRemoteSteamAuthSession({ ttlMs: 10 * 60 * 1000 });
+  if (!createRes?.success || !createRes?.session) {
+    throw new Error(createRes?.error || '创建远程授权会话失败');
+  }
+  const session = createRes.session;
+  state.remoteSteamAuth = {
+    sessionId: String(session.id || ''),
+    sessionCode: String(session.sessionCode || ''),
+    status: String(session.status || 'pending'),
+    expiresAt: String(session.expiresAt || ''),
+    timer: null,
+  };
+  renderRemoteSteamAuthSession(session);
+  openModal('modal-steam-remote-auth');
+  closeModal('modal-steam-profile');
+
+  stopRemoteSteamAuthPolling();
+  state.remoteSteamAuth.timer = setInterval(async () => {
+    const sessionId = String(state.remoteSteamAuth?.sessionId || '').trim();
+    if (!sessionId) return;
+    try {
+      const remote = await rustAPI.getRemoteSteamAuthSession(sessionId);
+      if (remote?.success && remote.session) await onRemoteSteamAuthSessionUpdate(remote.session);
+    } catch (_) {}
+  }, 3000);
+}
+
 async function logoutSteam() {
   const res = await rustAPI.steamLogout().catch(e => ({ success: false, reason: e.message }));
   if (!res?.success) {
@@ -3097,26 +3622,35 @@ async function logoutSteam() {
 }
 
 async function beginSteamAuthFlow() {
-  toast('info', '正在启动 Rust+ 凭证授权流程，请在弹出的 Chrome 中登录 Steam');
   const btn = document.getElementById('btn-steam-login');
   if (btn) btn.disabled = true;
-  const res = await rustAPI.steamBeginAuth().catch(e => ({ success: false, reason: e.message }));
-  if (btn) btn.disabled = false;
-  if (!res?.success) {
-    toast('error', '授权失败：' + (res?.reason || '未知错误'));
-    return;
+  try {
+    if (isWebRemoteSteamAuthSupported()) {
+      toast('info', '已创建远程授权会话，请在本机 Chrome 插件中完成 Steam 登录');
+      await beginWebRemoteSteamAuthFlow();
+      return;
+    }
+
+    toast('info', '正在启动 Rust+ 凭证授权流程，请在弹出的 Chrome 中登录 Steam');
+    const res = await rustAPI.steamBeginAuth().catch(e => ({ success: false, reason: e.message }));
+    if (!res?.success) {
+      toast('error', '授权失败：' + (res?.reason || '未知错误'));
+      return;
+    }
+    state.steam = res.steam || null;
+    renderSteamUserCard(state.steam);
+    closeModal('modal-steam-profile');
+    const pendingPairing = state.pendingPairingOptions;
+    state.pendingPairingOptions = null;
+    if (pendingPairing) {
+      toast('success', 'Steam 登录已恢复，正在重新开始配对');
+      await startPairing({ ...pendingPairing, skipSteamCheck: true });
+      return;
+    }
+    openModal('modal-steam-credential-success');
+  } finally {
+    if (btn) btn.disabled = false;
   }
-  state.steam = res.steam || null;
-  renderSteamUserCard(state.steam);
-  closeModal('modal-steam-profile');
-  const pendingPairing = state.pendingPairingOptions;
-  state.pendingPairingOptions = null;
-  if (pendingPairing) {
-    toast('success', 'Steam 登录已恢复，正在重新开始配对');
-    await startPairing({ ...pendingPairing, skipSteamCheck: true });
-    return;
-  }
-  openModal('modal-steam-credential-success');
 }
 
 function gotoManagementAfterSteamLogin() {

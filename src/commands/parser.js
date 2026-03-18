@@ -22,6 +22,8 @@ class CommandParser {
     notifyDesktopRunner = null,
     notifyDiscordRunner = null,
     teamChatRunner = null,
+    deepSeaStateGetter = null,
+    bindContext = null,
   } = {}) {
     this.leaderId  = leaderId;
     this.prefix    = prefix;
@@ -32,6 +34,8 @@ class CommandParser {
     this._notifyDesktopRunner = typeof notifyDesktopRunner === 'function' ? notifyDesktopRunner : null;
     this._notifyDiscordRunner = typeof notifyDiscordRunner === 'function' ? notifyDiscordRunner : null;
     this._teamChatRunner = typeof teamChatRunner === 'function' ? teamChatRunner : null;
+    this._deepSeaStateGetter = typeof deepSeaStateGetter === 'function' ? deepSeaStateGetter : getDeepSeaState;
+    this._bindContext = typeof bindContext === 'function' ? bindContext : ((fn) => fn);
     this._switches = new Map(); // entityId → alias
     this._cargoTrack = new Map(); // cargoId -> { x, y, at }
     this._cargoBoundaryTimer = null;
@@ -75,7 +79,7 @@ class CommandParser {
       }
     }
     this._client = client;
-    this._boundTeamMessageHandler = (msg) => this._onTeamMessage(msg);
+    this._boundTeamMessageHandler = this._bindContext((msg) => this._onTeamMessage(msg));
     client.on('teamMessage', this._boundTeamMessageHandler);
     logger.info('[CMD] 指令监听启动: ' + Object.keys(this._commands).join(' / '));
   }
@@ -219,7 +223,7 @@ class CommandParser {
       client.getMapMarkers().catch(() => null),
       client.getTime().catch(() => null),
       client.getServerInfo().catch(() => null),
-      getDeepSeaState().catch(() => ({})),
+      this._deepSeaStateGetter().catch(() => ({})),
     ]);
     const markers = markersRes?.mapMarkers?.markers || [];
     const mapSize = Number(

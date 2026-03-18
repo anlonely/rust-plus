@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Steam 云端登录插件教程</title>
+  <style>
+    :root { color-scheme: dark; }
+    body {
+      margin: 0;
+      font: 15px/1.75 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a0f1c;
+      color: #e3ecff;
+    }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 28px 18px 40px; }
+    h1 { margin: 0 0 10px; font-size: 28px; }
+    h2 { margin: 26px 0 10px; font-size: 20px; }
+    p { margin: 8px 0; color: #b8c8e7; }
+    ul, ol { margin: 8px 0 8px 22px; color: #c7d6f4; }
+    li { margin: 6px 0; }
+    .card {
+      border: 1px solid rgba(142, 170, 226, 0.28);
+      border-radius: 12px;
+      background: rgba(7, 16, 32, 0.78);
+      padding: 14px;
+      margin-top: 12px;
+    }
+    code {
+      background: rgba(120, 143, 183, 0.2);
+      border: 1px solid rgba(120, 143, 183, 0.35);
+      border-radius: 6px;
+      padding: 1px 6px;
+      color: #f5f8ff;
+    }
+    .ok { color: #5be9a2; }
+    .warn { color: #ffd077; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Steam 云端登录插件教程</h1>
+    <p>适用场景：你的 <code>rust-plus-web</code> 运行在云服务器（无图形化），无法直接在服务器上完成 Steam 登录。</p>
+
+    <div class="card">
+      <strong>最终目标</strong>
+      <ol>
+        <li>在云端 Web 页面点击「Steam 登录」创建一次性会话码。</li>
+        <li>在你本机 Chrome 打开扩展，完成 Steam 登录。</li>
+        <li>扩展把 token 回传到云端，云端自动写入配置并启动配对监听。</li>
+      </ol>
+    </div>
+
+    <h2>一、安装 Chrome 扩展</h2>
+    <ol>
+      <li>本机 Chrome 打开 <code>chrome://extensions</code>。</li>
+      <li>开启右上角「开发者模式」。</li>
+      <li>点击「加载已解压的扩展程序」。</li>
+      <li>选择目录：<code>platforms/chrome-rustplus-bridge</code>。</li>
+    </ol>
+
+    <h2>二、云端发起登录会话</h2>
+    <ol>
+      <li>进入云端 Web 控制台，打开 Steam 登录窗口。</li>
+      <li>点击登录后会出现「会话码（一次性）」，格式是 <code>RPTK-xxxxx.yyyyy</code>。</li>
+      <li>复制这个会话码。</li>
+    </ol>
+
+    <h2>三、扩展回传 token</h2>
+    <ol>
+      <li>点击 Chrome 工具栏中的 <code>Rust+ Steam Bridge</code> 扩展图标。</li>
+      <li>填写：
+        <ul>
+          <li>云端地址：例如 <code>https://rust.anlonely.me</code></li>
+          <li>会话码：粘贴刚刚复制的 <code>RPTK-...</code></li>
+        </ul>
+      </li>
+      <li>点击「开始 Steam 登录并回传」。</li>
+      <li>扩展会自动打开 Rust+ 登录页，按正常流程完成 Steam 登录。</li>
+    </ol>
+
+    <h2>四、成功判定</h2>
+    <ul>
+      <li>扩展状态显示 <code>completed</code>。</li>
+      <li>云端 Web 会话状态显示 <span class="ok">已完成</span>。</li>
+      <li>Steam 卡片中可看到 SteamID/头像/状态。</li>
+      <li>云端会自动尝试启动配对监听，等待你在游戏内执行 Pair with Server。</li>
+    </ul>
+
+    <h2>五、服务器配对（无图形化 Ubuntu）</h2>
+    <ol>
+      <li>确认云端 Web 页面里配对状态显示监听中。</li>
+      <li>进入 Rust 游戏，按 <code>ESC -> Rust+ -> Pair with Server</code>。</li>
+      <li>返回云端页面，出现「配对成功」后保存服务器与设备信息。</li>
+    </ol>
+
+    <h2>六、排错</h2>
+    <div class="card">
+      <ul>
+        <li><span class="warn">timeout</span>：登录页长时间没有回传，重新创建会话码并重试。</li>
+        <li><span class="warn">会话已过期</span>：默认会话 10 分钟有效，重新发起登录。</li>
+        <li><span class="warn">回传失败</span>：检查云端地址是否可访问，先打开 <code>/steam-bridge/ping</code> 看是否返回 <code>{"ok":true}</code>。</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>

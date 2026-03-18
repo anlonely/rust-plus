@@ -6,10 +6,15 @@ config/rustplus.config.json
 config/fcm-listen-last.log
 config/playwright-tool-rustplus-state.json
 config/fcm-listener-state.json
+config/auth-users.json
+config/root-admin-credentials.txt
+config/web-users/
 logs/
 *.local
 .DS_Store
 Thumbs.db
+docs/AGENT_CONTEXT.md
+docs/static/chrome-rustplus-bridge.zip
 
 # IDE & Tool directories
 .claude/

@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "Rust+ Steam Bridge",
+  "description": "在本机 Chrome 捕获 Rust+ Steam Token 并回传到云端 rust-plus-web。",
+  "version": "1.0.0",
+  "permissions": [
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://companion-rust.facepunch.com/*",
+    "https://*/*",
+    "http://*/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Rust+ Steam Bridge",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://companion-rust.facepunch.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_start"
+    }
+  ]
+}

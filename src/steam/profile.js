@@ -1,22 +1,6 @@
-const fs = require('fs');
-const path = require('path');
 const https = require('https');
 const { maskSecret } = require('../utils/security');
-const { getConfigDir } = require('../utils/runtime-paths');
-
-const CONFIG_FILE = path.join(getConfigDir(), 'rustplus.config.json');
-
-function readConfig() {
-  try {
-    return JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8'));
-  } catch {
-    return {};
-  }
-}
-
-function writeConfig(nextConfig) {
-  fs.writeFileSync(CONFIG_FILE, JSON.stringify(nextConfig || {}, null, 2), 'utf8');
-}
+const { createRustplusConfigStore } = require('../storage/rustplus-config');
 
 function parseBase64JsonSegment(segment) {
   if (!segment || typeof segment !== 'string') return null;
@@ -134,14 +118,15 @@ async function fetchSteamProfileXml(steamId) {
   };
 }
 
-async function getSteamProfileStatus({ fetchRemote = true } = {}) {
-  const cfg = readConfig();
+async function getSteamProfileStatus({ fetchRemote = true, configFile = '' } = {}) {
+  const cfgStore = createRustplusConfigStore({ configFile });
+  const cfg = cfgStore.read();
   const token = cfg.rustplus_auth_token || '';
   const decoded = decodeRustplusToken(token);
 
   const steamId = decoded?.steamId || null;
   const result = {
-    configFile: CONFIG_FILE,
+    configFile: cfgStore.filePath,
     hasLogin: Boolean(token),
     tokenMasked: token ? maskSecret(token, { visible: 6 }) : '',
     tokenMeta: decoded ? {
@@ -171,12 +156,13 @@ async function getSteamProfileStatus({ fetchRemote = true } = {}) {
   return result;
 }
 
-async function logoutSteam() {
-  const cfg = readConfig();
+async function logoutSteam({ configFile = '' } = {}) {
+  const cfgStore = createRustplusConfigStore({ configFile });
+  const cfg = cfgStore.read();
   if (!cfg || typeof cfg !== 'object') return { success: false, reason: '配置文件不可用' };
   delete cfg.rustplus_auth_token;
   delete cfg.rustplus_auth;
-  writeConfig(cfg);
+  await cfgStore.write(cfg);
   return { success: true };
 }
 

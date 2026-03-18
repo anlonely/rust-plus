@@ -18,6 +18,17 @@
     return headers;
   }
 
+  async function requestJson(url, options = {}) {
+    const opts = { ...options };
+    opts.headers = withAuthHeaders(opts.headers || {});
+    const res = await fetch(url, opts);
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.error || data.reason || `${res.status} ${res.statusText}`);
+    }
+    return data;
+  }
+
   async function invoke(channel, ...args) {
     const res = await fetch('/api/ipc/invoke', {
       method: 'POST',
@@ -216,6 +227,39 @@
     getMapData: () => invoke('map:getData'),
     getMapMarkers: () => invoke('map:getMarkers'),
     searchItems: (query) => invoke('catalog:search', query),
+
+    createRemoteSteamAuthSession: (payload = {}) => requestJson('/api/steam/remote-auth/session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload || {}),
+    }),
+    getRemoteSteamAuthSession: (sessionId) => requestJson(`/api/steam/remote-auth/session/${encodeURIComponent(String(sessionId || ''))}`),
+    cancelRemoteSteamAuthSession: (sessionId, payload = {}) => requestJson(`/api/steam/remote-auth/session/${encodeURIComponent(String(sessionId || ''))}/cancel`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload || {}),
+    }),
+    getAuthSession: () => requestJson('/api/auth/session'),
+    updateAuthProfile: (payload = {}) => requestJson('/api/auth/profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload || {}),
+    }),
+    updateAuthPassword: (payload = {}) => requestJson('/api/auth/password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload || {}),
+    }),
+    acceptAuthGuide: () => requestJson('/api/auth/guide/accept', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),
+    }),
+    logoutAuth: () => requestJson('/api/auth/logout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),
+    }),
 
     on,
     off,

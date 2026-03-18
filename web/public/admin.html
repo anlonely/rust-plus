@@ -1,0 +1,982 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rust 工具箱 - 管理后台</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #050913;
+      --panel: rgba(10, 16, 32, 0.88);
+      --panel-2: rgba(8, 13, 26, 0.94);
+      --panel-3: rgba(12, 19, 37, 0.82);
+      --border: rgba(135, 154, 214, 0.24);
+      --border-strong: rgba(162, 146, 255, 0.48);
+      --text: #eef3ff;
+      --text2: #bac7e3;
+      --text3: #8ea0c0;
+      --blue: #7aa7ff;
+      --blue2: #4967ff;
+      --green: #49d48d;
+      --orange: #ffbe74;
+      --red: #ff7b92;
+      --violet: #d4b8ff;
+      --shadow: 0 28px 80px rgba(0, 0, 0, 0.42);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; font-family: 'Segoe UI', 'PingFang SC', sans-serif; background: var(--bg); color: var(--text); }
+    body {
+      background:
+        radial-gradient(48% 62% at 8% 0%, rgba(69, 98, 255, 0.24), transparent 70%),
+        radial-gradient(36% 42% at 100% 10%, rgba(223, 110, 184, 0.18), transparent 68%),
+        linear-gradient(145deg, #04070f, #09101e 48%, #060b15);
+    }
+    .btn-shell {
+      position: relative;
+      display: inline-flex;
+      padding: 1px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: conic-gradient(from 0deg, #e2cbff, #393bb2, #e2cbff);
+      animation: spin 2s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(1turn); } }
+    .btn {
+      min-width: 126px;
+      height: 44px;
+      padding: 0 18px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      background: rgba(7, 11, 22, 0.98);
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .18s ease, transform .18s ease, opacity .18s ease;
+    }
+    .btn:hover { background: rgba(7, 11, 22, 0.82); transform: translateY(-1px); }
+    .btn:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(122, 167, 255, 0.22), 0 0 0 6px rgba(226, 203, 255, 0.12);
+    }
+    .btn-secondary {
+      border: 1px solid rgba(139, 156, 214, 0.24);
+      background: rgba(12, 18, 35, 0.9);
+      color: var(--text2);
+    }
+    .btn-danger {
+      border: 1px solid rgba(255, 123, 146, 0.26);
+      background: rgba(61, 18, 31, 0.9);
+      color: #ffc7d2;
+    }
+    .btn-ghost {
+      min-width: auto;
+      height: 38px;
+      padding: 0 14px;
+      border: 1px solid rgba(137, 155, 214, 0.2);
+      border-radius: 12px;
+      background: rgba(13, 19, 36, 0.82);
+      color: var(--text2);
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .input, .textarea, .select {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid rgba(129, 147, 200, 0.28);
+      background: rgba(9, 14, 28, 0.88);
+      color: var(--text);
+      outline: none;
+      transition: border-color .18s ease, box-shadow .18s ease;
+    }
+    .input, .select { height: 44px; padding: 0 14px; }
+    .textarea { min-height: 108px; padding: 12px 14px; resize: vertical; }
+    .input:focus, .textarea:focus, .select:focus {
+      border-color: rgba(122, 167, 255, 0.72);
+      box-shadow: 0 0 0 3px rgba(72, 102, 255, 0.18);
+    }
+    .page {
+      min-height: 100%;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: 28px;
+      border: 1px solid rgba(156, 171, 226, 0.18);
+      background: linear-gradient(180deg, rgba(8, 13, 26, 0.96), rgba(10, 17, 34, 0.84));
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      right: -80px;
+      top: -90px;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(85, 109, 255, 0.32), transparent 70%);
+      filter: blur(12px);
+      pointer-events: none;
+    }
+    .hero-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(145, 163, 222, 0.24);
+      background: rgba(14, 22, 43, 0.76);
+      color: var(--text2);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 14px 0 8px;
+      font-size: clamp(28px, 3vw, 42px);
+      line-height: 1.05;
+    }
+    .sub {
+      margin: 0;
+      color: var(--text2);
+      font-size: 14px;
+      line-height: 1.8;
+      max-width: 62ch;
+    }
+    .session-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(139, 157, 215, 0.22);
+      background: rgba(11, 18, 35, 0.72);
+      color: var(--text2);
+      font-size: 12px;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text3);
+      box-shadow: 0 0 12px currentColor;
+    }
+    .status-dot.online { background: var(--green); color: var(--green); }
+    .status-dot.disabled { background: var(--red); color: var(--red); }
+    .status-dot.bound { background: var(--blue); color: var(--blue); }
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(360px, 0.9fr);
+      gap: 18px;
+      align-items: start;
+    }
+    .stack { display: grid; gap: 18px; }
+    .panel {
+      border: 1px solid rgba(135, 154, 214, 0.18);
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(9, 14, 28, 0.96), rgba(11, 18, 35, 0.82));
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+    .panel-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .panel-title h2, .panel-title h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .stat-card {
+      padding: 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(130, 146, 202, 0.2);
+      background: rgba(12, 18, 35, 0.72);
+    }
+    .stat-card strong {
+      display: block;
+      font-size: 26px;
+      margin-top: 8px;
+    }
+    .stat-card span {
+      color: var(--text3);
+      font-size: 12px;
+    }
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .search {
+      flex: 1 1 260px;
+    }
+    .user-list {
+      display: grid;
+      gap: 12px;
+    }
+    .user-row {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 14px;
+      padding: 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(128, 145, 200, 0.18);
+      background: rgba(10, 16, 31, 0.8);
+    }
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border: 1px solid rgba(135, 154, 214, 0.24);
+      background: linear-gradient(180deg, rgba(30, 42, 79, 0.92), rgba(15, 21, 41, 0.94));
+      font-weight: 800;
+      color: var(--text);
+    }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .user-main {
+      min-width: 0;
+      display: grid;
+      gap: 8px;
+    }
+    .user-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .user-head strong {
+      font-size: 16px;
+      max-width: 28ch;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .user-email {
+      color: var(--text2);
+      font-size: 13px;
+      word-break: break-all;
+    }
+    .mini-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      border: 1px solid rgba(138, 156, 214, 0.24);
+      background: rgba(12, 18, 35, 0.84);
+      color: var(--text2);
+    }
+    .mini-badge.root { color: #f7d6a3; border-color: rgba(255, 190, 116, 0.32); background: rgba(63, 35, 8, 0.86); }
+    .mini-badge.online { color: #a7ffd2; border-color: rgba(73, 212, 141, 0.32); background: rgba(13, 51, 33, 0.86); }
+    .mini-badge.offline { color: #bfcbe5; }
+    .mini-badge.disabled { color: #ffc1cc; border-color: rgba(255, 123, 146, 0.28); background: rgba(70, 18, 32, 0.84); }
+    .mini-badge.bound { color: #bed7ff; border-color: rgba(122, 167, 255, 0.28); background: rgba(12, 31, 63, 0.84); }
+    .user-meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text3);
+    }
+    .user-meta strong {
+      display: block;
+      color: var(--text2);
+      font-size: 11px;
+      margin-bottom: 4px;
+    }
+    .steam-box {
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(122, 167, 255, 0.18);
+      background: rgba(10, 17, 34, 0.72);
+      font-size: 12px;
+      color: var(--text2);
+      line-height: 1.7;
+    }
+    .user-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+    .field label {
+      color: var(--text2);
+      font-size: 12px;
+    }
+    .hint {
+      font-size: 11px;
+      color: var(--text3);
+      line-height: 1.6;
+    }
+    .notice {
+      min-height: 20px;
+      font-size: 12px;
+      color: var(--text3);
+    }
+    .notice.error { color: var(--red); }
+    .notice.success { color: var(--green); }
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(2, 5, 12, 0.72);
+      backdrop-filter: blur(6px);
+      z-index: 30;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      width: min(760px, 100%);
+      max-height: min(88vh, 920px);
+      overflow: auto;
+      border-radius: 24px;
+      border: 1px solid rgba(140, 158, 216, 0.2);
+      background: linear-gradient(180deg, rgba(8, 13, 26, 0.98), rgba(11, 18, 35, 0.9));
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .modal-head h3 { margin: 0; font-size: 20px; }
+    .close {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      border: 1px solid rgba(137, 154, 214, 0.2);
+      background: rgba(12, 18, 35, 0.88);
+      color: var(--text2);
+      cursor: pointer;
+    }
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+    pre {
+      margin: 0;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(134, 152, 211, 0.18);
+      background: rgba(7, 11, 22, 0.92);
+      color: #dce6ff;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .login-shell {
+      min-height: calc(100vh - 56px);
+      display: grid;
+      place-items: center;
+    }
+    .login-card {
+      width: min(460px, 100%);
+      border-radius: 28px;
+      border: 1px solid rgba(148, 165, 223, 0.18);
+      background: linear-gradient(180deg, rgba(8, 13, 26, 0.96), rgba(11, 17, 33, 0.82));
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+    .hidden { display: none !important; }
+    @media (max-width: 1200px) {
+      .grid { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .split, .field-grid, .user-meta { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 820px) {
+      .page { padding: 14px; }
+      .hero, .panel { border-radius: 20px; }
+      .stats { grid-template-columns: 1fr; }
+      .user-row { grid-template-columns: 1fr; }
+      .user-actions { align-items: stretch; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page hidden" id="page-dashboard">
+    <section class="hero">
+      <div class="hero-top">
+        <div>
+          <div class="eyebrow">Rust Toolbox Root Console</div>
+          <h1>用户账号与认证后台</h1>
+          <p class="sub">这里用于管理 Web 端注册用户、账号状态、Steam 绑定摘要和后续邮箱验证码通道。主站入口已经被外层登录系统保护，后台只允许 root 进入。</p>
+          <div class="session-badges">
+            <div class="badge"><span class="status-dot online"></span><span id="session-nickname">Root Admin</span></div>
+            <div class="badge"><span class="status-dot bound"></span><span id="session-email">root@rustplus.local</span></div>
+            <div class="badge"><span>管理入口</span><strong>/admin</strong></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-secondary" type="button" onclick="location.href='/'">返回主界面</button>
+          <div class="btn-shell"><button class="btn" type="button" onclick="adminLogout()">退出 root</button></div>
+        </div>
+      </div>
+
+      <div class="stats" id="stats-grid">
+        <div class="stat-card"><span>总账号</span><strong id="stat-total">0</strong></div>
+        <div class="stat-card"><span>启用中</span><strong id="stat-enabled">0</strong></div>
+        <div class="stat-card"><span>已禁用</span><strong id="stat-disabled">0</strong></div>
+        <div class="stat-card"><span>在线中</span><strong id="stat-online">0</strong></div>
+        <div class="stat-card"><span>已绑定 Steam</span><strong id="stat-bound">0</strong></div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="stack">
+        <section class="panel">
+          <div class="panel-title">
+            <h2>用户账号管理</h2>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <button class="btn-ghost" type="button" onclick="refreshUsers()">刷新列表</button>
+              <div class="btn-shell"><button class="btn" type="button" onclick="openUserModal('create')">新增账号</button></div>
+            </div>
+          </div>
+          <div class="toolbar">
+            <input class="input search" id="user-search" placeholder="搜索昵称、邮箱、Steam ID、Steam 名称" oninput="renderUsers()">
+            <select class="select" id="user-filter" onchange="renderUsers()">
+              <option value="all">全部状态</option>
+              <option value="enabled">仅启用</option>
+              <option value="disabled">仅禁用</option>
+              <option value="online">仅在线</option>
+              <option value="bound">仅已绑定 Steam</option>
+            </select>
+          </div>
+          <div class="notice" id="users-notice"></div>
+          <div class="user-list" id="user-list"></div>
+        </section>
+      </div>
+
+      <div class="stack">
+        <section class="panel">
+          <div class="panel-title">
+            <h3>root 初始凭据</h3>
+            <button class="btn-ghost" type="button" onclick="loadRootCredential()">重新读取</button>
+          </div>
+          <p class="sub" style="font-size:13px;margin-bottom:12px">系统启动时会自动生成 root 随机密码并写入运行目录。此处仅用于确认当前部署实例的 root 登录信息。</p>
+          <pre id="root-credential">加载中...</pre>
+        </section>
+
+        <section class="panel">
+          <div class="panel-title">
+            <h3>邮箱验证码通道预配置</h3>
+            <button class="btn-ghost" type="button" onclick="loadEmailProvider()">刷新配置</button>
+          </div>
+          <div class="field-grid">
+            <div class="field">
+              <label>SMTP Host</label>
+              <input class="input" id="mail-host" placeholder="smtp.example.com">
+            </div>
+            <div class="field">
+              <label>端口</label>
+              <input class="input" id="mail-port" type="number" placeholder="465">
+            </div>
+            <div class="field">
+              <label>登录邮箱</label>
+              <input class="input" id="mail-username" placeholder="bot@example.com">
+            </div>
+            <div class="field">
+              <label>SMTP 密码 / 授权码</label>
+              <input class="input" id="mail-password" type="password" placeholder="留空则保持原值">
+            </div>
+            <div class="field">
+              <label>发件邮箱</label>
+              <input class="input" id="mail-from-email" placeholder="noreply@example.com">
+            </div>
+            <div class="field">
+              <label>发件人名称</label>
+              <input class="input" id="mail-from-name" placeholder="Rust 工具箱">
+            </div>
+          </div>
+          <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:12px">
+            <label class="mini-badge"><input id="mail-enabled" type="checkbox" style="accent-color:var(--blue)"> 启用配置</label>
+            <label class="mini-badge"><input id="mail-secure" type="checkbox" style="accent-color:var(--blue)" checked> 使用 SSL/TLS</label>
+          </div>
+          <div class="hint" style="margin-top:10px">当前仅保存配置，不会真正发送验证码。后续接入真实邮箱后，这套配置可直接复用。</div>
+          <div class="notice" id="mail-notice" style="margin-top:10px"></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+            <button class="btn-ghost" type="button" onclick="testEmailStub()">测试验证码接口</button>
+            <div class="btn-shell"><button class="btn" type="button" onclick="saveEmailProvider()">保存邮箱配置</button></div>
+          </div>
+        </section>
+      </div>
+    </section>
+  </div>
+
+  <div class="page" id="page-login">
+    <div class="login-shell">
+      <div class="login-card">
+        <div class="eyebrow">/admin</div>
+        <h1 style="font-size:30px;margin-top:16px">root 管理后台登录</h1>
+        <p class="sub">仅 root 可进入。用户名固定支持 <code>root</code>，也支持使用 <code>root@rustplus.local</code> 登录。</p>
+        <div class="field">
+          <label>root 账号</label>
+          <input class="input" id="admin-identifier" autocomplete="username" placeholder="root / root@rustplus.local">
+        </div>
+        <div class="field">
+          <label>密码</label>
+          <input class="input" id="admin-password" type="password" autocomplete="current-password" placeholder="输入 root 随机密码">
+        </div>
+        <div class="notice" id="login-notice"></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+          <div class="btn-shell"><button class="btn" type="button" onclick="adminLogin()">进入后台</button></div>
+          <button class="btn btn-secondary" type="button" onclick="location.href='/auth'">返回用户登录</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-user">
+    <div class="modal">
+      <div class="modal-head">
+        <h3 id="user-modal-title">新增账号</h3>
+        <button class="close" type="button" onclick="closeUserModal()">✕</button>
+      </div>
+      <div class="field-grid">
+        <div class="field">
+          <label>昵称</label>
+          <input class="input" id="user-form-nickname" maxlength="24" placeholder="2-24 个字符">
+        </div>
+        <div class="field">
+          <label>邮箱</label>
+          <input class="input" id="user-form-email" type="email" placeholder="name@example.com">
+        </div>
+        <div class="field">
+          <label>密码</label>
+          <input class="input" id="user-form-password" type="password" placeholder="新建时必填；编辑时留空表示不修改">
+        </div>
+        <div class="field">
+          <label>状态</label>
+          <select class="select" id="user-form-disabled">
+            <option value="false">启用</option>
+            <option value="true">禁用</option>
+          </select>
+        </div>
+      </div>
+      <div class="hint" style="margin-top:10px">密码强度要求：至少 12 位，且包含大写字母、小写字母、数字、特殊字符。</div>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:12px">
+        <label class="mini-badge"><input id="user-form-clear-steam" type="checkbox" style="accent-color:var(--blue)"> 清空 Steam 绑定摘要</label>
+      </div>
+      <div class="notice" id="user-form-notice" style="margin-top:12px"></div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:14px">
+        <button class="btn btn-secondary" type="button" onclick="closeUserModal()">取消</button>
+        <div class="btn-shell"><button class="btn" type="button" onclick="saveUser()">保存账号</button></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      session: null,
+      users: [],
+      userModalMode: 'create',
+      editingUserId: '',
+      emailConfig: null,
+    };
+
+    function byId(id) { return document.getElementById(id); }
+
+    function setNotice(id, text, type = '') {
+      const el = byId(id);
+      if (!el) return;
+      el.textContent = String(text || '');
+      el.className = `notice${type ? ` ${type}` : ''}`;
+    }
+
+    function escapeHtml(value) {
+      return String(value || '').replace(/[&<>"']/g, (ch) => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+      }[ch]));
+    }
+
+    function formatTime(value) {
+      if (!value) return '-';
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return '-';
+      return date.toLocaleString('zh-CN', { hour12: false });
+    }
+
+    async function api(url, options = {}) {
+      const response = await fetch(url, {
+        credentials: 'same-origin',
+        ...options,
+        headers: {
+          'Content-Type': 'application/json',
+          ...(options.headers || {}),
+        },
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || `${response.status} ${response.statusText}`);
+      return data;
+    }
+
+    function renderAuthState() {
+      const isRoot = state.session?.authenticated && state.session?.user?.role === 'root';
+      byId('page-dashboard').classList.toggle('hidden', !isRoot);
+      byId('page-login').classList.toggle('hidden', isRoot);
+      if (!isRoot) return;
+      byId('session-nickname').textContent = state.session.user.nickname || 'Root Admin';
+      byId('session-email').textContent = state.session.user.email || 'root@rustplus.local';
+    }
+
+    async function refreshSession() {
+      const session = await api('/api/auth/session').catch(() => ({ authenticated: false, user: null }));
+      state.session = session;
+      renderAuthState();
+      if (session?.authenticated && session?.user?.role !== 'root') {
+        setNotice('login-notice', '当前登录账号不是 root，请先退出普通用户账号后再使用 /admin。', 'error');
+      }
+      if (session?.authenticated && session?.user?.role === 'root') {
+        await Promise.all([refreshUsers(), loadEmailProvider(), loadRootCredential()]);
+      }
+      return session;
+    }
+
+    async function adminLogin() {
+      setNotice('login-notice', '', '');
+      try {
+        await api('/api/auth/admin/login', {
+          method: 'POST',
+          body: JSON.stringify({
+            identifier: byId('admin-identifier').value.trim(),
+            password: byId('admin-password').value,
+          }),
+        });
+        setNotice('login-notice', '登录成功，正在加载后台...', 'success');
+        await refreshSession();
+      } catch (err) {
+        setNotice('login-notice', err.message || '登录失败', 'error');
+      }
+    }
+
+    async function adminLogout() {
+      await api('/api/auth/logout', {
+        method: 'POST',
+        body: JSON.stringify({}),
+      }).catch(() => null);
+      state.session = null;
+      renderAuthState();
+      location.href = '/admin';
+    }
+
+    function computeStats(users) {
+      return {
+        total: users.length,
+        enabled: users.filter((item) => !item.disabled).length,
+        disabled: users.filter((item) => item.disabled).length,
+        online: users.filter((item) => item.online).length,
+        bound: users.filter((item) => item.steamBinding?.steamId).length,
+      };
+    }
+
+    function renderStats(users) {
+      const stats = computeStats(users);
+      byId('stat-total').textContent = String(stats.total);
+      byId('stat-enabled').textContent = String(stats.enabled);
+      byId('stat-disabled').textContent = String(stats.disabled);
+      byId('stat-online').textContent = String(stats.online);
+      byId('stat-bound').textContent = String(stats.bound);
+    }
+
+    function getFilteredUsers() {
+      const query = String(byId('user-search')?.value || '').trim().toLowerCase();
+      const filter = String(byId('user-filter')?.value || 'all');
+      return state.users.filter((user) => {
+        const binding = user.steamBinding || {};
+        const haystack = [
+          user.nickname,
+          user.email,
+          user.username,
+          binding.steamId,
+          binding.steamName,
+          binding.stateMessage,
+        ].join(' ').toLowerCase();
+        if (query && !haystack.includes(query)) return false;
+        if (filter === 'enabled' && user.disabled) return false;
+        if (filter === 'disabled' && !user.disabled) return false;
+        if (filter === 'online' && !user.online) return false;
+        if (filter === 'bound' && !user.steamBinding?.steamId) return false;
+        return true;
+      });
+    }
+
+    function renderUsers() {
+      const list = byId('user-list');
+      const users = getFilteredUsers();
+      renderStats(state.users);
+      if (!users.length) {
+        list.innerHTML = '<div class="panel" style="padding:16px;border-style:dashed;color:var(--text3)">当前筛选条件下没有账号记录。</div>';
+        return;
+      }
+      list.innerHTML = users.map((user) => {
+        const avatar = String(user.avatarDataUrl || '').trim();
+        const steam = user.steamBinding || null;
+        const canManage = user.role !== 'root';
+        const userIdEnc = encodeURIComponent(String(user.id || ''));
+        const emailEnc = encodeURIComponent(String(user.email || ''));
+        const avatarHtml = avatar
+          ? `<img src="${escapeHtml(avatar)}" alt="avatar">`
+          : escapeHtml(String(user.nickname || user.email || 'U').slice(0, 1).toUpperCase());
+        const steamHtml = steam?.steamId
+          ? `<div class="steam-box">
+              <div><strong style="color:var(--text)">Steam</strong></div>
+              <div>${escapeHtml(steam.steamName || '未命名 Steam')}</div>
+              <div>ID: ${escapeHtml(steam.steamId || '-')}</div>
+              <div>状态: ${escapeHtml(steam.stateMessage || '-')}</div>
+              <div>绑定时间: ${escapeHtml(formatTime(steam.boundAt))}</div>
+            </div>`
+          : '<div class="steam-box" style="color:var(--text3)">未绑定 Steam</div>';
+        return `
+          <article class="user-row">
+            <div class="avatar">${avatarHtml}</div>
+            <div class="user-main">
+              <div class="user-head">
+                <strong>${escapeHtml(user.nickname || '未命名账号')}</strong>
+                ${user.role === 'root' ? '<span class="mini-badge root">ROOT</span>' : ''}
+                <span class="mini-badge ${user.online ? 'online' : 'offline'}">${user.online ? '在线' : '离线'}</span>
+                ${user.disabled ? '<span class="mini-badge disabled">已禁用</span>' : '<span class="mini-badge">启用中</span>'}
+                ${steam?.steamId ? '<span class="mini-badge bound">已绑定 Steam</span>' : ''}
+              </div>
+              <div class="user-email">${escapeHtml(user.email || '-')}</div>
+              <div class="user-meta">
+                <div><strong>创建时间</strong>${escapeHtml(formatTime(user.createdAt))}</div>
+                <div><strong>最近登录</strong>${escapeHtml(formatTime(user.lastLoginAt))}</div>
+                <div><strong>最近活动</strong>${escapeHtml(formatTime(user.lastSeenAt))}</div>
+              </div>
+              ${steamHtml}
+            </div>
+            <div class="user-actions">
+              <button class="btn-ghost" type="button" onclick="copyEmail(decodeURIComponent('${emailEnc}'))">复制邮箱</button>
+              ${canManage ? `<button class="btn-ghost" type="button" onclick="toggleUserDisabled(decodeURIComponent('${userIdEnc}'), ${user.disabled ? 'false' : 'true'})">${user.disabled ? '启用账号' : '禁用账号'}</button>` : '<button class="btn-ghost" type="button" disabled>ROOT 只读</button>'}
+              ${canManage ? `<button class="btn-ghost" type="button" onclick="openUserModal('edit', decodeURIComponent('${userIdEnc}'))">编辑</button>` : ''}
+              ${canManage ? `<button class="btn btn-danger" type="button" onclick="deleteUser(decodeURIComponent('${userIdEnc}'))">删除</button>` : ''}
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    async function refreshUsers() {
+      setNotice('users-notice', '正在刷新用户列表...', '');
+      try {
+        const result = await api('/api/admin/users');
+        state.users = Array.isArray(result.users) ? result.users : [];
+        renderUsers();
+        setNotice('users-notice', `已加载 ${state.users.length} 个账号`, 'success');
+      } catch (err) {
+        setNotice('users-notice', err.message || '用户列表加载失败', 'error');
+      }
+    }
+
+    async function loadRootCredential() {
+      try {
+        const result = await api('/api/auth/root-credential');
+        byId('root-credential').textContent = result.text || '未找到 root 凭据文件';
+      } catch (err) {
+        byId('root-credential').textContent = `读取失败：${err.message || err}`;
+      }
+    }
+
+    async function loadEmailProvider() {
+      try {
+        const result = await api('/api/admin/email-provider');
+        state.emailConfig = result.config || {};
+        byId('mail-host').value = state.emailConfig.host || '';
+        byId('mail-port').value = state.emailConfig.port || 465;
+        byId('mail-username').value = state.emailConfig.username || '';
+        byId('mail-password').value = '';
+        byId('mail-from-email').value = state.emailConfig.fromEmail || '';
+        byId('mail-from-name').value = state.emailConfig.fromName || '';
+        byId('mail-enabled').checked = state.emailConfig.enabled === true;
+        byId('mail-secure').checked = state.emailConfig.secure !== false;
+        setNotice('mail-notice', state.emailConfig.passwordConfigured
+          ? '已存在 SMTP 密码/授权码，留空保存不会覆盖。'
+          : '尚未配置 SMTP 密码/授权码。', '');
+      } catch (err) {
+        setNotice('mail-notice', err.message || '邮箱配置读取失败', 'error');
+      }
+    }
+
+    async function saveEmailProvider() {
+      setNotice('mail-notice', '', '');
+      try {
+        const result = await api('/api/admin/email-provider', {
+          method: 'POST',
+          body: JSON.stringify({
+            enabled: byId('mail-enabled').checked,
+            secure: byId('mail-secure').checked,
+            host: byId('mail-host').value.trim(),
+            port: Number(byId('mail-port').value || 465),
+            username: byId('mail-username').value.trim(),
+            password: byId('mail-password').value,
+            fromEmail: byId('mail-from-email').value.trim(),
+            fromName: byId('mail-from-name').value.trim(),
+          }),
+        });
+        state.emailConfig = result.config || {};
+        byId('mail-password').value = '';
+        setNotice('mail-notice', state.emailConfig.hasCompleteConfig
+          ? '邮箱配置已保存，后续接入发信逻辑后可直接启用。'
+          : '配置已保存，但仍不完整，后续需补全 SMTP 授权信息。', 'success');
+      } catch (err) {
+        setNotice('mail-notice', err.message || '邮箱配置保存失败', 'error');
+      }
+    }
+
+    async function testEmailStub() {
+      setNotice('mail-notice', '', '');
+      const email = byId('mail-from-email').value.trim() || byId('mail-username').value.trim();
+      try {
+        const result = await api('/api/auth/email/send-code', {
+          method: 'POST',
+          body: JSON.stringify({ email }),
+        });
+        setNotice('mail-notice', result.message || '测试接口已调用', result.success ? 'success' : 'error');
+      } catch (err) {
+        setNotice('mail-notice', err.message || '测试失败', 'error');
+      }
+    }
+
+    function openUserModal(mode, userId = '') {
+      state.userModalMode = mode;
+      state.editingUserId = userId;
+      const user = state.users.find((item) => item.id === userId) || null;
+      byId('user-modal-title').textContent = mode === 'create' ? '新增账号' : `编辑账号 · ${user?.nickname || user?.email || ''}`;
+      byId('user-form-nickname').value = user?.nickname || '';
+      byId('user-form-email').value = user?.email || '';
+      byId('user-form-password').value = '';
+      byId('user-form-disabled').value = String(user?.disabled === true);
+      byId('user-form-clear-steam').checked = false;
+      byId('user-form-clear-steam').disabled = !(user?.steamBinding?.steamId);
+      setNotice('user-form-notice', '', '');
+      byId('modal-user').classList.add('open');
+    }
+
+    function closeUserModal() {
+      byId('modal-user').classList.remove('open');
+    }
+
+    async function saveUser() {
+      setNotice('user-form-notice', '', '');
+      const payload = {
+        nickname: byId('user-form-nickname').value.trim(),
+        email: byId('user-form-email').value.trim(),
+        password: byId('user-form-password').value,
+        disabled: byId('user-form-disabled').value === 'true',
+        clearSteamBinding: byId('user-form-clear-steam').checked,
+      };
+      try {
+        if (state.userModalMode === 'create') {
+          if (!payload.password) throw new Error('新增账号必须设置密码');
+          await api('/api/admin/users', {
+            method: 'POST',
+            body: JSON.stringify(payload),
+          });
+        } else {
+          if (!payload.password) delete payload.password;
+          await api(`/api/admin/users/${encodeURIComponent(state.editingUserId)}`, {
+            method: 'POST',
+            body: JSON.stringify(payload),
+          });
+        }
+        setNotice('user-form-notice', '账号保存成功，正在刷新列表...', 'success');
+        await refreshUsers();
+        closeUserModal();
+      } catch (err) {
+        setNotice('user-form-notice', err.message || '保存失败', 'error');
+      }
+    }
+
+    async function toggleUserDisabled(userId, disabled) {
+      const action = disabled ? '禁用' : '启用';
+      if (!confirm(`确认${action}该账号？`)) return;
+      try {
+        await api(`/api/admin/users/${encodeURIComponent(userId)}`, {
+          method: 'POST',
+          body: JSON.stringify({ disabled }),
+        });
+        await refreshUsers();
+      } catch (err) {
+        setNotice('users-notice', `${action}失败：${err.message || err}`, 'error');
+      }
+    }
+
+    async function deleteUser(userId) {
+      if (!confirm('确认删除该账号？此操作不可恢复。')) return;
+      try {
+        await api(`/api/admin/users/${encodeURIComponent(userId)}`, {
+          method: 'DELETE',
+        });
+        await refreshUsers();
+      } catch (err) {
+        setNotice('users-notice', `删除失败：${err.message || err}`, 'error');
+      }
+    }
+
+    async function copyEmail(email) {
+      try {
+        await navigator.clipboard.writeText(String(email || ''));
+        setNotice('users-notice', `已复制邮箱：${email}`, 'success');
+      } catch (_) {
+        setNotice('users-notice', `复制失败：${email}`, 'error');
+      }
+    }
+
+    refreshSession();
+  </script>
+</body>
+</html>

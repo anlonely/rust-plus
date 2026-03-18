@@ -2,6 +2,15 @@
 
 基于 Express + WebSocket 的 Web 控制台，可部署在任意 Linux/macOS 服务器上，通过浏览器远程管理 Rust+ 智能设备。
 
+## 产品定位
+
+Web 版和桌面 GUI 不是同一种部署形态：
+
+- Web：公网多用户服务，需要外围账号体系与用户级数据隔离
+- 桌面 GUI：个人本地部署，直接登录 Steam / Rust+，不需要外围账号注册登录
+
+详细边界见 [../../docs/PRODUCT-BOUNDARIES.md](../../docs/PRODUCT-BOUNDARIES.md)。
+
 ## 系统要求
 
 - Node.js 18+
@@ -58,6 +67,21 @@ bash platforms/web/run.sh
 - 建议通过反向代理 (Nginx) 添加 HTTPS
 - 建议使用防火墙限制访问来源
 
+## 云端 Steam 登录（无图形化）
+
+当服务器无法弹出 Chrome 时，可使用本项目自带的本机 Chrome 扩展完成登录桥接：
+
+1. 在 Web UI 点击 Steam 登录，生成一次性会话码（`RPTK-...`）。
+2. 在本机 Chrome 安装扩展目录：`platforms/chrome-rustplus-bridge`。
+3. 在扩展中填写：
+   - 云端地址（例如 `https://rust.anlonely.me`）
+   - 会话码（`RPTK-...`）
+4. 扩展会打开 `https://companion-rust.facepunch.com/login`，完成 Steam 登录后自动回传 token。
+5. 云端接口 `/steam-bridge/complete` 会写入配置并自动启动配对监听。
+
+连通性检查：
+- `GET /steam-bridge/ping` 返回 `{\"ok\":true}` 表示桥接接口可达。
+
 ## 部署架构
 
 ```
@@ -66,6 +90,32 @@ bash platforms/web/run.sh
                                     ├── WebSocket (实时推送)
                                     └── 静态文件 (web/public/)
 ```
+
+## 多用户工作区模型
+
+Web 公有版当前采用“每用户一个工作区”的隔离模型：
+
+```text
+config/
+└── web-users/
+    ├── user_xxx/
+    │   ├── servers.json
+    │   ├── devices.json
+    │   ├── rules.json
+    │   └── rustplus.config.json
+    └── user_yyy/
+        ├── servers.json
+        ├── devices.json
+        ├── rules.json
+        └── rustplus.config.json
+```
+
+说明：
+
+- 用户 A / B 的 Steam token、FCM 配对状态、服务器列表、设备、规则完全隔离
+- 禁用用户时，会同步停掉该用户当前 WebSocket / Rust+ 运行时，避免账号禁用后后台仍继续工作
+- 删除用户时，会同时清理该用户工作区
+- 桌面 GUI 不使用这套工作区结构，仍保持本地单用户模型
 
 ## 目录结构
 
@@ -77,7 +127,7 @@ bash platforms/web/run.sh
 │   ├── ipc-invoke.js  # IPC 调用层
 │   └── event-actions.js
 ├── src/               # 核心业务逻辑（共享）
-├── config/            # 运行时配置文件
+├── config/            # 当前默认配置目录（桌面单机场景）
 ├── logs/              # 日志输出
 ├── platforms/
 │   └── web/           # 本平台脚本
@@ -106,6 +156,11 @@ sudo systemctl stop rust-plus-web
 ```
 
 ## 常见问题
+
+### Web 能否直接当成多人 SaaS 长期开启？
+
+当前已经具备“每用户工作区 + 每用户 runtime 上下文”隔离能力。  
+但如果后续要继续扩到多进程 / 多实例部署，仍建议继续把 `web/server.js` 中的租户上下文管理拆到独立模块，并补跨实例 session / runtime 协调。
 
 ### 端口被占用
 

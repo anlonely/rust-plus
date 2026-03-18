@@ -23,6 +23,13 @@ npm --version    # 8+
 
 ## 二、本地启动
 
+开始改代码前先确认你在改哪条产品线：
+
+- 桌面 GUI / CLI：单用户本地部署，不需要外围账号体系
+- Web：公网账号体系，最终目标是多租户隔离
+
+边界说明见 [PRODUCT-BOUNDARIES.md](./PRODUCT-BOUNDARIES.md)。
+
 ### 克隆与安装
 
 ```bash

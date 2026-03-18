@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rust+ Steam Bridge</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="wrap">
+    <h1>Rust+ Steam Bridge</h1>
+    <p class="sub">把本机 Chrome 的 Rust+ 登录 token 回传到云端 rust-plus-web。</p>
+
+    <label>云端地址</label>
+    <input id="server-url" placeholder="https://rust.anlonely.me" />
+
+    <label>会话码</label>
+    <textarea id="session-code" rows="3" placeholder="RPTK-xxxx.yyyy"></textarea>
+
+    <div class="actions">
+      <button id="start-btn" class="primary">开始 Steam 登录并回传</button>
+      <button id="stop-btn">停止</button>
+    </div>
+
+    <div class="status">
+      <div><span>状态</span><strong id="st-status">idle</strong></div>
+      <div><span>SteamID</span><strong id="st-steamid">-</strong></div>
+      <div><span>错误</span><strong id="st-error">-</strong></div>
+    </div>
+
+    <p class="hint">流程：点击开始后会打开 Rust+ 登录页，完成 Steam 登录即可自动回传。</p>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
