@@ -25,6 +25,21 @@
   --text:      #edf2ff;
   --text2:     #a0acd0;
   --text3:     #6f7fa8;
+  --guide-article-bg: rgba(8,15,31,.82);
+  --guide-article-border: rgba(108,127,174,.28);
+  --guide-warning-bg: rgba(89,48,11,.22);
+  --guide-warning-border: rgba(255,176,107,.35);
+  --guide-warning-text: #ffd5a5;
+  --account-pill-bg: linear-gradient(180deg, rgba(10,17,33,.92), rgba(13,19,37,.78));
+  --account-pill-border: rgba(151,168,232,.26);
+  --account-pill-hover-bg: linear-gradient(180deg, rgba(16,24,44,.96), rgba(17,26,48,.84));
+  --account-pill-hover-border: rgba(188,201,255,.46);
+  --account-pill-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 8px 24px rgba(4,8,20,.35);
+  --account-avatar-ring: rgba(143,157,255,.26);
+  --inline-notice-bg: rgba(13,19,37,.9);
+  --inline-notice-border: rgba(151,168,232,.22);
+  --inline-notice-icon-bg: rgba(142,157,255,.16);
+  --inline-notice-icon-color: var(--blue);
   --radius:    14px;
   --sidebar-w: 210px;
 }
@@ -48,6 +63,21 @@
   --text2:     #5a6178;
   --text3:     #8c95ab;
   --map-bg:    #e8eaf2;
+  --guide-article-bg: rgba(255,255,255,.96);
+  --guide-article-border: rgba(74,92,219,.14);
+  --guide-warning-bg: rgba(255,248,233,.98);
+  --guide-warning-border: rgba(217,138,18,.26);
+  --guide-warning-text: #7a4b00;
+  --account-pill-bg: linear-gradient(180deg, rgba(255,255,255,.96), rgba(245,246,250,.94));
+  --account-pill-border: rgba(74,92,219,.14);
+  --account-pill-hover-bg: linear-gradient(180deg, rgba(255,255,255,1), rgba(240,244,255,.98));
+  --account-pill-hover-border: rgba(74,92,219,.28);
+  --account-pill-shadow: inset 0 1px 0 rgba(255,255,255,.92), 0 10px 30px rgba(74,92,219,.08);
+  --account-avatar-ring: rgba(74,92,219,.18);
+  --inline-notice-bg: rgba(255,255,255,.96);
+  --inline-notice-border: rgba(74,92,219,.14);
+  --inline-notice-icon-bg: rgba(74,92,219,.1);
+  --inline-notice-icon-color: #4a5cdb;
 }
 [data-theme="light"] body {
   background: #f0f2f8 !important;
@@ -364,6 +394,18 @@
   border-bottom: 1px solid rgba(255,0,200,.25) !important;
   box-shadow: 0 1px 20px rgba(191,0,255,.12);
 }
+[data-theme="cyberpunk"] {
+  --account-pill-bg: linear-gradient(180deg, rgba(20,0,42,.9), rgba(10,0,24,.84));
+  --account-pill-border: rgba(191,0,255,.28);
+  --account-pill-hover-bg: linear-gradient(180deg, rgba(34,0,66,.95), rgba(14,0,30,.88));
+  --account-pill-hover-border: rgba(0,240,255,.42);
+  --account-pill-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 0 20px rgba(191,0,255,.12);
+  --account-avatar-ring: rgba(0,240,255,.24);
+  --inline-notice-bg: rgba(15,0,32,.9);
+  --inline-notice-border: rgba(191,0,255,.26);
+  --inline-notice-icon-bg: rgba(0,240,255,.12);
+  --inline-notice-icon-color: #00f0ff;
+}
 [data-theme="cyberpunk"] #titlebar .brand span { color: #00f0ff; text-shadow: 0 0 8px rgba(0,240,255,.4); }
 [data-theme="cyberpunk"] #titlebar .brand-center span { color: #00f0ff; text-shadow: 0 0 8px rgba(0,240,255,.4); }
 [data-theme="cyberpunk"] #sidebar {
@@ -568,6 +610,18 @@
   background: linear-gradient(180deg, rgba(30,18,8,.94), rgba(20,10,4,.94)) !important;
   border-bottom: 1px solid rgba(255,140,50,.22) !important;
   box-shadow: 0 1px 18px rgba(255,100,20,.08);
+}
+[data-theme="sunset"] {
+  --account-pill-bg: linear-gradient(180deg, rgba(34,18,8,.9), rgba(22,12,6,.84));
+  --account-pill-border: rgba(255,140,50,.24);
+  --account-pill-hover-bg: linear-gradient(180deg, rgba(48,24,10,.95), rgba(26,12,6,.88));
+  --account-pill-hover-border: rgba(255,183,77,.42);
+  --account-pill-shadow: inset 0 1px 0 rgba(255,214,160,.05), 0 10px 26px rgba(255,100,20,.1);
+  --account-avatar-ring: rgba(255,183,77,.24);
+  --inline-notice-bg: rgba(28,16,6,.9);
+  --inline-notice-border: rgba(255,140,50,.22);
+  --inline-notice-icon-bg: rgba(255,183,77,.14);
+  --inline-notice-icon-color: #ffc070;
 }
 [data-theme="sunset"] #titlebar .brand span { color: #ffc070; text-shadow: 0 0 6px rgba(255,160,64,.3); }
 [data-theme="sunset"] #titlebar .brand-center span { color: #ffc070; text-shadow: 0 0 6px rgba(255,160,64,.3); }
@@ -815,41 +869,64 @@ input, textarea, select { font-family:inherit; }
    标题栏（无边框拖拽区）
 ═══════════════════════════════════════════════ */
 #titlebar {
-  display:flex; align-items:center; justify-content:space-between;
+  display:flex; align-items:center; gap:14px;
   height:42px; background:linear-gradient(180deg, rgba(15,23,45,.92), rgba(9,14,27,.92)); border-bottom:1px solid rgba(134,153,208,.26);
   backdrop-filter:blur(10px);
   padding:0 14px; -webkit-app-region:drag; user-select:none; flex-shrink:0;
   position:relative;
   z-index:2;
 }
-#titlebar .brand { display:flex; align-items:center; gap:8px; }
+#titlebar .brand { display:flex; align-items:center; gap:10px; min-width:0; flex:0 1 360px; }
 #titlebar .brand img { width:20px; height:20px; }
 #titlebar .brand span { font-weight:700; font-size:15px; color:#bcc8ff; }
+#titlebar .brand-mark {
+  width:28px; height:28px; border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(135deg, rgba(83,108,219,.28), rgba(129,90,255,.18));
+  border:1px solid rgba(151,168,232,.24);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+  flex-shrink:0;
+}
+#titlebar .brand-copy { display:flex; align-items:baseline; gap:8px; min-width:0; }
+#titlebar .brand-title {
+  font-weight:800; font-size:15px; color:#bcc8ff;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+#titlebar .brand-version { font-size:11px; color:var(--text3); flex-shrink:0; }
 #titlebar .brand-center {
   position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
   display:flex; align-items:center; gap:6px; pointer-events:none;
 }
 #titlebar .brand-center span { font-weight:700; font-size:14px; color:#bcc8ff; }
-#titlebar .status-bar { display:flex; align-items:center; gap:14px; }
-#titlebar .status-dot { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text2); }
+#titlebar .status-bar { display:flex; align-items:center; justify-content:center; gap:14px; flex:1 1 auto; min-width:0; }
+#titlebar .status-dot { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text2); min-width:0; }
+#titlebar .status-dot span { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 #titlebar .dot { width:8px; height:8px; border-radius:50%; background:var(--text3); }
 #titlebar .dot.online { background:var(--green); box-shadow:0 0 6px var(--green); animation:pulse 2s infinite; }
 @keyframes pulse { 0%,100%{ opacity:1 } 50%{ opacity:.5 } }
-#titlebar .account-toolbar { display:flex; align-items:center; gap:10px; -webkit-app-region:no-drag; }
+#titlebar .account-toolbar { display:flex; align-items:center; gap:10px; -webkit-app-region:no-drag; flex:0 1 290px; min-width:0; margin-left:auto; }
 #titlebar .account-pill {
-  display:flex; align-items:center; gap:10px; min-width:220px;
-  border:1px solid rgba(151,168,232,.26);
-  background:linear-gradient(180deg, rgba(10,17,33,.92), rgba(13,19,37,.78));
+  display:flex; align-items:center; gap:10px; min-width:0; width:min(280px, 100%);
+  border:1px solid var(--account-pill-border);
+  background:var(--account-pill-bg);
   border-radius:999px; padding:6px 10px 6px 8px; color:var(--text);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.05), 0 8px 24px rgba(4,8,20,.35);
+  box-shadow:var(--account-pill-shadow);
+  backdrop-filter:blur(14px);
+  transition:background .18s ease,border-color .18s ease,transform .18s ease,box-shadow .18s ease;
 }
-#titlebar .account-pill:hover { border-color:rgba(188,201,255,.46); background:linear-gradient(180deg, rgba(16,24,44,.96), rgba(17,26,48,.84)); }
+#titlebar .account-pill:hover {
+  border-color:var(--account-pill-hover-border);
+  background:var(--account-pill-hover-bg);
+  transform:translateY(-1px);
+}
 .account-pill-avatar,
 .account-avatar-lg {
   width:32px; height:32px; border-radius:50%;
   background:linear-gradient(135deg, #4f74ff, #8a5eff);
   display:flex; align-items:center; justify-content:center;
   overflow:hidden; color:#fff; font-weight:700; flex-shrink:0;
+  border:1px solid var(--account-avatar-ring);
+  box-shadow:0 0 0 3px rgba(255,255,255,.04);
 }
 .account-avatar-lg { width:56px; height:56px; font-size:22px; }
 .account-pill-avatar img,
@@ -1360,13 +1437,62 @@ input, textarea, select { font-family:inherit; }
 .server-map-vending-content::-webkit-scrollbar-thumb,
 .server-map-vending-side::-webkit-scrollbar-thumb { background:rgba(255,255,255,.12); border-radius:999px; }
 .hidden { display:none !important; }
+.inline-notice {
+  display:none;
+  align-items:flex-start;
+  gap:14px;
+  padding:14px 16px;
+  margin-bottom:16px;
+  border-radius:16px;
+  border:1px solid var(--inline-notice-border);
+  background:var(--inline-notice-bg);
+  box-shadow:0 18px 40px rgba(8,14,24,.16);
+  backdrop-filter:blur(16px);
+}
+.inline-notice.open { display:flex; }
+.inline-notice-icon {
+  width:34px; height:34px; border-radius:12px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--inline-notice-icon-bg);
+  color:var(--inline-notice-icon-color);
+  font-size:16px; font-weight:700;
+}
+.inline-notice-copy { flex:1; min-width:0; }
+.inline-notice-title { font-size:14px; font-weight:700; color:var(--text); }
+.inline-notice-body { margin-top:4px; font-size:12px; line-height:1.7; color:var(--text2); }
+.inline-notice-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+.inline-notice-close {
+  width:30px; height:30px; border-radius:10px; flex-shrink:0;
+  border:1px solid transparent; background:transparent; color:var(--text3);
+}
+.inline-notice-close:hover { border-color:var(--border); background:rgba(255,255,255,.04); color:var(--text); }
+.account-avatar-picker {
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+  padding:0; border:none; background:transparent; color:inherit; cursor:pointer;
+}
+.account-avatar-picker span { font-size:12px; color:var(--text3); }
+.account-avatar-picker .account-avatar-lg {
+  cursor:pointer;
+  transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.account-avatar-picker:hover .account-avatar-lg {
+  transform:translateY(-1px) scale(1.02);
+  box-shadow:0 0 0 4px rgba(142,157,255,.12), 0 12px 26px rgba(8,14,24,.2);
+  border-color:var(--blue);
+}
+.account-avatar-picker:focus-visible .account-avatar-lg {
+  outline:2px solid var(--blue);
+  outline-offset:4px;
+}
+.account-avatar-file-input { display:none; }
 .guide-article {
   max-height:42vh;
   overflow:auto;
   padding:14px;
   border-radius:12px;
-  border:1px solid rgba(108,127,174,.28);
-  background:rgba(8,15,31,.76);
+  border:1px solid var(--guide-article-border);
+  background:var(--guide-article-bg);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
   font-size:13px;
   line-height:1.8;
   color:var(--text2);
@@ -1384,11 +1510,17 @@ input, textarea, select { font-family:inherit; }
   margin-top:10px;
   padding:10px 12px;
   border-radius:10px;
-  border:1px solid rgba(255,176,107,.35);
-  background:rgba(89,48,11,.22);
-  color:#ffd5a5;
+  border:1px solid var(--guide-warning-border);
+  background:var(--guide-warning-bg);
+  color:var(--guide-warning-text);
   font-size:12px;
   line-height:1.7;
+}
+[data-theme="light"] .guide-article {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.82), 0 10px 28px rgba(74,92,219,.06);
+}
+[data-theme="light"] .guide-article::-webkit-scrollbar-thumb {
+  background: rgba(74,92,219,.18);
 }
 </style>
 </head>
@@ -1396,12 +1528,13 @@ input, textarea, select { font-family:inherit; }
 
 <!-- ── 标题栏 ───────────────────────────────── -->
 <div id="titlebar">
-  <div class="brand-center">
-    <span style="font-size:18px">🎮</span>
-    <span>安静的Rust工具箱</span>
-    <span style="font-size:11px;color:var(--text3);margin-left:4px">v1.2</span>
+  <div class="brand">
+    <div class="brand-mark">🎮</div>
+    <div class="brand-copy">
+      <span class="brand-title">安静的Rust工具箱</span>
+      <span class="brand-version">v1.2</span>
+    </div>
   </div>
-  <div class="brand"></div>
   <div class="status-bar">
     <div class="status-dot">
       <div class="dot" id="dot-pairing"></div>
@@ -1490,6 +1623,15 @@ input, textarea, select { font-family:inherit; }
 
   <!-- 主内容 -->
   <div id="main">
+    <div class="inline-notice" id="app-inline-notice" role="status" aria-live="polite">
+      <div class="inline-notice-icon" id="app-inline-notice-icon">!</div>
+      <div class="inline-notice-copy">
+        <div class="inline-notice-title" id="app-inline-notice-title">提示</div>
+        <div class="inline-notice-body" id="app-inline-notice-body"></div>
+        <div class="inline-notice-actions" id="app-inline-notice-actions"></div>
+      </div>
+      <button class="inline-notice-close" type="button" onclick="clearInlineNotice()" aria-label="关闭提示">✕</button>
+    </div>
 
     <!-- ══ 控制台 ═══════════════════════════════ -->
     <div class="page active" id="page-dashboard">
@@ -1940,10 +2082,11 @@ input, textarea, select { font-family:inherit; }
       <button class="modal-close" onclick="closeModal('modal-account-center')">✕</button>
     </div>
     <div style="display:grid;grid-template-columns:120px minmax(0,1fr);gap:14px;align-items:start">
-      <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+      <button type="button" class="account-avatar-picker" onclick="triggerAccountAvatarPicker()" aria-label="上传头像">
         <div class="account-avatar-lg" id="account-center-avatar">U</div>
-        <input type="file" id="account-avatar-file" accept="image/png,image/jpeg,image/webp,image/gif" onchange="handleAccountAvatarFile(event)">
-      </div>
+        <span>点击头像上传替换</span>
+      </button>
+      <input class="account-avatar-file-input" type="file" id="account-avatar-file" accept="image/png,image/jpeg,image/webp,image/gif" onchange="handleAccountAvatarFile(event)">
       <div style="display:flex;flex-direction:column;gap:10px">
         <div class="form-row" style="margin:0">
           <div class="form-label">邮箱账号</div>
@@ -2291,6 +2434,7 @@ const state = {
   pendingPairingOptions: null,
   steamReauthPrompted: false,
   accountAvatarDraft: '',
+  inlineNotice: null,
   guideScrolledToEnd: false,
   helpDocLoaded: false,
   remoteSteamAuth: {
@@ -3090,7 +3234,7 @@ async function init() {
     }
     renderSteamUserCard(state.steam);
     await refreshSteamUserCard({ silent: true });
-    await promptSteamReauthIfNeeded({ source: 'startup', autoQueuePairing: true });
+    await promptSteamReauthIfNeeded({ source: 'startup' });
     maybeShowGuideModal();
     updateConnectionUI(state.connected, state.currentServer?.name);
     updateScopedPageState();
@@ -3116,16 +3260,20 @@ async function promptSteamReauthIfNeeded({ source = 'manual', autoQueuePairing =
   const issue = getSteamTokenIssue(state.steam);
   if (!issue) {
     state.steamReauthPrompted = false;
+    clearInlineNotice();
     return false;
   }
   if (source === 'startup' && state.steamReauthPrompted) return false;
   state.steamReauthPrompted = source === 'startup';
-  const confirmed = confirm(`${issue}。\n需要重新登录 Steam 才能继续 Rust+ 配对，是否现在重新登录？`);
-  if (!confirmed) return false;
   if (autoQueuePairing || retryPairingOptions) {
     state.pendingPairingOptions = retryPairingOptions || { forceRegister: true };
   }
-  await beginSteamAuthFlow();
+  if (source === 'pairing') {
+    const status = document.getElementById('pairing-status');
+    if (status) status.textContent = `${issue}，请先完成 Steam 登录`;
+  }
+  showSteamInlineNotice(issue, { source });
+  addLog('warn', `Steam 凭证不可用: ${issue}`);
   return true;
 }
 
@@ -3194,6 +3342,91 @@ function renderCurrentUser(user = null) {
   emailEl.textContent = user.email || '-';
 }
 
+function renderInlineNotice() {
+  const root = document.getElementById('app-inline-notice');
+  const iconEl = document.getElementById('app-inline-notice-icon');
+  const titleEl = document.getElementById('app-inline-notice-title');
+  const bodyEl = document.getElementById('app-inline-notice-body');
+  const actionsEl = document.getElementById('app-inline-notice-actions');
+  if (!root || !iconEl || !titleEl || !bodyEl || !actionsEl) return;
+
+  const notice = state.inlineNotice;
+  if (!notice) {
+    root.classList.remove('open');
+    iconEl.textContent = '!';
+    titleEl.textContent = '';
+    bodyEl.textContent = '';
+    actionsEl.innerHTML = '';
+    return;
+  }
+
+  iconEl.textContent = notice.icon || '!';
+  titleEl.textContent = notice.title || '提示';
+  bodyEl.textContent = notice.body || '';
+  actionsEl.innerHTML = (notice.actions || []).map((action) => {
+    const tone = action.tone === 'primary' ? 'btn-primary' : 'btn-ghost';
+    return `<button type="button" class="btn ${tone} btn-sm" onclick="handleInlineNoticeAction(${jsArg(action.id)})">${esc(action.label || '操作')}</button>`;
+  }).join('');
+  root.classList.add('open');
+}
+
+function showInlineNotice(notice = null) {
+  state.inlineNotice = notice ? { ...notice } : null;
+  renderInlineNotice();
+}
+
+function clearInlineNotice() {
+  showInlineNotice(null);
+}
+
+function showSteamInlineNotice(issue, { source = 'startup' } = {}) {
+  const isPairing = source === 'pairing';
+  showInlineNotice({
+    icon: '🔐',
+    title: isPairing ? '开始配对前需要完成 Steam 登录' : '未检测到有效的 Steam 登录凭证',
+    body: isPairing
+      ? `${issue}。请先完成 Steam 登录，然后再重新点击“开始配对”。`
+      : `${issue}。完成 Steam 登录后，才可以继续进行 Rust+ 配对、设备联动和远程管理。`,
+    actions: [
+      { id: 'steam-auth', label: '开始 Steam 登录', tone: 'primary' },
+      { id: 'goto-pairing', label: '前往设备配对', tone: 'ghost' },
+    ],
+  });
+}
+
+function showPairingRepairInlineNotice() {
+  showInlineNotice({
+    icon: '♻️',
+    title: '确认重绑推送凭据',
+    body: '将重新注册 FCM / Expo / Rust+ 凭据，期间会打开浏览器进行 Steam 授权。确认后开始重绑。',
+    actions: [
+      { id: 'repair-pairing', label: '继续重绑', tone: 'primary' },
+      { id: 'goto-pairing', label: '留在配对页', tone: 'ghost' },
+    ],
+  });
+}
+
+async function handleInlineNoticeAction(actionId) {
+  const action = String(actionId || '');
+  if (action === 'steam-auth') {
+    clearInlineNotice();
+    await beginSteamAuthFlow();
+    return;
+  }
+  if (action === 'repair-pairing') {
+    clearInlineNotice();
+    addLog('warn', '开始重绑推送凭据...');
+    toast('info', '正在重绑推送凭据，请按提示完成 Steam 授权');
+    await startPairing({ forceRegister: true });
+    return;
+  }
+  if (action === 'goto-pairing') {
+    navigate('pairing', document.querySelector('[data-page=pairing]'));
+    return;
+  }
+  clearInlineNotice();
+}
+
 async function ensureCurrentUserSession() {
   const session = await rustAPI.getAuthSession().catch(() => null);
   if (!session?.authenticated || !session.user) {
@@ -3231,6 +3464,11 @@ function openAccountCenterModal() {
   openModal('modal-account-center');
 }
 
+function triggerAccountAvatarPicker() {
+  const input = document.getElementById('account-avatar-file');
+  if (input) input.click();
+}
+
 function handleAccountAvatarFile(event) {
   const file = event?.target?.files?.[0];
   if (!file) return;
@@ -3246,9 +3484,11 @@ function handleAccountAvatarFile(event) {
   reader.onload = () => {
     state.accountAvatarDraft = String(reader.result || '');
     renderAccountCenterModal();
+    if (event?.target) event.target.value = '';
   };
   reader.onerror = () => {
     toast('error', '头像读取失败');
+    if (event?.target) event.target.value = '';
   };
   reader.readAsDataURL(file);
 }
@@ -3624,6 +3864,7 @@ async function logoutSteam() {
 async function beginSteamAuthFlow() {
   const btn = document.getElementById('btn-steam-login');
   if (btn) btn.disabled = true;
+  clearInlineNotice();
   try {
     if (isWebRemoteSteamAuthSupported()) {
       toast('info', '已创建远程授权会话，请在本机 Chrome 插件中完成 Steam 登录');
@@ -5956,7 +6197,7 @@ async function startPairing(options = {}) {
         renderSteamUserCard(state.steam);
       }
       if (!skipSteamCheck && getSteamTokenIssue(state.steam)) {
-        status.textContent = '等待重新登录 Steam 后自动重新配对';
+        status.textContent = '请先完成 Steam 登录后再重新开始配对';
         await promptSteamReauthIfNeeded({
           source: 'pairing',
           retryPairingOptions: { forceRegister: true, ...pairingOptions },
@@ -5990,10 +6231,7 @@ async function startPairing(options = {}) {
 }
 
 async function repairPairingCredentials() {
-  if (!confirm('将重新注册 FCM/Expo/Rust+ 凭据，期间会打开浏览器进行 Steam 授权。继续吗？')) return;
-  addLog('warn', '开始重绑推送凭据...');
-  toast('info', '正在重绑推送凭据，请按提示完成 Steam 授权');
-  await startPairing({ forceRegister: true });
+  showPairingRepairInlineNotice();
 }
 
 async function loadServers() {
