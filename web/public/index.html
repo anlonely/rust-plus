@@ -346,13 +346,6 @@
 [data-theme="light"] #server-map-wrap {
   box-shadow: inset 0 0 20px rgba(74,92,219,.04);
 }
-[data-theme="light"] .server-map-grid-surface {
-  background-image: linear-gradient(to right, rgba(74,92,219,.12) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(74,92,219,.12) 1px, transparent 1px) !important;
-}
-[data-theme="light"] .server-map-grid-cell-label {
-  color: rgba(74,92,219,.35) !important;
-}
 
 /* ── 赛博朋克 (Cyberpunk) 主题 ────────────────── */
 [data-theme="cyberpunk"] {
@@ -555,13 +548,6 @@
 [data-theme="cyberpunk"] .tag-gray   { background: rgba(80,60,110,.25); color: #c8a8e8; border-color: rgba(140,100,180,.3); }
 [data-theme="cyberpunk"] .tag-orange { background: rgba(255,140,0,.12); color: #ffb040; border-color: rgba(255,140,0,.3); }
 [data-theme="cyberpunk"] ::-webkit-scrollbar-thumb { background: rgba(191,0,255,.35); }
-[data-theme="cyberpunk"] .server-map-grid-surface {
-  background-image: linear-gradient(to right, rgba(0,240,255,.12) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(0,240,255,.12) 1px, transparent 1px) !important;
-}
-[data-theme="cyberpunk"] .server-map-grid-cell-label {
-  color: rgba(0,240,255,.35) !important;
-}
 [data-theme="cyberpunk"] .form-row select {
   background: rgba(10,0,22,.9);
   border-color: rgba(191,0,255,.3);
@@ -780,13 +766,6 @@
 [data-theme="sunset"] .tag-gray   { background: rgba(80,60,40,.3); color: #d4b896; border-color: rgba(154,126,96,.35); }
 [data-theme="sunset"] .tag-orange { background: rgba(255,183,77,.12); color: #ffd090; border-color: rgba(255,183,77,.35); }
 [data-theme="sunset"] ::-webkit-scrollbar-thumb { background: rgba(255,140,50,.32); }
-[data-theme="sunset"] .server-map-grid-surface {
-  background-image: linear-gradient(to right, rgba(255,160,64,.12) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(255,160,64,.12) 1px, transparent 1px) !important;
-}
-[data-theme="sunset"] .server-map-grid-cell-label {
-  color: rgba(255,160,64,.32) !important;
-}
 [data-theme="sunset"] .form-row select {
   background: rgba(18,10,4,.88);
   border-color: rgba(255,140,50,.3);
@@ -1379,11 +1358,11 @@ input, textarea, select { font-family:inherit; }
 .server-map-monument-icon { width:12px; height:12px; display:flex; align-items:center; justify-content:center; filter:drop-shadow(0 1px 4px rgba(0,0,0,.55)); }
 .server-map-monument-icon img { width:100%; height:100%; object-fit:contain; display:block; }
 .server-map-monument-fallback { width:7px; height:7px; border-radius:50%; background:var(--orange); border:1px solid #fff; display:none; }
-.server-map-label { position:absolute; left:50%; top:8px; transform:translateX(-50%); white-space:nowrap; font-size:7px; color:#fff; text-shadow:0 1px 3px #000; pointer-events:none; z-index:2; }
+.server-map-label { position:absolute; left:50%; top:8px; transform:translateX(-50%); white-space:nowrap; font-size:7px; color:rgba(236,240,248,.92); text-shadow:0 1px 4px rgba(0,0,0,.86), 0 0 2px rgba(0,0,0,.72); pointer-events:none; z-index:2; }
 .server-map-label.monument { color:#000; font-size:6.5px; text-shadow:none; z-index:1; }
 .server-map-label.safe-zone { color:#32cd32; font-size:7px; text-shadow:0 1px 3px #000; }
 .server-map-label.player { text-shadow:0 0 4px #fff, 0 0 6px rgba(255,255,255,0.8); font-weight:bold; z-index:3; }
-.server-map-point-label { position:absolute; left:50%; top:10px; transform:translateX(-50%); white-space:nowrap; font-size:7px; color:#fff; text-shadow:0 1px 3px #000; pointer-events:none; }
+.server-map-point-label { position:absolute; left:50%; top:10px; transform:translateX(-50%); white-space:nowrap; font-size:7px; color:rgba(236,240,248,.92); text-shadow:0 1px 4px rgba(0,0,0,.86), 0 0 2px rgba(0,0,0,.72); pointer-events:none; }
 .server-map-vending-icon { width:16px; height:16px; display:flex; align-items:center; justify-content:center; cursor:pointer; filter:drop-shadow(0 1px 4px rgba(0,0,0,.55)); opacity:.76; }
 .server-map-vending-icon img { width:100%; height:100%; object-fit:contain; display:block; }
 .server-map-vending-fallback { width:13px; height:13px; border-radius:3px; background:var(--bg3); border:1px solid var(--border); display:none; }
@@ -1394,8 +1373,6 @@ input, textarea, select { font-family:inherit; }
 .server-map-vending-cluster:hover { transform:scale(1.06); }
 .server-map-vending-cluster.oos { opacity:.38; }
 .server-map-point-vending.selected .server-map-vending-cluster { box-shadow:0 0 0 2px rgba(124,170,255,.7), 0 2px 8px rgba(0,0,0,.35); }
-.server-map-grid-surface { position:absolute; pointer-events:none; background-image:linear-gradient(to right, rgba(255,255,255,.15) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,.15) 1px, transparent 1px); background-repeat:repeat; box-shadow:inset 0 0 0 1px rgba(255,255,255,.05); }
-.server-map-grid-cell-label { position:absolute; transform:translate(-50%,-50%); font-size:7px; color:rgba(255,255,255,.45); pointer-events:none; white-space:nowrap; z-index:2; }
 .server-map-monument-label { position:absolute; transform:translate(-50%,-50%); font-size:7px; color:var(--orange); text-shadow:0 1px 3px #000; pointer-events:none; white-space:nowrap; z-index:1; }
 .team-popover, #team-cluster-popover { position:absolute; z-index:10; background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:8px 10px; min-width:120px; pointer-events:auto; box-shadow:0 4px 16px rgba(0,0,0,.5); }
 .team-popover-row { display:flex; align-items:center; gap:6px; padding:3px 0; font-size:12px; color:var(--text); }
@@ -5626,50 +5603,6 @@ function toMapGridColumnLabel(idx) {
   return out;
 }
 
-// rustplus 风格网格渲染: 格子从 (0,0) 开始, Y 轴翻转
-function buildMapGridOverlayHtml(mapContext, renderedRect, camera = state.serverMapCamera, wrapEl = null) {
-  if (!state.serverMapSettings.showGrid) return '';
-  const worldSize = Number(mapContext?.worldSize || mapContext?.coordinateSize || 0);
-  if (!Number.isFinite(worldSize) || worldSize <= 0 || !renderedRect) return '';
-  const meta = getRustGridMeta(worldSize);
-  if (!meta) return '';
-  const wrap = wrapEl || document.getElementById('server-map-wrap');
-  const wrapWidth = Number(wrap?.clientWidth || 0);
-  const wrapHeight = Number(wrap?.clientHeight || 0);
-  if (!Number.isFinite(wrapWidth) || !Number.isFinite(wrapHeight) || wrapWidth <= 0 || wrapHeight <= 0) return '';
-  const cellSize = meta.cellSize;
-  const cols = meta.cols;
-  const rows = meta.rows;
-  const html = [];
-  const scale = Number(camera?.scale || 1) > 0 ? Number(camera.scale) : 1;
-  const baseCenter = {
-    x: renderedRect.left + (renderedRect.width / 2),
-    y: renderedRect.top + (renderedRect.height / 2),
-  };
-  const projectedCenter = projectServerMapPixel(baseCenter, wrapWidth, wrapHeight, camera);
-  const surfaceWidth = renderedRect.width * scale;
-  const surfaceHeight = renderedRect.height * scale;
-  const cellWidth = surfaceWidth / cols;
-  const cellHeight = surfaceHeight / rows;
-  if (projectedCenter && cellWidth > 0 && cellHeight > 0) {
-    html.push(`<div class="server-map-grid-surface" style="left:${projectedCenter.x - (surfaceWidth / 2)}px;top:${projectedCenter.y - (surfaceHeight / 2)}px;width:${surfaceWidth}px;height:${surfaceHeight}px;background-size:${cellWidth}px ${cellHeight}px;"></div>`);
-  }
-  if ((cols * rows) > 1400) return '';
-  for (let c = 0; c < cols; c++) {
-    const colLabel = toMapGridColumnLabel(c);
-    for (let r = 0; r < rows; r++) {
-      // 标签在格子中心
-      const worldCx = (c + 0.5) * cellSize;
-      const worldCy = worldSize - (r + 0.5) * cellSize;
-      const basePixel = normalizedToPixel(worldToNormalized(worldCx, worldCy, mapContext), renderedRect);
-      const pixel = projectServerMapPixel(basePixel, wrapWidth, wrapHeight, camera);
-      if (!pixel) continue;
-      html.push(`<div class="server-map-grid-cell-label" style="left:${pixel.x}px;top:${pixel.y}px;">${colLabel}${r}</div>`);
-    }
-  }
-  return html.join('');
-}
-
 function normalizeMonumentToken(tokenRaw) {
   const token = String(tokenRaw || '').trim().toLowerCase();
   if (!token) return '';
@@ -5827,7 +5760,7 @@ function drawServerMapOverlayCanvas(mapContext, renderedRect, imageRect, monumen
       const cols = meta.cols;
       const rows = meta.rows;
       ctx.save();
-      ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+      ctx.strokeStyle = 'rgba(0,0,0,0.38)';
       ctx.lineWidth = dpr;
 
       for (let c = 0; c <= cols; c += 1) {
@@ -5856,10 +5789,12 @@ function drawServerMapOverlayCanvas(mapContext, renderedRect, imageRect, monumen
       }
 
       if ((cols * rows) <= 1400) {
-        ctx.fillStyle = 'rgba(255,255,255,0.48)';
-        ctx.font = `bold ${Math.max(12, Math.round(10 * dpr))}px ui-sans-serif, system-ui, -apple-system`;
+        ctx.fillStyle = 'rgba(0,0,0,0.88)';
+        ctx.font = `600 ${Math.max(12, Math.round(10 * dpr))}px -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
+        ctx.shadowColor = 'rgba(255,255,255,0.42)';
+        ctx.shadowBlur = 2 * dpr;
         for (let c = 0; c < cols; c += 1) {
           const colLabel = toMapGridColumnLabel(c);
           for (let r = 0; r < rows; r += 1) {
@@ -5871,6 +5806,8 @@ function drawServerMapOverlayCanvas(mapContext, renderedRect, imageRect, monumen
             ctx.fillText(`${colLabel}${r}`, center.x, center.y);
           }
         }
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur = 0;
       }
       ctx.restore();
     }
@@ -5901,10 +5838,10 @@ function drawServerMapOverlayCanvas(mapContext, renderedRect, imageRect, monumen
       const tokenStr = String(mon?.token || '').toLowerCase();
       const isSubway = tokenStr.includes('train_tunnel') || tokenStr.includes('tunnel_entrance') || tokenStr.includes('subway') || tokenStr.includes('metro');
       if (!isSubway && mon?.label) {
-        ctx.shadowColor = 'rgba(0,0,0,0.7)';
-        ctx.shadowBlur = 3 * dpr;
-        ctx.fillStyle = '#f6b26b';
-        ctx.font = `bold ${Math.max(12, Math.round(11 * dpr))}px ui-sans-serif, system-ui, -apple-system`;
+        ctx.shadowColor = 'rgba(0,0,0,0.84)';
+        ctx.shadowBlur = 4 * dpr;
+        ctx.fillStyle = '#d98a32';
+        ctx.font = `600 ${Math.max(12, Math.round(11 * dpr))}px -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif`;
         ctx.fillText(String(mon.label), pos.x, pos.y + Math.max(12, Math.round(12 * dpr)));
         ctx.shadowColor = 'transparent';
         ctx.shadowBlur = 0;
