@@ -218,9 +218,9 @@
 适用场景：`rust-plus-web` 部署在 Ubuntu 云服务器（无桌面环境，无法直接弹出浏览器登录 Steam）。
 
 流程：
-1. 在 Web 端点击 Steam 登录，生成一次性会话码（`RPTK-...`）。
+1. 在 Web 端点击 Steam 登录，创建当前账号的远程登录任务。
 2. 在本机 Chrome 安装扩展目录：`platforms/chrome-rustplus-bridge`。
-3. 扩展里填写云端地址 + 会话码，点击“开始 Steam 登录并回传”。
+3. 插件安装后会自动接管当前登录任务并打开 Steam 登录页。
 4. 本机 Chrome 完成 Steam 登录后，扩展将 token 回传至云端 `/steam-bridge/complete`。
 5. 云端自动写入 `rustplus.config.json`，并自动尝试启动配对监听。
 
@@ -228,5 +228,5 @@
 - Web 内置教程：`/docs-static/tutorial-steam-bridge.html`
 
 排错：
-- 会话过期：重新在 Web 端发起一次登录获取新会话码。
+- 任务过期：重新在 Web 端发起一次登录生成新任务。
 - 回传失败：先访问 `<你的域名>/steam-bridge/ping`，确认返回 `{\"ok\":true}`。

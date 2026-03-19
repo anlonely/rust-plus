@@ -525,6 +525,38 @@ function createConfigStore({ configDir } = {}) {
     });
   }
 
+  async function getCallControlState() {
+    return rulesDb.withLock(async () => {
+      await rulesDb.read();
+      const raw = rulesDb.data?.appState?.callControl || {};
+      return {
+        phoneEnabled: raw.phoneEnabled !== false,
+        updatedAt: raw.updatedAt || null,
+      };
+    });
+  }
+
+  async function updateCallControlState(patch = {}) {
+    return rulesDb.withLock(async () => {
+      await rulesDb.read();
+      rulesDb.data.appState ||= {};
+      const current = rulesDb.data.appState.callControl || {};
+      const next = {
+        phoneEnabled: patch.phoneEnabled !== false,
+        updatedAt: new Date().toISOString(),
+      };
+      rulesDb.data.appState.callControl = {
+        ...current,
+        ...next,
+      };
+      await rulesDb.write();
+      return {
+        phoneEnabled: rulesDb.data.appState.callControl.phoneEnabled !== false,
+        updatedAt: rulesDb.data.appState.callControl.updatedAt || null,
+      };
+    });
+  }
+
   return {
     initDbs,
     saveServer,
@@ -551,6 +583,8 @@ function createConfigStore({ configDir } = {}) {
     saveCallGroupDb,
     removeCallGroupDb,
     replaceAllRulesData,
+    getCallControlState,
+    updateCallControlState,
     getDeepSeaState,
     saveDeepSeaState,
   };

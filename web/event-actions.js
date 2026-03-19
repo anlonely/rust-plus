@@ -6,6 +6,9 @@ const DEFAULT_CARGO_STAGE_MESSAGES = {
   active: '货船航行中｜当前位置:{cargo_grid}',
   dock: '货船已停靠 ｜{cargo_harbor} [{cargo_harbor_grid}]',
 };
+
+const LEGACY_DEFAULT_VENDING_NEW_MESSAGE = '新售货机出现｜位置:{marker_grid} 出售:{vending_items}';
+const DEFAULT_VENDING_NEW_MESSAGE = '{vending_status_label}｜{marker_grid}｜上架：{vending_items}';
 const DEFAULT_CH47_STAGE_MESSAGES = {
   enter: '军用运输直升机进入地图｜当前位置:{marker_grid}',
   active: '军用运输直升机巡逻中｜当前位置:{marker_grid}',
@@ -96,6 +99,30 @@ function renderMessageTemplate(template, context = {}, { mapSize = 0 } = {}) {
     };
     return msgs[playerStatusKey] || '';
   })();
+  const deepSeaStage = String(context.deepSeaStage || '').toLowerCase();
+  const deepSeaStatusMessage = (() => {
+    if (deepSeaStage === 'open') return '深海已开启';
+    if (deepSeaStage === 'close') return '深海已关闭';
+    return '';
+  })();
+  const vendorStage = String(context.vendorStage || '').toLowerCase();
+  const vendorStatusMessage = (() => {
+    const grid = toSafeText(markerGrid || '-');
+    const label = ({
+      enter: '流浪商人进入地图',
+      move: '流浪商人移动中',
+      stopped: '流浪商人已停留',
+      leave: '流浪商人已离开地图',
+    })[vendorStage] || '';
+    if (!label) return '';
+    if (vendorStage === 'leave') return `${label}｜最后位置:${grid}`;
+    return `${label}｜当前位置:${grid}`;
+  })();
+  const vendingItems = Array.isArray(context.vendingItems)
+    ? context.vendingItems.map((item) => toSafeText(item)).filter(Boolean).join(' / ')
+    : toSafeText(context.vendingItems || '');
+  const vendingStage = String(context.vendingStage || '').toLowerCase();
+  const vendingStatusLabel = vendingStage === 'update' ? '售货机上新' : '发现新售货机';
   const vars = {
     member: toSafeText(context.member?.name || ''),
     member_grid: toSafeText(memberGrid),
@@ -112,6 +139,10 @@ function renderMessageTemplate(template, context = {}, { mapSize = 0 } = {}) {
     cargo_harbor_grid: cargoHarborGrid,
     cargo_status_message: cargoStatusMessage,
     ch47_status_message: ch47StatusMessage,
+    vendor_status_message: vendorStatusMessage,
+    deep_sea_status_message: deepSeaStatusMessage,
+    vending_items: vendingItems,
+    vending_status_label: vendingStatusLabel,
     event: toSafeText(context.event || ''),
   };
   return String(template || '').replace(/\{([a-zA-Z0-9_]+)\}/g, (_, key) => {
@@ -146,11 +177,21 @@ function makeActionContext(meta = {}, eventType = '', deps = {}) {
       const stageTemplate = String(meta?.playerStatusMessages?.[stage] || '').trim();
       return stageTemplate || baseTemplate;
     }
+    if (eventType === 'vending_new') {
+      const template = String(baseTemplate || '').trim();
+      if (!template || template === LEGACY_DEFAULT_VENDING_NEW_MESSAGE) {
+        return DEFAULT_VENDING_NEW_MESSAGE;
+      }
+      return template;
+    }
     return String(baseTemplate || '').trim();
   };
   const render = (ctx = {}, baseTemplate = '') => {
     const template = resolveTemplate(ctx, baseTemplate || meta.message || `事件触发: ${eventType}`);
-    return renderMessageTemplate(template, { ...ctx, event: eventType }, { mapSize: Number(deps.mapSize || 0) || 0 });
+    const resolvedMapSize = typeof deps.mapSize === 'function'
+      ? Number(deps.mapSize() || 0)
+      : Number(deps.mapSize || 0);
+    return renderMessageTemplate(template, { ...ctx, event: eventType }, { mapSize: resolvedMapSize || 0 });
   };
   return { render };
 }

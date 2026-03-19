@@ -178,10 +178,10 @@ function extractRustplusAuthToken(input) {
   return '';
 }
 
-function parseSessionCode(input = '') {
+function parseBootstrapToken(input = '') {
   const raw = String(input || '').trim();
   if (!raw) return null;
-  const token = raw.replace(/^RPTK-/i, '').trim();
+  const token = raw.replace(/^RPAUTH-/i, '').replace(/^RPTK-/i, '').trim();
   const firstDot = token.indexOf('.');
   if (firstDot <= 0 || firstDot >= token.length - 1) return null;
   return {
@@ -190,8 +190,8 @@ function parseSessionCode(input = '') {
   };
 }
 
-function buildSessionCode(session) {
-  return `RPTK-${session.id}.${session.secret}`;
+function buildBootstrapToken(session) {
+  return `RPAUTH-${session.id}.${session.secret}`;
 }
 
 function sanitizeSessionError(err) {
@@ -219,7 +219,14 @@ function compactSessionSteps(steps = []) {
   }));
 }
 
-function toPublicSession(session, { includeCode = false } = {}) {
+function hasSessionOwnerAccess(session, ownerUserId = '') {
+  if (!session) return false;
+  const sessionOwner = String(session.ownerUserId || '').trim();
+  if (!sessionOwner) return true;
+  return !!String(ownerUserId || '').trim() && sessionOwner === String(ownerUserId || '').trim();
+}
+
+function toPublicSession(session, { includeBootstrap = false } = {}) {
   if (!session) return null;
   const payload = {
     id: session.id,
@@ -231,7 +238,7 @@ function toPublicSession(session, { includeCode = false } = {}) {
     error: session.error || null,
     result: session.result || null,
   };
-  if (includeCode) payload.sessionCode = buildSessionCode(session);
+  if (includeBootstrap) payload.bootstrapToken = buildBootstrapToken(session);
   return payload;
 }
 
@@ -267,11 +274,16 @@ function sweepExpiredSessions() {
   for (let i = 0; i < overflow; i += 1) sessions.delete(ordered[i].id);
 }
 
-function getSessionByCredential({ sessionId = '', sessionSecret = '', sessionCode = '' } = {}) {
+function getSessionByCredential({
+  sessionId = '',
+  sessionSecret = '',
+  bootstrapToken = '',
+  sessionCode = '',
+} = {}) {
   let sid = String(sessionId || '').trim();
   let secret = String(sessionSecret || '').trim();
   if (!sid || !secret) {
-    const parsed = parseSessionCode(sessionCode);
+    const parsed = parseBootstrapToken(bootstrapToken || sessionCode);
     if (!parsed) return null;
     sid = parsed.sessionId;
     secret = parsed.sessionSecret;
@@ -293,7 +305,7 @@ function createRemoteSteamAuthSession({ ttlMs = SESSION_TTL_MS, requestedBy = 'w
     createdAtMs,
     updatedAtMs: createdAtMs,
     expiresAtMs: createdAtMs + clampTtlMs(ttlMs),
-    status: 'pending',
+    status: 'pending_plugin',
     requestedBy: String(requestedBy || 'web'),
     ownerUserId: String(ownerUserId || '').trim(),
     ownerEmail: String(ownerEmail || '').trim(),
@@ -303,27 +315,62 @@ function createRemoteSteamAuthSession({ ttlMs = SESSION_TTL_MS, requestedBy = 'w
     result: null,
     processingPromise: null,
   };
-  appendSessionStep(session, 'pending', '会话已创建，等待本机 Chrome 插件回传 Steam token');
+  appendSessionStep(session, 'pending_plugin', '登录任务已创建，等待插件接管');
   sessions.set(session.id, session);
-  return toPublicSession(session, { includeCode: true });
+  return toPublicSession(session, { includeBootstrap: true });
 }
 
 function getRemoteSteamAuthSession(sessionId, { ownerUserId = '' } = {}) {
   sweepExpiredSessions();
   const session = sessions.get(String(sessionId || '').trim()) || null;
   if (!session) return null;
-  if (ownerUserId && session.ownerUserId && String(session.ownerUserId) !== String(ownerUserId)) {
-    return null;
-  }
-  return toPublicSession(session, { includeCode: false });
+  if (!hasSessionOwnerAccess(session, ownerUserId)) return null;
+  return toPublicSession(session);
 }
 
-function cancelRemoteSteamAuthSession({ sessionId = '', sessionSecret = '', sessionCode = '' } = {}) {
-  const session = getSessionByCredential({ sessionId, sessionSecret, sessionCode });
+function getRemoteSteamAuthSessionBootstrap(sessionId, { ownerUserId = '' } = {}) {
+  sweepExpiredSessions();
+  const session = sessions.get(String(sessionId || '').trim()) || null;
+  if (!session) return null;
+  if (!hasSessionOwnerAccess(session, ownerUserId)) return null;
+  return {
+    session: toPublicSession(session, { includeBootstrap: true }),
+    ownerUserId: session.ownerUserId || '',
+    ownerEmail: session.ownerEmail || '',
+  };
+}
+
+function cancelRemoteSteamAuthSession({ sessionId = '', sessionSecret = '', bootstrapToken = '', sessionCode = '', ownerUserId = '' } = {}) {
+  const session = getSessionByCredential({ sessionId, sessionSecret, bootstrapToken, sessionCode });
   if (!session) return { success: false, error: '会话不存在或校验失败' };
+  if (!hasSessionOwnerAccess(session, ownerUserId)) return { success: false, error: '无权限访问当前登录任务' };
   if (session.status === 'completed') return { success: false, error: '会话已完成，无法取消' };
   session.status = 'cancelled';
   appendSessionStep(session, 'cancelled', '会话已取消');
+  return { success: true, session: toPublicSession(session) };
+}
+
+function updateRemoteSteamAuthSessionPhase(payload = {}) {
+  const session = getSessionByCredential(payload);
+  if (!session) return { success: false, error: '会话不存在或校验失败' };
+  if (session.status === 'completed') return { success: true, session: toPublicSession(session), ignored: true };
+  if (session.status === 'cancelled') return { success: false, error: '会话已取消' };
+  if (session.status === 'expired') return { success: false, error: '会话已过期，请重新创建' };
+
+  const phase = String(payload.phase || '').trim();
+  const message = String(payload.message || '').trim();
+  const phaseMap = {
+    pending_plugin: { status: 'pending_plugin', message: '等待插件接管' },
+    plugin_connected: { status: 'plugin_connected', message: '插件已连接，正在接管登录任务' },
+    login_opened: { status: 'login_opened', message: '已自动打开 Steam 登录页' },
+    waiting_token: { status: 'waiting_token', message: '等待用户完成 Steam 登录' },
+    token_received: { status: 'token_received', message: '已获取 Rust+ Token，准备回传云端' },
+  };
+  const next = phaseMap[phase];
+  if (!next) return { success: false, error: '无效的会话阶段' };
+
+  session.status = next.status;
+  appendSessionStep(session, next.status, message || next.message);
   return { success: true, session: toPublicSession(session) };
 }
 
@@ -409,7 +456,9 @@ async function completeRemoteSteamAuthSession(payload = {}) {
 module.exports = {
   createRemoteSteamAuthSession,
   getRemoteSteamAuthSession,
+  getRemoteSteamAuthSessionBootstrap,
   cancelRemoteSteamAuthSession,
+  updateRemoteSteamAuthSessionPhase,
   completeRemoteSteamAuthSession,
-  parseSessionCode,
+  parseSessionCode: parseBootstrapToken,
 };

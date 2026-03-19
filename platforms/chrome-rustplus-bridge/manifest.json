@@ -28,6 +28,27 @@
         "content.js"
       ],
       "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "https://rust.anlonely.me/*",
+        "http://127.0.0.1:*/*",
+        "http://localhost:*/*"
+      ],
+      "js": [
+        "webpage.js"
+      ],
+      "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "page-hook.js"
+      ],
+      "matches": [
+        "https://companion-rust.facepunch.com/*"
+      ]
     }
   ]
 }

@@ -53,6 +53,7 @@ bash platforms/web/run.sh
 |--------|------|--------|
 | `WEB_HOST` | 监听地址 | `0.0.0.0` |
 | `WEB_PORT` | 监听端口 | `3080` |
+| `WEB_PUBLIC_URL` | 对外可访问的固定回传地址，扩展优先使用它 | - |
 | `WEB_API_TOKEN` | API 访问令牌（生产必改） | `change_me_to_a_long_random_token` |
 | `WEB_REQUIRE_API_TOKEN` | 是否强制鉴权 | `1` |
 | `WEB_AUTO_CONNECT` | 启动时自动连接服务器 | `1` |
@@ -71,13 +72,17 @@ bash platforms/web/run.sh
 
 当服务器无法弹出 Chrome 时，可使用本项目自带的本机 Chrome 扩展完成登录桥接：
 
-1. 在 Web UI 点击 Steam 登录，生成一次性会话码（`RPTK-...`）。
-2. 在本机 Chrome 安装扩展目录：`platforms/chrome-rustplus-bridge`。
-3. 在扩展中填写：
-   - 云端地址（例如 `https://rust.anlonely.me`）
-   - 会话码（`RPTK-...`）
-4. 扩展会打开 `https://companion-rust.facepunch.com/login`，完成 Steam 登录后自动回传 token。
-5. 云端接口 `/steam-bridge/complete` 会写入配置并自动启动配对监听。
+推荐流程：
+1. 在 Web UI 点击 Steam 配对。
+2. 扩展自动打开 `https://companion-rust.facepunch.com/login`。
+3. 在本机浏览器完成 Steam 登录。
+4. 扩展自动回传 token 到云端 `/steam-bridge/complete`。
+5. 云端写入配置并自动启动配对监听。
+
+备用手动流程：
+1. 在本机 Chrome 安装扩展目录：`platforms/chrome-rustplus-bridge`。
+2. 在 Web UI 发起 Steam 登录，让网页下发当前登录任务。
+3. 在扩展中点击「重新接管当前登录任务」。
 
 连通性检查：
 - `GET /steam-bridge/ping` 返回 `{\"ok\":true}` 表示桥接接口可达。

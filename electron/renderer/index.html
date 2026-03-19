@@ -912,6 +912,178 @@ input, textarea, select { font-family:inherit; }
 .form-label { font-size:12px; color:var(--text2); }
 .form-row select { background:rgba(8,14,28,.88); border:1px solid rgba(106,126,169,.48); border-radius:10px; padding:8px 12px; color:var(--text); font-size:13px; outline:none; width:100%; }
 .modal-footer { display:flex; gap:8px; justify-content:flex-end; margin-top:16px; }
+.steam-auth-modal { max-width:860px; width:min(860px, calc(100vw - 32px)); }
+.steam-auth-shell {
+  display:grid;
+  grid-template-columns:minmax(0, 1.35fr) minmax(300px, .9fr);
+  gap:14px;
+}
+.steam-auth-main,
+.steam-auth-side {
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.steam-auth-hero,
+.steam-auth-panel,
+.steam-auth-profile {
+  border-radius:14px;
+  border:1px solid rgba(106,126,169,.22);
+  background:rgba(255,255,255,.03);
+  box-shadow:inset 0 1px 0 rgba(188,203,255,.04);
+}
+.steam-auth-hero {
+  padding:16px;
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--blue) 18%, transparent), transparent 42%),
+    linear-gradient(160deg, color-mix(in srgb, var(--bg4) 88%, transparent), color-mix(in srgb, var(--bg2) 94%, transparent));
+}
+.steam-auth-eyebrow {
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--blue);
+  margin-bottom:8px;
+}
+.steam-auth-headline {
+  font-size:22px;
+  font-weight:800;
+  color:var(--text);
+  letter-spacing:.01em;
+}
+.steam-auth-copy {
+  margin-top:8px;
+  font-size:13px;
+  line-height:1.8;
+  color:var(--text2);
+}
+.steam-auth-flow {
+  display:grid;
+  gap:10px;
+}
+.steam-auth-step {
+  display:grid;
+  grid-template-columns:20px minmax(0, 1fr);
+  gap:10px;
+  align-items:start;
+  padding:12px 13px;
+  border-radius:12px;
+  border:1px solid rgba(108,127,174,.18);
+  background:rgba(255,255,255,.02);
+}
+.steam-auth-step.is-active {
+  border-color:rgba(142,157,255,.24);
+  background:rgba(142,157,255,.08);
+}
+.steam-auth-step.is-done {
+  border-color:rgba(46,204,113,.24);
+  background:rgba(46,204,113,.08);
+}
+.steam-auth-step.is-error {
+  border-color:rgba(255,94,138,.24);
+  background:rgba(255,94,138,.08);
+}
+.steam-auth-step-dot {
+  width:10px;
+  height:10px;
+  border-radius:999px;
+  margin-top:5px;
+  background:var(--border);
+  box-shadow:0 0 0 4px rgba(255,255,255,.02);
+}
+.steam-auth-step.is-active .steam-auth-step-dot { background:var(--blue); }
+.steam-auth-step.is-done .steam-auth-step-dot { background:var(--green); }
+.steam-auth-step.is-error .steam-auth-step-dot { background:var(--red); }
+.steam-auth-step-title {
+  font-size:13px;
+  font-weight:700;
+  color:var(--text);
+}
+.steam-auth-step-detail {
+  margin-top:3px;
+  font-size:12px;
+  line-height:1.75;
+  color:var(--text2);
+}
+.steam-auth-panel { padding:13px 14px; }
+.steam-auth-panel-title,
+.steam-auth-note-title {
+  margin:0 0 8px;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--text3);
+}
+.steam-auth-status-row {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+.steam-auth-badge {
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(108,127,174,.26);
+  background:rgba(255,255,255,.04);
+  font-size:12px;
+  font-weight:700;
+  color:var(--text);
+}
+.steam-auth-badge::before {
+  content:'';
+  width:8px;
+  height:8px;
+  border-radius:999px;
+  background:currentColor;
+  opacity:.8;
+}
+.steam-auth-profile {
+  padding:14px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.steam-auth-profile-header {
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+.steam-auth-meta {
+  display:grid;
+  gap:10px;
+}
+.steam-auth-meta-item {
+  padding:10px 12px;
+  border-radius:12px;
+  background:rgba(4,8,18,.22);
+  border:1px solid rgba(106,126,169,.16);
+}
+.steam-auth-meta-label {
+  font-size:12px;
+  color:var(--text3);
+  margin-bottom:6px;
+}
+.steam-auth-meta-value {
+  font-size:13px;
+  color:var(--text);
+  line-height:1.7;
+  word-break:break-word;
+}
+.steam-auth-actions {
+  display:flex;
+  gap:8px;
+  justify-content:flex-end;
+  flex-wrap:wrap;
+}
+@media (max-width: 820px) {
+  .steam-auth-shell { grid-template-columns:1fr; }
+  .steam-auth-actions > .btn { flex:1 1 160px; justify-content:center; }
+}
 
 /* ═══════════════════════════════════════════════
    控制台页
@@ -1597,44 +1769,72 @@ input, textarea, select { font-family:inherit; }
 
 <!-- ══ 模态框：Steam 用户信息 ═════════════════════ -->
 <div class="modal-overlay" id="modal-steam-profile">
-  <div class="modal" style="max-width:520px">
+  <div class="modal steam-auth-modal">
     <div class="modal-title">
-      Steam 个人信息
+      Steam Remote Login
       <button class="modal-close" onclick="closeModal('modal-steam-profile')">✕</button>
     </div>
-    <div style="display:flex;gap:12px;align-items:center;margin-bottom:14px">
-      <div class="user-avatar" id="steam-modal-avatar" style="width:56px;height:56px;font-size:22px">👤</div>
-      <div style="min-width:0">
-        <div id="steam-modal-name" style="font-size:16px;font-weight:700">未登录</div>
-        <div id="steam-modal-state" style="font-size:12px;color:var(--text2);margin-top:2px">-</div>
+    <div class="steam-auth-shell">
+      <div class="steam-auth-main">
+        <div class="steam-auth-hero">
+          <div class="steam-auth-eyebrow">Steam Remote Login</div>
+          <div class="steam-auth-headline" id="steam-auth-headline">只需要完成 Steam 登录</div>
+          <div class="steam-auth-copy" id="steam-auth-copy">桌面版会打开本地授权窗口，检测到 Rust+ 凭证后自动回写到工具箱。</div>
+        </div>
+        <div id="steam-auth-flow" class="steam-auth-flow"></div>
       </div>
-    </div>
-    <div class="card" style="padding:12px;margin-bottom:12px">
-      <div style="font-size:12px;color:var(--text3);margin-bottom:6px">SteamID</div>
-      <div id="steam-modal-id" style="font-size:13px;color:var(--text)">-</div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" id="steam-refresh-btn" onclick="refreshSteamUserCard()">刷新资料</button>
-      <button class="btn btn-primary" id="btn-steam-login" onclick="navigateToSteamLogin()">前往登录</button>
-      <button class="btn btn-danger" id="btn-steam-logout" onclick="logoutSteam()">注销登录</button>
+      <div class="steam-auth-side">
+        <div class="steam-auth-profile">
+          <div class="steam-auth-profile-header">
+            <div class="user-avatar" id="steam-modal-avatar" style="width:56px;height:56px;font-size:22px">👤</div>
+            <div style="min-width:0">
+              <div id="steam-modal-name" style="font-size:16px;font-weight:700">未登录</div>
+              <div id="steam-modal-state" style="font-size:12px;color:var(--text2);margin-top:4px;line-height:1.7">-</div>
+            </div>
+          </div>
+          <div class="steam-auth-meta">
+            <div class="steam-auth-meta-item">
+              <div class="steam-auth-meta-label">SteamID</div>
+              <div class="steam-auth-meta-value" id="steam-modal-id">-</div>
+            </div>
+            <div class="steam-auth-panel">
+              <div class="steam-auth-panel-title">当前状态</div>
+              <div class="steam-auth-status-row">
+                <div class="steam-auth-badge" id="steam-auth-badge">等待开始</div>
+                <button class="btn btn-ghost btn-xs" id="steam-refresh-btn" onclick="refreshSteamUserCard()">刷新资料</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="steam-auth-actions">
+          <button class="btn btn-primary" id="btn-steam-login" onclick="navigateToSteamLogin()">开始 Steam 登录</button>
+          <button class="btn btn-danger" id="btn-steam-logout" onclick="logoutSteam()">注销登录</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ══ 模态框：凭证获取成功 ═════════════════════ -->
-<div class="modal-overlay" id="modal-steam-credential-success">
+<!-- ══ 模态框：服务器需要重新配对 ═════════════════ -->
+<div class="modal-overlay" id="modal-server-repair">
   <div class="modal" style="max-width:560px">
     <div class="modal-title">
-      凭证获取成功
-      <button class="modal-close" onclick="closeModal('modal-steam-credential-success')">✕</button>
+      服务器需要重新配对
+      <button class="modal-close" onclick="closeModal('modal-server-repair')">✕</button>
     </div>
     <div style="font-size:14px;line-height:1.9;color:var(--text2)">
-      <div style="color:var(--green);font-weight:700">Rust+ 凭证已成功获取，点击下方按钮继续</div>
-      <div style="margin-top:10px;color:var(--text)">接下来会发生什么？</div>
-      <div>点击按钮后将自动跳转到 Rust 工具箱管理页面，并自动为您设置凭证，无需手动操作。</div>
+      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px">当前服务器虽然已连接，但 Rust+ 数据请求被拒绝。</div>
+      <div id="server-repair-reason">这通常意味着当前服务器配对信息已经失效，需要在游戏里重新执行 Pair with Server。</div>
+      <div style="margin-top:12px;padding:12px 14px;border-radius:12px;border:1px solid rgba(106,126,169,.26);background:rgba(255,255,255,.03)">
+        <div style="font-weight:700;color:var(--text);margin-bottom:8px">下一步</div>
+        <div>1. 保持当前 Steam 登录有效</div>
+        <div>2. 进入游戏并打开目标服务器</div>
+        <div>3. 按 <code>ESC → Rust+ → Pair with Server</code></div>
+      </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-primary" onclick="gotoManagementAfterSteamLogin()">前往管理页</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-server-repair')">稍后处理</button>
+      <button class="btn btn-primary" onclick="goToServerRepairFlow()">去重新配对</button>
     </div>
   </div>
 </div>
@@ -1907,6 +2107,9 @@ const state = {
   pendingPairingDevice: null,
   pendingPairingOptions: null,
   steamReauthPrompted: false,
+  steamAuthAutoStarted: false,
+  steamAuthPhase: 'idle',
+  steamAuthMessage: '',
   helpDocLoaded: false,
   healthPollTimer: null,
   mapPollTimer: null,
@@ -1926,6 +2129,9 @@ const state = {
   teamClusterById: {},
   selectedTeamClusterId: '',
   itemNameCache: {},
+  serverDataIssue: '',
+  serverDataIssueLogged: '',
+  serverRepairPromptShownFor: '',
   mapResizeHandlerBound: false,
   serverMapLayout: { renderedRect: null, mapContext: null },
   serverMapSettings: {
@@ -2720,14 +2926,17 @@ async function promptSteamReauthIfNeeded({ source = 'manual', autoQueuePairing =
   const issue = getSteamTokenIssue(state.steam);
   if (!issue) {
     state.steamReauthPrompted = false;
+    state.steamAuthAutoStarted = false;
     return false;
   }
-  if (source === 'startup' && state.steamReauthPrompted) return false;
-  state.steamReauthPrompted = source === 'startup';
-  const confirmed = confirm(`${issue}。\n需要重新登录 Steam 才能继续 Rust+ 配对，是否现在重新登录？`);
-  if (!confirmed) return false;
+  if (source === 'startup' && state.steamAuthAutoStarted) return false;
+  state.steamReauthPrompted = true;
   if (autoQueuePairing || retryPairingOptions) {
     state.pendingPairingOptions = retryPairingOptions || { forceRegister: true };
+  }
+  openSteamProfileModal();
+  if (source === 'startup') {
+    state.steamAuthAutoStarted = true;
   }
   await beginSteamAuthFlow();
   return true;
@@ -2740,13 +2949,24 @@ async function refreshSteamUserCard({ silent = false } = {}) {
     refreshBtn.disabled = true;
     refreshBtn.textContent = '刷新中...';
   }
+  const quickLabel = state.steam?.hasLogin ? '已检测到登录状态，正在刷新资料...' : '正在检查本地登录状态...';
+  setSteamAuthFeedback('refreshing', quickLabel);
 
   try {
+    if (typeof rustAPI.getSteamStatusQuick === 'function') {
+      const quick = await rustAPI.getSteamStatusQuick().catch(() => null);
+      if (quick) {
+        state.steam = quick;
+        renderSteamUserCard(quick);
+        renderSteamProfileModal(quick);
+      }
+    }
     const remote = await rustAPI.getSteamStatus();
     if (!remote) throw new Error('未获取到 Steam 状态');
     state.steam = remote;
     renderSteamUserCard(remote);
     renderSteamProfileModal(remote);
+    setSteamAuthFeedback('idle', remote?.steamProfile ? 'Steam 资料已刷新' : '已刷新本地登录状态');
     if (!silent) {
       const steamId = remote?.tokenMeta?.steamId;
       if (steamId) toast('success', `资料已刷新：${steamId}`);
@@ -2754,6 +2974,7 @@ async function refreshSteamUserCard({ silent = false } = {}) {
     }
     return remote;
   } catch (e) {
+    setSteamAuthFeedback('error', 'Steam 资料刷新失败');
     if (!silent) toast('error', '刷新失败：' + (e?.message || '未知错误'));
     addLog('warn', 'Steam 资料刷新失败: ' + (e?.message || e));
     return null;
@@ -2786,7 +3007,7 @@ function renderSteamUserCard(steam) {
   if (!steam?.hasLogin) {
     avatarEl.textContent = '👤';
     nameEl.textContent = '未登录';
-    subEl.textContent = '请先完成 Steam 登录';
+    subEl.textContent = state.steamAuthMessage || '请先完成 Steam 登录';
     renderSteamProfileModal(steam);
     return;
   }
@@ -2800,7 +3021,9 @@ function renderSteamUserCard(steam) {
   const steamName = sanitizeSteamText(profile?.steamName || '');
   nameEl.textContent = steamName || (steamId ? `Steam ${steamId.slice(-6)}` : 'Steam 已登录');
   const stateMessage = sanitizeSteamText(profile?.stateMessage || '');
-  if (stateMessage) {
+  if (state.steamAuthPhase && state.steamAuthPhase !== 'idle' && state.steamAuthMessage) {
+    subEl.textContent = state.steamAuthMessage;
+  } else if (stateMessage) {
     subEl.textContent = stateMessage;
   } else if (steam.steamProfileError) {
     subEl.textContent = steamId ? `${steamId} · 资料获取失败` : '资料获取失败';
@@ -2808,6 +3031,123 @@ function renderSteamUserCard(steam) {
     subEl.textContent = steamId || '已登录（未获取到 SteamID）';
   }
   renderSteamProfileModal(steam);
+}
+
+function setSteamAuthFeedback(phase = 'idle', message = '', options = {}) {
+  state.steamAuthPhase = String(phase || 'idle');
+  state.steamAuthMessage = String(message || '').trim();
+  if (options.steam) {
+    state.steam = options.steam;
+  }
+  const stateEl = document.getElementById('steam-modal-state');
+  const btnLogin = document.getElementById('btn-steam-login');
+  const btnLogout = document.getElementById('btn-steam-logout');
+  const btnRefresh = document.getElementById('steam-refresh-btn');
+  const busy = ['starting', 'browser-opened', 'waiting-login', 'credentials-ready', 'local-ready', 'profile-refreshing', 'refreshing'].includes(state.steamAuthPhase);
+  const hardBusy = ['starting', 'credentials-ready', 'local-ready', 'profile-refreshing', 'refreshing'].includes(state.steamAuthPhase);
+  if (btnLogin) btnLogin.disabled = hardBusy;
+  if (btnRefresh) btnRefresh.disabled = busy;
+  if (btnLogout) btnLogout.disabled = busy && !options.allowLogout;
+  renderSteamUserCard(state.steam);
+  renderSteamProfileModal(state.steam);
+  if (stateEl && state.steamAuthMessage) {
+    stateEl.textContent = state.steamAuthMessage;
+  }
+}
+
+function getSteamAuthPresentation(steam) {
+  const phase = String(state.steamAuthPhase || 'idle');
+  const hasLogin = !!steam?.hasLogin;
+  const hasProfile = !!steam?.steamProfile;
+  const failed = ['failed', 'error', 'profile-failed'].includes(phase);
+  const cancelled = phase === 'cancelled';
+  const started = phase !== 'idle' || hasLogin;
+  const loginOpened = ['browser-opened', 'waiting-login', 'cancelled', 'credentials-ready', 'local-ready', 'profile-refreshing', 'profile-ready', 'already-ready'].includes(phase) || hasLogin;
+  const credentialReady = ['credentials-ready', 'local-ready', 'profile-refreshing', 'profile-ready', 'already-ready'].includes(phase) || hasLogin;
+  const syncing = ['local-ready', 'profile-refreshing', 'refreshing'].includes(phase);
+  const completed = phase === 'profile-ready' || (hasLogin && hasProfile);
+
+  const badgeMap = {
+    idle: { text: hasLogin ? '已登录' : '待开始', tone: hasLogin ? 'green' : 'neutral' },
+    starting: { text: '准备中', tone: 'blue' },
+    'browser-opened': { text: '已打开授权窗口', tone: 'blue' },
+    'waiting-login': { text: '等待登录', tone: 'blue' },
+    cancelled: { text: '等待重新打开', tone: 'neutral' },
+    'credentials-ready': { text: '凭证已捕获', tone: 'green' },
+    'local-ready': { text: '本地已登录', tone: 'green' },
+    'profile-refreshing': { text: '同步资料中', tone: 'blue' },
+    'profile-ready': { text: '同步完成', tone: 'green' },
+    'already-ready': { text: '本地已就绪', tone: 'green' },
+    refreshing: { text: '刷新中', tone: 'blue' },
+    'profile-failed': { text: '资料同步失败', tone: 'red' },
+    failed: { text: '登录失败', tone: 'red' },
+    error: { text: '登录失败', tone: 'red' },
+  };
+  const badge = badgeMap[phase] || badgeMap.idle;
+
+  const headline = hasLogin ? 'Steam 已连接到本地工具箱' : '只需要完成 Steam 登录';
+  const copy = hasLogin
+    ? '本地凭证已经写入工具箱，右侧会显示当前同步状态。需要更新资料时直接点“刷新资料”。'
+    : '桌面版会打开一个独立授权窗口，检测到 Rust+ 凭证后自动回写到工具箱，然后再同步 Steam 资料。';
+
+  const items = [
+    {
+      label: '已启动授权流程',
+      detail: started ? '桌面端已经创建本地授权链路，等待外部登录窗口接管。' : '点击“开始 Steam 登录”后，工具箱会先准备本地授权链路。',
+      state: failed && !started ? 'error' : (started ? 'done' : 'active'),
+    },
+    {
+      label: '打开 Steam 登录页',
+      detail: cancelled ? '你刚刚关闭了登录页。点击“重新打开登录页”后会再次拉起授权窗口。' : (loginOpened ? '授权窗口已启动，等待你在其中完成 Steam 登录。' : '准备完成后会自动拉起 Rust+ 的 Steam 登录页。'),
+      state: failed && started && !loginOpened ? 'error' : (loginOpened ? 'done' : (started ? 'active' : 'todo')),
+    },
+    {
+      label: credentialReady ? '已检测 Rust+ 凭证' : '正在检测 Rust+ 凭证',
+      detail: credentialReady ? '本地已经拿到 Rust+ 登录凭证，正在刷新工具箱状态。' : (loginOpened ? '请在登录页完成 Steam 登录，工具箱会继续等待并自动捕获 Rust+ 凭证。' : '完成 Steam 登录后，本地授权链路会自动捕获 Rust+ 凭证。'),
+      state: failed && loginOpened && !credentialReady ? 'error' : (credentialReady ? 'done' : (loginOpened ? 'active' : 'todo')),
+    },
+    {
+      label: '同步 Steam 资料',
+      detail: completed ? 'Steam 资料已同步完成，可以直接继续配对和后续管理。' : (syncing ? '本地凭证已写入，正在刷新 Steam 昵称、头像和在线状态。' : '拿到本地凭证后会自动同步 Steam 资料。'),
+      state: failed && credentialReady && !completed ? 'error' : (completed ? 'done' : ((syncing || credentialReady) ? 'active' : 'todo')),
+    },
+  ];
+
+  return { phase, hasLogin, failed, started, completed, badge, headline, copy, items };
+}
+
+function renderSteamAuthFlow(steam) {
+  const flowEl = document.getElementById('steam-auth-flow');
+  const badgeEl = document.getElementById('steam-auth-badge');
+  const headlineEl = document.getElementById('steam-auth-headline');
+  const copyEl = document.getElementById('steam-auth-copy');
+  if (!flowEl || !badgeEl || !headlineEl || !copyEl) return;
+
+  const presentation = getSteamAuthPresentation(steam);
+  headlineEl.textContent = presentation.headline;
+  copyEl.textContent = presentation.copy;
+  badgeEl.textContent = presentation.badge.text;
+
+  const toneStyle = {
+    neutral: { color: 'var(--text2)', border: 'rgba(108,127,174,.26)', bg: 'rgba(255,255,255,.04)' },
+    blue: { color: 'var(--blue)', border: 'rgba(142,157,255,.26)', bg: 'rgba(142,157,255,.08)' },
+    green: { color: 'var(--green)', border: 'rgba(46,204,113,.24)', bg: 'rgba(46,204,113,.08)' },
+    red: { color: 'var(--red)', border: 'rgba(255,94,138,.24)', bg: 'rgba(255,94,138,.08)' },
+  };
+  const tone = toneStyle[presentation.badge.tone] || toneStyle.neutral;
+  badgeEl.style.color = tone.color;
+  badgeEl.style.borderColor = tone.border;
+  badgeEl.style.background = tone.bg;
+
+  flowEl.innerHTML = presentation.items.map((item) => `
+    <div class="steam-auth-step ${item.state === 'done' ? 'is-done' : ''} ${item.state === 'active' ? 'is-active' : ''} ${item.state === 'error' ? 'is-error' : ''}">
+      <div class="steam-auth-step-dot"></div>
+      <div>
+        <div class="steam-auth-step-title">${esc(item.label)}</div>
+        <div class="steam-auth-step-detail">${esc(item.detail)}</div>
+      </div>
+    </div>
+  `).join('');
 }
 
 function sanitizeSteamText(input) {
@@ -2844,15 +3184,20 @@ function renderSteamProfileModal(steam) {
   const idEl = document.getElementById('steam-modal-id');
   const btnLogin = document.getElementById('btn-steam-login');
   const btnLogout = document.getElementById('btn-steam-logout');
-  if (!avatarEl || !nameEl || !stateEl || !idEl || !btnLogin || !btnLogout) return;
+  const btnRefresh = document.getElementById('steam-refresh-btn');
+  if (!avatarEl || !nameEl || !stateEl || !idEl || !btnLogin || !btnLogout || !btnRefresh) return;
+
+  renderSteamAuthFlow(steam);
 
   if (!steam?.hasLogin) {
     avatarEl.textContent = '👤';
     nameEl.textContent = '未登录';
-    stateEl.textContent = '未检测到 Steam 登录状态';
+    stateEl.textContent = state.steamAuthMessage || '未检测到 Steam 登录状态';
     idEl.textContent = '-';
     btnLogin.style.display = 'inline-flex';
+    btnLogin.textContent = ['browser-opened', 'waiting-login', 'cancelled'].includes(String(state.steamAuthPhase || '')) ? '重新打开登录页' : '开始 Steam 登录';
     btnLogout.style.display = 'none';
+    btnRefresh.textContent = '重新检测';
     return;
   }
 
@@ -2865,10 +3210,11 @@ function renderSteamProfileModal(steam) {
   if (avatar) avatarEl.innerHTML = `<img src=\"${avatar}\" alt=\"avatar\">`;
   else avatarEl.textContent = '👤';
   nameEl.textContent = steamName || (steamId !== '-' ? `Steam ${String(steamId).slice(-6)}` : 'Steam 已登录');
-  stateEl.textContent = stateMessage || profile.onlineState || (steamId !== '-' ? '已登录' : '已登录（ID未解析）');
+  stateEl.textContent = state.steamAuthMessage || stateMessage || profile.onlineState || (steamId !== '-' ? '已登录' : '已登录（ID未解析）');
   idEl.textContent = steamId;
   btnLogin.style.display = 'none';
   btnLogout.style.display = 'inline-flex';
+  btnRefresh.textContent = '刷新资料';
 }
 
 function openSteamProfileModal() {
@@ -2881,13 +3227,16 @@ function navigateToSteamLogin() {
 }
 
 async function logoutSteam() {
+  setSteamAuthFeedback('refreshing', '正在注销 Steam 登录...', { allowLogout: true });
   const res = await rustAPI.steamLogout().catch(e => ({ success: false, reason: e.message }));
   if (!res?.success) {
+    setSteamAuthFeedback('error', 'Steam 注销失败');
     toast('error', '注销失败：' + (res?.reason || '未知错误'));
     return;
   }
   state.steam = res.steam || null;
   state.steamReauthPrompted = false;
+  setSteamAuthFeedback('idle', '');
   renderSteamUserCard(state.steam);
   renderSteamProfileModal(state.steam);
   toast('success', '已注销 Steam 登录');
@@ -2895,18 +3244,27 @@ async function logoutSteam() {
 }
 
 async function beginSteamAuthFlow() {
-  toast('info', '正在启动 Rust+ 凭证授权流程，请在弹出的 Chrome 中登录 Steam');
+  setSteamAuthFeedback('starting', '正在打开授权窗口...');
+  toast('info', '正在启动授权窗口，请在弹出的 Rust+ 登录页中完成 Steam 登录');
   const btn = document.getElementById('btn-steam-login');
   if (btn) btn.disabled = true;
   const res = await rustAPI.steamBeginAuth().catch(e => ({ success: false, reason: e.message }));
-  if (btn) btn.disabled = false;
+  if (res?.silenced) {
+    return;
+  }
+  if (res?.cancelled) {
+    setSteamAuthFeedback('cancelled', '登录页已关闭或登录尚未完成。点击“重新打开登录页”可以继续。');
+    return;
+  }
   if (!res?.success) {
+    if (btn) btn.disabled = false;
+    setSteamAuthFeedback('error', 'Steam 登录启动失败');
     toast('error', '授权失败：' + (res?.reason || '未知错误'));
     return;
   }
   state.steam = res.steam || null;
+  setSteamAuthFeedback('local-ready', '已检测到本地登录状态，正在同步资料...', { steam: state.steam });
   renderSteamUserCard(state.steam);
-  closeModal('modal-steam-profile');
   const pendingPairing = state.pendingPairingOptions;
   state.pendingPairingOptions = null;
   if (pendingPairing) {
@@ -2914,13 +3272,7 @@ async function beginSteamAuthFlow() {
     await startPairing({ ...pendingPairing, skipSteamCheck: true });
     return;
   }
-  openModal('modal-steam-credential-success');
-}
-
-function gotoManagementAfterSteamLogin() {
-  closeModal('modal-steam-credential-success');
-  navigate('dashboard', document.querySelector('[data-page=dashboard]'));
-  toast('success', '凭证已就绪，已进入管理页');
+  toast('success', '已检测到登录状态，正在同步 Steam 资料');
 }
 
 // ═══════════════════════════════════════════════
@@ -2934,11 +3286,14 @@ function updateConnectionUI(connected, serverName) {
   const stSub = document.getElementById('st-server-sub');
 
   if (connected) {
+    state.serverDataIssue = '';
+    state.serverDataIssueLogged = '';
+    state.serverRepairPromptShownFor = '';
     dot.classList.add('online');
     label.textContent = serverName || '已连接';
     stVal.textContent = '已连接 ✓';
     stVal.style.color = 'var(--green)';
-    stSub.textContent = '数据同步正常';
+    stSub.textContent = '正在拉取服务器数据...';
     document.getElementById('server-info-card').style.display = 'block';
     document.getElementById('health-info-card').style.display = 'block';
     refreshAllServerData();
@@ -2951,6 +3306,7 @@ function updateConnectionUI(connected, serverName) {
     state.latestMapSize = 0;
     state.serverMapLastAt = 0;
     state.serverMapLayout = { renderedRect: null, mapContext: null };
+    state.serverRepairPromptShownFor = '';
     dot.classList.remove('online');
     label.textContent = '未连接';
     stVal.textContent = '未连接';
@@ -3004,11 +3360,37 @@ function updateTeamSyncStatus(status = {}) {
 
 async function refreshAllServerData() {
   if (!state.connected) return;
-  await Promise.all([
+  const [infoState, teamState] = await Promise.all([
     refreshServerInfo(),
     refreshTeam(),
     refreshConnectionHealth(),
   ]);
+  const stVal = document.getElementById('st-server');
+  const stSub = document.getElementById('st-server-sub');
+  if (!stVal || !stSub) return;
+
+  const infoOk = infoState?.ok === true;
+  const teamOk = teamState?.ok === true;
+  const issue = infoState?.reason || teamState?.reason || '';
+
+  if (infoOk || teamOk) {
+    state.serverDataIssue = '';
+    stVal.textContent = '已连接 ✓';
+    stVal.style.color = 'var(--green)';
+    stSub.textContent = '数据同步正常';
+    return;
+  }
+
+  state.serverDataIssue = issue || '已连接，但当前未返回任何 Rust+ 数据';
+  stVal.textContent = '已连接（需重配）';
+  stVal.style.color = 'var(--orange)';
+  stSub.textContent = state.serverDataIssue;
+  if (state.serverDataIssueLogged !== state.serverDataIssue) {
+    state.serverDataIssueLogged = state.serverDataIssue;
+    addLog('warn', `[连接诊断] ${state.serverDataIssue}`);
+    toast('warning', state.serverDataIssue, 4200);
+  }
+  promptServerRepairFlow(state.serverDataIssue);
 }
 
 function setButtonDisabled(id, disabled) {
@@ -3086,12 +3468,36 @@ function setPairingStatus(ok, subText = null) {
   }
 }
 
+function promptServerRepairFlow(reason = '') {
+  const key = `${String(state.currentServer?.id || '')}|${String(reason || '')}`;
+  if (state.serverRepairPromptShownFor === key) return;
+  state.serverRepairPromptShownFor = key;
+  const reasonEl = document.getElementById('server-repair-reason');
+  if (reasonEl) {
+    reasonEl.textContent = reason || '当前服务器配对信息可能已失效，需要重新执行 Pair with Server。';
+  }
+  openModal('modal-server-repair');
+}
+
+function goToServerRepairFlow() {
+  closeModal('modal-server-repair');
+  navigate('pairing', document.querySelector('[data-page=pairing]'));
+  const status = document.getElementById('pairing-status');
+  if (status) {
+    status.textContent = '请在游戏内按 ESC → Rust+ → Pair with Server，工具箱会自动接收新的服务器配对信息。';
+  }
+  startPairing({ skipSteamCheck: true });
+}
+
 // ═══════════════════════════════════════════════
 // 服务器信息刷新
 // ═══════════════════════════════════════════════
 async function refreshServerInfo() {
   try {
     const res = await rustAPI.getServerInfo();
+    if (!res || res?.error === 'not_found') {
+      return { ok: false, reason: '已连接，但服务器资料请求被拒绝，当前服务器需要重新配对。' };
+    }
     const s = extractServerInfo(res);
     if (s) {
       document.getElementById('st-players').textContent = s.players ?? '-';
@@ -3105,7 +3511,10 @@ async function refreshServerInfo() {
     document.getElementById('st-time').textContent = timeMinutes == null
       ? '-'
       : `${String(Math.floor(timeMinutes / 60)).padStart(2, '0')}:${String(timeMinutes % 60).padStart(2, '0')}`;
-  } catch {}
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, reason: `服务器资料获取失败：${e?.message || e}` };
+  }
 }
 
 // ═══════════════════════════════════════════════
@@ -3115,10 +3524,16 @@ async function refreshTeam() {
   if (!state.connected) return;
   try {
     const res = await rustAPI.getTeamInfo();
+    if (!res || res?.error === 'not_found') {
+      renderTeam([]);
+      return { ok: false, reason: '已连接，但队伍信息请求被拒绝，当前服务器需要重新配对。' };
+    }
     const members = extractTeamMembers(res);
     renderTeam(members);
+    return { ok: true };
   } catch (e) {
     addLog('warn', '获取队伍信息失败: ' + e.message);
+    return { ok: false, reason: `队伍信息获取失败：${e?.message || e}` };
   }
 }
 
@@ -5529,12 +5944,7 @@ function buildRuleTriggerSummary(rule) {
     return labels.length ? labels.join('/') : '全部关闭';
   }
   if (rule?.event === 'vending_new') {
-    const names = Array.isArray(rule?.trigger?.vendingWatchItemNames)
-      ? rule.trigger.vendingWatchItemNames.map((n) => String(n || '').trim()).filter(Boolean)
-      : [];
-    if (!names.length) return '重点物品上架';
-    const preview = names.slice(0, 3).join('/');
-    return names.length > 3 ? `${preview} 等${names.length}项` : preview;
+    return '新机出现/商品上新均提醒';
   }
   if (rule?.event === 'deep_sea_status') {
     const trigger = rule?.trigger || {};
@@ -6510,6 +6920,29 @@ rustAPI.on('pairing:listener-status', (status) => {
   }
   if (type === 'closed') {
     addLog('warn', `配对监听进程退出 code=${status?.code} signal=${status?.signal || '-'}`);
+  }
+});
+
+rustAPI.on('steam:auth-status', (payload) => {
+  const phase = String(payload?.phase || 'idle');
+  const message = String(payload?.message || '').trim();
+  const options = payload?.steam ? { steam: payload.steam } : {};
+  if (payload?.steam) state.steam = payload.steam;
+  setSteamAuthFeedback(phase, message, options);
+  if (phase === 'profile-ready') {
+    toast('success', 'Steam 资料已同步完成');
+    return;
+  }
+  if (phase === 'failed' || phase === 'profile-failed') {
+    toast('error', message || 'Steam 登录失败');
+    return;
+  }
+  if (phase === 'cancelled') {
+    toast('warning', message || '登录流程已暂停，可重新打开登录页继续');
+    return;
+  }
+  if (phase === 'browser-opened') {
+    toast('info', '授权窗口已打开，登录完成后会自动回写到工具箱');
   }
 });
 

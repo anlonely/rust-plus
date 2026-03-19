@@ -18,6 +18,18 @@
     return headers;
   }
 
+  function normalizeSafeUrl(raw) {
+    const input = String(raw || '').trim();
+    if (!input) return '';
+    try {
+      const parsed = new URL(input, location.origin);
+      if (!['http:', 'https:'].includes(parsed.protocol)) return '';
+      return parsed.href;
+    } catch (_) {
+      return '';
+    }
+  }
+
   async function requestJson(url, options = {}) {
     const opts = { ...options };
     opts.headers = withAuthHeaders(opts.headers || {});
@@ -179,6 +191,7 @@
     connectServer: (cfg) => invoke('server:connect', cfg),
     getServerInfo: () => invoke('server:getInfo'),
     getTeamInfo: () => invoke('server:getTeam'),
+    getTeamChat: () => invoke('server:getTeamChat'),
     getItemsByIds: (ids) => invoke('catalog:getItemsByIds', ids),
     getServerHealth: () => invoke('server:getHealth'),
 
@@ -214,7 +227,7 @@
 
     openUrl: (url) => {
       try {
-        const safe = String(url || '');
+        const safe = normalizeSafeUrl(url);
         if (!safe) return;
         window.open(safe, '_blank', 'noopener,noreferrer');
       } catch (_) {}

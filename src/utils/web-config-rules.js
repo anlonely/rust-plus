@@ -81,6 +81,10 @@ function normalizeEventRuleInput(raw = {}, serverId = '', options = {}) {
     trigger.vendorNotifyStopped = trigger.vendorNotifyStopped !== false;
     trigger.vendorNotifyLeave = trigger.vendorNotifyLeave !== false;
   }
+  if (event === 'vending_new') {
+    trigger.vendingWatchItemIds = [];
+    trigger.vendingWatchItemNames = [];
+  }
 
   return {
     id: String(input.id || '').trim() || `web_event_${Date.now()}`,

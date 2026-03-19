@@ -17,6 +17,7 @@ RUN_USER="${RUN_USER:-${SUDO_USER:-root}}"
 RUN_GROUP="${RUN_GROUP:-${RUN_USER}}"
 WEB_API_TOKEN="${WEB_API_TOKEN:-}"
 WEB_REQUIRE_API_TOKEN="${WEB_REQUIRE_API_TOKEN:-1}"
+WEB_PUBLIC_URL="${WEB_PUBLIC_URL:-}"
 
 if [[ "${WEB_REQUIRE_API_TOKEN}" != "0" && -z "${WEB_API_TOKEN}" ]]; then
   echo "安全保护：请设置 WEB_API_TOKEN 后再部署。"
@@ -63,6 +64,7 @@ Environment=NODE_ENV=production
 Environment=WEB_PORT=${WEB_PORT}
 Environment=WEB_API_TOKEN=${WEB_API_TOKEN}
 Environment=WEB_REQUIRE_API_TOKEN=${WEB_REQUIRE_API_TOKEN}
+Environment=WEB_PUBLIC_URL=${WEB_PUBLIC_URL}
 ExecStart=/usr/bin/env npm run start:web
 Restart=always
 RestartSec=3

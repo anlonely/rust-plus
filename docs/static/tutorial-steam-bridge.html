@@ -44,8 +44,8 @@
     <div class="card">
       <strong>最终目标</strong>
       <ol>
-        <li>在云端 Web 页面点击「Steam 登录」创建一次性会话码。</li>
-        <li>在你本机 Chrome 打开扩展，完成 Steam 登录。</li>
+        <li>在云端 Web 页面点击「Steam 登录」，创建当前账号的登录任务。</li>
+        <li>安装插件后，插件自动接管任务并打开 Steam 登录页。</li>
         <li>扩展把 token 回传到云端，云端自动写入配置并启动配对监听。</li>
       </ol>
     </div>
@@ -67,21 +67,16 @@
     <h2>二、云端发起登录会话</h2>
     <ol>
       <li>进入云端 Web 控制台，打开 Steam 登录窗口。</li>
-      <li>点击登录后会出现「会话码（一次性）」，格式是 <code>RPTK-xxxxx.yyyyy</code>。</li>
-      <li>复制这个会话码。</li>
+      <li>点击「开始 Steam 登录」后，页面会自动创建本次登录任务。</li>
+      <li>窗口里会显示「安装插件」和「查看插件教程」，不需要再复制任何会话码。</li>
     </ol>
 
     <h2>三、扩展回传 token</h2>
     <ol>
-      <li>点击 Chrome 工具栏中的 <code>Rust+ Steam Bridge</code> 扩展图标。</li>
-      <li>填写：
-        <ul>
-          <li>云端地址：例如 <code>https://rust.anlonely.me</code></li>
-          <li>会话码：粘贴刚刚复制的 <code>RPTK-...</code></li>
-        </ul>
-      </li>
-      <li>点击「开始 Steam 登录并回传」。</li>
-      <li>扩展会自动打开 Rust+ 登录页，按正常流程完成 Steam 登录。</li>
+      <li>点击 Web 页面里的「安装插件」，下载当前登录任务专用的插件包。</li>
+      <li>在 Chrome 完成扩展安装后，插件会自动接管当前登录任务。</li>
+      <li>插件会自动打开 Rust+ 登录页，按正常流程完成 Steam 登录。</li>
+      <li>登录成功后，插件会自动读取 token 并回传到云端。</li>
     </ol>
 
     <h2>四、成功判定</h2>
@@ -102,8 +97,8 @@
     <h2>六、排错</h2>
     <div class="card">
       <ul>
-        <li><span class="warn">timeout</span>：登录页长时间没有回传，重新创建会话码并重试。</li>
-        <li><span class="warn">会话已过期</span>：默认会话 10 分钟有效，重新发起登录。</li>
+        <li><span class="warn">timeout</span>：登录页长时间没有回传，重新点击「开始 Steam 登录」生成新的登录任务后重试。</li>
+        <li><span class="warn">任务已过期</span>：默认任务 10 分钟有效，重新发起登录即可。</li>
         <li><span class="warn">回传失败</span>：检查云端地址是否可访问，先打开 <code>/steam-bridge/ping</code> 看是否返回 <code>{"ok":true}</code>。</li>
       </ul>
     </div>

@@ -4,15 +4,19 @@ const runtimeState = {
   active: false,
   startedAt: 0,
   serverUrl: '',
-  sessionCode: '',
+  bootstrapToken: '',
+  bridgeSessionId: '',
+  ownerRef: '',
   tabId: null,
   status: 'idle',
   lastError: '',
   lastSteamId: '',
   lastResponseAt: 0,
+  pausedAt: 0,
 };
 
 let timeoutTimer = null;
+let defaultsLoadPromise = null;
 
 function normalizeServerUrl(raw) {
   let input = String(raw || '').trim();
@@ -71,17 +75,94 @@ function setStatus(nextStatus, error = '') {
   notifyStateUpdate();
 }
 
+function buildRemoteLoginUrl() {
+  if (!runtimeState.serverUrl || !runtimeState.bootstrapToken) {
+    return 'https://companion-rust.facepunch.com/login';
+  }
+  const callbackUrl = new URL('/steam-bridge/callback', runtimeState.serverUrl);
+  callbackUrl.searchParams.set('bootstrapToken', runtimeState.bootstrapToken);
+  return `https://companion-rust.facepunch.com/login?returnUrl=${encodeURIComponent(callbackUrl.toString())}`;
+}
+
+async function loadBundledDefaults() {
+  if (!defaultsLoadPromise) {
+    defaultsLoadPromise = fetch(chrome.runtime.getURL('bridge-defaults.json'))
+      .then((response) => {
+        if (!response.ok) throw new Error(`defaults ${response.status}`);
+        return response.json();
+      })
+      .catch(() => ({}));
+  }
+  return defaultsLoadPromise;
+}
+
+function isFlowExpired(config = {}) {
+  const expiresAtMs = Date.parse(String(config?.expiresAt || '').trim());
+  if (!Number.isFinite(expiresAtMs)) return false;
+  return expiresAtMs <= Date.now();
+}
+
+async function applyBundledDefaults({ autoStart = false, force = false } = {}) {
+  const defaults = await loadBundledDefaults();
+  const serverUrl = String(defaults?.serverUrl || '').trim();
+  const bootstrapToken = String(defaults?.bootstrapToken || defaults?.sessionCode || '').trim();
+  const bridgeSessionId = String(defaults?.bridgeSessionId || '').trim();
+  const ownerRef = String(defaults?.ownerRef || '').trim();
+
+  if (!serverUrl || !bootstrapToken) return { applied: false, skipped: 'empty_defaults' };
+  if (isFlowExpired(defaults)) return { applied: false, skipped: 'expired_defaults' };
+
+  const storage = await chrome.storage.local.get(['rustplusBridgeConfig']);
+  const current = storage.rustplusBridgeConfig || {};
+  const shouldStore = force
+    || String(current.serverUrl || '').trim() !== serverUrl
+    || String(current.bootstrapToken || current.sessionCode || '').trim() !== bootstrapToken
+    || String(current.bridgeSessionId || '').trim() !== bridgeSessionId
+    || String(current.ownerRef || '').trim() !== ownerRef;
+
+  if (shouldStore) {
+    await chrome.storage.local.set({
+      rustplusBridgeConfig: {
+        ...current,
+        serverUrl,
+        bootstrapToken,
+        bridgeSessionId,
+        ownerRef,
+        autoConfiguredAt: new Date().toISOString(),
+      },
+    });
+  }
+
+  runtimeState.bridgeSessionId = bridgeSessionId;
+  runtimeState.ownerRef = ownerRef;
+  notifyStateUpdate();
+
+  if (autoStart && defaults.autoStartOnInstall !== false && !runtimeState.active) {
+    await startFlow({
+      serverUrl,
+      bootstrapToken,
+      bridgeSessionId,
+      ownerRef,
+    });
+    return { applied: true, started: true };
+  }
+
+  return { applied: true, started: false };
+}
+
 function toPublicState() {
   return {
     active: runtimeState.active,
     startedAt: runtimeState.startedAt,
     serverUrl: runtimeState.serverUrl,
-    sessionCode: runtimeState.sessionCode,
+    bridgeSessionId: runtimeState.bridgeSessionId,
+    ownerRef: runtimeState.ownerRef,
     tabId: runtimeState.tabId,
     status: runtimeState.status,
     lastError: runtimeState.lastError,
     lastSteamId: runtimeState.lastSteamId,
     lastResponseAt: runtimeState.lastResponseAt,
+    pausedAt: runtimeState.pausedAt,
   };
 }
 
@@ -95,23 +176,61 @@ function clearFlow() {
   runtimeState.active = false;
   runtimeState.tabId = null;
   runtimeState.startedAt = 0;
-  runtimeState.sessionCode = '';
+  runtimeState.bootstrapToken = '';
   runtimeState.serverUrl = '';
+  runtimeState.bridgeSessionId = '';
+  runtimeState.ownerRef = '';
+  runtimeState.pausedAt = 0;
   if (timeoutTimer) {
     clearTimeout(timeoutTimer);
     timeoutTimer = null;
   }
 }
 
+function clearTimeoutTimer() {
+  if (timeoutTimer) {
+    clearTimeout(timeoutTimer);
+    timeoutTimer = null;
+  }
+}
+
+async function openLoginTab() {
+  const tab = await chrome.tabs.create({
+    url: buildRemoteLoginUrl(),
+    active: true,
+  });
+  runtimeState.tabId = tab.id;
+  runtimeState.status = 'waiting_token';
+  runtimeState.lastError = '';
+  runtimeState.pausedAt = 0;
+  await reportFlowPhase('login_opened');
+  await reportFlowPhase('waiting_token');
+  notifyStateUpdate();
+  clearTimeoutTimer();
+  timeoutTimer = setTimeout(() => {
+    if (!runtimeState.active) return;
+    clearFlow();
+    setStatus('timeout', '等待登录超时，请重试');
+  }, FLOW_TIMEOUT_MS);
+}
+
+function isSameFlow(config = {}) {
+  return runtimeState.active
+    && String(runtimeState.serverUrl || '').trim() === String(config.serverUrl || '').trim()
+    && String(runtimeState.bootstrapToken || '').trim() === String(config.bootstrapToken || '').trim()
+    && String(runtimeState.bridgeSessionId || '').trim() === String(config.bridgeSessionId || '').trim();
+}
+
 async function completeFlowWithToken(token) {
   if (!runtimeState.active) return;
   const endpoint = `${runtimeState.serverUrl}/steam-bridge/complete`;
   const payload = {
-    sessionCode: runtimeState.sessionCode,
+    bootstrapToken: runtimeState.bootstrapToken,
     rustplusAuthToken: token,
     autoStartPairing: true,
   };
 
+  await reportFlowPhase('token_received');
   setStatus('uploading');
   const response = await fetch(endpoint, {
     method: 'POST',
@@ -135,10 +254,50 @@ async function completeFlowWithToken(token) {
   notifyStateUpdate();
 }
 
+async function reportFlowPhase(phase, message = '') {
+  if (!runtimeState.serverUrl || !runtimeState.bootstrapToken) return;
+  const endpoint = `${runtimeState.serverUrl}/steam-bridge/state`;
+  await fetch(endpoint, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      bootstrapToken: runtimeState.bootstrapToken,
+      phase,
+      message,
+    }),
+  }).catch(() => null);
+}
+
 async function startFlow(config = {}) {
   const serverUrl = normalizeServerUrl(config.serverUrl);
-  const sessionCode = String(config.sessionCode || '').trim();
-  if (!sessionCode) throw new Error('会话码不能为空');
+  const bootstrapToken = String(config.bootstrapToken || config.sessionCode || '').trim();
+  const bridgeSessionId = String(config.bridgeSessionId || '').trim();
+  const ownerRef = String(config.ownerRef || '').trim();
+  const forceResume = config.forceResume === true;
+  if (!bootstrapToken) throw new Error('登录任务令牌不能为空');
+
+  const nextConfig = { serverUrl, bootstrapToken, bridgeSessionId };
+  if (isSameFlow(nextConfig)) {
+    if (runtimeState.tabId != null && ['opening', 'waiting_token', 'uploading'].includes(String(runtimeState.status || ''))) {
+      try {
+        await chrome.tabs.update(runtimeState.tabId, { active: true });
+      } catch (_) {}
+      return toPublicState();
+    }
+    if (String(runtimeState.status || '') === 'paused') {
+      if (!forceResume) return toPublicState();
+      runtimeState.status = 'opening';
+      runtimeState.lastError = '';
+      notifyStateUpdate();
+      await openLoginTab();
+      return toPublicState();
+    }
+    if (['completed', 'failed', 'timeout', 'stopped'].includes(String(runtimeState.status || '')) && forceResume) {
+      clearFlow();
+    } else if (String(runtimeState.status || '') !== 'idle') {
+      return toPublicState();
+    }
+  }
 
   if (runtimeState.active && runtimeState.tabId != null) {
     chrome.tabs.remove(runtimeState.tabId).catch(() => {});
@@ -148,7 +307,9 @@ async function startFlow(config = {}) {
   runtimeState.active = true;
   runtimeState.startedAt = Date.now();
   runtimeState.serverUrl = serverUrl;
-  runtimeState.sessionCode = sessionCode;
+  runtimeState.bootstrapToken = bootstrapToken;
+  runtimeState.bridgeSessionId = bridgeSessionId;
+  runtimeState.ownerRef = ownerRef;
   runtimeState.status = 'opening';
   runtimeState.lastError = '';
   notifyStateUpdate();
@@ -156,22 +317,14 @@ async function startFlow(config = {}) {
   await chrome.storage.local.set({
     rustplusBridgeConfig: {
       serverUrl,
-      sessionCode,
+      bootstrapToken,
+      bridgeSessionId,
+      ownerRef,
     },
   });
-
-  const tab = await chrome.tabs.create({
-    url: 'https://companion-rust.facepunch.com/login',
-    active: true,
-  });
-  runtimeState.tabId = tab.id;
-  setStatus('waiting_token');
-
-  timeoutTimer = setTimeout(() => {
-    if (!runtimeState.active) return;
-    clearFlow();
-    setStatus('timeout', '等待登录超时，请重试');
-  }, FLOW_TIMEOUT_MS);
+  await reportFlowPhase('plugin_connected');
+  await openLoginTab();
+  return toPublicState();
 }
 
 function stopFlow() {
@@ -186,8 +339,26 @@ chrome.tabs.onRemoved.addListener((tabId) => {
   if (runtimeState.tabId == null) return;
   if (tabId !== runtimeState.tabId) return;
   if (!runtimeState.active) return;
+  runtimeState.tabId = null;
+  runtimeState.status = 'paused';
+  runtimeState.lastError = '登录页面已关闭，等待你手动继续';
+  runtimeState.pausedAt = Date.now();
+  clearTimeoutTimer();
+  notifyStateUpdate();
+});
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (!runtimeState.active || runtimeState.tabId == null) return;
+  if (tabId !== runtimeState.tabId) return;
+  const currentUrl = String(changeInfo.url || tab?.url || '').trim();
+  if (!currentUrl || !runtimeState.serverUrl) return;
+  const callbackPrefix = `${runtimeState.serverUrl.replace(/\/+$/, '')}/steam-bridge/callback`;
+  if (!currentUrl.startsWith(callbackPrefix)) return;
+  runtimeState.lastResponseAt = Date.now();
+  setStatus('uploading');
+  chrome.tabs.remove(tabId).catch(() => {});
   clearFlow();
-  setStatus('stopped', '登录页面已关闭');
+  notifyStateUpdate();
 });
 
 chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
@@ -210,8 +381,19 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     return true;
   }
 
+  if (type === 'bridge:resume') {
+    startFlow({ ...(msg?.payload || {}), forceResume: true })
+      .then(() => sendResponse({ success: true, state: toPublicState() }))
+      .catch((err) => {
+        sendResponse({ success: false, error: String(err?.message || err || '继续失败'), state: toPublicState() });
+      });
+    return true;
+  }
+
   if (type === 'bridge:getState') {
-    sendResponse({ success: true, state: toPublicState() });
+    applyBundledDefaults({ autoStart: false })
+      .then(() => sendResponse({ success: true, state: toPublicState() }))
+      .catch(() => sendResponse({ success: true, state: toPublicState() }));
     return true;
   }
 
@@ -236,5 +418,13 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
 });
 
 chrome.runtime.onInstalled.addListener(() => {
-  notifyStateUpdate();
+  applyBundledDefaults({ autoStart: true, force: true })
+    .catch(() => null)
+    .finally(() => {
+      notifyStateUpdate();
+    });
+});
+
+chrome.runtime.onStartup.addListener(() => {
+  applyBundledDefaults({ autoStart: false }).catch(() => null);
 });

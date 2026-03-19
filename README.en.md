@@ -36,10 +36,13 @@ Reference:
 ## 2. Core Capabilities
 
 - Steam / Rust+ login and recovery
+- Web Steam Remote Login with hidden task tokens and local Chrome bridge callback
 - Server pairing and device binding
 - Team chat commands
+- Team chat history sync and optimistic Web echo
 - Event automation and system presets
 - Vending machine search and map rendering
+- Alerts for new vending machines and new stock
 - CCTV code lookup
 - Team chat rate limiting
 - Call group integrations
@@ -51,6 +54,7 @@ Reference:
   - User CRUD
   - Enable / disable
   - Steam binding summary
+  - Global phone-call switch
 
 ## 3. Quick Start
 
@@ -90,15 +94,22 @@ Deployment guide:
 
 ## 4. Web Login Flow
 
-When the Web edition runs on a headless cloud server, Steam login is bridged through a local Chrome extension:
+When the Web edition runs on a headless cloud server, Steam login is bridged through a local Chrome extension. Users no longer need to type a visible session code:
 
 1. The user signs in to the Web account
-2. The Web UI creates a one-time Steam bridge session code
-3. The local Chrome extension opens the Rust+ login page
-4. The extension captures `rustplus_auth_token`
-5. It sends the token back to `/steam-bridge/complete`
-6. The server writes it into that user's own `rustplus.config.json`
-7. The server starts pairing listening for that user
+2. The Web UI creates a one-time remote login task for that account
+3. The user installs the task-specific local Chrome extension package
+4. The extension opens the Rust+ login page automatically
+5. The extension captures `rustplus_auth_token`
+6. It sends the token back through `/steam-bridge/callback` / `/steam-bridge/complete`
+7. The server writes it into that user's own `rustplus.config.json`
+8. The server continues pairing and runtime status sync
+
+Notes:
+
+- The team chat page actively fetches history and echoes Web-sent messages immediately
+- Vending events now notify both new vendors and newly listed items
+- Long team chat messages are split automatically while still respecting the send interval
 
 Relevant files:
 
@@ -179,4 +190,3 @@ These are runtime or sensitive files and should never be committed:
 - `config/rustplus.config.json`
 - `config/web-users/*`
 - `logs/*`
-

@@ -7,8 +7,11 @@ const {
   isTeamChatSettingsGroup,
   createGroupService,
 } = require('./create-groups-service');
+const configStore = require('../storage/config');
 
-const defaultService = createGroupService();
+const defaultService = createGroupService({
+  getCallControlState: () => configStore.getCallControlState(),
+});
 
 module.exports = {
   TEAM_CHAT_SETTINGS_GROUP_ID,
@@ -18,5 +21,7 @@ module.exports = {
   resolveEnabledChannels,
   isTeamChatSettingsGroup,
   createGroupService,
+  getCallControlState: (...args) => configStore.getCallControlState(...args),
+  updateCallControlState: (...args) => configStore.updateCallControlState(...args),
   ...defaultService,
 };

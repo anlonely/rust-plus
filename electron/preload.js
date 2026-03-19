@@ -71,6 +71,7 @@ contextBridge.exposeInMainWorld('rustAPI', {
   // ── 外部链接 ────────────────────────────
   openUrl:        (url)       => ipcRenderer.send('open:url', url),
   getSteamStatus: ()          => ipcRenderer.invoke('steam:status'),
+  getSteamStatusQuick: ()     => ipcRenderer.invoke('steam:statusQuick'),
   steamBeginAuth: ()          => ipcRenderer.invoke('steam:beginAuth'),
   steamLogout:    ()          => ipcRenderer.invoke('steam:logout'),
   getHelpDoc:     ()          => ipcRenderer.invoke('docs:getHelp'),
@@ -79,7 +80,7 @@ contextBridge.exposeInMainWorld('rustAPI', {
   on: (channel, callback) => {
     const validChannels = [
       'server:status', 'entity:changed', 'team:changed',
-      'team:message', 'team:sync-status', 'pairing:success', 'pairing:entity-candidate', 'pairing:listener-status', 'rule:auto-toggled', 'notification',
+      'team:message', 'team:sync-status', 'pairing:success', 'pairing:entity-candidate', 'pairing:listener-status', 'rule:auto-toggled', 'notification', 'steam:auth-status',
     ];
     if (validChannels.includes(channel)) {
       ipcRenderer.on(channel, (_, data) => callback(data));

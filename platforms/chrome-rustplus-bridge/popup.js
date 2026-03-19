@@ -6,6 +6,9 @@ function setState(state = {}) {
   byId('st-status').textContent = state.status || 'idle';
   byId('st-steamid').textContent = state.lastSteamId || '-';
   byId('st-error').textContent = state.lastError || '-';
+  byId('task-state').textContent = state.bridgeSessionId
+    ? `已接管登录任务 ${state.bridgeSessionId}`
+    : '由网页自动下发，无需手动输入。';
 }
 
 async function sendMessage(message) {
@@ -16,7 +19,6 @@ async function loadConfig() {
   const storage = await chrome.storage.local.get(['rustplusBridgeConfig', 'rustplusBridgeState']);
   const config = storage.rustplusBridgeConfig || {};
   byId('server-url').value = config.serverUrl || 'https://rust.anlonely.me';
-  byId('session-code').value = config.sessionCode || '';
   setState(storage.rustplusBridgeState || {});
 
   const current = await sendMessage({ type: 'bridge:getState' }).catch(() => null);
@@ -26,8 +28,10 @@ async function loadConfig() {
 async function start() {
   const payload = {
     serverUrl: byId('server-url').value,
-    sessionCode: byId('session-code').value,
+    bootstrapToken: '',
   };
+  const storage = await chrome.storage.local.get(['rustplusBridgeConfig']);
+  payload.bootstrapToken = storage?.rustplusBridgeConfig?.bootstrapToken || storage?.rustplusBridgeConfig?.sessionCode || '';
   const result = await sendMessage({ type: 'bridge:start', payload }).catch((err) => ({ success: false, error: err.message }));
   if (!result?.success) {
     alert(result?.error || '启动失败');

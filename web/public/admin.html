@@ -38,10 +38,8 @@
       padding: 1px;
       border-radius: 999px;
       overflow: hidden;
-      background: conic-gradient(from 0deg, #e2cbff, #393bb2, #e2cbff);
-      animation: spin 2s linear infinite;
+      background: linear-gradient(135deg, rgba(226, 203, 255, 0.9), rgba(57, 59, 178, 0.9));
     }
-    @keyframes spin { to { transform: rotate(1turn); } }
     .btn {
       min-width: 126px;
       height: 44px;
@@ -549,6 +547,21 @@
             <div class="btn-shell"><button class="btn" type="button" onclick="saveEmailProvider()">保存邮箱配置</button></div>
           </div>
         </section>
+
+        <section class="panel">
+          <div class="panel-title">
+            <h3>电话呼叫总控</h3>
+            <button class="btn-ghost" type="button" onclick="loadCallControl()">刷新配置</button>
+          </div>
+          <p class="sub" style="font-size:13px;margin-bottom:12px">关闭后，所有事件规则、指令逻辑、手动测试里的电话呼叫通道都会被统一拦截，但 KOOK / Discord 不受影响。</p>
+          <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:12px">
+            <label class="mini-badge"><input id="call-phone-enabled" type="checkbox" style="accent-color:var(--blue)"> 启用电话呼叫通道</label>
+          </div>
+          <div class="notice" id="call-control-notice" style="margin-top:10px"></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+            <div class="btn-shell"><button class="btn" type="button" onclick="saveCallControl()">保存电话总控</button></div>
+          </div>
+        </section>
       </div>
     </section>
   </div>
@@ -622,6 +635,7 @@
       userModalMode: 'create',
       editingUserId: '',
       emailConfig: null,
+      callControl: null,
     };
 
     function byId(id) { return document.getElementById(id); }
@@ -681,7 +695,7 @@
         setNotice('login-notice', '当前登录账号不是 root，请先退出普通用户账号后再使用 /admin。', 'error');
       }
       if (session?.authenticated && session?.user?.role === 'root') {
-        await Promise.all([refreshUsers(), loadEmailProvider(), loadRootCredential()]);
+        await Promise.all([refreshUsers(), loadEmailProvider(), loadCallControl(), loadRootCredential()]);
       }
       return session;
     }
@@ -888,6 +902,37 @@
         setNotice('mail-notice', result.message || '测试接口已调用', result.success ? 'success' : 'error');
       } catch (err) {
         setNotice('mail-notice', err.message || '测试失败', 'error');
+      }
+    }
+
+    async function loadCallControl() {
+      try {
+        const result = await api('/api/admin/call-control');
+        state.callControl = result.config || {};
+        byId('call-phone-enabled').checked = state.callControl.phoneEnabled !== false;
+        setNotice('call-control-notice', state.callControl.phoneEnabled === false
+          ? '当前已全局禁用电话呼叫。事件和指令仍可继续走 KOOK / Discord。'
+          : '当前允许电话呼叫。所有呼叫组中的电话成员都可正常触发。', '');
+      } catch (err) {
+        setNotice('call-control-notice', err.message || '电话总控读取失败', 'error');
+      }
+    }
+
+    async function saveCallControl() {
+      setNotice('call-control-notice', '', '');
+      try {
+        const result = await api('/api/admin/call-control', {
+          method: 'POST',
+          body: JSON.stringify({
+            phoneEnabled: byId('call-phone-enabled').checked,
+          }),
+        });
+        state.callControl = result.config || {};
+        setNotice('call-control-notice', state.callControl.phoneEnabled === false
+          ? '电话呼叫已全局禁用。'
+          : '电话呼叫已全局启用。', 'success');
+      } catch (err) {
+        setNotice('call-control-notice', err.message || '电话总控保存失败', 'error');
       }
     }
 

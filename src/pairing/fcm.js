@@ -18,6 +18,9 @@ const { createRustplusConfigStore } = require('../storage/rustplus-config');
 
 const CONFIG_DIR = getConfigDir();
 const PAIRING_MAX_AGE_MS = 3 * 60 * 1000;
+let activeRegisterProc = null;
+let activeRegisterClosePromise = null;
+let registerRunSequence = 0;
 
 function resolveRustplusCli() {
   try {
@@ -314,47 +317,114 @@ function splitCompleteNotifications(buffer) {
  * 会打开浏览器让用户完成 Steam 登录
  * 完成后凭据自动保存到本地
  */
-async function registerFCM({ force = false, configFile = '' } = {}) {
+async function registerFCM({ force = false, configFile = '', onStatus = null } = {}) {
+  const runId = ++registerRunSequence;
   const existing = readRustplusConfig(configFile);
   const resolvedConfigFile = resolveRustplusConfigFile(configFile);
+  const emitStatus = (payload = {}) => {
+    if (runId !== registerRunSequence) return;
+    if (typeof onStatus === 'function') {
+      onStatus(payload);
+    }
+  };
   if (!force && hasFcmCredentials(existing)) {
     logger.info('[FCM] 已检测到本地凭据，跳过注册。');
+    emitStatus({ type: 'already-ready', configFile: resolvedConfigFile });
     return;
   }
 
   logger.info('[FCM] 开始 FCM 注册...');
-  logger.info('[FCM] 即将打开浏览器，请完成 Steam 登录。');
+  logger.info('[FCM] 即将打开授权窗口，请完成 Steam 登录。');
+  emitStatus({ type: 'starting', configFile: resolvedConfigFile });
 
   try {
+    if (force && activeRegisterProc) {
+      logger.info('[FCM] 检测到已有授权流程，正在重启登录窗口...');
+      try {
+        activeRegisterProc.__restartRequested = true;
+        activeRegisterProc.kill('SIGTERM');
+      } catch (_) {
+        // ignore
+      }
+      await Promise.race([
+        activeRegisterClosePromise?.catch(() => null),
+        new Promise((resolve) => setTimeout(resolve, 1500)),
+      ]);
+    }
+
     await new Promise((resolve, reject) => {
       const proc = spawn(process.execPath, rustplusArgs('fcm-register', resolvedConfigFile), {
-        stdio: 'inherit',
+        stdio: ['ignore', 'pipe', 'pipe'],
+        env: {
+          ...process.env,
+          ELECTRON_RUN_AS_NODE: '1',
+        },
       });
+      activeRegisterProc = proc;
+      emitStatus({ type: 'browser-opened', configFile: resolvedConfigFile });
+      let seenBrowserHint = false;
+      const handleOutput = (chunk, source = 'stdout') => {
+        const text = String(chunk || '');
+        if (!text) return;
+        appendListenRaw(`[fcm-register:${source}] ${text}`, resolvedConfigFile);
+        if (seenBrowserHint) return;
+        const normalized = text.toLowerCase();
+        if (normalized.includes('open') || normalized.includes('browser') || normalized.includes('steam')) {
+          seenBrowserHint = true;
+          emitStatus({ type: 'waiting-login', configFile: resolvedConfigFile });
+        }
+      };
+      proc.stdout?.on('data', (chunk) => handleOutput(chunk, 'stdout'));
+      proc.stderr?.on('data', (chunk) => handleOutput(chunk, 'stderr'));
 
       const timeout = setTimeout(() => {
         proc.kill('SIGTERM');
         reject(new Error('FCM 注册超时（15分钟）'));
       }, 900_000);
+      activeRegisterClosePromise = new Promise((closeResolve) => {
+        proc.once('close', () => closeResolve());
+      });
 
       proc.on('error', (err) => {
         clearTimeout(timeout);
+        if (activeRegisterProc === proc) {
+          activeRegisterProc = null;
+          activeRegisterClosePromise = null;
+        }
         reject(err);
       });
 
       proc.on('close', (code) => {
         clearTimeout(timeout);
+        if (activeRegisterProc === proc) {
+          activeRegisterProc = null;
+          activeRegisterClosePromise = null;
+        }
         if (code === 0) resolve();
+        else if (proc.__restartRequested) reject(new Error('FCM 注册已重启'));
         else reject(new Error(`fcm-register 退出码: ${code}`));
       });
     });
+
+    if (runId !== registerRunSequence) {
+      const staleError = new Error('FCM 注册已被更新的授权流程接管');
+      staleError.code = 'FCM_REGISTER_STALE';
+      throw staleError;
+    }
 
     const updated = readRustplusConfig(resolvedConfigFile);
     if (!hasFcmCredentials(updated)) {
       throw new Error(`注册流程结束，但未写入凭据文件: ${resolvedConfigFile}`);
     }
     logger.info(`[FCM] FCM 注册成功，凭据已写入: ${resolvedConfigFile}`);
+    emitStatus({ type: 'credentials-ready', configFile: resolvedConfigFile });
   } catch (err) {
+    if (err?.code === 'FCM_REGISTER_STALE') {
+      logger.info('[FCM] 旧授权流程已作废，忽略其退出结果。');
+      return;
+    }
     logger.error('[FCM] 注册失败: ' + err.message);
+    emitStatus({ type: 'failed', configFile: resolvedConfigFile, message: err.message });
     throw err;
   }
 }

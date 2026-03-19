@@ -39,6 +39,7 @@ sudo APP_DIR=/opt/rust-plus-web WEB_PORT=3080 RUN_USER=ubuntu WEB_API_TOKEN="请
 
 - `APP_DIR`：部署目录（默认 `/opt/rust-plus-web`）
 - `WEB_PORT`：Web 服务端口（默认 `3080`）
+- `WEB_PUBLIC_URL`：对外固定回传地址，扩展优先使用它
 - `RUN_USER`：服务运行用户（默认当前 sudo 用户）
 - `SERVICE_NAME`：systemd 服务名（默认 `rust-plus-web`）
 - `NODE_MAJOR`：Node 主版本（默认 `20`）

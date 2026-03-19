@@ -3,7 +3,9 @@ require('dotenv').config();
 const path = require('path');
 const fs = require('fs');
 const http = require('http');
+const crypto = require('crypto');
 const { AsyncLocalStorage } = require('async_hooks');
+const archiver = require('archiver');
 const express = require('express');
 const { WebSocketServer } = require('ws');
 
@@ -69,6 +71,7 @@ const {
 const PORT = Number(process.env.WEB_PORT || 3080);
 const HOST = process.env.WEB_HOST || '127.0.0.1';
 const API_TOKEN = String(process.env.WEB_API_TOKEN || '').trim();
+const PUBLIC_WEB_URL = String(process.env.WEB_PUBLIC_URL || '').trim().replace(/\/+$/, '');
 const IS_LOOPBACK_HOST = ['127.0.0.1', 'localhost', '::1'].includes(String(HOST || '').trim().toLowerCase());
 const REQUIRE_API_TOKEN = String(process.env.WEB_REQUIRE_API_TOKEN || '1') !== '0';
 const AUTO_CONNECT = String(process.env.WEB_AUTO_CONNECT || '1') !== '0';
@@ -78,6 +81,9 @@ const TEAM_CHAT_RPM_LIMIT = Math.max(1, Number(process.env.WEB_TEAM_CHAT_RPM || 
 const FALLBACK_TEAM_CHAT_INTERVAL_MS = 3_000;
 const VERSION = '1.0.0';
 const WEB_SESSION_COOKIE = 'rustplus_web_sid';
+const BRIDGE_ALLOWED_ORIGIN_SCHEMES = ['chrome-extension://'];
+const SECURITY_AUDIT_WINDOW_MS = 10 * 60_000;
+const SECURITY_AUDIT_ALERT_COOLDOWN_MS = 10 * 60_000;
 const TEAMCHAT_CONNECTED_BROADCAST = '安静的Rust工具已连接 - 输入help查看全部可触发指令';
 const INDIVIDUAL_PLAYER_EVENTS = new Set([
   'player_online',
@@ -95,6 +101,19 @@ const DEFAULT_PLAYER_STATUS_MESSAGES = {
   afk: '{member}已挂机{afk_duration}｜当前位置:{member_grid}',
   afk_recover: '{member}已恢复活动｜当前位置:{member_grid}',
 };
+const securityAuditBuckets = new Map();
+
+function hashAuditValue(raw = '', size = 12) {
+  return crypto.createHash('sha256').update(String(raw || '')).digest('hex').slice(0, size);
+}
+
+function normalizeAuditIdentifier(raw = '') {
+  return String(raw || '').trim().toLowerCase().slice(0, 254);
+}
+
+function normalizeAuditReason(raw = '') {
+  return String(raw || '').replace(/\s+/g, ' ').trim().slice(0, 120) || 'unknown';
+}
 
 function getGlobalTeamChatIntervalMs() {
   return Math.max(1_000, Number(getTeamChatIntervalMs()) || FALLBACK_TEAM_CHAT_INTERVAL_MS);
@@ -110,6 +129,63 @@ function normalizeCommandRuleForServer(rule, serverId) {
 
 const app = express();
 app.set('trust proxy', 1);
+
+function getRequestOrigin(req) {
+  if (PUBLIC_WEB_URL) return PUBLIC_WEB_URL;
+  const protocol = String(req.protocol || 'http').replace(/:$/, '');
+  const host = String(req.get('host') || '').trim();
+  if (!host) return '';
+  return `${protocol}://${host}`;
+}
+
+function escHtml(input = '') {
+  return String(input || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function buildBridgePackageUrl(req, sessionId) {
+  const origin = getRequestOrigin(req);
+  const sid = encodeURIComponent(String(sessionId || '').trim());
+  return `${origin}/api/steam/remote-auth/session/${sid}/bridge-package`;
+}
+
+function streamBridgePackage(res, payload = {}) {
+  const extensionDir = path.join(__dirname, '../platforms/chrome-rustplus-bridge');
+  const defaults = {
+    serverUrl: String(payload.serverUrl || '').trim(),
+    bootstrapToken: String(payload.bootstrapToken || '').trim(),
+    bridgeSessionId: String(payload.bridgeSessionId || '').trim(),
+    ownerRef: String(payload.ownerRef || '').trim(),
+    createdAt: new Date().toISOString(),
+    expiresAt: String(payload.expiresAt || '').trim(),
+    autoStartOnInstall: payload.autoStartOnInstall !== false,
+  };
+  const archive = archiver('zip', { zlib: { level: 9 } });
+
+  archive.on('error', (err) => {
+    try {
+      if (!res.headersSent) {
+        res.status(500).json({ success: false, error: String(err?.message || err || '打包失败') });
+      } else {
+        res.destroy(err);
+      }
+    } catch (_) {}
+  });
+
+  res.setHeader('Content-Type', 'application/zip');
+  res.setHeader('Content-Disposition', `attachment; filename=\"chrome-rustplus-bridge-${defaults.bridgeSessionId || 'bundle'}.zip\"`);
+  archive.pipe(res);
+  archive.directory(extensionDir, false, (entry) => {
+    if (entry.name === 'bridge-defaults.json') return false;
+    return entry;
+  });
+  archive.append(`${JSON.stringify(defaults, null, 2)}\n`, { name: 'bridge-defaults.json' });
+  archive.finalize().catch(() => null);
+}
 
 // 安全响应头：防 XSS / Clickjacking / MIME 嗅探
 app.use((req, res, next) => {
@@ -157,7 +233,9 @@ function createWebUserContext(user = {}) {
   const rustplusConfigStore = createRustplusConfigStore({
     configFile: getWebUserRustplusConfigFile(userId || SERVICE_CONTEXT_ID),
   });
-  const callGroupsService = callGroupsModule.createGroupService();
+  const callGroupsService = callGroupsModule.createGroupService({
+    getCallControlState: () => callGroupsModule.getCallControlState(),
+  });
   const ctx = {
     key: userId || SERVICE_CONTEXT_ID,
     userId,
@@ -179,6 +257,7 @@ function createWebUserContext(user = {}) {
   };
   ctx.dispatchTeamChat = createTeamChatDispatcher({
     normalizeMessage: normalizeTeamMessageText,
+    splitMessage: splitTeamMessageText,
     getIntervalMs: () => getGlobalTeamChatIntervalMs(),
     sendMessage: async (message) => {
       if (!ctx.rustClient?.connected) throw new Error('未连接服务器');
@@ -286,6 +365,8 @@ function listGroups(...args) { return currentContext().callGroupsService.listGro
 function removeGroup(...args) { return currentContext().callGroupsService.removeGroup(...args); }
 function callGroup(...args) { return currentContext().callGroupsService.callGroup(...args); }
 function getTeamChatIntervalMs(...args) { return currentContext().callGroupsService.getTeamChatIntervalMs(...args); }
+function getCallControlState(...args) { return callGroupsModule.getCallControlState(...args); }
+function updateCallControlState(...args) { return callGroupsModule.updateCallControlState(...args); }
 
 function getSteamProfileStatus(options = {}) {
   return steamProfileModule.getSteamProfileStatus({
@@ -330,8 +411,16 @@ function getRemoteSteamAuthSession(...args) {
   return remoteAuthModule.getRemoteSteamAuthSession(...args);
 }
 
+function getRemoteSteamAuthSessionBootstrap(...args) {
+  return remoteAuthModule.getRemoteSteamAuthSessionBootstrap(...args);
+}
+
 function cancelRemoteSteamAuthSession(...args) {
   return remoteAuthModule.cancelRemoteSteamAuthSession(...args);
+}
+
+function updateRemoteSteamAuthSessionPhase(...args) {
+  return remoteAuthModule.updateRemoteSteamAuthSessionPhase(...args);
 }
 
 function completeRemoteSteamAuthSession(...args) {
@@ -380,6 +469,54 @@ function getRequestIp(req) {
   return forwarded || fallback || 'unknown';
 }
 
+function hashRateLimitKey(raw = '') {
+  return crypto.createHash('sha256').update(String(raw || '')).digest('hex').slice(0, 24);
+}
+
+function applyBridgeRateLimit(req, {
+  action = 'bridge',
+  tokenHint = '',
+  ipLimit = 60,
+  tokenLimit = 60,
+  windowMs = 60_000,
+  message = '桥接请求过于频繁，请稍后再试',
+} = {}) {
+  const remoteIp = getRequestIp(req);
+  consumeRateLimit(`bridge:${String(action || 'bridge')}:ip:${remoteIp}`, {
+    limit: ipLimit,
+    windowMs,
+    message,
+  });
+  const normalizedHint = String(tokenHint || '').trim();
+  if (normalizedHint) {
+    consumeRateLimit(`bridge:${String(action || 'bridge')}:token:${hashRateLimitKey(normalizedHint)}`, {
+      limit: tokenLimit,
+      windowMs,
+      message,
+    });
+  }
+}
+
+function isAllowedBridgeRequestOrigin(req) {
+  const origin = String(req.headers.origin || '').trim();
+  if (!origin) return true;
+  const requestOrigin = getRequestOrigin(req);
+  if (requestOrigin && origin === requestOrigin) return true;
+  return BRIDGE_ALLOWED_ORIGIN_SCHEMES.some((scheme) => origin.startsWith(scheme));
+}
+
+function validateBridgeRequestOrigin(req, res) {
+  const origin = String(req.headers.origin || '').trim();
+  if (!origin) return true;
+  if (!isAllowedBridgeRequestOrigin(req)) {
+    res.status(403).json({ success: false, error: '不受信任的桥接来源' });
+    return false;
+  }
+  res.setHeader('Vary', 'Origin');
+  res.setHeader('Access-Control-Allow-Origin', origin);
+  return true;
+}
+
 function applyPublicAuthRateLimit(req, options = {}) {
   return consumePublicAuthRateLimit({
     ...options,
@@ -387,8 +524,126 @@ function applyPublicAuthRateLimit(req, options = {}) {
   });
 }
 
+function applyUserActionRateLimit(req, {
+  action = 'user-action',
+  userLimit = 20,
+  ipLimit = 40,
+  windowMs = 60_000,
+  message = '请求过于频繁，请稍后再试',
+} = {}) {
+  const remoteIp = getRequestIp(req);
+  consumeRateLimit(`api:${String(action || 'user-action')}:ip:${remoteIp}`, {
+    limit: ipLimit,
+    windowMs,
+    message,
+  });
+  const userId = String(req.auth?.user?.id || '').trim();
+  if (userId) {
+    consumeRateLimit(`api:${String(action || 'user-action')}:user:${userId}`, {
+      limit: userLimit,
+      windowMs,
+      message,
+    });
+  }
+}
+
+function recordSecurityAuditFailure(req, {
+  scope = 'auth',
+  action = 'unknown',
+  identifier = '',
+  reason = '',
+  threshold = 5,
+  windowMs = SECURITY_AUDIT_WINDOW_MS,
+  alertCooldownMs = SECURITY_AUDIT_ALERT_COOLDOWN_MS,
+} = {}) {
+  const remoteIp = getRequestIp(req);
+  const identifierHash = normalizeAuditIdentifier(identifier)
+    ? hashAuditValue(normalizeAuditIdentifier(identifier))
+    : '-';
+  const bucketKey = `${scope}:${action}:ip:${remoteIp}:ident:${identifierHash}`;
+  const now = Date.now();
+  const bucket = securityAuditBuckets.get(bucketKey) || { hits: [], lastAlertAt: 0 };
+  bucket.hits = bucket.hits.filter((ts) => now - ts < windowMs);
+  bucket.hits.push(now);
+  securityAuditBuckets.set(bucketKey, bucket);
+
+  const safeReason = normalizeAuditReason(reason);
+  logger.warn(`[SecurityAudit] scope=${scope} action=${action} ip=${remoteIp} ident=${identifierHash} count=${bucket.hits.length} reason=${safeReason}`);
+  if (bucket.hits.length >= Math.max(1, Number(threshold) || 1) && now - Number(bucket.lastAlertAt || 0) >= alertCooldownMs) {
+    bucket.lastAlertAt = now;
+    logger.error(`[SecurityAlert] scope=${scope} action=${action} ip=${remoteIp} ident=${identifierHash} count=${bucket.hits.length} windowMs=${windowMs} reason=${safeReason}`);
+  }
+}
+
+function auditRouteFailure(req, {
+  scope = 'auth',
+  action = 'unknown',
+  identifier = '',
+  err,
+  threshold = 5,
+  windowMs,
+  alertCooldownMs,
+} = {}) {
+  recordSecurityAuditFailure(req, {
+    scope,
+    action,
+    identifier,
+    reason: err?.message || err || 'unknown',
+    threshold,
+    windowMs,
+    alertCooldownMs,
+  });
+}
+
+function matchesSameOriginUrl(rawUrl = '', expectedOrigin = '') {
+  const input = String(rawUrl || '').trim();
+  if (!input) return false;
+  try {
+    return new URL(input).origin === expectedOrigin;
+  } catch (_) {
+    return false;
+  }
+}
+
+function ensureTrustedWriteRequest(req, res, next) {
+  if (!['POST', 'PUT', 'PATCH', 'DELETE'].includes(String(req.method || '').toUpperCase())) return next();
+  if (req.auth?.viaApiToken) return next();
+  const expectedOrigin = getRequestOrigin(req);
+  const origin = String(req.headers.origin || '').trim();
+  const referer = String(req.headers.referer || '').trim();
+  if (origin && expectedOrigin && origin !== expectedOrigin) {
+    recordSecurityAuditFailure(req, {
+      scope: 'request',
+      action: 'cross-origin-write',
+      identifier: req.path,
+      reason: `origin=${origin}`,
+      threshold: 3,
+      windowMs: 5 * 60_000,
+      alertCooldownMs: 5 * 60_000,
+    });
+    return res.status(403).json({ error: '不受信任的请求来源' });
+  }
+  if (!origin && referer && expectedOrigin && !matchesSameOriginUrl(referer, expectedOrigin)) {
+    recordSecurityAuditFailure(req, {
+      scope: 'request',
+      action: 'cross-origin-write',
+      identifier: req.path,
+      reason: `referer=${referer}`,
+      threshold: 3,
+      windowMs: 5 * 60_000,
+      alertCooldownMs: 5 * 60_000,
+    });
+    return res.status(403).json({ error: '不受信任的请求来源' });
+  }
+  return next();
+}
+
 function authResponseStatus(err) {
   return err instanceof AuthRateLimitError ? 429 : 400;
+}
+
+function writeResponseStatus(err) {
+  return err instanceof AuthRateLimitError || err instanceof RateLimitError ? 429 : 400;
 }
 
 async function hydrateAuthContext(req, _res, next) {
@@ -423,6 +678,11 @@ function isRootAuthed(req) {
 function ensureAuth(req, res, next) {
   if (isAuthed(req)) return next();
   return res.status(401).json({ error: 'Unauthorized' });
+}
+
+function ensureUserAuth(req, res, next) {
+  if (req.auth?.user) return next();
+  return res.status(401).json({ error: '需要先登录账号' });
 }
 
 function ensureRoot(req, res, next) {
@@ -474,7 +734,7 @@ function parseWebSocketAuthToken(req) {
 function setAuthSessionCookie(req, res, token, maxAgeMs) {
   res.setHeader('Set-Cookie', serializeCookie(WEB_SESSION_COOKIE, token, {
     httpOnly: true,
-    sameSite: 'Lax',
+    sameSite: 'Strict',
     secure: shouldUseSecureCookie(req),
     maxAge: Math.floor((Number(maxAgeMs) || 0) / 1000),
     path: '/',
@@ -484,7 +744,7 @@ function setAuthSessionCookie(req, res, token, maxAgeMs) {
 function clearAuthSessionCookie(req, res) {
   res.setHeader('Set-Cookie', serializeCookie(WEB_SESSION_COOKIE, '', {
     httpOnly: true,
-    sameSite: 'Lax',
+    sameSite: 'Strict',
     secure: shouldUseSecureCookie(req),
     maxAge: 0,
     path: '/',
@@ -492,11 +752,25 @@ function clearAuthSessionCookie(req, res) {
 }
 
 function normalizeTeamMessageText(raw) {
-  const text = String(raw || '').trim();
-  if (!text) return '';
-  const chars = Array.from(text);
-  if (chars.length <= TEAM_CHAT_MAX_CHARS) return text;
-  return `${chars.slice(0, Math.max(1, TEAM_CHAT_MAX_CHARS - 1)).join('')}…`;
+  return String(raw || '').trim();
+}
+
+function splitTeamMessageText(raw) {
+  const text = normalizeTeamMessageText(raw);
+  if (!text) return [];
+  const limit = Math.max(1, TEAM_CHAT_MAX_CHARS);
+  const lines = text.split(/\r?\n+/).map((line) => String(line || '').trim()).filter(Boolean);
+  if (!lines.length) return [];
+  const chunks = [];
+  for (const line of lines) {
+    const chars = Array.from(line);
+    if (!chars.length) continue;
+    for (let start = 0; start < chars.length; start += limit) {
+      const part = chars.slice(start, start + limit).join('').trim();
+      if (part) chunks.push(part);
+    }
+  }
+  return chunks;
 }
 
 function sendWs(type, payload = {}) {
@@ -916,7 +1190,7 @@ async function upsertServerFromPairing(data = {}, { allowTokenUpdate = true } = 
 
 function createRuleActionDeps() {
   return {
-    mapSize: Number(runtime.latestServerSnapshot?.mapSize || 0),
+    mapSize: () => Number(runtime.latestServerSnapshot?.mapSize || 0),
     notifyDesktop: ({ title, message }) => {
       notify('desktop', { title, message });
     },
@@ -1273,6 +1547,11 @@ const invokeIpc = createIpcInvoker({
       groups: listGroups(),
       connected,
       currentServer,
+      currentServerId: connected ? String(runtime.currentServerId || currentServer?.id || '') : '',
+      serverInfo: runtime.latestServerSnapshot,
+      teamMembers: Array.isArray(runtime.teamMembers) ? runtime.teamMembers : [],
+      teamMessages: Array.isArray(runtime.teamMessages) ? runtime.teamMessages : [],
+      lastError: runtime.lastError || '',
       steam: await getSteamProfileStatus({ fetchRemote: false }),
     };
   },
@@ -1351,6 +1630,15 @@ const invokeIpc = createIpcInvoker({
     if (!runtimeState.rustClient?.connected) return null;
     try {
       return await runtimeState.rustClient.getTeamInfo();
+    } catch (err) {
+      if (String(err?.message || '').toLowerCase() === 'not_found') return null;
+      return { error: err.message };
+    }
+  },
+  'server:getTeamChat': async () => {
+    if (!runtimeState.rustClient?.connected) return null;
+    try {
+      return await runtimeState.rustClient.getTeamChat();
     } catch (err) {
       if (String(err?.message || '').toLowerCase() === 'not_found') return null;
       return { error: err.message };
@@ -1670,15 +1958,17 @@ app.use((_, res, next) => {
   res.setHeader('Cache-Control', 'no-store');
   next();
 });
+app.use('/api', ensureTrustedWriteRequest);
 
 app.use('/steam-bridge', (req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') {
+    if (!validateBridgeRequestOrigin(req, res)) return;
     res.status(204).end();
     return;
   }
+  if (!validateBridgeRequestOrigin(req, res)) return;
   next();
 });
 
@@ -1703,6 +1993,13 @@ app.post('/api/auth/register', async (req, res) => {
     setAuthSessionCookie(req, res, session.token, session.expiresAtMs - Date.now());
     return res.json({ success: true, user: session.user });
   } catch (err) {
+    auditRouteFailure(req, {
+      scope: 'auth',
+      action: 'register-failed',
+      identifier: req.body?.email,
+      err,
+      threshold: 4,
+    });
     return res.status(authResponseStatus(err)).json({ success: false, error: String(err?.message || err || '注册失败') });
   }
 });
@@ -1725,6 +2022,13 @@ app.post('/api/auth/login', async (req, res) => {
     setAuthSessionCookie(req, res, session.token, session.expiresAtMs - Date.now());
     return res.json({ success: true, user: session.user });
   } catch (err) {
+    auditRouteFailure(req, {
+      scope: 'auth',
+      action: 'login-failed',
+      identifier: req.body?.email || req.body?.identifier || req.body?.username,
+      err,
+      threshold: 5,
+    });
     return res.status(authResponseStatus(err)).json({ success: false, error: String(err?.message || err || '登录失败') });
   }
 });
@@ -1747,14 +2051,38 @@ app.post('/api/auth/admin/login', async (req, res) => {
     setAuthSessionCookie(req, res, session.token, session.expiresAtMs - Date.now());
     return res.json({ success: true, user: session.user });
   } catch (err) {
+    auditRouteFailure(req, {
+      scope: 'auth',
+      action: 'admin-login-failed',
+      identifier: req.body?.email || req.body?.identifier || req.body?.username,
+      err,
+      threshold: 3,
+    });
     return res.status(authResponseStatus(err)).json({ success: false, error: String(err?.message || err || '登录失败') });
   }
 });
 
 app.post('/api/auth/logout', (req, res) => {
-  if (req.auth?.sessionToken) destroySession(req.auth.sessionToken);
-  clearAuthSessionCookie(req, res);
-  res.json({ success: true });
+  try {
+    applyUserActionRateLimit(req, {
+      action: 'auth-logout',
+      userLimit: 20,
+      ipLimit: 30,
+      windowMs: 10 * 60_000,
+    });
+    if (req.auth?.sessionToken) destroySession(req.auth.sessionToken);
+    clearAuthSessionCookie(req, res);
+    return res.json({ success: true });
+  } catch (err) {
+    auditRouteFailure(req, {
+      scope: 'account',
+      action: 'logout-failed',
+      identifier: req.auth?.user?.id || req.auth?.sessionToken,
+      err,
+      threshold: 6,
+    });
+    return res.status(writeResponseStatus(err)).json({ success: false, error: String(err?.message || err || '退出失败') });
+  }
 });
 
 app.post('/api/auth/email/send-code', async (req, res) => {
@@ -1769,29 +2097,75 @@ app.post('/api/auth/email/send-code', async (req, res) => {
     const result = await sendVerificationCodeStub(req.body?.email || '');
     return res.json(result);
   } catch (err) {
+    auditRouteFailure(req, {
+      scope: 'auth',
+      action: 'email-code-failed',
+      identifier: req.body?.email,
+      err,
+      threshold: 3,
+    });
     return res.status(authResponseStatus(err)).json({ success: false, error: String(err?.message || err || '发送失败') });
   }
 });
 
 app.use('/api', ensureAuth);
 
-app.get('/api/auth/root-credential', ensureRoot, async (_req, res) => {
-  const text = await readRootCredentialFile();
-  res.json({ success: true, text });
+app.get('/api/auth/root-credential', ensureRoot, async (req, res) => {
+  try {
+    applyUserActionRateLimit(req, {
+      action: 'auth-root-credential',
+      userLimit: 6,
+      ipLimit: 10,
+      windowMs: 10 * 60_000,
+      message: '敏感凭据读取过于频繁，请稍后再试',
+    });
+    const text = await readRootCredentialFile();
+    return res.json({ success: true, text });
+  } catch (err) {
+    auditRouteFailure(req, {
+      scope: 'admin',
+      action: 'root-credential-read-failed',
+      identifier: req.auth?.user?.id,
+      err,
+      threshold: 3,
+    });
+    return res.status(writeResponseStatus(err)).json({ success: false, error: String(err?.message || err || '读取失败') });
+  }
 });
 
 app.post('/api/auth/profile', async (req, res) => {
   try {
+    applyUserActionRateLimit(req, {
+      action: 'auth-profile',
+      userLimit: 12,
+      ipLimit: 20,
+      windowMs: 10 * 60_000,
+      message: '资料更新过于频繁，请稍后再试',
+    });
     const user = await updateOwnProfile(req.auth.user.id, req.body || {});
     req.auth.user = user;
     return res.json({ success: true, user });
   } catch (err) {
-    return res.status(400).json({ success: false, error: String(err?.message || err || '更新失败') });
+    auditRouteFailure(req, {
+      scope: 'account',
+      action: 'profile-update-failed',
+      identifier: req.auth?.user?.id,
+      err,
+      threshold: 5,
+    });
+    return res.status(writeResponseStatus(err)).json({ success: false, error: String(err?.message || err || '更新失败') });
   }
 });
 
 app.post('/api/auth/password', async (req, res) => {
   try {
+    applyUserActionRateLimit(req, {
+      action: 'auth-password',
+      userLimit: 6,
+      ipLimit: 12,
+      windowMs: 30 * 60_000,
+      message: '密码修改过于频繁，请稍后再试',
+    });
     await changeOwnPassword(req.auth.user.id, {
       currentPassword: req.body?.currentPassword,
       nextPassword: req.body?.nextPassword,
@@ -1800,35 +2174,94 @@ app.post('/api/auth/password', async (req, res) => {
     clearAuthSessionCookie(req, res);
     return res.json({ success: true });
   } catch (err) {
-    return res.status(400).json({ success: false, error: String(err?.message || err || '修改失败') });
+    auditRouteFailure(req, {
+      scope: 'account',
+      action: 'password-change-failed',
+      identifier: req.auth?.user?.id,
+      err,
+      threshold: 3,
+    });
+    return res.status(writeResponseStatus(err)).json({ success: false, error: String(err?.message || err || '修改失败') });
   }
 });
 
 app.post('/api/auth/guide/accept', async (req, res) => {
   try {
+    applyUserActionRateLimit(req, {
+      action: 'auth-guide',
+      userLimit: 10,
+      ipLimit: 20,
+      windowMs: 10 * 60_000,
+    });
     const user = await acceptGuide(req.auth.user.id);
     req.auth.user = user;
     return res.json({ success: true, user });
   } catch (err) {
-    return res.status(400).json({ success: false, error: String(err?.message || err || '确认失败') });
+    auditRouteFailure(req, {
+      scope: 'account',
+      action: 'guide-accept-failed',
+      identifier: req.auth?.user?.id,
+      err,
+      threshold: 6,
+    });
+    return res.status(writeResponseStatus(err)).json({ success: false, error: String(err?.message || err || '确认失败') });
   }
 });
 
-app.get('/api/admin/users', ensureRoot, async (_req, res) => {
-  res.json({ users: await listUsersForAdmin() });
+app.get('/api/admin/users', ensureRoot, async (req, res) => {
+  try {
+    applyUserActionRateLimit(req, {
+      action: 'admin-user-list',
+      userLimit: 60,
+      ipLimit: 100,
+      windowMs: 5 * 60_000,
+      message: '用户列表读取过于频繁，请稍后再试',
+    });
+    return res.json({ users: await listUsersForAdmin() });
+  } catch (err) {
+    auditRouteFailure(req, {
+      scope: 'admin',
+      action: 'user-list-failed',
+      identifier: req.auth?.user?.id,
+      err,
+      threshold: 4,
+    });
+    return res.status(writeResponseStatus(err)).json({ success: false, error: String(err?.message || err || '读取失败') });
+  }
 });
 
 app.post('/api/admin/users', ensureRoot, async (req, res) => {
   try {
+    applyUserActionRateLimit(req, {
+      action: 'admin-user-create',
+      userLimit: 20,
+      ipLimit: 30,
+      windowMs: 10 * 60_000,
+      message: '创建账号过于频繁，请稍后再试',
+    });
     const user = await adminCreateUser(req.body || {});
     return res.json({ success: true, user });
   } catch (err) {
-    return res.status(400).json({ success: false, error: String(err?.message || err || '创建失败') });
+    auditRouteFailure(req, {
+      scope: 'admin',
+      action: 'user-create-failed',
+      identifier: req.body?.email,
+      err,
+      threshold: 4,
+    });
+    return res.status(writeResponseStatus(err)).json({ success: false, error: String(err?.message || err || '创建失败') });
   }
 });
 
 app.post('/api/admin/users/:id', ensureRoot, async (req, res) => {
   try {
+    applyUserActionRateLimit(req, {
+      action: 'admin-user-update',
+      userLimit: 40,
+      ipLimit: 60,
+      windowMs: 10 * 60_000,
+      message: '账号更新过于频繁，请稍后再试',
+    });
     const userId = String(req.params.id || '').trim();
     if (!userId) return res.status(400).json({ success: false, error: '缺少用户ID' });
     const user = await adminUpdateUser(userId, req.body || {});
@@ -1842,12 +2275,26 @@ app.post('/api/admin/users/:id', ensureRoot, async (req, res) => {
     }
     return res.json({ success: true, user });
   } catch (err) {
-    return res.status(400).json({ success: false, error: String(err?.message || err || '更新失败') });
+    auditRouteFailure(req, {
+      scope: 'admin',
+      action: 'user-update-failed',
+      identifier: req.params?.id || req.body?.email,
+      err,
+      threshold: 5,
+    });
+    return res.status(writeResponseStatus(err)).json({ success: false, error: String(err?.message || err || '更新失败') });
   }
 });
 
 app.delete('/api/admin/users/:id', ensureRoot, async (req, res) => {
   try {
+    applyUserActionRateLimit(req, {
+      action: 'admin-user-delete',
+      userLimit: 10,
+      ipLimit: 20,
+      windowMs: 10 * 60_000,
+      message: '账号删除操作过于频繁，请稍后再试',
+    });
     const userId = String(req.params.id || '').trim();
     if (!userId) return res.status(400).json({ success: false, error: '缺少用户ID' });
     await adminDeleteUser(userId);
@@ -1858,20 +2305,104 @@ app.delete('/api/admin/users/:id', ensureRoot, async (req, res) => {
     }).catch((err) => logger.warn('[Admin] 删除用户工作区失败: ' + err.message));
     return res.json({ success: true });
   } catch (err) {
-    return res.status(400).json({ success: false, error: String(err?.message || err || '删除失败') });
+    auditRouteFailure(req, {
+      scope: 'admin',
+      action: 'user-delete-failed',
+      identifier: req.params?.id,
+      err,
+      threshold: 3,
+    });
+    return res.status(writeResponseStatus(err)).json({ success: false, error: String(err?.message || err || '删除失败') });
   }
 });
 
-app.get('/api/admin/email-provider', ensureRoot, async (_req, res) => {
-  res.json({ success: true, config: await getEmailProviderConfig() });
+app.get('/api/admin/email-provider', ensureRoot, async (req, res) => {
+  try {
+    applyUserActionRateLimit(req, {
+      action: 'admin-email-provider-read',
+      userLimit: 30,
+      ipLimit: 50,
+      windowMs: 5 * 60_000,
+      message: '邮箱配置读取过于频繁，请稍后再试',
+    });
+    return res.json({ success: true, config: await getEmailProviderConfig() });
+  } catch (err) {
+    auditRouteFailure(req, {
+      scope: 'admin',
+      action: 'email-provider-read-failed',
+      identifier: req.auth?.user?.id,
+      err,
+      threshold: 4,
+    });
+    return res.status(writeResponseStatus(err)).json({ success: false, error: String(err?.message || err || '读取失败') });
+  }
 });
 
 app.post('/api/admin/email-provider', ensureRoot, async (req, res) => {
   try {
+    applyUserActionRateLimit(req, {
+      action: 'admin-email-provider',
+      userLimit: 10,
+      ipLimit: 20,
+      windowMs: 10 * 60_000,
+      message: '邮箱配置操作过于频繁，请稍后再试',
+    });
     const config = await updateEmailProviderConfig(req.body || {});
     return res.json({ success: true, config });
   } catch (err) {
-    return res.status(400).json({ success: false, error: String(err?.message || err || '更新失败') });
+    auditRouteFailure(req, {
+      scope: 'admin',
+      action: 'email-provider-update-failed',
+      identifier: req.auth?.user?.id,
+      err,
+      threshold: 3,
+    });
+    return res.status(writeResponseStatus(err)).json({ success: false, error: String(err?.message || err || '更新失败') });
+  }
+});
+
+app.get('/api/admin/call-control', ensureRoot, async (req, res) => {
+  try {
+    applyUserActionRateLimit(req, {
+      action: 'admin-call-control-read',
+      userLimit: 30,
+      ipLimit: 50,
+      windowMs: 5 * 60_000,
+      message: '呼叫总控读取过于频繁，请稍后再试',
+    });
+    return res.json({ success: true, config: await getCallControlState() });
+  } catch (err) {
+    auditRouteFailure(req, {
+      scope: 'admin',
+      action: 'call-control-read-failed',
+      identifier: req.auth?.user?.id,
+      err,
+      threshold: 4,
+    });
+    return res.status(writeResponseStatus(err)).json({ success: false, error: String(err?.message || err || '读取失败') });
+  }
+});
+
+app.post('/api/admin/call-control', ensureRoot, async (req, res) => {
+  try {
+    applyUserActionRateLimit(req, {
+      action: 'admin-call-control',
+      userLimit: 10,
+      ipLimit: 20,
+      windowMs: 10 * 60_000,
+      message: '呼叫总控操作过于频繁，请稍后再试',
+    });
+    const config = await updateCallControlState(req.body || {});
+    return res.json({ success: true, config });
+  } catch (err) {
+    auditRouteFailure(req, {
+      scope: 'admin',
+      action: 'call-control-update-failed',
+      identifier: req.auth?.user?.id,
+      err,
+      threshold: 3,
+    });
+    return res.status(writeResponseStatus(err)).json({ success: false, error: String(err?.message || err || '更新失败') });
   }
 });
 
@@ -1915,7 +2446,18 @@ app.get('/api/team/members', async (_, res) => {
   res.json({ connected: runtime.connected, members: runtime.teamMembers });
 });
 
-app.get('/api/team/messages', (_, res) => {
+app.get('/api/team/messages', async (_, res) => {
+  if (runtime.connected && runtimeState.rustClient?.connected) {
+    try {
+      const history = await invokeIpc({ channel: 'server:getTeamChat', args: [] });
+      const messages = Array.isArray(history?.teamChat?.messages)
+        ? history.teamChat.messages
+        : Array.isArray(history?.messages)
+          ? history.messages
+          : [];
+      if (messages.length) return res.json({ messages });
+    } catch (_) {}
+  }
   res.json({ messages: runtime.teamMessages });
 });
 
@@ -1930,8 +2472,16 @@ app.get('/api/steam/status', async (_, res) => {
   res.json(steam);
 });
 
-app.post('/api/steam/remote-auth/session', async (req, res) => {
+app.post('/api/steam/remote-auth/session', ensureUserAuth, async (req, res) => {
   try {
+    applyBridgeRateLimit(req, {
+      action: 'remote-auth-create',
+      tokenHint: req.auth?.user?.id || '',
+      ipLimit: 12,
+      tokenLimit: 8,
+      windowMs: 10 * 60_000,
+      message: '创建 Steam 登录任务过于频繁，请稍后再试',
+    });
     const payload = req.body || {};
     const created = createRemoteSteamAuthSession({
       ttlMs: payload.ttlMs,
@@ -1939,13 +2489,19 @@ app.post('/api/steam/remote-auth/session', async (req, res) => {
       ownerUserId: req.auth?.user?.id || '',
       ownerEmail: req.auth?.user?.email || '',
     });
-    return res.json({ success: true, session: created });
+    return res.json({
+      success: true,
+      session: created,
+      serverUrl: getRequestOrigin(req),
+      bridgeSessionId: String(created?.id || ''),
+      bridgePackageUrl: buildBridgePackageUrl(req, created?.id || ''),
+    });
   } catch (err) {
     return res.status(500).json({ success: false, error: String(err?.message || err || '创建会话失败') });
   }
 });
 
-app.get('/api/steam/remote-auth/session/:id', (req, res) => {
+app.get('/api/steam/remote-auth/session/:id', ensureUserAuth, (req, res) => {
   const sessionId = String(req.params?.id || '').trim();
   if (!sessionId) return res.status(400).json({ success: false, error: 'sessionId 不能为空' });
   const session = getRemoteSteamAuthSession(sessionId, {
@@ -1955,12 +2511,14 @@ app.get('/api/steam/remote-auth/session/:id', (req, res) => {
   return res.json({ success: true, session });
 });
 
-app.post('/api/steam/remote-auth/session/:id/cancel', (req, res) => {
+app.post('/api/steam/remote-auth/session/:id/cancel', ensureUserAuth, (req, res) => {
   const sessionId = String(req.params?.id || '').trim();
   if (!sessionId) return res.status(400).json({ success: false, error: 'sessionId 不能为空' });
   const body = req.body || {};
   const result = cancelRemoteSteamAuthSession({
     sessionId,
+    ownerUserId: req.auth?.user?.id || '',
+    bootstrapToken: body.bootstrapToken,
     sessionCode: body.sessionCode,
     sessionSecret: body.sessionSecret,
   });
@@ -1968,13 +2526,151 @@ app.post('/api/steam/remote-auth/session/:id/cancel', (req, res) => {
   return res.json(result);
 });
 
+app.get('/api/steam/remote-auth/session/:id/bridge-package', ensureUserAuth, (req, res) => {
+  const sessionId = String(req.params?.id || '').trim();
+  if (!sessionId) return res.status(400).json({ success: false, error: 'sessionId 不能为空' });
+  const bootstrap = getRemoteSteamAuthSessionBootstrap(sessionId, {
+    ownerUserId: req.auth?.user?.id || '',
+  });
+  if (!bootstrap?.session?.bootstrapToken) {
+    return res.status(404).json({ success: false, error: '会话不存在或无权限访问' });
+  }
+  return streamBridgePackage(res, {
+    serverUrl: getRequestOrigin(req),
+    bootstrapToken: bootstrap.session.bootstrapToken,
+    bridgeSessionId: bootstrap.session.id,
+    ownerRef: bootstrap.ownerUserId || '',
+    expiresAt: bootstrap.session.expiresAt || '',
+    autoStartOnInstall: true,
+  });
+});
+
+function renderSteamBridgeCallbackPage({ success = false, message = '', detail = '' } = {}) {
+  const title = success ? 'Steam 登录已完成' : 'Steam 登录失败';
+  const safeTitle = escHtml(title);
+  const safeMessage = escHtml(String(message || '').trim() || (success ? '云端已接收 Rust+ 登录信息。' : '未能完成 Steam 登录回传。'));
+  const safeDetail = detail ? `<p style="color:#8b98b1;font-size:13px;line-height:1.6;margin:12px 0 0;">${escHtml(detail)}</p>` : '';
+  return `<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${safeTitle}</title>
+  <style>
+    :root { color-scheme: dark; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at top, rgba(196, 112, 67, 0.18), transparent 38%),
+        linear-gradient(180deg, #10151d 0%, #0b0f14 100%);
+      color: #f3f4f6;
+      font-family: "Segoe UI", "PingFang SC", sans-serif;
+    }
+    .panel {
+      width: min(92vw, 480px);
+      padding: 28px 24px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      background: rgba(16, 21, 29, 0.92);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.38);
+    }
+    h1 { margin: 0 0 12px; font-size: 28px; }
+    p { margin: 0; line-height: 1.7; color: #d6d8dd; }
+  </style>
+</head>
+<body>
+  <main class="panel">
+    <h1>${safeTitle}</h1>
+    <p>${safeMessage}</p>
+    ${safeDetail}
+  </main>
+</body>
+</html>`;
+}
+
 app.get('/steam-bridge/ping', (_, res) => {
   res.json({ ok: true, service: 'steam-bridge', ts: Date.now() });
+});
+
+app.get('/steam-bridge/callback', async (req, res) => {
+  const bootstrapToken = String(req.query?.bootstrapToken || '').trim();
+  const rustplusAuthToken = String(req.query?.token || '').trim();
+  if (!bootstrapToken || !rustplusAuthToken) {
+    return res.status(400).send(renderSteamBridgeCallbackPage({
+      success: false,
+      message: '回传参数缺失，无法完成 Steam 登录同步。',
+      detail: '请返回工具箱重新发起 Steam 登录。',
+    }));
+  }
+
+  try {
+    const result = await completeRemoteSteamAuthSession({
+      bootstrapToken,
+      rustplusAuthToken,
+      autoStartPairing: true,
+    });
+    if (result?.ownerUserId && result?.steam) {
+      await setUserSteamBinding(result.ownerUserId, result.steam).catch(() => null);
+    }
+    if (result?.ownerUserId) {
+      const ownerCtx = ensureWebUserContext({
+        id: result.ownerUserId,
+        email: result.ownerEmail || '',
+      });
+      await withUserContext(ownerCtx, () => startPairingFlow({ forceRegister: false })).catch((err) => {
+        logger.warn('[SteamBridge] callback 自动启动配对监听失败: ' + (err?.message || err));
+      });
+    }
+    return res.send(renderSteamBridgeCallbackPage({
+      success: true,
+      message: 'Rust+ 登录信息已经回传到工具箱，页面状态会自动同步。',
+      detail: '你现在可以返回工具箱查看云端同步结果。',
+    }));
+  } catch (err) {
+    const message = String(err?.message || err || 'Steam 登录回传失败');
+    logger.warn('[SteamBridge] callback 处理失败: ' + message);
+    return res.status(400).send(renderSteamBridgeCallbackPage({
+      success: false,
+      message: '云端未能完成登录信息同步。',
+      detail: message,
+    }));
+  }
+});
+
+app.post('/steam-bridge/state', (req, res) => {
+  try {
+    applyBridgeRateLimit(req, {
+      action: 'bridge-state',
+      tokenHint: req.body?.bootstrapToken,
+      ipLimit: 90,
+      tokenLimit: 90,
+      windowMs: 60_000,
+    });
+    const result = updateRemoteSteamAuthSessionPhase(req.body || {});
+    if (!result?.success) return res.status(400).json(result);
+    return res.json(result);
+  } catch (err) {
+    return res.status(400).json({
+      success: false,
+      error: String(err?.message || err || '更新远程授权状态失败'),
+    });
+  }
 });
 
 app.post('/steam-bridge/complete', async (req, res) => {
   try {
     const body = req.body || {};
+    applyBridgeRateLimit(req, {
+      action: 'bridge-complete',
+      tokenHint: body.bootstrapToken || body.sessionCode || body.sessionId,
+      ipLimit: 20,
+      tokenLimit: 8,
+      windowMs: 10 * 60_000,
+      message: '登录回传过于频繁，请稍后再试',
+    });
     const result = await completeRemoteSteamAuthSession(body);
     if (result?.ownerUserId && result?.steam) {
       await setUserSteamBinding(result.ownerUserId, result.steam).catch(() => null);

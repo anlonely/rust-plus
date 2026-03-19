@@ -51,10 +51,6 @@ const { normalizeServerMapPayload } = require('../src/utils/server-map-payload')
 const { enrichMapDataWithRustMaps } = require('../src/utils/rustmaps');
 const { getConfigDir } = require('../src/utils/runtime-paths');
 const { normalizeEventRuleInput, normalizeCommandRuleInput, normalizeCallGroupInput } = require('../src/utils/web-config-rules');
-const {
-  VENDING_NEW_WATCH_ITEM_IDS,
-  VENDING_NEW_WATCH_ITEM_NAMES,
-} = require('../src/utils/vending-watchlist');
 const TEAM_CHAT_MAX_CHARS = Math.max(32, Number(process.env.RUST_TEAM_MESSAGE_MAX_CHARS || 128) || 128);
 const TEAM_CHAT_RPM_LIMIT = Math.max(1, Number(process.env.GUI_TEAM_CHAT_RPM || 20) || 20);
 const FALLBACK_TEAM_CHAT_INTERVAL_MS = 3_000;
@@ -168,7 +164,8 @@ const INDIVIDUAL_PLAYER_EVENTS = new Set([
   'player_afk',
   'player_afk_recover',
 ]);
-const DEFAULT_VENDING_NEW_MESSAGE = '发现 {vending_items}上架售货机 | 坐标:[{marker_grid}]';
+const LEGACY_DEFAULT_VENDING_NEW_MESSAGE = '新售货机出现｜位置:{marker_grid} 出售:{vending_items}';
+const DEFAULT_VENDING_NEW_MESSAGE = '{vending_status_label}｜{marker_grid}｜上架：{vending_items}';
 const TEAMCHAT_CONNECTED_BROADCAST = '安静的Rust工具已连接 - 输入help查看全部可触发指令';
 
 function getGlobalTeamChatIntervalMs() {
@@ -185,6 +182,7 @@ function normalizeCommandRuleForServer(rule, serverId) {
 
 const dispatchTeamChat = createTeamChatDispatcher({
   normalizeMessage: normalizeTeamMessageText,
+  splitMessage: splitTeamMessageText,
   getIntervalMs: () => getGlobalTeamChatIntervalMs(),
   sendMessage: async (message) => {
     if (!rustClient?.connected) throw new Error('未连接');
@@ -194,14 +192,8 @@ const dispatchTeamChat = createTeamChatDispatcher({
 
 function normalizeVendingNewTrigger(trigger = {}) {
   const next = { ...(trigger || {}) };
-  const ids = Array.isArray(next.vendingWatchItemIds)
-    ? next.vendingWatchItemIds.map((id) => Number(id)).filter((id) => Number.isFinite(id))
-    : [];
-  const names = Array.isArray(next.vendingWatchItemNames)
-    ? next.vendingWatchItemNames.map((name) => String(name || '').trim()).filter(Boolean)
-    : [];
-  next.vendingWatchItemIds = ids.length ? ids : [...VENDING_NEW_WATCH_ITEM_IDS];
-  next.vendingWatchItemNames = names.length ? names : [...VENDING_NEW_WATCH_ITEM_NAMES];
+  next.vendingWatchItemIds = [];
+  next.vendingWatchItemNames = [];
   return next;
 }
 
@@ -249,11 +241,25 @@ function firstNonEmptyText(...values) {
 }
 
 function normalizeTeamMessageText(raw) {
-  const text = String(raw || '').trim();
-  if (!text) return '';
-  const chars = Array.from(text);
-  if (chars.length <= TEAM_CHAT_MAX_CHARS) return text;
-  return `${chars.slice(0, Math.max(1, TEAM_CHAT_MAX_CHARS - 1)).join('')}…`;
+  return String(raw || '').trim();
+}
+
+function splitTeamMessageText(raw) {
+  const text = normalizeTeamMessageText(raw);
+  if (!text) return [];
+  const limit = Math.max(1, TEAM_CHAT_MAX_CHARS);
+  const lines = text.split(/\r?\n+/).map((line) => String(line || '').trim()).filter(Boolean);
+  if (!lines.length) return [];
+  const chunks = [];
+  for (const line of lines) {
+    const chars = Array.from(line);
+    if (!chars.length) continue;
+    for (let start = 0; start < chars.length; start += limit) {
+      const part = chars.slice(start, start + limit).join('').trim();
+      if (part) chunks.push(part);
+    }
+  }
+  return chunks;
 }
 
 async function sendTeamChatWithGuards(rawMessage) {
@@ -869,7 +875,7 @@ function buildSystemEventTemplates(serverId) {
   return [
     {
       id: 'vending_new_notify',
-      name: '新售货机出现事件',
+      name: '售货机上架提醒',
       event: 'vending_new',
       trigger: normalizeVendingNewTrigger({ cooldownMs: globalCooldownMs }),
       enabled: true,
@@ -1256,7 +1262,9 @@ async function registerPersistedRules(serverId) {
     || persisted.find((r) => String(r.event || '') === 'vending_new');
   if (vendingNewRule) {
     const currentMsg = String(vendingNewRule?._meta?.message || '').trim();
-    const shouldReplaceMessage = !currentMsg || currentMsg.includes('发现新售货机');
+    const shouldReplaceMessage = !currentMsg
+      || currentMsg === LEGACY_DEFAULT_VENDING_NEW_MESSAGE
+      || currentMsg === '发现 {vending_items}上架售货机 | 坐标:[{marker_grid}]';
     await saveEventRule({
       ...vendingNewRule,
       trigger: normalizeVendingNewTrigger(vendingNewRule.trigger || {}),
@@ -1686,6 +1694,15 @@ function sendToRenderer(channel, data) {
   mainWindow?.webContents?.send(channel, data);
 }
 
+function sendSteamAuthStatus(phase, message, extra = {}) {
+  sendToRenderer('steam:auth-status', {
+    phase: String(phase || '').trim() || 'idle',
+    message: String(message || '').trim(),
+    at: Date.now(),
+    ...extra,
+  });
+}
+
 async function subscribeEntityBroadcast(entityId, source = 'manual') {
   if (!rustClient?.connected) return false;
   const id = Number(entityId);
@@ -1872,11 +1889,65 @@ function setupIPC() {
   ipcMain.handle('steam:status', async () => {
     return getSteamProfileStatus({ fetchRemote: true });
   });
+  ipcMain.handle('steam:statusQuick', async () => {
+    return getSteamProfileStatus({ fetchRemote: false });
+  });
   ipcMain.handle('steam:beginAuth', async () => {
     try {
-      await registerFCM({ force: true });
-      return { success: true, steam: await getSteamProfileStatus({ fetchRemote: false }) };
+      sendSteamAuthStatus('starting', '正在启动本地授权流程...');
+      await registerFCM({
+        force: true,
+        onStatus: (status = {}) => {
+          const type = String(status?.type || '').trim();
+          if (type === 'starting') {
+            sendSteamAuthStatus('starting', '正在启动 Steam 登录流程...');
+            return;
+          }
+          if (type === 'browser-opened') {
+            sendSteamAuthStatus('browser-opened', '授权窗口已打开，请在其中完成 Steam 登录。');
+            return;
+          }
+          if (type === 'waiting-login') {
+            sendSteamAuthStatus('waiting-login', '正在等待 Steam 登录完成...');
+            return;
+          }
+          if (type === 'credentials-ready') {
+            sendSteamAuthStatus('credentials-ready', '已检测到 Rust+ 登录凭证，正在同步本地状态...');
+            return;
+          }
+          if (type === 'already-ready') {
+            sendSteamAuthStatus('already-ready', '已检测到本地 Steam 登录凭证。');
+            return;
+          }
+          if (type === 'failed') {
+            sendSteamAuthStatus('failed', status?.message || 'Steam 登录失败');
+          }
+        },
+      });
+      const steam = await getSteamProfileStatus({ fetchRemote: false });
+      if (!steam?.hasLogin) {
+        throw new Error('授权流程结束，但未检测到有效的 Rust+ 凭证');
+      }
+      sendSteamAuthStatus('local-ready', '已检测到本地登录状态，正在刷新资料...', { steam });
+      setTimeout(async () => {
+        try {
+          sendSteamAuthStatus('profile-refreshing', '正在获取 Steam 公开资料...');
+          const detailed = await getSteamProfileStatus({ fetchRemote: true });
+          sendSteamAuthStatus('profile-ready', 'Steam 资料已同步完成。', { steam: detailed });
+        } catch (e) {
+          sendSteamAuthStatus('profile-failed', `Steam 资料刷新失败：${e?.message || e}`);
+        }
+      }, 0);
+      return { success: true, steam };
     } catch (e) {
+      if (String(e?.message || '') === 'FCM 注册已重启') {
+        return { success: false, silenced: true, reason: e.message };
+      }
+      if (String(e?.message || '').includes('未写入凭据文件') || String(e?.message || '').includes('未检测到有效的 Rust+ 凭证')) {
+        sendSteamAuthStatus('cancelled', '登录页已关闭或登录尚未完成。点击“重新打开登录页”可以继续。');
+        return { success: false, cancelled: true, reason: e.message };
+      }
+      sendSteamAuthStatus('failed', e.message || 'Steam 登录失败');
       return { success: false, reason: e.message };
     }
   });
@@ -2241,9 +2312,12 @@ function setupIPC() {
     }, activeServerId);
     if (normalized.event === 'vending_new') {
       normalized.trigger = normalizeVendingNewTrigger(normalized.trigger || {});
+      const currentMessage = String(normalized?._meta?.message || '').trim();
       normalized._meta = {
         ...normalized._meta,
-        message: String(normalized._meta.message || '').trim() || DEFAULT_VENDING_NEW_MESSAGE,
+        message: !currentMessage || currentMessage === LEGACY_DEFAULT_VENDING_NEW_MESSAGE
+          ? DEFAULT_VENDING_NEW_MESSAGE
+          : currentMessage,
       };
     }
     if (normalized.event === 'cargo_ship_status') {

@@ -203,7 +203,11 @@ function isTeamChatSettingsGroup(value = {}) {
 }
 
 
-function createGroupService() {
+function createGroupService(options = {}) {
+  const getCallControlState = typeof options.getCallControlState === 'function'
+    ? options.getCallControlState
+    : (() => ({ phoneEnabled: true }));
+
   // ── 内存存储 ─────────────────────────────────
   const _groups = new Map();
   
@@ -264,8 +268,14 @@ function createGroupService() {
       return { success: false, reason: '呼叫组已禁用' };
     }
   
-    const channels = resolveEnabledChannels(group, options.channels);
+    const callControl = await Promise.resolve(getCallControlState()).catch(() => ({ phoneEnabled: true }));
+    const phoneEnabledGlobally = callControl?.phoneEnabled !== false;
+    const channels = resolveEnabledChannels(group, options.channels)
+      .filter((channel) => channel !== 'phone' || phoneEnabledGlobally);
     if (!channels.length) {
+      if (!phoneEnabledGlobally && group?.phone?.enabled && (group?.phone?.members || []).length) {
+        return { success: false, reason: '电话呼叫已被全局禁用' };
+      }
       return { success: false, reason: '未配置可用呼叫通道' };
     }
   

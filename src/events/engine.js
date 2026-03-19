@@ -1357,10 +1357,11 @@ class EventEngine {
     for (const m of curr) {
       if (!prevById[m.id]) {
         if (Number(m?.type) === 3 && !this._isTravelingVendorMarker(m, null)) {
-          const matches = pickVendingWatchMatches(m?.sellOrders || []);
-          if (matches.ids.length) {
+          const matches = pickVendingWatchMatches(m?.sellOrders || [], m);
+          if (matches.names.length) {
             this._fire('vending_new', {
               marker: m,
+              vendingStage: 'new',
               vendingItemIds: matches.ids,
               vendingItems: matches.names,
             });
@@ -1441,6 +1442,31 @@ class EventEngine {
     for (const m of curr) {
       const prev = prevById[m.id];
       if (!prev) continue;
+      if (Number(m?.type) === 3 && !this._isTravelingVendorMarker(m, prev)) {
+        const currentMatches = pickVendingWatchMatches(m?.sellOrders || [], m);
+        const previousMatches = pickVendingWatchMatches(prev?.sellOrders || [], prev);
+        if (currentMatches.names.length) {
+          const previousKeySet = new Set(previousMatches.keys || []);
+          const addedItems = [];
+          const addedIds = [];
+          const addedKeys = [];
+          for (let index = 0; index < currentMatches.keys.length; index += 1) {
+            const key = currentMatches.keys[index];
+            if (previousKeySet.has(key)) continue;
+            addedKeys.push(key);
+            addedIds.push(currentMatches.ids[index]);
+            addedItems.push(currentMatches.names[index]);
+          }
+          if (addedItems.length) {
+            this._fire('vending_new', {
+              marker: m,
+              vendingStage: 'update',
+              vendingItemIds: addedIds,
+              vendingItems: addedItems,
+            });
+          }
+        }
+      }
       const dx = Math.abs(Number(m?.x || 0) - Number(prev?.x || 0));
       const dy = Math.abs(Number(m?.y || 0) - Number(prev?.y || 0));
       const moving = dx > VENDOR_MOVE_EPSILON || dy > VENDOR_MOVE_EPSILON;
@@ -1501,18 +1527,6 @@ class EventEngine {
         const itemRule = String(rule.trigger.itemShortName || '').toLowerCase().trim();
         const key = String(context.itemKey || '').toLowerCase().trim();
         if (!itemRule || !key || itemRule !== key) continue;
-      }
-      if (eventType === 'vending_new') {
-        const watchIds = Array.isArray(rule.trigger?.vendingWatchItemIds)
-          ? rule.trigger.vendingWatchItemIds.map((id) => String(id))
-          : [];
-        if (watchIds.length) {
-          const watchSet = new Set(watchIds);
-          const soldIds = Array.isArray(context.vendingItemIds)
-            ? context.vendingItemIds.map((id) => String(id))
-            : [];
-          if (!soldIds.some((id) => watchSet.has(id))) continue;
-        }
       }
       if (eventType === 'cargo_ship_status') {
         const stage = String(context.cargoStage || '').toLowerCase();

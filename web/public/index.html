@@ -2043,34 +2043,46 @@ input, textarea, select { font-family:inherit; }
 
 <!-- ══ 模态框：云端 Steam 登录桥接 ═══════════════ -->
 <div class="modal-overlay" id="modal-steam-remote-auth">
-  <div class="modal" style="max-width:700px">
+  <div class="modal" style="max-width:760px">
     <div class="modal-title">
-      云端 Steam 登录（本机 Chrome 插件）
+      Steam Remote Login
       <button class="modal-close" onclick="closeRemoteSteamAuthModal()">✕</button>
     </div>
-    <div style="font-size:13px;color:var(--text2);line-height:1.8">
-      <div>1. 在本机 Chrome 安装扩展：<code>platforms/chrome-rustplus-bridge</code></div>
-      <div>2. 在扩展中填写服务器地址：<code id="steam-bridge-server-url">-</code></div>
-      <div>3. 粘贴会话码并点击扩展内“开始 Steam 登录并回传”</div>
-      <div>4. 等待当前窗口状态变为“已完成”</div>
-    </div>
-    <div class="card" style="padding:12px;margin-top:12px">
-      <div style="font-size:12px;color:var(--text3);margin-bottom:6px">会话码（一次性）</div>
-      <div id="steam-remote-session-code" style="font-family:ui-monospace, Menlo, monospace;font-size:12px;line-height:1.6;word-break:break-all;color:var(--text)">-</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
-        <button class="btn btn-ghost btn-sm" onclick="copyRemoteSteamSessionCode()">复制会话码</button>
-        <button class="btn btn-ghost btn-sm" onclick="openSteamBridgeGuide()">查看插件教程</button>
+    <div class="card" style="padding:16px 18px;margin-top:6px;background:linear-gradient(135deg, rgba(142,157,255,.14), rgba(196,164,255,.08));border-color:rgba(142,157,255,.24)">
+      <div style="font-size:18px;font-weight:800;color:var(--text)">只需要完成 Steam 登录</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.8;margin-top:8px">
+        点击安装插件后，插件会自动接管当前登录任务，自动打开 Rust+ Steam 登录页。
+        你只需要登录，插件会自动读取 token 回传到云端并继续同步。
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+        <button class="btn btn-primary" onclick="openRemoteSteamBridgeInstall()">安装插件</button>
+        <button class="btn btn-ghost" id="btn-steam-remote-resume" onclick="resumeRemoteSteamAuthBridge()" style="display:none">继续登录</button>
+        <button class="btn btn-ghost" onclick="openSteamBridgeGuide()">查看插件教程</button>
+        <button class="btn btn-ghost" onclick="requestRemoteSteamBridgeState()">重新检测插件</button>
+      </div>
+      <div id="steam-remote-install-tip" style="font-size:12px;color:var(--text3);margin-top:10px">
+        如果插件已经安装，系统会直接拉起 Steam 登录页；如果刚完成安装，也会自动读取当前登录任务。
       </div>
     </div>
-    <div class="card" style="padding:12px;margin-top:10px">
-      <div style="font-size:12px;color:var(--text3);margin-bottom:6px">状态</div>
-      <div id="steam-remote-status" style="font-size:13px;color:var(--text)">等待中...</div>
-      <div id="steam-remote-expire" style="font-size:12px;color:var(--text3);margin-top:4px">-</div>
-      <div id="steam-remote-steps" style="margin-top:10px;max-height:180px;overflow:auto;font-size:12px;line-height:1.6;color:var(--text2)"></div>
+    <div style="display:grid;grid-template-columns:minmax(0,1.45fr) minmax(240px,.85fr);gap:12px;margin-top:12px">
+      <div class="card" style="padding:14px">
+        <div style="font-size:12px;color:var(--text3);margin-bottom:10px">流程进度</div>
+        <div id="steam-remote-flow" style="display:grid;gap:10px"></div>
+      </div>
+      <div class="card" style="padding:14px">
+        <div style="font-size:12px;color:var(--text3);margin-bottom:10px">当前状态</div>
+        <div id="steam-remote-status" style="font-size:14px;font-weight:700;color:var(--text)">等待创建任务...</div>
+        <div id="steam-remote-bridge-status" style="font-size:12px;color:var(--text2);line-height:1.7;margin-top:8px">正在检测插件连接...</div>
+        <div id="steam-remote-expire" style="font-size:12px;color:var(--text3);margin-top:8px">-</div>
+      </div>
+    </div>
+    <div class="card" style="padding:14px;margin-top:12px">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:10px">活动日志</div>
+      <div id="steam-remote-steps" style="max-height:200px;overflow:auto;font-size:12px;line-height:1.6;color:var(--text2)"></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="refreshRemoteSteamAuthNow()">立即刷新</button>
-      <button class="btn btn-danger" onclick="cancelRemoteSteamAuthFlow()">取消会话</button>
+      <button class="btn btn-danger" onclick="cancelRemoteSteamAuthFlow()">取消任务</button>
     </div>
   </div>
 </div>
@@ -2126,39 +2138,55 @@ input, textarea, select { font-family:inherit; }
 <div class="modal-overlay" id="modal-guide-required">
   <div class="modal" style="max-width:780px">
     <div class="modal-title">
-      首次使用说明与免责声明
+      首次使用说明
       <button class="modal-close" onclick="toast('warning','请先阅读并确认后继续')">✕</button>
     </div>
-    <div class="guide-article" id="guide-article" onscroll="handleGuideArticleScroll()">
-      <h4>Google Chrome 插件下载、导入、认证教程</h4>
-      <p>此系统部署在云服务器，Steam 登录需要借助你本机 Chrome 插件完成授权回传。</p>
-      <ol>
-        <li>点击下方“下载插件压缩包”，下载 `chrome-rustplus-bridge.zip`。</li>
-        <li>本机 Chrome 打开 `chrome://extensions`，开启右上角“开发者模式”。</li>
-        <li>解压下载包，点击“加载已解压的扩展程序”，选择解压后的插件目录。</li>
-        <li>回到系统主界面，点击 Steam 登录，系统会生成一次性会话码。</li>
-        <li>打开 Chrome 扩展，填写你的云端地址与会话码，点击“开始 Steam 登录并回传”。</li>
-        <li>在本机浏览器按正常流程完成 Steam 与 Rust+ 登录。</li>
-        <li>回传成功后，云端会自动写入 token，并继续后续配对监听。</li>
-      </ol>
-      <p>认证完成后，你的 Steam 绑定摘要会记录到账号资料，便于后台管理和排查问题。</p>
+    <div class="guide-article" id="guide-article">
+      <h4>接下来会怎么进行</h4>
+      <p>当前 Web 部署在云服务器，Steam 登录需要借助你本机的 Chrome 插件完成回传。你不需要手动填写任何会话码。</p>
+      <div style="display:grid;gap:10px;margin:14px 0">
+        <div style="padding:12px 14px;border-radius:12px;background:rgba(142,157,255,.08);border:1px solid rgba(142,157,255,.2)">
+          <div style="font-weight:700;color:var(--text)">1. 阅读并确认本说明</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.7;margin-top:4px">确认后系统会直接进入 Steam Remote Login 流程，不需要你再回主界面重复点击。</div>
+        </div>
+        <div style="padding:12px 14px;border-radius:12px;background:rgba(142,157,255,.08);border:1px solid rgba(142,157,255,.2)">
+          <div style="font-weight:700;color:var(--text)">2. 安装 Chrome 插件</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.7;margin-top:4px">进入下一步后，页面会提供插件安装入口和教程。插件安装完成后会自动接管当前登录任务。</div>
+        </div>
+        <div style="padding:12px 14px;border-radius:12px;background:rgba(142,157,255,.08);border:1px solid rgba(142,157,255,.2)">
+          <div style="font-weight:700;color:var(--text)">3. 只需要完成 Steam 登录</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.7;margin-top:4px">插件会自动打开 Rust+ Steam 登录页，自动读取 token 并回传到云端。</div>
+        </div>
+        <div style="padding:12px 14px;border-radius:12px;background:rgba(46,204,113,.08);border:1px solid rgba(46,204,113,.2)">
+          <div style="font-weight:700;color:var(--text)">4. 云端自动同步</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.7;margin-top:4px">登录完成后，系统会自动同步 Steam 绑定信息，并继续后续的 Rust+ 配对监听。</div>
+        </div>
+      </div>
+      <p>认证完成后，你的 Steam 绑定摘要会记录到账号资料，用于后台管理、状态确认和问题排查。</p>
       <div class="guide-warning">
         免责声明：你需要确认自己有权使用对应 Steam / Rust+ 账号与服务器。系统会保存必要的登录凭据与绑定摘要，用于 Rust+ 功能运行和问题排查。未经授权的使用、共享账号、违规调用或对第三方服务造成的风险，由使用者自行承担。
       </div>
-      <p style="margin-top:12px">继续前请完整阅读到本区域底部，再勾选确认。</p>
+      <p style="margin-top:12px">确认前请先理解这套流程和风险。确认后会直接进入下一步，不再停留在当前说明页。</p>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
-      <button class="btn btn-ghost" onclick="rustAPI.openUrl('/docs-static/chrome-rustplus-bridge.zip')">下载插件压缩包</button>
-      <button class="btn btn-ghost" onclick="openSteamBridgeGuide()">查看详细教程页</button>
+      <button class="btn btn-ghost" onclick="openSteamBridgeGuide()">查看完整安装教程</button>
+    </div>
+    <div class="card" style="padding:12px 14px;margin-top:12px;background:rgba(255,255,255,.03);border-color:rgba(108,127,174,.18)">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:8px">确认前请注意</div>
+      <div style="display:grid;gap:6px;font-size:12px;color:var(--text2);line-height:1.7">
+        <div>你需要在本机 Chrome 安装插件，系统不会静默安装扩展。</div>
+        <div>登录完成后，Rust+ 凭据会被保存到当前账号的云端工作区。</div>
+        <div>确认后会直接进入 Steam 登录流程。</div>
+      </div>
     </div>
     <div class="form-row" style="margin-top:12px">
       <label style="display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--text2);cursor:pointer">
-        <input type="checkbox" id="guide-disclaimer-check" style="margin-top:3px;accent-color:var(--blue)" disabled>
+        <input type="checkbox" id="guide-disclaimer-check" style="margin-top:3px;accent-color:var(--blue)">
         我已完整阅读以上教程与免责声明，理解插件登录与 Rust+ 配对的风险和责任。
       </label>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-primary" id="guide-confirm-btn" onclick="confirmGuideAcceptance()" disabled>我已阅读并确认</button>
+      <button class="btn btn-primary" id="guide-confirm-btn" onclick="confirmGuideAcceptance()" disabled>我已阅读，继续下一步</button>
     </div>
   </div>
 </div>
@@ -2435,16 +2463,27 @@ const state = {
   steamReauthPrompted: false,
   accountAvatarDraft: '',
   inlineNotice: null,
-  guideScrolledToEnd: false,
+  guideIntent: '',
   helpDocLoaded: false,
   remoteSteamAuth: {
     sessionId: '',
-    sessionCode: '',
+    sessionData: null,
+    bootstrapToken: '',
     status: 'idle',
     expiresAt: '',
+    bridgePackageUrl: '',
+    bridgeReady: false,
+    bridgeState: null,
     timer: null,
+    bridgeTimer: null,
+    completionHandled: false,
+    flowRenderKey: '',
+    sessionRenderKey: '',
   },
+  remoteSteamAuthBridgeSource: 'rustplus-web-bridge',
   healthPollTimer: null,
+  healthSnapshotKey: '',
+  lastConnectionUiKey: '',
   mapPollTimer: null,
   serverMap: null,
   serverMapServerId: '',
@@ -2454,6 +2493,8 @@ const state = {
   serverMapImageAsset: null,
   serverMapImageLoadSeq: 0,
   serverMapOverlayIconCache: {},
+  serverMapDom: null,
+  serverMapDebugHtml: '',
   serverMapLastAt: 0,
   latestMapSize: 0,
   serverMapView: { teamMembers: [], vendingMarkers: [] },
@@ -3204,7 +3245,7 @@ function navigate(pageId, el) {
     refreshAllServerData();
     loadServers();
   }
-  if (pageId === 'teamchat')   renderTeamChat();
+  if (pageId === 'teamchat')   loadTeamChatHistory();
   if (pageId === 'help')       loadHelpDoc();
   if (pageId === 'settings')   renderSettingsPage();
   if (pageId === 'servermap') {
@@ -3222,23 +3263,19 @@ async function init() {
   try {
     await ensureCurrentUserSession();
     const data = await rustAPI.init();
-    state.servers    = data.servers    || [];
     state.devices    = data.devices    || [];
     state.callGroups = data.groups     || [];
-    state.connected  = data.connected  || false;
-    state.currentServer = data.currentServer || null;
     state.steam = data.steam || null;
-
-    if (state.currentServer) {
-      document.getElementById('server-name-title').textContent = state.currentServer.name || '';
-    }
+    hydrateRuntimeBootstrapState(data);
     renderSteamUserCard(state.steam);
     await refreshSteamUserCard({ silent: true });
     await promptSteamReauthIfNeeded({ source: 'startup' });
     maybeShowGuideModal();
+    requestRemoteSteamBridgeState();
     updateConnectionUI(state.connected, state.currentServer?.name);
     updateScopedPageState();
     setPairingStatus(true);
+    if (state.connected) await loadTeamChatHistory().catch(() => null);
     loadServers();
     loadRules();
 
@@ -3247,6 +3284,58 @@ async function init() {
     addLog('error', '初始化失败: ' + e.message);
     setPairingStatus(false);
   }
+}
+
+function applyServerSnapshotToDashboard(snapshot = null) {
+  const s = extractServerInfo(snapshot);
+  if (!s) return;
+  document.getElementById('st-players').textContent = s.players ?? '-';
+  document.getElementById('st-max').textContent = s.maxPlayers ?? '-';
+  document.getElementById('st-mapsize').textContent = s.mapSize ?? s.worldSize ?? '-';
+  const mapSize = Number(s.mapSize ?? s.worldSize ?? 0);
+  if (Number.isFinite(mapSize) && mapSize > 0) state.latestMapSize = mapSize;
+  const timeMinutes = extractGameTimeMinutes(snapshot, { members: state.teamMembers || [] });
+  document.getElementById('st-time').textContent = timeMinutes == null
+    ? '-'
+    : `${String(Math.floor(timeMinutes / 60)).padStart(2, '0')}:${String(timeMinutes % 60).padStart(2, '0')}`;
+}
+
+function hydrateRuntimeBootstrapState(data = {}) {
+  state.servers = Array.isArray(data?.servers) ? data.servers : [];
+  state.connected = !!data?.connected;
+  state.currentServer = data?.currentServer || null;
+  state.teamMessages = Array.isArray(data?.teamMessages) ? data.teamMessages : [];
+  if (state.currentServer) {
+    document.getElementById('server-name-title').textContent = state.currentServer.name || '';
+  }
+  applyServerSnapshotToDashboard(data?.serverInfo || null);
+  const members = extractTeamMembers(data?.teamMembers || []);
+  state.teamMembers = members;
+  if (state.connected || Array.isArray(data?.teamMembers)) {
+    renderTeam(members);
+  }
+  if (state.connected && Array.isArray(data?.teamMembers)) {
+    updateTeamSyncStatus({ mode: 'broadcast' });
+  }
+  renderTeamChat();
+}
+
+async function syncRuntimeAfterConnection(preferredServer = null, { timeoutMs = 12000, intervalMs = 800 } = {}) {
+  const startedAt = Date.now();
+  while (Date.now() - startedAt <= timeoutMs) {
+    try {
+      const data = await rustAPI.init();
+      hydrateRuntimeBootstrapState(data);
+      const resolvedName = data?.currentServer?.name || preferredServer?.name || '';
+      updateConnectionUI(!!data?.connected, resolvedName);
+      if (data?.connected) {
+        await loadTeamChatHistory().catch(() => null);
+        return true;
+      }
+    } catch (_) {}
+    await new Promise((resolve) => setTimeout(resolve, intervalMs));
+  }
+  return false;
 }
 
 function getSteamTokenIssue(steam = state.steam) {
@@ -3438,6 +3527,12 @@ async function ensureCurrentUserSession() {
   return state.currentUser;
 }
 
+async function refreshCurrentUserAccountState() {
+  const user = await ensureCurrentUserSession();
+  renderAccountCenterModal();
+  return user;
+}
+
 function renderAccountCenterModal() {
   const user = state.currentUser;
   const avatarEl = document.getElementById('account-center-avatar');
@@ -3532,21 +3627,30 @@ async function logoutAccount() {
   location.href = '/auth';
 }
 
-function handleGuideArticleScroll() {
-  const article = document.getElementById('guide-article');
-  const check = document.getElementById('guide-disclaimer-check');
-  if (!article || !check) return;
-  const reached = article.scrollTop + article.clientHeight >= article.scrollHeight - 8;
-  if (!reached) return;
-  state.guideScrolledToEnd = true;
-  check.disabled = false;
-}
-
 function updateGuideConfirmState() {
   const check = document.getElementById('guide-disclaimer-check');
   const btn = document.getElementById('guide-confirm-btn');
   if (!check || !btn) return;
-  btn.disabled = !(state.guideScrolledToEnd && check.checked);
+  btn.disabled = !check.checked;
+}
+
+function shouldContinueGuideToSteam() {
+  return state.guideIntent === 'steam-auth' || !!getSteamTokenIssue(state.steam);
+}
+
+function openGuideModal(intent = '') {
+  state.guideIntent = String(intent || '').trim();
+  const check = document.getElementById('guide-disclaimer-check');
+  const btn = document.getElementById('guide-confirm-btn');
+  if (check) {
+    check.checked = false;
+    check.onchange = updateGuideConfirmState;
+  }
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = shouldContinueGuideToSteam() ? '我已阅读，继续 Steam 登录' : '我已阅读并确认';
+  }
+  openModal('modal-guide-required');
 }
 
 async function confirmGuideAcceptance() {
@@ -3556,7 +3660,16 @@ async function confirmGuideAcceptance() {
     state.currentUser = res.user;
     renderCurrentUser(state.currentUser);
     closeModal('modal-guide-required');
-    toast('success', '已确认首次使用说明');
+    const continueToSteam = shouldContinueGuideToSteam();
+    state.guideIntent = '';
+    toast('success', continueToSteam ? '已确认说明，正在进入 Steam 登录流程' : '已确认首次使用说明');
+    if (continueToSteam) {
+      setTimeout(() => {
+        beginSteamAuthFlow().catch((e) => {
+          toast('error', '启动 Steam 登录失败：' + (e?.message || '未知错误'));
+        });
+      }, 120);
+    }
   } catch (e) {
     toast('error', '确认失败：' + (e?.message || '未知错误'));
   }
@@ -3564,18 +3677,7 @@ async function confirmGuideAcceptance() {
 
 function maybeShowGuideModal() {
   if (!state.currentUser || state.currentUser.hasAcceptedGuide) return;
-  state.guideScrolledToEnd = false;
-  const article = document.getElementById('guide-article');
-  const check = document.getElementById('guide-disclaimer-check');
-  const btn = document.getElementById('guide-confirm-btn');
-  if (article) article.scrollTop = 0;
-  if (check) {
-    check.checked = false;
-    check.disabled = true;
-    check.onchange = updateGuideConfirmState;
-  }
-  if (btn) btn.disabled = true;
-  openModal('modal-guide-required');
+  openGuideModal(getSteamTokenIssue(state.steam) ? 'steam-auth' : '');
 }
 
 function renderSteamUserCard(steam) {
@@ -3693,8 +3795,34 @@ function stopRemoteSteamAuthPolling() {
   state.remoteSteamAuth.timer = null;
 }
 
+function stopRemoteSteamBridgePolling() {
+  if (!state.remoteSteamAuth?.bridgeTimer) return;
+  clearInterval(state.remoteSteamAuth.bridgeTimer);
+  state.remoteSteamAuth.bridgeTimer = null;
+}
+
+function startRemoteSteamBridgePolling() {
+  stopRemoteSteamBridgePolling();
+  requestRemoteSteamBridgeState();
+  state.remoteSteamAuth.bridgeTimer = setInterval(() => {
+    const sessionStatus = String(state.remoteSteamAuth?.sessionData?.status || state.remoteSteamAuth?.status || '').trim();
+    const bridgeStatus = String(state.remoteSteamAuth?.bridgeState?.status || '').trim();
+    const bridgeDone = state.remoteSteamAuth?.bridgeReady
+      && (!state.remoteSteamAuth?.sessionId
+        || ['completed', 'failed', 'timeout', 'stopped'].includes(bridgeStatus)
+        || ['completed', 'failed', 'expired', 'cancelled'].includes(sessionStatus));
+    if (bridgeDone) {
+      stopRemoteSteamBridgePolling();
+      return;
+    }
+    requestRemoteSteamBridgeState();
+    syncRemoteSteamAuthBridge();
+  }, 2500);
+}
+
 function closeRemoteSteamAuthModal() {
   stopRemoteSteamAuthPolling();
+  stopRemoteSteamBridgePolling();
   closeModal('modal-steam-remote-auth');
 }
 
@@ -3702,56 +3830,282 @@ function openSteamBridgeGuide() {
   rustAPI.openUrl('/docs-static/tutorial-steam-bridge.html');
 }
 
+function openRemoteSteamBridgeInstall() {
+  const url = String(state.remoteSteamAuth?.bridgePackageUrl || '/docs-static/chrome-rustplus-bridge.zip').trim();
+  rustAPI.openUrl(url);
+}
+
+function requestRemoteSteamBridgeState() {
+  notifyRemoteSteamAuthBridge('bridge:probe', {});
+  notifyRemoteSteamAuthBridge('bridge:getState', {});
+}
+
+function getRemoteSteamBridgeStatusText() {
+  const bridgeState = state.remoteSteamAuth?.bridgeState || {};
+  const bridgeStatusMap = {
+    idle: '插件待命中，等待网页下发登录任务。',
+    opening: '插件已接管任务，正在打开 Steam 登录页。',
+    waiting_token: 'Steam 登录页已打开，等待你完成登录。',
+    uploading: '插件已读取登录信息，正在回传云端。',
+    completed: '插件回传完成，等待云端同步最终状态。',
+    paused: '你已关闭登录页。流程已暂停，只有点击“继续登录”才会再次打开。',
+    stopped: '插件流程已停止。',
+    timeout: '插件等待登录超时，请重新开始。',
+    failed: bridgeState.lastError || '插件执行失败，请重新开始。',
+  };
+  if (bridgeState.active && bridgeState.bridgeSessionId && bridgeState.bridgeSessionId !== state.remoteSteamAuth.sessionId) {
+    return `插件当前正在处理另一条登录任务（${esc(bridgeState.bridgeSessionId)}）。`;
+  }
+  if (state.remoteSteamAuth?.bridgeReady) {
+    return bridgeStatusMap[bridgeState.status] || '插件已连接，等待当前登录任务同步。';
+  }
+  return '尚未检测到插件连接。点击“安装插件”后，安装完成会自动接管当前登录任务。';
+}
+
+function renderRemoteSteamAuthFlow(session = null) {
+  const flowEl = document.getElementById('steam-remote-flow');
+  if (!flowEl) return;
+
+  const currentSession = session || state.remoteSteamAuth?.sessionData || null;
+  const sessionStatus = String(currentSession?.status || state.remoteSteamAuth?.status || 'idle');
+  const bridgeState = state.remoteSteamAuth?.bridgeState || {};
+  const pluginConnected = state.remoteSteamAuth?.bridgeReady
+    || ['plugin_connected', 'login_opened', 'waiting_token', 'token_received', 'processing', 'completed'].includes(sessionStatus);
+  const paused = String(bridgeState.status || '') === 'paused';
+  const loginOpened = ['opening', 'waiting_token', 'uploading', 'completed'].includes(String(bridgeState.status || ''))
+    || ['login_opened', 'waiting_token', 'token_received', 'processing', 'completed'].includes(sessionStatus);
+  const syncing = ['uploading'].includes(String(bridgeState.status || ''))
+    || ['token_received', 'processing'].includes(sessionStatus);
+  const completed = sessionStatus === 'completed';
+  const failed = ['failed', 'expired', 'cancelled'].includes(sessionStatus) || ['failed', 'timeout'].includes(String(bridgeState.status || ''));
+
+  const items = [
+    {
+      label: '已创建登录任务',
+      detail: '当前账号的云端登录任务已经创建完成。',
+      state: state.remoteSteamAuth?.sessionId ? 'done' : 'active',
+    },
+    {
+      label: '等待插件接管',
+      detail: pluginConnected ? '插件已连接并接收当前登录任务。' : '点击“安装插件”后，插件会自动接管当前登录任务。',
+      state: pluginConnected ? 'done' : 'active',
+    },
+    {
+      label: '打开 Steam 登录页',
+      detail: paused ? '你刚刚关闭了登录页。点击“继续登录”后才会重新打开。' : (loginOpened ? 'Rust+ Steam 登录页已自动拉起，等待你完成登录。' : '插件接管后会自动打开 Rust+ Steam 登录页。'),
+      state: paused ? 'active' : (loginOpened ? 'done' : (pluginConnected ? 'active' : 'todo')),
+    },
+    {
+      label: '云端同步完成',
+      detail: completed ? '登录信息已回传，云端 Steam 登录和后续监听已同步。' : (syncing ? '插件已经回传登录信息，云端正在同步。' : '登录完成后会自动回传并同步到云端。'),
+      state: completed ? 'done' : (syncing ? 'active' : 'todo'),
+    },
+  ];
+
+  const renderKey = JSON.stringify({
+    sessionStatus,
+    bridgeStatus: String(bridgeState.status || ''),
+    pluginConnected,
+    loginOpened,
+    syncing,
+    completed,
+    failed,
+    paused,
+  });
+  if (state.remoteSteamAuth.flowRenderKey === renderKey) return;
+  state.remoteSteamAuth.flowRenderKey = renderKey;
+
+  flowEl.innerHTML = items.map((item) => {
+    const isDone = item.state === 'done';
+    const isActive = item.state === 'active';
+    const dotColor = failed && !isDone ? 'var(--red)' : (isDone ? 'var(--green)' : (isActive ? 'var(--blue)' : 'var(--border)'));
+    const bg = failed && !isDone
+      ? 'rgba(255,94,138,.08)'
+      : (isDone ? 'rgba(46,204,113,.08)' : (isActive ? 'rgba(142,157,255,.08)' : 'rgba(255,255,255,.02)'));
+    const border = failed && !isDone
+      ? 'rgba(255,94,138,.24)'
+      : (isDone ? 'rgba(46,204,113,.24)' : (isActive ? 'rgba(142,157,255,.24)' : 'rgba(108,127,174,.18)'));
+    return `
+      <div style="display:grid;grid-template-columns:20px minmax(0,1fr);gap:10px;align-items:start;padding:10px 12px;border-radius:12px;background:${bg};border:1px solid ${border}">
+        <div style="width:10px;height:10px;border-radius:999px;background:${dotColor};margin-top:5px;box-shadow:0 0 0 4px rgba(255,255,255,.02)"></div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--text)">${esc(item.label)}</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.7;margin-top:3px">${esc(item.detail)}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function syncRemoteSteamAuthBridge() {
+  const sessionId = String(state.remoteSteamAuth?.sessionId || '').trim();
+  const bootstrapToken = String(state.remoteSteamAuth?.bootstrapToken || '').trim();
+  if (!sessionId || !bootstrapToken || !state.remoteSteamAuth?.bridgeReady) return;
+  const bridgeState = state.remoteSteamAuth?.bridgeState || {};
+  if (bridgeState.active && bridgeState.bridgeSessionId && bridgeState.bridgeSessionId !== sessionId) return;
+  if (bridgeState.bridgeSessionId === sessionId && ['opening', 'waiting_token', 'uploading', 'completed', 'paused'].includes(String(bridgeState.status || ''))) {
+    return;
+  }
+  notifyRemoteSteamAuthBridge('bridge:start', {
+    serverUrl: String(location.origin || '').trim(),
+    bootstrapToken,
+    bridgeSessionId: sessionId,
+    ownerRef: String(state.currentUser?.id || '').trim(),
+  });
+}
+
+function resumeRemoteSteamAuthBridge() {
+  const sessionId = String(state.remoteSteamAuth?.sessionId || '').trim();
+  const bootstrapToken = String(state.remoteSteamAuth?.bootstrapToken || '').trim();
+  if (!sessionId || !bootstrapToken) return;
+  notifyRemoteSteamAuthBridge('bridge:resume', {
+    serverUrl: String(location.origin || '').trim(),
+    bootstrapToken,
+    bridgeSessionId: sessionId,
+    ownerRef: String(state.currentUser?.id || '').trim(),
+    forceResume: true,
+  });
+}
+
+function handleRemoteSteamAuthBridgeMessage(event) {
+  if (event.source !== window) return;
+  const data = event.data || {};
+  if (data.source !== String(state.remoteSteamAuthBridgeSource || 'rustplus-web-bridge')) return;
+
+  const type = String(data.type || '').trim();
+  const payload = data.payload || {};
+  if (!type) return;
+
+  if (type === 'bridge:ready') {
+    state.remoteSteamAuth.bridgeReady = true;
+    renderRemoteSteamAuthSession();
+    syncRemoteSteamAuthBridge();
+    return;
+  }
+
+  if (type === 'bridge:state') {
+    state.remoteSteamAuth.bridgeReady = true;
+    state.remoteSteamAuth.bridgeState = payload.state || {};
+    renderRemoteSteamAuthSession();
+    syncRemoteSteamAuthBridge();
+    return;
+  }
+
+  if (type === 'bridge:getState:response') {
+    if (payload?.response?.success) {
+      state.remoteSteamAuth.bridgeReady = true;
+      state.remoteSteamAuth.bridgeState = payload.response.state || {};
+      renderRemoteSteamAuthSession();
+      syncRemoteSteamAuthBridge();
+    }
+    return;
+  }
+
+  if (type === 'bridge:start:response') {
+    if (payload?.response?.success) {
+      state.remoteSteamAuth.bridgeReady = true;
+      state.remoteSteamAuth.bridgeState = payload.response.state || state.remoteSteamAuth.bridgeState || {};
+      renderRemoteSteamAuthSession();
+      return;
+    }
+    if (payload?.error || payload?.response?.error) {
+      toast('warning', `插件启动失败：${payload.error || payload.response.error}`);
+    }
+  }
+
+  if (type === 'bridge:resume:response') {
+    if (payload?.response?.success) {
+      state.remoteSteamAuth.bridgeReady = true;
+      state.remoteSteamAuth.bridgeState = payload.response.state || state.remoteSteamAuth.bridgeState || {};
+      renderRemoteSteamAuthSession();
+      return;
+    }
+    if (payload?.error || payload?.response?.error) {
+      toast('warning', `继续登录失败：${payload.error || payload.response.error}`);
+    }
+  }
+}
+
+window.addEventListener('message', handleRemoteSteamAuthBridgeMessage);
+
 function renderRemoteSteamAuthSession(session = null) {
-  const codeEl = document.getElementById('steam-remote-session-code');
   const statusEl = document.getElementById('steam-remote-status');
+  const bridgeStatusEl = document.getElementById('steam-remote-bridge-status');
   const expireEl = document.getElementById('steam-remote-expire');
   const stepsEl = document.getElementById('steam-remote-steps');
-  const serverUrlEl = document.getElementById('steam-bridge-server-url');
-  if (serverUrlEl) serverUrlEl.textContent = location.origin;
-  if (!codeEl || !statusEl || !expireEl || !stepsEl) return;
+  const resumeBtn = document.getElementById('btn-steam-remote-resume');
+  if (!statusEl || !bridgeStatusEl || !expireEl || !stepsEl) return;
 
-  if (!session) {
-    codeEl.textContent = '-';
-    statusEl.textContent = '等待创建会话...';
+  const currentSession = session || state.remoteSteamAuth?.sessionData || null;
+  if (!currentSession) {
+    const emptyKey = 'empty';
+    if (state.remoteSteamAuth.sessionRenderKey === emptyKey) return;
+    state.remoteSteamAuth.sessionRenderKey = emptyKey;
+    statusEl.textContent = '等待创建登录任务...';
+    bridgeStatusEl.textContent = getRemoteSteamBridgeStatusText();
     expireEl.textContent = '-';
     stepsEl.innerHTML = '';
+    if (resumeBtn) {
+      resumeBtn.style.display = 'none';
+      resumeBtn.disabled = true;
+    }
+    renderRemoteSteamAuthFlow(null);
     return;
   }
 
   const statusMap = {
-    pending: '等待本机插件回传 token',
+    pending_plugin: '等待插件接管',
+    plugin_connected: '插件已连接',
+    login_opened: 'Steam 登录页已打开',
+    waiting_token: '等待用户完成 Steam 登录',
+    token_received: '已获取登录信息，准备同步',
     processing: '云端处理中...',
     completed: '已完成',
     failed: '失败',
     expired: '会话已过期',
     cancelled: '会话已取消',
   };
-  const steps = Array.isArray(session.steps) ? session.steps : [];
-  codeEl.textContent = state.remoteSteamAuth.sessionCode || '-';
-  statusEl.textContent = statusMap[session.status] || String(session.status || 'unknown');
-  expireEl.textContent = session.expiresAt ? `会话有效期至：${session.expiresAt}` : '-';
+  const bridgeState = state.remoteSteamAuth?.bridgeState || {};
+  const isPaused = String(bridgeState.status || '') === 'paused';
+  const steps = Array.isArray(currentSession.steps) ? currentSession.steps : [];
+  const renderKey = JSON.stringify({
+    sessionStatus: currentSession.status || '',
+    expiresAt: currentSession.expiresAt || '',
+    bridgeStatus: String(bridgeState.status || ''),
+    bridgeReady: !!state.remoteSteamAuth?.bridgeReady,
+    bridgeError: String(bridgeState.lastError || ''),
+    steps: steps.map((item) => `${item.at || ''}|${item.message || ''}`),
+    paused: isPaused,
+  });
+  if (state.remoteSteamAuth.sessionRenderKey === renderKey) return;
+  state.remoteSteamAuth.sessionRenderKey = renderKey;
+  if (resumeBtn) {
+    resumeBtn.style.display = isPaused ? '' : 'none';
+    resumeBtn.disabled = !isPaused;
+  }
+  statusEl.textContent = statusMap[currentSession.status] || String(currentSession.status || 'unknown');
+  bridgeStatusEl.textContent = getRemoteSteamBridgeStatusText();
+  expireEl.textContent = currentSession.expiresAt ? `任务有效期至：${currentSession.expiresAt}` : '-';
   stepsEl.innerHTML = steps.length
     ? steps.map((item) => `<div>${esc(item.at || '-')} · ${esc(item.message || '-')}</div>`).join('')
-    : '<div style="color:var(--text3)">暂无步骤日志</div>';
+    : '<div style="color:var(--text3)">等待插件连接与登录回传...</div>';
+  renderRemoteSteamAuthFlow(currentSession);
 }
 
-async function copyRemoteSteamSessionCode() {
-  const code = String(state.remoteSteamAuth?.sessionCode || '').trim();
-  if (!code) {
-    toast('warning', '当前没有可复制的会话码');
-    return;
-  }
+function notifyRemoteSteamAuthBridge(type, payload = {}) {
   try {
-    await copyTextToClipboard(code);
-    toast('success', '会话码已复制');
-  } catch (e) {
-    toast('error', '复制失败: ' + (e?.message || '未知错误'));
-  }
+    window.postMessage({
+      source: String(state.remoteSteamAuthBridgeSource || 'rustplus-web-bridge'),
+      type,
+      payload,
+      requestId: `legacy-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+    }, '*');
+  } catch (_) {}
 }
 
 async function refreshRemoteSteamAuthNow() {
   const sessionId = String(state.remoteSteamAuth?.sessionId || '').trim();
+  requestRemoteSteamBridgeState();
   if (!sessionId) return;
   try {
     const resp = await rustAPI.getRemoteSteamAuthSession(sessionId);
@@ -3764,16 +4118,22 @@ async function refreshRemoteSteamAuthNow() {
 
 async function onRemoteSteamAuthSessionUpdate(session) {
   if (!session) return;
+  state.remoteSteamAuth.sessionData = session;
   state.remoteSteamAuth.status = session.status || 'pending';
   state.remoteSteamAuth.expiresAt = session.expiresAt || '';
   renderRemoteSteamAuthSession(session);
 
   if (session.status === 'completed') {
     stopRemoteSteamAuthPolling();
+    stopRemoteSteamBridgePolling();
+    if (state.remoteSteamAuth.completionHandled) return;
+    state.remoteSteamAuth.completionHandled = true;
     state.steam = session?.result?.steam || (await refreshSteamUserCard({ silent: true })) || state.steam;
     renderSteamUserCard(state.steam);
+    await refreshCurrentUserAccountState().catch(() => null);
     closeModal('modal-steam-remote-auth');
     closeModal('modal-steam-profile');
+    closeModal('modal-steam-credential-success');
 
     const pendingPairing = state.pendingPairingOptions;
     state.pendingPairingOptions = null;
@@ -3782,39 +4142,50 @@ async function onRemoteSteamAuthSessionUpdate(session) {
       await startPairing({ ...pendingPairing, skipSteamCheck: true });
       return;
     }
-    openModal('modal-steam-credential-success');
+    toast('success', 'Steam 远程登录完成，云端已同步');
     return;
   }
 
   if (session.status === 'failed') {
     stopRemoteSteamAuthPolling();
+    stopRemoteSteamBridgePolling();
     toast('error', '远程登录失败：' + (session.error || '未知错误'));
     return;
   }
   if (session.status === 'expired') {
     stopRemoteSteamAuthPolling();
-    toast('warning', '远程登录会话已过期，请重新发起登录');
+    stopRemoteSteamBridgePolling();
+    toast('warning', '远程登录任务已过期，请重新发起登录');
     return;
   }
   if (session.status === 'cancelled') {
     stopRemoteSteamAuthPolling();
-    toast('info', '远程登录会话已取消');
+    stopRemoteSteamBridgePolling();
+    toast('info', '远程登录任务已取消');
   }
 }
 
 async function cancelRemoteSteamAuthFlow() {
   const sessionId = String(state.remoteSteamAuth?.sessionId || '').trim();
-  const sessionCode = String(state.remoteSteamAuth?.sessionCode || '').trim();
+  const bootstrapToken = String(state.remoteSteamAuth?.bootstrapToken || '').trim();
   stopRemoteSteamAuthPolling();
+  stopRemoteSteamBridgePolling();
   if (sessionId) {
-    await rustAPI.cancelRemoteSteamAuthSession(sessionId, { sessionCode }).catch(() => null);
+    await rustAPI.cancelRemoteSteamAuthSession(sessionId, { bootstrapToken }).catch(() => null);
   }
+  notifyRemoteSteamAuthBridge('bridge:stop', {});
   state.remoteSteamAuth = {
     sessionId: '',
-    sessionCode: '',
+    sessionData: null,
+    bootstrapToken: '',
     status: 'cancelled',
     expiresAt: '',
+    bridgePackageUrl: '',
+    bridgeReady: false,
+    bridgeState: null,
     timer: null,
+    bridgeTimer: null,
+    completionHandled: false,
   };
   closeModal('modal-steam-remote-auth');
 }
@@ -3827,13 +4198,26 @@ async function beginWebRemoteSteamAuthFlow() {
   const session = createRes.session;
   state.remoteSteamAuth = {
     sessionId: String(session.id || ''),
-    sessionCode: String(session.sessionCode || ''),
+    sessionData: session,
+    bootstrapToken: String(session.bootstrapToken || ''),
     status: String(session.status || 'pending'),
     expiresAt: String(session.expiresAt || ''),
+    bridgePackageUrl: String(createRes.bridgePackageUrl || '').trim(),
+    bridgeReady: false,
+    bridgeState: null,
     timer: null,
+    bridgeTimer: null,
+    completionHandled: false,
   };
   renderRemoteSteamAuthSession(session);
   openModal('modal-steam-remote-auth');
+  startRemoteSteamBridgePolling();
+  notifyRemoteSteamAuthBridge('bridge:start', {
+    serverUrl: String(createRes.serverUrl || location.origin || '').trim(),
+    bootstrapToken: String(session.bootstrapToken || '').trim(),
+    bridgeSessionId: String(session.id || '').trim(),
+    ownerRef: String(state.currentUser?.id || '').trim(),
+  });
   closeModal('modal-steam-profile');
 
   stopRemoteSteamAuthPolling();
@@ -3844,7 +4228,7 @@ async function beginWebRemoteSteamAuthFlow() {
       const remote = await rustAPI.getRemoteSteamAuthSession(sessionId);
       if (remote?.success && remote.session) await onRemoteSteamAuthSessionUpdate(remote.session);
     } catch (_) {}
-  }, 3000);
+  }, 4000);
 }
 
 async function logoutSteam() {
@@ -3857,17 +4241,22 @@ async function logoutSteam() {
   state.steamReauthPrompted = false;
   renderSteamUserCard(state.steam);
   renderSteamProfileModal(state.steam);
+  await refreshCurrentUserAccountState().catch(() => null);
   toast('success', '已注销 Steam 登录');
   closeModal('modal-steam-profile');
 }
 
 async function beginSteamAuthFlow() {
+  if (state.currentUser && !state.currentUser.hasAcceptedGuide) {
+    openGuideModal('steam-auth');
+    return;
+  }
   const btn = document.getElementById('btn-steam-login');
   if (btn) btn.disabled = true;
   clearInlineNotice();
   try {
     if (isWebRemoteSteamAuthSupported()) {
-      toast('info', '已创建远程授权会话，请在本机 Chrome 插件中完成 Steam 登录');
+      toast('info', '已创建 Steam 远程登录任务，安装插件后会自动拉起登录页');
       await beginWebRemoteSteamAuthFlow();
       return;
     }
@@ -3905,6 +4294,9 @@ function gotoManagementAfterSteamLogin() {
 // ═══════════════════════════════════════════════
 function updateConnectionUI(connected, serverName) {
   state.connected = connected;
+  const nextKey = `${connected ? '1' : '0'}:${String(state.currentServer?.id || '')}:${String(serverName || '')}`;
+  const stateChanged = state.lastConnectionUiKey !== nextKey;
+  state.lastConnectionUiKey = nextKey;
   const dot   = document.getElementById('dot-server');
   const label = document.getElementById('label-server');
   const stVal = document.getElementById('st-server');
@@ -3918,7 +4310,7 @@ function updateConnectionUI(connected, serverName) {
     stSub.textContent = '数据同步正常';
     document.getElementById('server-info-card').style.display = 'block';
     document.getElementById('health-info-card').style.display = 'block';
-    refreshAllServerData();
+    if (stateChanged) refreshAllServerData();
     startHealthPolling();
   } else {
     state.currentServer = null;
@@ -3938,6 +4330,7 @@ function updateConnectionUI(connected, serverName) {
     document.getElementById('server-info-card').style.display = 'none';
     document.getElementById('health-info-card').style.display = 'none';
     stopHealthPolling();
+    state.healthSnapshotKey = '';
     updateTeamSyncStatus({ mode: 'offline' });
     loadDevices();
     loadRules();
@@ -4022,6 +4415,17 @@ function formatAgo(ms) {
 async function refreshConnectionHealth() {
   const h = await rustAPI.getServerHealth().catch(() => null);
   if (!h) return;
+  const snapshotKey = JSON.stringify({
+    connected: !!h.connected,
+    connecting: !!h.connecting,
+    reconnectCount: Number(h.reconnectCount ?? 0),
+    heartbeatFailures: Number(h.heartbeatFailures ?? 0),
+    lastActivityAgoMs: Number(h.lastActivityAgoMs ?? -1),
+    hasReconnectTimer: !!h.hasReconnectTimer,
+    lastError: String(h.lastError || ''),
+  });
+  if (state.healthSnapshotKey === snapshotKey) return;
+  state.healthSnapshotKey = snapshotKey;
   const stateText = h.connected ? '在线' : (h.connecting ? '连接中' : '离线');
   document.getElementById('h-state').textContent = stateText;
   document.getElementById('h-state').style.color = h.connected ? 'var(--green)' : (h.connecting ? 'var(--orange)' : 'var(--red)');
@@ -5530,6 +5934,117 @@ function renderServerMapVendingIcon(outOfStock = false) {
   `;
 }
 
+function ensureServerMapDomLayers(mapLayer) {
+  if (!mapLayer) return null;
+  let root = state.serverMapDom;
+  const alreadyBound = root && root.root === mapLayer;
+  if (!alreadyBound) {
+    mapLayer.replaceChildren();
+    const teamLayer = document.createElement('div');
+    const vendingLayer = document.createElement('div');
+    const debugLayer = document.createElement('div');
+    teamLayer.dataset.mapLayer = 'team';
+    vendingLayer.dataset.mapLayer = 'vending';
+    debugLayer.dataset.mapLayer = 'debug';
+    mapLayer.append(teamLayer, vendingLayer, debugLayer);
+    root = {
+      root: mapLayer,
+      teamLayer,
+      vendingLayer,
+      debugLayer,
+      teamNodes: new Map(),
+      vendingNodes: new Map(),
+    };
+    state.serverMapDom = root;
+    state.serverMapDebugHtml = '';
+  }
+  return root;
+}
+
+function clearServerMapDomLayers(mapLayer) {
+  const dom = ensureServerMapDomLayers(mapLayer);
+  if (!dom) return;
+  dom.teamNodes.clear();
+  dom.vendingNodes.clear();
+  dom.teamLayer.replaceChildren();
+  dom.vendingLayer.replaceChildren();
+  dom.debugLayer.replaceChildren();
+  state.serverMapDebugHtml = '';
+}
+
+function ensureTeamPointNode(cache, key) {
+  let node = cache.get(key);
+  if (node) return node;
+  node = document.createElement('div');
+  node.className = 'server-map-point';
+  const dot = document.createElement('div');
+  const label = document.createElement('div');
+  node.append(dot, label);
+  node._dotEl = dot;
+  node._labelEl = label;
+  cache.set(key, node);
+  return node;
+}
+
+function updateTeamPointNode(node, {
+  clusterId = '',
+  multi = false,
+  stateClass = '',
+  label = '',
+  detail = '',
+  pos = null,
+} = {}) {
+  if (!node || !pos) return;
+  if (multi) node.dataset.teamClusterId = clusterId;
+  else delete node.dataset.teamClusterId;
+  const nextKey = `${multi ? '1' : '0'}|${stateClass}|${label}|${detail}|${Math.round(pos.x)}|${Math.round(pos.y)}`;
+  if (node._renderKey !== nextKey) {
+    node.title = detail;
+    node.className = 'server-map-point';
+    node.style.left = `${pos.x}px`;
+    node.style.top = `${pos.y}px`;
+    node._dotEl.className = `server-map-dot team ${stateClass}`;
+    node._labelEl.className = `server-map-label player ${multi ? 'cluster' : ''}`;
+    node._labelEl.textContent = label;
+    node._renderKey = nextKey;
+  } else {
+    node.style.left = `${pos.x}px`;
+    node.style.top = `${pos.y}px`;
+  }
+}
+
+function ensureVendingPointNode(cache, key) {
+  let node = cache.get(key);
+  if (node) return node;
+  node = document.createElement('div');
+  node.className = 'server-map-point server-map-point-vending';
+  cache.set(key, node);
+  return node;
+}
+
+function updateVendingPointNode(node, {
+  selected = false,
+  vendingId = '',
+  clusterId = '',
+  title = '',
+  pos = null,
+  html = '',
+} = {}) {
+  if (!node || !pos) return;
+  node.className = `server-map-point server-map-point-vending ${selected ? 'selected' : ''}`.trim();
+  if (vendingId) node.dataset.vendingId = vendingId;
+  else delete node.dataset.vendingId;
+  if (clusterId) node.dataset.vendingClusterId = clusterId;
+  else delete node.dataset.vendingClusterId;
+  node.title = title;
+  node.style.left = `${pos.x}px`;
+  node.style.top = `${pos.y}px`;
+  if (node._htmlKey !== html) {
+    node.innerHTML = html;
+    node._htmlKey = html;
+  }
+}
+
 function formatMonumentFallbackLabel(tokenRaw) {
   const normalized = normalizeMonumentToken(tokenRaw);
   if (!normalized) return '';
@@ -5651,6 +6166,8 @@ function renderServerMapLayer(teamMembers = state.serverMapView.teamMembers, ven
   const updatedChip = document.getElementById('map-chip-updated');
   const wrap = document.getElementById('server-map-wrap');
   if (!subtitle || !mapImage || !mapLayer || !emptyEl) return;
+  const dom = ensureServerMapDomLayers(mapLayer);
+  if (!dom) return;
 
   state.serverMapView = {
     teamMembers: Array.isArray(teamMembers) ? teamMembers : [],
@@ -5675,7 +6192,7 @@ function renderServerMapLayer(teamMembers = state.serverMapView.teamMembers, ven
 
   if (!state.connected) {
     state.serverMapLayout = { renderedRect: null, imageRect: null, mapContext: null };
-    mapLayer.innerHTML = '';
+    clearServerMapDomLayers(mapLayer);
     mapImage.style.display = 'none';
     if (overlayCanvas) overlayCanvas.style.display = 'none';
     emptyEl.style.display = 'flex';
@@ -5693,7 +6210,7 @@ function renderServerMapLayer(teamMembers = state.serverMapView.teamMembers, ven
   }
   if (!state.serverMapImageUrl) {
     state.serverMapLayout = { renderedRect: null, imageRect: null, mapContext: null };
-    mapLayer.innerHTML = '';
+    clearServerMapDomLayers(mapLayer);
     mapImage.style.display = 'none';
     if (overlayCanvas) overlayCanvas.style.display = 'none';
     emptyEl.style.display = 'flex';
@@ -5721,7 +6238,7 @@ function renderServerMapLayer(teamMembers = state.serverMapView.teamMembers, ven
   const imageRect = layout?.imageRect || null;
   if (!renderedRect || !Number.isFinite(mapContext?.coordinateSize) || mapContext.coordinateSize <= 0) {
     state.serverMapLayout = { renderedRect: null, imageRect: null, mapContext: null };
-    mapLayer.innerHTML = '';
+    clearServerMapDomLayers(mapLayer);
     state.vendingById = {};
     state.vendingClusterById = {};
     state.selectedVendingId = '';
@@ -5738,11 +6255,12 @@ function renderServerMapLayer(teamMembers = state.serverMapView.teamMembers, ven
   const wrapWidth = Number(wrap?.clientWidth || 0);
   const wrapHeight = Number(wrap?.clientHeight || 0);
   const camera = state.serverMapCamera;
-  const points = [];
   const clusterById = {};
   drawServerMapOverlayCanvas(mapContext, renderedRect, imageRect, monuments, camera, wrap);
 
   const teamClusters = clusterTeamMembers(state.serverMapView.teamMembers, mapContext, renderedRect);
+  const nextTeamKeys = new Set();
+  const teamFragment = document.createDocumentFragment();
   for (let idx = 0; idx < teamClusters.length; idx += 1) {
     const cluster = teamClusters[idx];
     const members = Array.isArray(cluster?.members) ? cluster.members : [];
@@ -5757,17 +6275,28 @@ function renderServerMapLayer(teamMembers = state.serverMapView.teamMembers, ven
       : `${members[0]?.isOnline ? '在线' : '离线'} · ${Number(members[0]?.x || 0).toFixed(0)},${Number(members[0]?.y || 0).toFixed(0)}`;
     const clusterId = `team_cluster_${idx}`;
     clusterById[clusterId] = { x: basePos.x, y: basePos.y, members };
-    points.push(`
-      <div class="server-map-point" ${multi ? `data-team-cluster-id="${clusterId}"` : ''} style="left:${pos.x}px;top:${pos.y}px;" title="${esc(detail)}">
-        <div class="server-map-dot team ${stateClass}"></div>
-        <div class="server-map-label player ${multi ? 'cluster' : ''}">${esc(label)}</div>
-      </div>
-    `);
+    nextTeamKeys.add(clusterId);
+    const node = ensureTeamPointNode(dom.teamNodes, clusterId);
+    updateTeamPointNode(node, {
+      clusterId,
+      multi,
+      stateClass,
+      label,
+      detail,
+      pos,
+    });
+    teamFragment.appendChild(node);
+  }
+  dom.teamLayer.replaceChildren(teamFragment);
+  for (const key of [...dom.teamNodes.keys()]) {
+    if (!nextTeamKeys.has(key)) dom.teamNodes.delete(key);
   }
 
   const vendingById = {};
   const vendingClusters = clusterVendingMarkers(visibleVending, mapContext, renderedRect);
   const vendingClusterById = {};
+  const nextVendingKeys = new Set();
+  const vendingFragment = document.createDocumentFragment();
   for (let idx = 0; idx < vendingClusters.length; idx += 1) {
     const cluster = vendingClusters[idx];
     const markers = Array.isArray(cluster?.markers) ? cluster.markers : [];
@@ -5791,20 +6320,36 @@ function renderServerMapLayer(teamMembers = state.serverMapView.teamMembers, ven
       const marker = markers[0];
       const name = String(marker?.name || marker?.vendingMachineName || '售货机');
       const detail = `${marker?.outOfStock ? '售空' : '在售'} · ${Number(marker?.x || 0).toFixed(0)},${Number(marker?.y || 0).toFixed(0)}`;
-      points.push(`
-        <div class="server-map-point server-map-point-vending ${isSelected ? 'selected' : ''}" data-vending-id="${esc(anchorId)}" style="left:${pos.x}px;top:${pos.y}px;" title="${esc(name)} ${esc(detail)}">
-          ${renderServerMapVendingIcon(!!marker?.outOfStock)}
-        </div>
-      `);
+      const nodeKey = `v:${anchorId}`;
+      nextVendingKeys.add(nodeKey);
+      const node = ensureVendingPointNode(dom.vendingNodes, nodeKey);
+      updateVendingPointNode(node, {
+        selected: isSelected,
+        vendingId: anchorId,
+        title: `${name} ${detail}`,
+        pos,
+        html: renderServerMapVendingIcon(!!marker?.outOfStock),
+      });
+      vendingFragment.appendChild(node);
       continue;
     }
     const clusterId = `vending_cluster_${idx}`;
     vendingClusterById[clusterId] = { ids, anchorId, x: basePos.x, y: basePos.y };
-    points.push(`
-      <div class="server-map-point server-map-point-vending ${isSelected ? 'selected' : ''}" data-vending-cluster-id="${esc(clusterId)}" style="left:${pos.x}px;top:${pos.y}px;" title="${esc(`重叠售货机 x${ids.length}`)}">
-        <div class="server-map-vending-cluster ${anyOutOfStock ? 'oos' : ''}">${ids.length}</div>
-      </div>
-    `);
+    const nodeKey = `c:${clusterId}`;
+    nextVendingKeys.add(nodeKey);
+    const node = ensureVendingPointNode(dom.vendingNodes, nodeKey);
+    updateVendingPointNode(node, {
+      selected: isSelected,
+      clusterId,
+      title: `重叠售货机 x${ids.length}`,
+      pos,
+      html: `<div class="server-map-vending-cluster ${anyOutOfStock ? 'oos' : ''}">${ids.length}</div>`,
+    });
+    vendingFragment.appendChild(node);
+  }
+  dom.vendingLayer.replaceChildren(vendingFragment);
+  for (const key of [...dom.vendingNodes.keys()]) {
+    if (!nextVendingKeys.has(key)) dom.vendingNodes.delete(key);
   }
 
   state.vendingById = vendingById;
@@ -5819,7 +6364,11 @@ function renderServerMapLayer(teamMembers = state.serverMapView.teamMembers, ven
   }
   renderTeamClusterPopover();
   renderVendingModal();
-  mapLayer.innerHTML = points.join('') + renderMapDebugOverlay(renderedRect, mapContext);
+  const debugHtml = renderMapDebugOverlay(renderedRect, mapContext);
+  if (state.serverMapDebugHtml !== debugHtml) {
+    dom.debugLayer.innerHTML = debugHtml;
+    state.serverMapDebugHtml = debugHtml;
+  }
   renderServerMapImageCanvas();
   renderServerMapCenterReticle();
 }
@@ -6084,16 +6633,81 @@ function extractTeamMessagePayload(msg = {}) {
   };
 }
 
-function pushTeamMessage(msg = {}) {
+function normalizeTeamChatHistory(history) {
+  if (Array.isArray(history)) return history;
+  if (Array.isArray(history?.messages)) return history.messages;
+  if (Array.isArray(history?.teamChat?.messages)) return history.teamChat.messages;
+  if (Array.isArray(history?.teamMessages)) return history.teamMessages;
+  if (Array.isArray(history?.history)) return history.history;
+  if (Array.isArray(history?.result?.messages)) return history.result.messages;
+  if (Array.isArray(history?.result?.teamChat?.messages)) return history.result.teamChat.messages;
+  return [];
+}
+
+function teamChatTimestampMs(raw) {
+  if (raw == null || raw === '') return Date.now();
+  if (typeof raw === 'number' && Number.isFinite(raw)) {
+    return raw > 1e12 ? raw : raw * 1000;
+  }
+  const text = String(raw).trim();
+  if (!text) return Date.now();
+  if (/^\d+$/.test(text)) {
+    const n = Number(text);
+    if (Number.isFinite(n)) return n > 1e12 ? n : n * 1000;
+  }
+  const parsed = Date.parse(text);
+  return Number.isFinite(parsed) ? parsed : Date.now();
+}
+
+function isDuplicateTeamMessage(record, windowMs = 8000) {
+  const recordTs = teamChatTimestampMs(record?.ts);
+  return state.teamMessages.some((item, index) => {
+    if (index > 4) return false;
+    if (String(item?.message || '') !== String(record?.message || '')) return false;
+    if (String(item?.name || '') !== String(record?.name || '')) return false;
+    const delta = Math.abs(teamChatTimestampMs(item?.ts) - recordTs);
+    return delta <= windowMs;
+  });
+}
+
+function pushTeamMessage(msg = {}, options = {}) {
   const payload = extractTeamMessagePayload(msg);
-  state.teamMessages.unshift({
-    ts: new Date().toLocaleTimeString('zh-CN'),
+  const record = {
+    ts: msg?.ts || msg?.time || msg?.timestamp || new Date().toLocaleTimeString('zh-CN'),
     name: payload.name || 'Unknown',
     message: payload.message || '',
-  });
+  };
+  if (!record.message) return payload;
+  const dedupeWindowMs = Number(options?.dedupeWindowMs || 8000);
+  if (isDuplicateTeamMessage(record, dedupeWindowMs)) return payload;
+  state.teamMessages.unshift(record);
   if (state.teamMessages.length > 200) state.teamMessages.pop();
   renderTeamChat();
   return payload;
+}
+
+async function loadTeamChatHistory() {
+  if (!state.connected || typeof rustAPI?.getTeamChat !== 'function') {
+    renderTeamChat();
+    return;
+  }
+  try {
+    const history = await rustAPI.getTeamChat();
+    const records = normalizeTeamChatHistory(history)
+      .map((item) => {
+        const payload = extractTeamMessagePayload(item);
+        return {
+          ts: item?.ts || item?.time || item?.timestamp || item?.sentAt || '',
+          name: payload.name || 'Unknown',
+          message: payload.message || '',
+        };
+      })
+      .filter((item) => item.message);
+    state.teamMessages = records.reverse();
+    renderTeamChat();
+  } catch (e) {
+    addLog('warn', '获取队伍聊天历史失败: ' + (e?.message || '未知错误'));
+  }
 }
 
 function renderTeamChat() {
@@ -6105,12 +6719,20 @@ function renderTeamChat() {
   }
   el.innerHTML = state.teamMessages.map(m => `
     <div class="list-row" style="align-items:flex-start">
-      <div style="width:72px;font-size:11px;color:var(--text3);padding-top:2px">${m.ts}</div>
+      <div style="width:72px;font-size:11px;color:var(--text3);padding-top:2px">${esc(formatTeamChatTimestamp(m.ts))}</div>
       <div style="flex:1">
         <div style="font-size:12px;color:var(--blue);font-weight:600">${esc(m.name)}</div>
         <div style="font-size:13px;color:var(--text);line-height:1.6;white-space:pre-wrap;word-break:break-word">${esc(m.message)}</div>
       </div>
     </div>`).join('');
+}
+
+function formatTeamChatTimestamp(raw) {
+  const text = String(raw || '').trim();
+  if (!text) return new Date().toLocaleTimeString('zh-CN');
+  const parsed = new Date(text);
+  if (!Number.isNaN(parsed.getTime())) return parsed.toLocaleTimeString('zh-CN');
+  return text;
 }
 
 function clearTeamChat() {
@@ -6152,6 +6774,11 @@ async function sendTeamChatMessage() {
   try {
     const res = await rustAPI.sendChat(message);
     if (res?.error) throw new Error(res.error);
+    pushTeamMessage({
+      name: 'Me',
+      message,
+      ts: new Date().toISOString(),
+    });
     input.value = '';
     toast('success', '消息已发送');
   } catch (e) {
@@ -6208,6 +6835,9 @@ async function startPairing(options = {}) {
     const res = await rustAPI.startPairing(pairingOptions);
     if (res.success) {
       if (res.server?.name) {
+        state.currentServer = res.server;
+        document.getElementById('server-name-title').textContent = res.server.name || '';
+        await syncRuntimeAfterConnection(res.server).catch(() => false);
         toast('success', `✓ 配对成功：${res.server.name}`);
         status.textContent = '✓ 配对成功！';
         loadServers();
@@ -6297,6 +6927,7 @@ async function connectServer(id) {
   if (res.success) {
     state.currentServer = srv;
     document.getElementById('server-name-title').textContent = state.currentServer.name || '';
+    await syncRuntimeAfterConnection(srv).catch(() => false);
     toast('success', `✓ 已连接到 ${srv.name}`);
     loadDevices();
   } else {
@@ -6511,12 +7142,7 @@ function buildRuleTriggerSummary(rule) {
     return labels.length ? labels.join('/') : '全部关闭';
   }
   if (rule?.event === 'vending_new') {
-    const names = Array.isArray(rule?.trigger?.vendingWatchItemNames)
-      ? rule.trigger.vendingWatchItemNames.map((n) => String(n || '').trim()).filter(Boolean)
-      : [];
-    if (!names.length) return '重点物品上架';
-    const preview = names.slice(0, 3).join('/');
-    return names.length > 3 ? `${preview} 等${names.length}项` : preview;
+    return '新机出现/商品上新均提醒';
   }
   if (rule?.event === 'deep_sea_status') {
     const trigger = rule?.trigger || {};
@@ -7418,6 +8044,7 @@ rustAPI.on('server:status', ({ connected, name, serverId, server }) => {
     state.vendingById = {};
   }
   updateConnectionUI(connected, name);
+  if (connected) loadTeamChatHistory().catch(() => null);
   addLog(connected ? 'success' : 'warn', `服务器${connected ? '已连接' : '已断开'}: ${name || ''}`);
   if (!connected) toast('warning', `与服务器断开连接，正在重连...`);
 });
@@ -7460,6 +8087,11 @@ rustAPI.on('team:sync-status', (status) => {
 
 rustAPI.on('pairing:success', (server) => {
   toast('success', `配对成功：${server.name}`);
+  if (server?.id) {
+    state.currentServer = server;
+    document.getElementById('server-name-title').textContent = server.name || '';
+    syncRuntimeAfterConnection(server).catch(() => false);
+  }
   loadServers();
   addLog('success', `配对成功: ${server.name}`);
 });

@@ -71,7 +71,7 @@ function nowIso() {
 }
 
 function normalizeEmail(raw) {
-  return String(raw || '').trim().toLowerCase();
+  return String(raw || '').trim().toLowerCase().slice(0, 254);
 }
 
 function isValidEmail(raw) {
@@ -113,6 +113,7 @@ function shuffle(items) {
 function validateStrongPassword(password) {
   const value = String(password || '');
   const errors = [];
+  if (value.length > 256) errors.push('密码长度不能超过 256 位');
   if (value.length < 12) errors.push('密码长度至少 12 位');
   if (!/[a-z]/.test(value)) errors.push('至少包含 1 个小写字母');
   if (!/[A-Z]/.test(value)) errors.push('至少包含 1 个大写字母');
@@ -123,6 +124,17 @@ function validateStrongPassword(password) {
     ok: errors.length === 0,
     errors,
   };
+}
+
+function normalizeNickname(raw) {
+  return String(raw || '').replace(/\s+/g, ' ').trim();
+}
+
+function validateNickname(raw) {
+  const value = normalizeNickname(raw);
+  if (value.length < 2 || value.length > 24) throw new Error('昵称长度需在 2-24 个字符之间');
+  if (/[\u0000-\u001f\u007f]/.test(value)) throw new Error('昵称包含非法控制字符');
+  return value;
 }
 
 async function hashPassword(password, salt = crypto.randomBytes(16).toString('hex')) {
@@ -162,6 +174,46 @@ function sanitizeAvatarDataUrl(raw) {
   }
   if (value.length > 1_000_000) throw new Error('头像图片过大');
   return value;
+}
+
+function normalizeConfigField(raw, maxLength = 255) {
+  return String(raw || '').trim().slice(0, maxLength);
+}
+
+function validateEmailProviderConfigPayload(payload = {}, current = {}) {
+  const enabled = payload.enabled === true;
+  const host = normalizeConfigField(payload.host, 255);
+  const port = Number(payload.port || 465);
+  const secure = payload.secure !== false;
+  const username = normalizeConfigField(payload.username, 254);
+  const incomingPassword = normalizeConfigField(payload.password, 512);
+  const password = incomingPassword || normalizeConfigField(current.password, 512);
+  const fromEmail = normalizeEmail(payload.fromEmail || '');
+  const fromName = normalizeConfigField(payload.fromName || 'Rust 工具箱', 80) || 'Rust 工具箱';
+
+  if (!Number.isInteger(port) || port < 1 || port > 65535) {
+    throw new Error('邮箱服务端口不合法');
+  }
+  if (host && /\s/.test(host)) throw new Error('邮箱服务地址格式不合法');
+  if (enabled) {
+    if (!host) throw new Error('请填写邮箱服务地址');
+    if (!username) throw new Error('请填写邮箱账号');
+    if (!password) throw new Error('请填写邮箱密码');
+    if (!isValidEmail(fromEmail)) throw new Error('发件邮箱格式不正确');
+  } else if (fromEmail && !isValidEmail(fromEmail)) {
+    throw new Error('发件邮箱格式不正确');
+  }
+
+  return {
+    enabled,
+    host,
+    port,
+    secure,
+    username,
+    password,
+    fromEmail,
+    fromName,
+  };
 }
 
 function publicUser(user = {}, { includeAdminFields = false } = {}) {
@@ -329,8 +381,7 @@ async function buildNewUserRecord({ email, password, nickname }) {
   if (findUserByEmail(normalizedEmail)) throw new Error('该邮箱已注册');
   const pwd = validateStrongPassword(password);
   if (!pwd.ok) throw new Error(`密码强度不足：${pwd.errors.join('，')}`);
-  const displayName = String(nickname || '').trim();
-  if (displayName.length < 2 || displayName.length > 24) throw new Error('昵称长度需在 2-24 个字符之间');
+  const displayName = validateNickname(nickname);
 
   const createdAt = nowIso();
   return {
@@ -355,11 +406,14 @@ async function buildNewUserRecord({ email, password, nickname }) {
 async function authenticateUser({ identifier, password, requireRoot = false }) {
   return db.withLock(async () => {
     await db.read();
-    const user = findUserByIdentifier(identifier);
+    const lookup = String(identifier || '').trim().slice(0, 254);
+    const secret = String(password || '');
+    if (!lookup || !secret || secret.length > 256) throw new Error('账号或密码错误');
+    const user = findUserByIdentifier(lookup);
     if (!user) throw new Error('账号或密码错误');
-    if (requireRoot && String(user.role || '') !== 'root') throw new Error('仅 root 可登录管理后台');
+    if (requireRoot && String(user.role || '') !== 'root') throw new Error('账号或密码错误');
     if (user.disabled === true) throw new Error('账号已被禁用');
-    const ok = await verifyPassword(password, user.passwordHash);
+    const ok = await verifyPassword(secret, user.passwordHash);
     if (!ok) throw new Error('账号或密码错误');
     user.lastLoginAt = nowIso();
     user.lastSeenAt = user.lastLoginAt;
@@ -438,8 +492,7 @@ async function updateOwnProfile(userId, { nickname, avatarDataUrl }) {
     await db.read();
     const user = findUserById(userId);
     if (!user) throw new Error('用户不存在');
-    const nextNickname = String(nickname || '').trim();
-    if (nextNickname.length < 2 || nextNickname.length > 24) throw new Error('昵称长度需在 2-24 个字符之间');
+    const nextNickname = validateNickname(nickname);
     user.nickname = nextNickname;
     user.avatarDataUrl = sanitizeAvatarDataUrl(avatarDataUrl);
     user.updatedAt = nowIso();
@@ -453,7 +506,9 @@ async function changeOwnPassword(userId, { currentPassword, nextPassword }) {
     await db.read();
     const user = findUserById(userId);
     if (!user) throw new Error('用户不存在');
-    const ok = await verifyPassword(currentPassword, user.passwordHash);
+    const currentSecret = String(currentPassword || '');
+    if (!currentSecret || currentSecret.length > 256) throw new Error('当前密码错误');
+    const ok = await verifyPassword(currentSecret, user.passwordHash);
     if (!ok) throw new Error('当前密码错误');
     const pwd = validateStrongPassword(nextPassword);
     if (!pwd.ok) throw new Error(`密码强度不足：${pwd.errors.join('，')}`);
@@ -524,8 +579,7 @@ async function adminUpdateUser(userId, updates = {}) {
       user.email = nextEmail;
     }
     if (updates.nickname != null) {
-      const nextNickname = String(updates.nickname || '').trim();
-      if (nextNickname.length < 2 || nextNickname.length > 24) throw new Error('昵称长度需在 2-24 个字符之间');
+      const nextNickname = validateNickname(updates.nickname);
       user.nickname = nextNickname;
     }
     if (updates.avatarDataUrl != null) {
@@ -589,14 +643,7 @@ async function updateEmailProviderConfig(payload = {}) {
     await db.read();
     db.data.emailProvider = {
       ...db.data.emailProvider,
-      enabled: payload.enabled === true,
-      host: String(payload.host || '').trim(),
-      port: Number(payload.port || 465) || 465,
-      secure: payload.secure !== false,
-      username: String(payload.username || '').trim(),
-      password: String(payload.password || '').trim() || String(db.data.emailProvider?.password || '').trim(),
-      fromEmail: normalizeEmail(payload.fromEmail || ''),
-      fromName: String(payload.fromName || 'Rust 工具箱').trim() || 'Rust 工具箱',
+      ...validateEmailProviderConfigPayload(payload, db.data.emailProvider || {}),
     };
     await saveDb();
     return getEmailProviderConfig();
