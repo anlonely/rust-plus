@@ -22,7 +22,48 @@ function buildVendingOrderKey(order = {}) {
   return [
     String(order?.itemId ?? ''),
     order?.itemIsBlueprint === true ? '1' : '0',
+    String(Math.max(1, Number(order?.quantity) || 1)),
+    String(order?.currencyId ?? ''),
+    order?.currencyIsBlueprint === true ? '1' : '0',
+    String(Math.max(0, Number(order?.costPerItem) || 0)),
   ].join('|');
+}
+
+function formatVendingOfferLabel(order = {}) {
+  const soldId = Number(order?.itemId);
+  const currencyId = Number(order?.currencyId);
+  if (!Number.isFinite(soldId)) return '';
+  const quantity = Math.max(1, Number(order?.quantity) || 1);
+  const price = Math.max(0, Number(order?.costPerItem) || 0);
+  const soldLabel = `${getVendingItemLabel(soldId, { isBlueprint: order?.itemIsBlueprint === true })}x${quantity}`;
+  if (!Number.isFinite(currencyId)) {
+    return `[${soldLabel}]`;
+  }
+  const currencyLabel = getVendingItemLabel(currencyId, { isBlueprint: order?.currencyIsBlueprint === true });
+  return `[${soldLabel}] - [${currencyLabel}]*${price}`;
+}
+
+function countChars(text) {
+  return Array.from(String(text || '')).length;
+}
+
+function packVendingOfferLines(items = [], { maxChars = 96, separator = ' ｜' } = {}) {
+  const limit = Math.max(16, Number(maxChars) || 96);
+  const lines = [];
+  let current = '';
+  for (const raw of Array.isArray(items) ? items : []) {
+    const item = String(raw || '').trim();
+    if (!item) continue;
+    const candidate = current ? `${current}${separator}${item}` : item;
+    if (current && countChars(candidate) > limit) {
+      lines.push(current);
+      current = item;
+      continue;
+    }
+    current = candidate;
+  }
+  if (current) lines.push(current);
+  return lines;
 }
 
 function pickVendingWatchMatches(sellOrders = [], marker = {}) {
@@ -38,8 +79,7 @@ function pickVendingWatchMatches(sellOrders = [], marker = {}) {
     const key = buildVendingOrderKey(order);
     if (seen.has(key)) continue;
     seen.add(key);
-    const quantity = Math.max(1, Number(order?.quantity) || 1);
-    const label = `${getVendingItemLabel(soldId, { isBlueprint: order?.itemIsBlueprint === true })}x${quantity}`;
+    const label = formatVendingOfferLabel(order);
     ids.push(String(soldId));
     keys.push(key);
     names.push(label);
@@ -49,7 +89,9 @@ function pickVendingWatchMatches(sellOrders = [], marker = {}) {
 
 module.exports = {
   buildVendingOrderKey,
+  formatVendingOfferLabel,
   getVendingItemLabel,
   isVendingOrderInStock,
+  packVendingOfferLines,
   pickVendingWatchMatches,
 };

@@ -8,6 +8,8 @@
   },
   "main": "electron/main.js",
   "scripts": {
+    "postinstall": "node scripts/patch-rustplus-proto.js",
+    "patch:rustplus-proto": "node scripts/patch-rustplus-proto.js",
     "start": "node src/index.js",
     "start:web": "node web/server.js",
     "start:gui": "electron .",

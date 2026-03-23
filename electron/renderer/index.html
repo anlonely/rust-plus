@@ -1944,6 +1944,8 @@ input, textarea, select { font-family:inherit; }
         <option value="server_info">查看服务器信息</option>
         <option value="translate">指令翻译</option>
         <option value="deep_sea_status">深海状态测试</option>
+        <option value="countdown_start">倒计时设置</option>
+        <option value="countdown_query">倒计时查询</option>
         <option value="switch">防空</option>
         <option value="call_group">呼叫组联动</option>
         <option value="change_leader">更改队长</option>
@@ -2207,6 +2209,8 @@ const CMD_LABELS = {
   server_info:   { label:'查看服务器信息',     color:'blue' },
   translate:     { label:'指令翻译',           color:'green' },
   deep_sea_status:{ label:'深海状态测试',      color:'blue' },
+  countdown_start:{ label:'倒计时设置',        color:'orange' },
+  countdown_query:{ label:'倒计时查询',        color:'orange' },
   switch:        { label:'防空',               color:'orange' },
   call_group:    { label:'呼叫组联动',         color:'red' },
   change_leader: { label:'更改队长',           color:'red' },
@@ -2220,6 +2224,8 @@ const CMD_TYPE_BY_KEYWORD = {
   fwq: 'server_info',
   fy: 'translate',
   sh: 'deep_sea_status',
+  djs: 'countdown_start',
+  djk: 'countdown_query',
   fk: 'switch',
   hj: 'call_group',
   dz: 'change_leader',
@@ -2233,6 +2239,8 @@ const DEFAULT_KEYWORD_BY_TYPE = {
   server_info: 'fwq',
   translate: 'fy',
   deep_sea_status: 'sh',
+  countdown_start: 'djs',
+  countdown_query: 'djk',
   switch: 'fk',
   call_group: 'hj',
   change_leader: 'dz',
@@ -3343,6 +3351,12 @@ function updateTeamSyncStatus(status = {}) {
     val.textContent = '仅轮询';
     val.style.color = 'var(--orange)';
     sub.textContent = '广播缺失，使用轮询兜底';
+    return;
+  }
+  if (mode === 'compatibility') {
+    val.textContent = '兼容受限';
+    val.style.color = 'var(--orange)';
+    sub.textContent = '当前服务器返回了非标准 Rust+ 消息，队伍同步能力受限';
     return;
   }
   if (mode === 'stale') {

@@ -202,6 +202,8 @@ const COMMAND_TYPE_BY_KEYWORD = {
   fk: 'switch',
   hc: 'query_cargo',
   wz: 'query_heli',
+  djs: 'countdown_start',
+  djk: 'countdown_query',
   jk: 'cctv_codes',
   help: null,
 };
@@ -216,6 +218,8 @@ const COMMAND_RULESET_CORE_DEFAULT = [
   'fk',
   'hc',
   'wz',
+  'djs',
+  'djk',
   'jk',
   'help',
 ].map((keyword) => ({
@@ -238,6 +242,8 @@ const COMMAND_RULESET_SAFE_MINIMAL = [
   { id: 'fk', keyword: 'fk', type: 'switch', name: '防空', permission: 'all', ...commandDefaults({ action: 'toggle' }), enabled: false },
   { id: 'hc', keyword: 'hc', type: 'query_cargo', ...commandDefaults(), enabled: true },
   { id: 'wz', keyword: 'wz', type: 'query_heli', ...commandDefaults(), enabled: true },
+  { id: 'djs', keyword: 'djs', type: 'countdown_start', ...commandDefaults({}, { cooldownMs: 0 }), enabled: true },
+  { id: 'djk', keyword: 'djk', type: 'countdown_query', ...commandDefaults({}, { cooldownMs: 0 }), enabled: true },
   { id: 'jk', keyword: 'jk', type: 'cctv_codes', ...commandDefaults(), enabled: true },
   { id: 'help', keyword: 'help', type: null, ...commandDefaults(), enabled: true },
 ];

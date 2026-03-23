@@ -63,6 +63,11 @@ const { applyPersistedCommandRules } = require('./runtime-sync');
 const { createTeamChatDispatcher } = require('../src/utils/team-chat-dispatcher');
 const { createRustplusConfigStore } = require('../src/storage/rustplus-config');
 const {
+  normalizeErrorText,
+  isRustProtocolCompatibilityError,
+  getRustProtocolCompatibilityMessage,
+} = require('../src/connection/protocol-compat');
+const {
   normalizeEventRuleInput,
   normalizeCommandRuleInput,
   normalizeCallGroupInput,
@@ -251,7 +256,13 @@ function createWebUserContext(user = {}) {
     cmdParser: null,
     serverInfoTimer: null,
     fcmStopFn: null,
+    teamChatPollTimer: null,
     pairingNoNotificationTimer: null,
+    compatibilityWarningShown: false,
+    teamCompatibilityCooldownUntil: 0,
+    mapCompatibilityCooldownUntil: 0,
+    teamChatSeenKeys: new Set(),
+    teamChatSeenOrder: [],
     sockets: new Set(),
     dispatchTeamChat: null,
   };
@@ -333,6 +344,42 @@ const runtimeState = {
   set pairingNoNotificationTimer(value) {
     currentContext().pairingNoNotificationTimer = value;
   },
+  get teamChatPollTimer() {
+    return currentContext().teamChatPollTimer;
+  },
+  set teamChatPollTimer(value) {
+    currentContext().teamChatPollTimer = value;
+  },
+  get compatibilityWarningShown() {
+    return currentContext().compatibilityWarningShown;
+  },
+  set compatibilityWarningShown(value) {
+    currentContext().compatibilityWarningShown = !!value;
+  },
+  get teamCompatibilityCooldownUntil() {
+    return Number(currentContext().teamCompatibilityCooldownUntil || 0);
+  },
+  set teamCompatibilityCooldownUntil(value) {
+    currentContext().teamCompatibilityCooldownUntil = Number(value || 0);
+  },
+  get mapCompatibilityCooldownUntil() {
+    return Number(currentContext().mapCompatibilityCooldownUntil || 0);
+  },
+  set mapCompatibilityCooldownUntil(value) {
+    currentContext().mapCompatibilityCooldownUntil = Number(value || 0);
+  },
+  get teamChatSeenKeys() {
+    return currentContext().teamChatSeenKeys;
+  },
+  set teamChatSeenKeys(value) {
+    currentContext().teamChatSeenKeys = value instanceof Set ? value : new Set();
+  },
+  get teamChatSeenOrder() {
+    return currentContext().teamChatSeenOrder;
+  },
+  set teamChatSeenOrder(value) {
+    currentContext().teamChatSeenOrder = Array.isArray(value) ? value : [];
+  },
 };
 
 function getConfigStore() {
@@ -353,9 +400,11 @@ function listEventRules(...args) { return getConfigStore().listEventRules(...arg
 function saveEventRule(...args) { return getConfigStore().saveEventRule(...args); }
 function removeEventRule(...args) { return getConfigStore().removeEventRule(...args); }
 function setEventRuleEnabled(...args) { return getConfigStore().setEventRuleEnabled(...args); }
+function replaceEventRules(...args) { return getConfigStore().replaceEventRules(...args); }
 function listCommandRules(...args) { return getConfigStore().listCommandRules(...args); }
 function saveCommandRule(...args) { return getConfigStore().saveCommandRule(...args); }
 function removeCommandRule(...args) { return getConfigStore().removeCommandRule(...args); }
+function replaceCommandRules(...args) { return getConfigStore().replaceCommandRules(...args); }
 function listCallGroupsDb(...args) { return getConfigStore().listCallGroupsDb(...args); }
 function saveCallGroupDb(...args) { return getConfigStore().saveCallGroupDb(...args); }
 function removeCallGroupDb(...args) { return getConfigStore().removeCallGroupDb(...args); }
@@ -823,6 +872,97 @@ function extractTeamMessagePayload(msg = {}) {
   };
 }
 
+function normalizeTeamChatMessage(msg = {}) {
+  if (typeof msg === 'string') {
+    return { steamId: '', time: 0, name: '', message: String(msg) };
+  }
+  const root = (msg && typeof msg === 'object') ? msg : {};
+  const inner = (root.message && typeof root.message === 'object') ? root.message : null;
+  const source = inner || root;
+  const text = inner
+    ? source?.message ?? source?.text ?? source?.content ?? ''
+    : root?.message ?? root?.text ?? root?.content ?? '';
+  const rawTime = Number(source?.time ?? source?.timestamp ?? root?.time ?? root?.timestamp ?? 0);
+  return {
+    steamId: String(source?.steamId ?? source?.steamID ?? root?.steamId ?? root?.steamID ?? ''),
+    time: Number.isFinite(rawTime) ? rawTime : 0,
+    name: String(source?.name ?? source?.displayName ?? root?.name ?? root?.displayName ?? ''),
+    message: String(text ?? ''),
+  };
+}
+
+function buildTeamChatSeenKey(msg = {}) {
+  const normalized = normalizeTeamChatMessage(msg);
+  if (!normalized.message) return '';
+  if (!normalized.time || !Number.isFinite(normalized.time)) return '';
+  return `${normalized.steamId}|${normalized.time}|${normalized.name}|${normalized.message}`;
+}
+
+function rememberTeamChatKey(key) {
+  if (!key || runtimeState.teamChatSeenKeys.has(key)) return false;
+  runtimeState.teamChatSeenKeys.add(key);
+  runtimeState.teamChatSeenOrder.push(key);
+  if (runtimeState.teamChatSeenOrder.length > 500) {
+    const old = runtimeState.teamChatSeenOrder.shift();
+    if (old) runtimeState.teamChatSeenKeys.delete(old);
+  }
+  return true;
+}
+
+async function ingestTeamChatMessage(msg) {
+  pushTeamMessage(msg);
+  if (runtimeState.cmdParser?.ingestTeamMessage) {
+    try {
+      await runtimeState.cmdParser.ingestTeamMessage(msg);
+    } catch (err) {
+      logger.debug('[WebConnect] 轮询队聊注入指令解析失败: ' + err.message);
+    }
+  }
+}
+
+async function bootstrapTeamChatCache() {
+  if (!runtimeState.rustClient?.connected) return;
+  try {
+    const chat = await runtimeState.rustClient.getTeamChat();
+    const list = chat?.teamChat?.messages || [];
+    for (const msg of list) {
+      const key = buildTeamChatSeenKey(msg);
+      if (key) rememberTeamChatKey(key);
+    }
+  } catch (_) {
+    // ignore
+  }
+}
+
+function stopTeamChatPolling() {
+  if (runtimeState.teamChatPollTimer) {
+    clearInterval(runtimeState.teamChatPollTimer);
+    runtimeState.teamChatPollTimer = null;
+  }
+}
+
+function startTeamChatPolling() {
+  stopTeamChatPolling();
+  runtimeState.teamChatPollTimer = setInterval(bindUserContext(currentContext(), async () => {
+    if (!runtimeState.rustClient?.connected) return;
+    try {
+      const chat = await runtimeState.rustClient.getTeamChat();
+      const list = chat?.teamChat?.messages || [];
+      sendWs('team:sync-status', {
+        mode: runtimeState.compatibilityWarningShown ? 'compatibility' : 'polling',
+        lastPollAt: Date.now(),
+      });
+      for (const msg of list) {
+        const key = buildTeamChatSeenKey(msg);
+        if (key && !rememberTeamChatKey(key)) continue;
+        await ingestTeamChatMessage(msg);
+      }
+    } catch (_) {
+      // ignore; do not spam logs on servers that limit getTeamChat
+    }
+  }), getGlobalTeamChatIntervalMs());
+}
+
 function pushTeamMessage(msg = {}) {
   const payload = extractTeamMessagePayload(msg);
   const record = {
@@ -846,22 +986,46 @@ async function refreshServerSnapshot() {
     sendWs('server:info', runtime.latestServerSnapshot);
   } catch (err) {
     runtime.lastError = String(err?.message || err || '刷新服务器状态失败');
-    sendWs('runtime:error', { message: runtime.lastError });
+    if (!isNonFatalRustProtocolError(runtime.lastError)) {
+      sendWs('runtime:error', { message: runtime.lastError });
+    }
   }
   return runtime.latestServerSnapshot;
 }
 
 async function refreshTeamMembers() {
   if (!runtimeState.rustClient?.connected) return [];
+  if (runtimeState.teamCompatibilityCooldownUntil > Date.now()) {
+    sendWs('team:members', runtime.teamMembers);
+    return runtime.teamMembers;
+  }
   try {
     const teamRes = await runtimeState.rustClient.getTeamInfo();
     runtime.teamMembers = extractTeamMembers(teamRes);
     sendWs('team:members', runtime.teamMembers);
   } catch (err) {
     runtime.lastError = String(err?.message || err || '刷新队伍失败');
-    sendWs('runtime:error', { message: runtime.lastError });
+    if (isNonFatalRustProtocolError(runtime.lastError)) {
+      markCompatibilityCooldown('team', runtime.lastError);
+      sendWs('team:members', runtime.teamMembers);
+      return runtime.teamMembers;
+    }
+    if (!isNonFatalRustProtocolError(runtime.lastError)) {
+      sendWs('runtime:error', { message: runtime.lastError });
+    }
   }
   return runtime.teamMembers;
+}
+
+function isNonFatalRustProtocolError(message = '') {
+  return isRustProtocolCompatibilityError(message);
+}
+
+function markCompatibilityCooldown(kind, reason = '') {
+  const until = Date.now() + 30_000;
+  if (kind === 'team') runtimeState.teamCompatibilityCooldownUntil = until;
+  if (kind === 'map') runtimeState.mapCompatibilityCooldownUntil = until;
+  if (reason) logger.warn(`[WebConnect] ${kind} 接口进入兼容降级窗口: ${reason}`);
 }
 
 function bindClientEvents(client, serverConfig) {
@@ -871,12 +1035,15 @@ function bindClientEvents(client, serverConfig) {
     runtime.currentServer = serverConfig;
     runtime.currentServerId = serverConfig.id;
     runtime.lastError = '';
+    runtimeState.teamCompatibilityCooldownUntil = 0;
+    runtimeState.mapCompatibilityCooldownUntil = 0;
     sendWs('server:status', {
       connected: true,
       currentServer: runtime.currentServer,
       currentServerId: runtime.currentServerId,
     });
-    await Promise.all([refreshServerSnapshot(), refreshTeamMembers()]);
+    await Promise.all([refreshServerSnapshot(), refreshTeamMembers(), bootstrapTeamChatCache()]);
+    startTeamChatPolling();
     clearInfoTimer();
     runtimeState.serverInfoTimer = setInterval(bindUserContext(ctx, () => {
       refreshServerSnapshot();
@@ -886,6 +1053,11 @@ function bindClientEvents(client, serverConfig) {
   client.on('disconnected', bindUserContext(ctx, () => {
     runtime.connected = false;
     runtime.teamMembers = [];
+    runtimeState.teamCompatibilityCooldownUntil = 0;
+    runtimeState.mapCompatibilityCooldownUntil = 0;
+    runtimeState.teamChatSeenKeys = new Set();
+    runtimeState.teamChatSeenOrder = [];
+    stopTeamChatPolling();
     clearInfoTimer();
     sendWs('server:status', {
       connected: false,
@@ -906,12 +1078,26 @@ function bindClientEvents(client, serverConfig) {
   }));
 
   client.on('teamMessage', bindUserContext(ctx, (data) => {
-    pushTeamMessage(data);
+    const key = buildTeamChatSeenKey(data);
+    if (key && !rememberTeamChatKey(key)) return;
+    ingestTeamChatMessage(data).catch(() => null);
   }));
 
   client.on('error', bindUserContext(ctx, (error) => {
-    runtime.lastError = String(error?.message || error || '连接异常');
+    runtime.lastError = normalizeErrorText(error) || '连接异常';
     const lower = runtime.lastError.toLowerCase();
+    if (isNonFatalRustProtocolError(runtime.lastError)) {
+      if (!runtimeState.compatibilityWarningShown) {
+        runtimeState.compatibilityWarningShown = true;
+        sendWs('notification', {
+          type: 'warning',
+          title: '服务器兼容性受限',
+          message: getRustProtocolCompatibilityMessage(),
+        });
+      }
+      logger.warn('[WebConnect] 已忽略非致命协议错误: ' + runtime.lastError);
+      return;
+    }
     let message = runtime.lastError;
     if (lower.includes('socket hang up')) {
       message = '连接被服务器主动断开，当前服务器 Rust+ 配对可能已失效，请在游戏内 ESC -> Rust+ -> Pair with Server 重新配对。';
@@ -931,12 +1117,15 @@ function bindClientEvents(client, serverConfig) {
 
 async function disconnectActiveClient() {
   clearInfoTimer();
+  stopTeamChatPolling();
   runtimeState.eventEngine?.unbind?.();
   runtimeState.eventEngine = null;
   runtimeState.cmdParser = null;
   if (!runtimeState.rustClient) {
     runtime.connected = false;
     runtime.teamMembers = [];
+    runtimeState.teamChatSeenKeys = new Set();
+    runtimeState.teamChatSeenOrder = [];
     return;
   }
   try {
@@ -947,7 +1136,37 @@ async function disconnectActiveClient() {
     runtimeState.rustClient = null;
     runtime.connected = false;
     runtime.teamMembers = [];
+    runtimeState.teamChatSeenKeys = new Set();
+    runtimeState.teamChatSeenOrder = [];
   }
+}
+
+async function probeConnectedServer({ timeoutMs = 10_000 } = {}) {
+  if (!runtimeState.rustClient?.connected) {
+    throw new Error('服务器连接尚未建立');
+  }
+
+  const withTimeout = (promise, label) => Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error(label)), timeoutMs)),
+  ]);
+
+  const probes = [
+    { label: 'server_info', run: () => runtimeState.rustClient.getServerInfo() },
+    { label: 'server_time', run: () => runtimeState.rustClient.getTime() },
+  ];
+
+  const failures = [];
+  for (const probe of probes) {
+    try {
+      await withTimeout(probe.run(), `${probe.label}_timeout`);
+      return true;
+    } catch (err) {
+      failures.push(String(err?.message || err || probe.label));
+    }
+  }
+
+  throw new Error(`服务器已建立连接但未返回可用数据：${failures.join(' | ')}`);
 }
 
 async function shutdownWebUserContext(userId, options = {}) {
@@ -1005,14 +1224,29 @@ async function connectServerById(serverId) {
   await disconnectActiveClient();
 
   runtimeState.rustClient = new RustClient(target);
+  runtimeState.compatibilityWarningShown = false;
   runtime.currentServer = target;
   runtime.currentServerId = target.id;
   bindClientEvents(runtimeState.rustClient, target);
 
-  await runtimeState.rustClient.connect();
-  await bootstrapRuntimeForConnectedServer(target);
-  await setLastServerId(target.id);
-  return target;
+  try {
+    await runtimeState.rustClient.connect();
+    await probeConnectedServer();
+    await bootstrapRuntimeForConnectedServer(target);
+    await setLastServerId(target.id);
+    return target;
+  } catch (err) {
+    const message = String(err?.message || err || '连接失败');
+    logger.warn('[WebConnect] 连接验证失败: ' + message);
+    await disconnectActiveClient().catch(() => null);
+    runtime.currentServer = null;
+    runtime.currentServerId = null;
+    runtime.connected = false;
+    runtime.latestServerSnapshot = buildServerInfoSnapshot(null, null);
+    runtime.lastError = message;
+    sendWs('server:status', { connected: false, currentServer: null, currentServerId: null });
+    throw new Error(message);
+  }
 }
 
 function bootstrapPayload(servers = [], steam = null, currentUser = null) {
@@ -1628,9 +1862,16 @@ const invokeIpc = createIpcInvoker({
   },
   'server:getTeam': async () => {
     if (!runtimeState.rustClient?.connected) return null;
+    if (runtimeState.teamCompatibilityCooldownUntil > Date.now()) {
+      return { members: runtime.teamMembers, degraded: true };
+    }
     try {
       return await runtimeState.rustClient.getTeamInfo();
     } catch (err) {
+      if (isNonFatalRustProtocolError(err?.message || err)) {
+        markCompatibilityCooldown('team', err?.message || err);
+        return { members: runtime.teamMembers, degraded: true };
+      }
       if (String(err?.message || '').toLowerCase() === 'not_found') return null;
       return { error: err.message };
     }
@@ -1676,9 +1917,16 @@ const invokeIpc = createIpcInvoker({
   },
   'map:getMarkers': async () => {
     if (!runtimeState.rustClient?.connected) return { error: 'not_connected' };
+    if (runtimeState.mapCompatibilityCooldownUntil > Date.now()) {
+      return { markers: [], degraded: true };
+    }
     try {
       return await runtimeState.rustClient.getMapMarkers();
     } catch (err) {
+      if (isNonFatalRustProtocolError(err?.message || err)) {
+        markCompatibilityCooldown('map', err?.message || err);
+        return { markers: [], degraded: true };
+      }
       return { error: err.message };
     }
   },
@@ -1858,11 +2106,11 @@ const invokeIpc = createIpcInvoker({
     if (presetType === 'events') {
       const preset = getEventPreset(presetId);
       if (!preset) return { success: false, error: '事件预设不存在' };
+      const nextRules = [];
       if (shouldReplace) {
         const existing = await listEventRules(runtime.currentServerId);
         for (const rule of existing) {
           runtimeState.eventEngine?.removeRule(rule.id);
-          await removeEventRule(rule.id, runtime.currentServerId);
         }
       }
       for (const rule of preset.eventRules || []) {
@@ -1871,7 +2119,12 @@ const invokeIpc = createIpcInvoker({
           trigger: { ...(rule.trigger || {}), cooldownMs: getGlobalTeamChatIntervalMs() },
         }, runtime.currentServerId);
         runtimeState.eventEngine?.addRule(hydrateRule(normalized, createRuleActionDeps()));
-        await saveEventRule(normalized);
+        nextRules.push(normalized);
+      }
+      if (shouldReplace) {
+        await replaceEventRules(runtime.currentServerId, nextRules);
+      } else {
+        await Promise.all(nextRules.map((rule) => saveEventRule(rule)));
       }
       return { success: true, applied: (preset.eventRules || []).length };
     }
@@ -1880,8 +2133,7 @@ const invokeIpc = createIpcInvoker({
       const preset = getCommandPreset(presetId);
       if (!preset) return { success: false, error: '指令预设不存在' };
       if (shouldReplace) {
-        const existing = await listCommandRules(runtime.currentServerId);
-        for (const rule of existing) await removeCommandRule(rule.id || rule.keyword, runtime.currentServerId);
+        await replaceCommandRules(runtime.currentServerId, []);
         if (runtimeState.cmdParser) {
           runtimeState.cmdParser.restoreBuiltinCommands?.();
           for (const command of runtimeState.cmdParser.getCommands()) {
@@ -1891,6 +2143,7 @@ const invokeIpc = createIpcInvoker({
         }
       }
       const rulesToApply = buildSystemCommandRulesFromParser(runtime.currentServerId);
+      const nextRules = [];
       for (const rule of rulesToApply.length ? rulesToApply : (preset.commandRules || [])) {
         const normalized = normalizeCommandRuleForServer({
           ...rule,
@@ -1908,7 +2161,12 @@ const invokeIpc = createIpcInvoker({
           if (normalized.type || normalized.name || normalized.meta) runtimeState.cmdParser.setCommandRule(normalized);
           else runtimeState.cmdParser.setCommandEnabled(normalized.keyword, normalized.enabled !== false);
         }
-        await saveCommandRule({ ...normalized, deleted: false });
+        nextRules.push({ ...normalized, deleted: false });
+      }
+      if (shouldReplace) {
+        await replaceCommandRules(runtime.currentServerId, nextRules);
+      } else {
+        await Promise.all(nextRules.map((rule) => saveCommandRule(rule)));
       }
       return { success: true, applied: (rulesToApply.length ? rulesToApply : (preset.commandRules || [])).length };
     }

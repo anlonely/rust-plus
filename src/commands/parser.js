@@ -43,6 +43,7 @@ class CommandParser {
     this._heliTrack = new Map(); // heliId -> { lastGrid, lastSeenAt }
     this._commandCooldownAt = new Map();
     this._deletedBuiltinKeywords = new Set();
+    this._countdowns = new Map(); // senderId -> { id, senderName, totalMs, startedAt, expiresAt, timers[] }
     this._boundTeamMessageHandler = null;
     this._registerBuiltins();
   }
@@ -82,6 +83,10 @@ class CommandParser {
     this._boundTeamMessageHandler = this._bindContext((msg) => this._onTeamMessage(msg));
     client.on('teamMessage', this._boundTeamMessageHandler);
     logger.info('[CMD] 指令监听启动: ' + Object.keys(this._commands).join(' / '));
+  }
+
+  async ingestTeamMessage(msg) {
+    return this._onTeamMessage(msg);
   }
 
   async _onTeamMessage(msg) {
@@ -258,6 +263,105 @@ class CommandParser {
       try { await this._client.sendTeamMessage(line); }
       catch (e) { logger.error('[CMD] 发送失败: ' + e.message); }
     }, { delayMs: RUST_TEAM_MESSAGE_LINE_DELAY_MS });
+  }
+
+  _extractSenderName(msg = {}) {
+    const nested = msg?.message && typeof msg.message === 'object' ? msg.message : null;
+    const candidates = [
+      msg?.displayName,
+      msg?.name,
+      msg?.playerName,
+      msg?.senderName,
+      msg?.memberName,
+      nested?.displayName,
+      nested?.name,
+      nested?.senderName,
+    ];
+    for (const item of candidates) {
+      const text = String(item || '').trim();
+      if (text) return text;
+    }
+    return '队友';
+  }
+
+  _normalizeCountdownOwnerKey(msg = {}) {
+    const steamId = normalizeSteamId64(msg?.steamId || msg?.senderId || msg?.id || '');
+    if (steamId) return steamId;
+    return `name:${this._extractSenderName(msg)}`;
+  }
+
+  _parseCountdownMinutes(rawValue) {
+    const text = String(rawValue || '').trim().replace(/分钟?$/u, '');
+    const value = Number(text);
+    if (!Number.isFinite(value) || value <= 0) return null;
+    return Math.min(value, 24 * 60);
+  }
+
+  _formatCountdownDuration(ms) {
+    const totalSeconds = Math.max(0, Math.round(Number(ms || 0) / 1000));
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes}分${String(seconds).padStart(2, '0')}秒`;
+  }
+
+  _clearCountdown(ownerKey) {
+    const key = String(ownerKey || '').trim();
+    if (!key) return;
+    const current = this._countdowns.get(key);
+    if (!current) return;
+    for (const timer of Array.isArray(current.timers) ? current.timers : []) {
+      clearTimeout(timer);
+    }
+    this._countdowns.delete(key);
+  }
+
+  _buildCountdownStatusText(entry, remainMs) {
+    const totalText = this._formatCountdownDuration(entry?.totalMs || 0);
+    const remainText = this._formatCountdownDuration(remainMs);
+    return `[${entry?.senderName || '队友'}] 距离倒计时[${totalText}]｜还有[${remainText}]`;
+  }
+
+  async _emitCountdownReminder(ownerKey, countdownId) {
+    const current = this._countdowns.get(ownerKey);
+    if (!current || current.id !== countdownId) return;
+    const remainMs = Math.max(0, current.expiresAt - Date.now());
+    if (remainMs <= 0) return;
+    await this._sendTeamChatMessage(this._buildCountdownStatusText(current, remainMs));
+  }
+
+  async _finishCountdown(ownerKey, countdownId) {
+    const current = this._countdowns.get(ownerKey);
+    if (!current || current.id !== countdownId) return;
+    this._clearCountdown(ownerKey);
+    const totalText = this._formatCountdownDuration(current.totalMs);
+    await this._sendTeamChatMessage(`[${current.senderName}] 倒计时[${totalText}] 已结束`);
+  }
+
+  _scheduleCountdown(ownerKey, entry) {
+    const key = String(ownerKey || '').trim();
+    if (!key || !entry) return;
+    const now = Date.now();
+    const timers = [];
+    const seenReminderAt = new Set();
+    for (const remainFraction of [1 / 2, 1 / 3, 1 / 10]) {
+      const remainMs = Math.max(1000, Math.round(entry.totalMs * remainFraction));
+      const fireAt = entry.expiresAt - remainMs;
+      const fireKey = String(Math.round(fireAt / 1000));
+      if (fireAt <= now || seenReminderAt.has(fireKey)) continue;
+      seenReminderAt.add(fireKey);
+      timers.push(setTimeout(() => {
+        this._emitCountdownReminder(key, entry.id).catch((error) => {
+          logger.error('[CMD] 倒计时提醒失败: ' + (error?.message || error));
+        });
+      }, Math.max(0, fireAt - now)));
+    }
+    timers.push(setTimeout(() => {
+      this._finishCountdown(key, entry.id).catch((error) => {
+        logger.error('[CMD] 倒计时结束提醒失败: ' + (error?.message || error));
+      });
+    }, Math.max(0, entry.expiresAt - now)));
+    entry.timers = timers;
+    this._countdowns.set(key, entry);
   }
 
   _stripEmoji(text) {
@@ -1245,6 +1349,39 @@ class CommandParser {
       return matches.flatMap((entry) => this._buildCctvCodeLines(entry)).join('\n');
     }, { description: '监控代码查询 <地点关键词>', type: 'cctv_codes' });
 
+    this.register('djs', async (args, { rawMsg }) => {
+      const minutes = this._parseCountdownMinutes(args[0]);
+      if (minutes == null) return '用法: djs <分钟> 例: djs 30';
+      const ownerKey = this._normalizeCountdownOwnerKey(rawMsg);
+      const senderName = this._extractSenderName(rawMsg);
+      const totalMs = Math.round(minutes * 60 * 1000);
+      const startedAt = Date.now();
+      const entry = {
+        id: `${ownerKey}:${startedAt}`,
+        senderName,
+        totalMs,
+        startedAt,
+        expiresAt: startedAt + totalMs,
+        timers: [],
+      };
+      this._clearCountdown(ownerKey);
+      this._scheduleCountdown(ownerKey, entry);
+      return `[${senderName}] 倒计时[${this._formatCountdownDuration(totalMs)}]｜已记录`;
+    }, { description: '设置倒计时 <分钟>', type: 'countdown_start', trigger: { cooldownMs: 0 } });
+
+    this.register('djk', async (args, { rawMsg }) => {
+      const ownerKey = this._normalizeCountdownOwnerKey(rawMsg);
+      const senderName = this._extractSenderName(rawMsg);
+      const current = this._countdowns.get(ownerKey);
+      if (!current) return `[${senderName}] 当前没有进行中的倒计时`;
+      const remainMs = Math.max(0, current.expiresAt - Date.now());
+      if (remainMs <= 0) {
+        this._clearCountdown(ownerKey);
+        return `[${current.senderName}] 倒计时[${this._formatCountdownDuration(current.totalMs)}] 已结束`;
+      }
+      return this._buildCountdownStatusText(current, remainMs);
+    }, { description: '查询当前倒计时', type: 'countdown_query', trigger: { cooldownMs: 0 } });
+
     this.register('help', async () => {
       const helpOverrides = {
         fwq: '服务器摘要 [人数/排队/时间/昼夜]',
@@ -1255,6 +1392,8 @@ class CommandParser {
         fy: '翻译 <文本>',
         ai: 'AI问答 <问题>',
         shj: '售货机查询 <物品>[/货币] 例: shj 高级蓝图/硫磺',
+        djs: '设置倒计时 <分钟> 例: djs 30',
+        djk: '查询自己的倒计时',
         jk: '监控代码查询 <地点关键词> 例: jk 强盗',
         help: '显示帮助',
       };
@@ -1322,6 +1461,8 @@ class CommandParser {
       server_info: 'fwq',
       translate: 'fy',
       deep_sea_status: 'sh',
+      countdown_start: 'djs',
+      countdown_query: 'djk',
       change_leader: 'dz',
       query_cargo: 'hc',
       query_heli: 'wz',

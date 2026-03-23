@@ -2171,6 +2171,34 @@ input, textarea, select { font-family:inherit; }
 <!-- Toast 区域 -->
 <div id="toast-area"></div>
 
+<!-- ══ 模态框：应用系统预设 ══════════════════════ -->
+<div class="modal-overlay" id="modal-preset-apply">
+  <div class="modal">
+    <div class="modal-title">
+      应用系统预设
+      <button class="modal-close" onclick="closePresetApplyModal()">✕</button>
+    </div>
+    <div class="form-row">
+      <div style="font-size:14px;color:var(--text);font-weight:700" id="preset-apply-title">覆盖当前规则并应用预设</div>
+      <div style="margin-top:8px;font-size:13px;line-height:1.75;color:var(--text2)" id="preset-apply-body">
+        此操作会覆盖当前服务器的全部规则，请确认后继续。
+      </div>
+    </div>
+    <div class="card" style="padding:12px 14px;background:rgba(255,255,255,.03);border-color:rgba(108,127,174,.18)">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:8px">执行说明</div>
+      <div style="display:grid;gap:6px;font-size:12px;color:var(--text2);line-height:1.7">
+        <div>会删除当前服务器的同类规则，并导入系统预设。</div>
+        <div>导入期间按钮会锁定，完成后自动刷新列表。</div>
+        <div>如果当前服务器兼容性有限，导入完成后仍可能有部分功能不可用。</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="preset-apply-cancel" onclick="closePresetApplyModal()">取消</button>
+      <button class="btn btn-primary" id="preset-apply-confirm" onclick="confirmPresetApply()">确认并应用</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══ 模态框：添加事件规则 ══════════════════════ -->
 <div class="modal-overlay" id="modal-event">
   <div class="modal">
@@ -2275,6 +2303,8 @@ input, textarea, select { font-family:inherit; }
         <option value="server_info">查看服务器信息</option>
         <option value="translate">指令翻译</option>
         <option value="deep_sea_status">深海状态测试</option>
+        <option value="countdown_start">倒计时设置</option>
+        <option value="countdown_query">倒计时查询</option>
         <option value="switch">防空</option>
         <option value="call_group">呼叫组联动</option>
         <option value="change_leader">更改队长</option>
@@ -2430,6 +2460,7 @@ const state = {
   commands:      [],
   callGroups:    [],
   serverMarkers: [],
+  teamMembers:   [],
   teamMessages:  [],
   notifLog:      [],
   logLines:      [],
@@ -2442,6 +2473,13 @@ const state = {
   inlineNotice: null,
   guideIntent: '',
   helpDocLoaded: false,
+  teamSyncIssue: '',
+  presetApply: {
+    type: '',
+    presetId: '',
+    presetName: '',
+    loading: false,
+  },
   remoteSteamAuth: {
     sessionId: '',
     sessionData: null,
@@ -2559,6 +2597,8 @@ const CMD_LABELS = {
   server_info:   { label:'查看服务器信息',     color:'blue' },
   translate:     { label:'指令翻译',           color:'green' },
   deep_sea_status:{ label:'深海状态测试',      color:'blue' },
+  countdown_start:{ label:'倒计时设置',        color:'orange' },
+  countdown_query:{ label:'倒计时查询',        color:'orange' },
   switch:        { label:'防空',               color:'orange' },
   call_group:    { label:'呼叫组联动',         color:'red' },
   change_leader: { label:'更改队长',           color:'red' },
@@ -2572,6 +2612,8 @@ const CMD_TYPE_BY_KEYWORD = {
   fwq: 'server_info',
   fy: 'translate',
   sh: 'deep_sea_status',
+  djs: 'countdown_start',
+  djk: 'countdown_query',
   fk: 'switch',
   hj: 'call_group',
   dz: 'change_leader',
@@ -2585,6 +2627,8 @@ const DEFAULT_KEYWORD_BY_TYPE = {
   server_info: 'fwq',
   translate: 'fy',
   deep_sea_status: 'sh',
+  countdown_start: 'djs',
+  countdown_query: 'djk',
   switch: 'fk',
   call_group: 'hj',
   change_leader: 'dz',
@@ -3493,6 +3537,112 @@ async function handleInlineNoticeAction(actionId) {
   clearInlineNotice();
 }
 
+function isProtocolCompatibilityIssue(message) {
+  const text = String(message || '').toLowerCase();
+  return text.includes('invalid wire type')
+    || text.includes('missing required')
+    || text.includes('protocolerror')
+    || text.includes('index out of range')
+    || text.includes('out of range')
+    || text.includes('out of bounds')
+    || text.includes('illegal buffer')
+    || text.includes('truncated')
+    || text.includes('not_found');
+}
+
+function unwrapInvokeResult(result) {
+  if (result?.ok && result.value && typeof result.value === 'object' && result.value.error) {
+    return {
+      ok: false,
+      timedOut: !!result.timedOut,
+      error: new Error(String(result.value.error)),
+      value: null,
+    };
+  }
+  return result;
+}
+
+async function settleWithTimeout(promise, timeoutMs, fallbackValue = null) {
+  let timer = null;
+  const timeoutPromise = new Promise((resolve) => {
+    timer = setTimeout(() => resolve({ ok: false, timedOut: true, value: fallbackValue }), timeoutMs);
+  });
+  const result = await Promise.race([
+    Promise.resolve(promise).then(
+      (value) => ({ ok: true, timedOut: false, value }),
+      (error) => ({ ok: false, timedOut: false, error, value: fallbackValue }),
+    ),
+    timeoutPromise,
+  ]);
+  if (timer) clearTimeout(timer);
+  return result;
+}
+
+function setPresetApplyLoading(loading) {
+  state.presetApply.loading = !!loading;
+  const confirmBtn = document.getElementById('preset-apply-confirm');
+  const cancelBtn = document.getElementById('preset-apply-cancel');
+  const closeBtn = document.querySelector('#modal-preset-apply .modal-close');
+  if (confirmBtn) {
+    confirmBtn.disabled = !!loading;
+    confirmBtn.textContent = loading ? '正在应用...' : '确认并应用';
+  }
+  if (cancelBtn) cancelBtn.disabled = !!loading;
+  if (closeBtn) closeBtn.disabled = !!loading;
+}
+
+function openPresetApplyModal(type, preset) {
+  state.presetApply = {
+    type: String(type || ''),
+    presetId: String(preset?.id || ''),
+    presetName: String(preset?.name || '系统预设'),
+    loading: false,
+  };
+  const titleEl = document.getElementById('preset-apply-title');
+  const bodyEl = document.getElementById('preset-apply-body');
+  const label = type === 'commands' ? '指令' : '事件';
+  if (titleEl) titleEl.textContent = `覆盖当前${label}规则并应用「${state.presetApply.presetName}」`;
+  if (bodyEl) bodyEl.textContent = `将删除当前服务器下全部${label}规则，并导入系统预设「${state.presetApply.presetName}」。导入完成后会自动刷新列表。`;
+  setPresetApplyLoading(false);
+  openModal('modal-preset-apply');
+}
+
+function closePresetApplyModal() {
+  if (state.presetApply.loading) return;
+  closeModal('modal-preset-apply');
+  state.presetApply = {
+    type: '',
+    presetId: '',
+    presetName: '',
+    loading: false,
+  };
+}
+
+async function confirmPresetApply() {
+  if (state.presetApply.loading) return;
+  const presetType = state.presetApply.type;
+  const presetId = state.presetApply.presetId;
+  const presetName = state.presetApply.presetName;
+  if (!presetType || !presetId) {
+    toast('warning', '未找到可应用的系统预设');
+    closePresetApplyModal();
+    return;
+  }
+  setPresetApplyLoading(true);
+  const label = presetType === 'commands' ? '指令' : '事件';
+  toast('info', `正在应用${label}预设「${presetName}」...`, 2200);
+  const res = await rustAPI.applyPreset(presetType, presetId, true).catch((e) => ({ success: false, error: e.message }));
+  setPresetApplyLoading(false);
+  if (!res?.success) {
+    toast('error', '应用预设失败：' + (res?.error || '未知错误'));
+    return;
+  }
+  closePresetApplyModal();
+  toast('success', `${label}系统预设已应用，共 ${res.applied || 0} 条规则`);
+  if (presetType === 'commands') loadCommands();
+  else loadRules();
+}
+
 async function ensureCurrentUserSession() {
   const session = await rustAPI.getAuthSession().catch(() => null);
   if (!session?.authenticated || !session.user) {
@@ -4345,6 +4495,12 @@ function updateTeamSyncStatus(status = {}) {
     sub.textContent = '近期未收到队伍同步数据';
     return;
   }
+  if (mode === 'limited') {
+    val.textContent = '兼容受限';
+    val.style.color = 'var(--orange)';
+    sub.textContent = status?.reason || '当前服务器未稳定返回队伍数据';
+    return;
+  }
   val.textContent = '离线';
   val.style.color = 'var(--text2)';
   sub.textContent = '-';
@@ -4450,7 +4606,8 @@ function setPairingStatus(ok, subText = null) {
 // ═══════════════════════════════════════════════
 async function refreshServerInfo() {
   try {
-    const res = await rustAPI.getServerInfo();
+    const infoResult = unwrapInvokeResult(await settleWithTimeout(rustAPI.getServerInfo(), 3500, null));
+    const res = infoResult.value;
     const s = extractServerInfo(res);
     if (s) {
       document.getElementById('st-players').textContent = s.players ?? '-';
@@ -4459,8 +4616,9 @@ async function refreshServerInfo() {
       const mapSize = Number(s.mapSize ?? s.worldSize ?? 0);
       if (Number.isFinite(mapSize) && mapSize > 0) state.latestMapSize = mapSize;
     }
-    const t = await rustAPI.getTeamInfo().catch(() => null);
-    const timeMinutes = extractGameTimeMinutes(res, t);
+    const teamResult = unwrapInvokeResult(await settleWithTimeout(rustAPI.getTeamInfo(), 1500, { members: state.teamMembers || [] }));
+    const teamInfo = teamResult.ok ? teamResult.value : { members: state.teamMembers || [] };
+    const timeMinutes = extractGameTimeMinutes(res, teamInfo);
     document.getElementById('st-time').textContent = timeMinutes == null
       ? '-'
       : `${String(Math.floor(timeMinutes / 60)).padStart(2, '0')}:${String(timeMinutes % 60).padStart(2, '0')}`;
@@ -4472,22 +4630,37 @@ async function refreshServerInfo() {
 // ═══════════════════════════════════════════════
 async function refreshTeam() {
   if (!state.connected) return;
-  try {
-    const res = await rustAPI.getTeamInfo();
-    const members = extractTeamMembers(res);
+  const result = unwrapInvokeResult(await settleWithTimeout(rustAPI.getTeamInfo(), 1800, null));
+  if (result.ok) {
+    const members = extractTeamMembers(result.value);
+    state.teamSyncIssue = result.value?.degraded ? '当前服务器未稳定返回完整队伍协议，页面已降级显示缓存队伍信息' : '';
     renderTeam(members);
-  } catch (e) {
-    addLog('warn', '获取队伍信息失败: ' + e.message);
+    updateTeamSyncStatus({
+      mode: result.value?.degraded ? 'limited' : (members.length ? 'hybrid' : 'polling'),
+      reason: result.value?.degraded ? '当前服务器未兼容队伍协议，暂时显示缓存结果' : '',
+    });
+    return;
   }
+  const message = result.timedOut ? '请求超时，暂时无法同步队伍数据' : String(result.error?.message || result.error || '未知错误');
+  state.teamSyncIssue = message;
+  updateTeamSyncStatus({
+    mode: isProtocolCompatibilityIssue(message) ? 'limited' : 'stale',
+    reason: isProtocolCompatibilityIssue(message) ? '当前服务器未兼容队伍协议，改为仅保留基础连接' : message,
+  });
+  addLog('warn', '获取队伍信息失败: ' + message);
 }
 
 function renderTeam(members) {
+  state.teamMembers = Array.isArray(members) ? members : [];
   const el = document.getElementById('team-list');
-  if (!members.length) {
-    el.innerHTML = '<div class="empty-state" style="padding:20px"><p>暂无队伍成员</p></div>';
+  if (!state.teamMembers.length) {
+    const reason = state.teamSyncIssue
+      ? `<div style="margin-top:8px;font-size:12px;color:var(--text3);line-height:1.7">${esc(state.teamSyncIssue)}</div>`
+      : '';
+    el.innerHTML = `<div class="empty-state" style="padding:20px"><p>暂无队伍成员</p>${reason}</div>`;
     return;
   }
-  el.innerHTML = members.map(m => {
+  el.innerHTML = state.teamMembers.map(m => {
     const onlineText = m.isOnline ? '在线' : '离线';
     const onlineColor = m.isOnline ? 'var(--green)' : 'var(--text3)';
     const aliveText = m.isAlive === false ? '已死亡' : '存活';
@@ -6329,12 +6502,10 @@ async function refreshServerMap(forceMapReload = false) {
   const mapBelongsToCurrentServer = !!serverId && state.serverMapServerId === serverId;
 
   try {
-    const [markerRes, teamRes, infoRes] = await Promise.all([
-      rustAPI.getMapMarkers().catch(() => null),
-      rustAPI.getTeamInfo().catch(() => null),
-      rustAPI.getServerInfo().catch(() => null),
-    ]);
-    const info = extractServerInfo(infoRes);
+    const infoResult = unwrapInvokeResult(await settleWithTimeout(rustAPI.getServerInfo(), 3200, null));
+    const markerTask = settleWithTimeout(rustAPI.getMapMarkers(), 1800, null);
+    const teamTask = settleWithTimeout(rustAPI.getTeamInfo(), 1800, null);
+    const info = extractServerInfo(infoResult.value);
 
     // 用已拿到的 serverInfo 检查 seed，判断是否擦档换图
     const currentSeed = info?.seed != null ? Number(info.seed) : null;
@@ -6375,14 +6546,39 @@ async function refreshServerMap(forceMapReload = false) {
           : effectiveWorldSize,
       };
     }
-    const markers = markerRes?.mapMarkers?.markers || markerRes?.markers || [];
+    renderServerMapLayer(state.serverMapView.teamMembers || [], state.serverMapView.vendingMarkers || []);
+
+    const [rawMarkerResult, rawTeamResult] = await Promise.all([markerTask, teamTask]);
+    const markerResult = unwrapInvokeResult(rawMarkerResult);
+    const teamResult = unwrapInvokeResult(rawTeamResult);
+    const markers = markerResult.ok
+      ? (markerResult.value?.mapMarkers?.markers || markerResult.value?.markers || [])
+      : state.serverMarkers;
     state.serverMarkers = Array.isArray(markers) ? markers : [];
     const vending = state.serverMarkers.filter((m) => {
       const tNum = Number(m?.type);
       if (tNum === 3) return true;
       return String(m?.type || '').toLowerCase() === 'vendingmachine';
     });
-    const teamMembersRaw = extractTeamMembers(teamRes);
+    if (markerResult.value?.degraded) {
+      addLog('warn', '当前服务器地图标记兼容性受限，已使用空标记兜底');
+    } else if (!markerResult.ok && markerResult.error && !isProtocolCompatibilityIssue(markerResult.error?.message || markerResult.error)) {
+      addLog('warn', '地图标记同步失败: ' + (markerResult.error?.message || markerResult.error));
+    }
+    if (teamResult.value?.degraded) {
+      state.teamSyncIssue = '当前服务器未兼容队伍协议，地图队伍层已降级为缓存数据';
+      updateTeamSyncStatus({ mode: 'limited', reason: '当前服务器未兼容队伍协议，地图队伍层已降级显示' });
+    } else if (!teamResult.ok) {
+      const reason = teamResult.timedOut
+        ? '队伍数据请求超时，当前地图仅显示基础标记'
+        : String(teamResult.error?.message || teamResult.error || '未知错误');
+      state.teamSyncIssue = reason;
+      updateTeamSyncStatus({
+        mode: isProtocolCompatibilityIssue(reason) ? 'limited' : 'stale',
+        reason: isProtocolCompatibilityIssue(reason) ? '当前服务器未兼容队伍协议，队伍层已降级显示' : reason,
+      });
+    }
+    const teamMembersRaw = teamResult.ok ? extractTeamMembers(teamResult.value) : (state.teamMembers || []);
     const teamMembers = mergeTeamMembersForMap(teamMembersRaw, state.serverMarkers)
       .filter((m) => Number.isFinite(Number(m?.x)) && Number.isFinite(Number(m?.y)));
     state.serverMapLastAt = Date.now();
@@ -7385,15 +7581,7 @@ async function applyEventPreset() {
     return;
   }
   const preset = list.find((p) => p.isSystem) || list[0];
-  const confirmed = confirm(`将覆盖当前全部事件规则，并应用系统预设「${preset.name}」。\n此操作不可撤销，是否继续？`);
-  if (!confirmed) return;
-  const res = await rustAPI.applyPreset('events', preset.id, true).catch(e => ({ success: false, error: e.message }));
-  if (!res?.success) {
-    toast('error', '应用预设失败：' + (res?.error || '未知错误'));
-    return;
-  }
-  toast('success', `事件系统预设已覆盖应用，共 ${res.applied || 0} 条规则`);
-  loadRules();
+  openPresetApplyModal('events', preset);
 }
 
 // ═══════════════════════════════════════════════
@@ -7493,15 +7681,7 @@ async function applyCommandPreset() {
     return;
   }
   const preset = list.find((p) => p.isSystem) || list[0];
-  const confirmed = confirm(`将覆盖当前全部指令规则，并应用系统预设「${preset.name}」。\n此操作不可撤销，是否继续？`);
-  if (!confirmed) return;
-  const res = await rustAPI.applyPreset('commands', preset.id, true).catch(e => ({ success: false, error: e.message }));
-  if (!res?.success) {
-    toast('error', '应用预设失败：' + (res?.error || '未知错误'));
-    return;
-  }
-  toast('success', `指令系统预设已覆盖应用，共 ${res.applied || 0} 条规则`);
-  loadCommands();
+  openPresetApplyModal('commands', preset);
 }
 
 async function saveCmdRule() {
@@ -8010,7 +8190,9 @@ rustAPI.on('entity:changed', ({ entityId, payload }) => {
 
 rustAPI.on('team:changed', (data) => {
   const members = extractTeamMembers(data);
-  if (members.length) renderTeam(members);
+  state.teamSyncIssue = '';
+  renderTeam(members);
+  updateTeamSyncStatus({ mode: members.length ? 'broadcast' : 'polling' });
 });
 
 rustAPI.on('team:message', (msg) => {

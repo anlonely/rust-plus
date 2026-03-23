@@ -1,4 +1,6 @@
 const { markerToGrid9, markerToNearestEdgeDirection } = require('../src/utils/map-grid');
+const { packVendingOfferLines } = require('../src/utils/vending-watchlist');
+const TEAM_CHAT_MAX_CHARS = Math.max(32, Number(process.env.RUST_TEAM_MESSAGE_MAX_CHARS || 128) || 128);
 
 const DEFAULT_CARGO_STAGE_MESSAGES = {
   enter: '货船进入地图｜当前位置:{cargo_grid}',
@@ -119,7 +121,10 @@ function renderMessageTemplate(template, context = {}, { mapSize = 0 } = {}) {
     return `${label}｜当前位置:${grid}`;
   })();
   const vendingItems = Array.isArray(context.vendingItems)
-    ? context.vendingItems.map((item) => toSafeText(item)).filter(Boolean).join(' / ')
+    ? packVendingOfferLines(
+      context.vendingItems.map((item) => toSafeText(item)).filter(Boolean),
+      { maxChars: Math.max(24, TEAM_CHAT_MAX_CHARS - 24) },
+    ).join('\n')
     : toSafeText(context.vendingItems || '');
   const vendingStage = String(context.vendingStage || '').toLowerCase();
   const vendingStatusLabel = vendingStage === 'update' ? '售货机上新' : '发现新售货机';

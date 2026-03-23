@@ -11,6 +11,10 @@
 const { spawn } = require('child_process');
 const path   = require('path');
 const fs     = require('fs');
+const os     = require('os');
+const axios  = require('axios');
+const express = require('express');
+const ChromeLauncher = require('chrome-launcher');
 const logger = require('../utils/logger');
 const { redactSensitiveText } = require('../utils/security');
 const { getConfigDir } = require('../utils/runtime-paths');
@@ -21,6 +25,21 @@ const PAIRING_MAX_AGE_MS = 3 * 60 * 1000;
 let activeRegisterProc = null;
 let activeRegisterClosePromise = null;
 let registerRunSequence = 0;
+const PROXY_ENV_KEYS = [
+  'HTTP_PROXY',
+  'HTTPS_PROXY',
+  'ALL_PROXY',
+  'http_proxy',
+  'https_proxy',
+  'all_proxy',
+  'npm_config_proxy',
+  'npm_config_https_proxy',
+  'npm_config_http_proxy',
+  'NPM_CONFIG_PROXY',
+  'NPM_CONFIG_HTTPS_PROXY',
+  'NPM_CONFIG_HTTP_PROXY',
+];
+const STALE_PROXY_MARKERS = ['127.0.0.1:8234', 'localhost:8234'];
 
 function resolveRustplusCli() {
   try {
@@ -34,6 +53,14 @@ const RUSTPLUS_CLI = resolveRustplusCli();
 
 function hasFcmCredentials(config) {
   return !!(config && config.fcm_credentials && config.rustplus_auth_token && config.expo_push_token);
+}
+
+function hasReusablePairingCredentials(config) {
+  return !!(config && config.fcm_credentials && config.rustplus_auth_token && config.expo_push_token);
+}
+
+function hasPushBootstrapCredentials(config) {
+  return !!(config && config.fcm_credentials && config.expo_push_token);
 }
 
 function resolveRustplusConfigFile(configFile = '') {
@@ -56,6 +83,173 @@ function readRustplusConfig(configFile = '') {
 
 function rustplusArgs(command, configFile = '') {
   return [RUSTPLUS_CLI, '--config-file', resolveRustplusConfigFile(configFile), command];
+}
+
+function sanitizeProxyEnv(env) {
+  const strippedKeys = [];
+  if (!env || typeof env !== 'object') return strippedKeys;
+  for (const key of PROXY_ENV_KEYS) {
+    const value = String(env[key] || '').trim();
+    if (!value) continue;
+    if (STALE_PROXY_MARKERS.some((marker) => value.includes(marker))) {
+      delete env[key];
+      strippedKeys.push(key);
+    }
+  }
+  return strippedKeys;
+}
+
+function buildRustplusCliEnv(extraEnv = {}) {
+  const env = { ...process.env, ...extraEnv };
+  const strippedKeys = sanitizeProxyEnv(env);
+  env.ELECTRON_RUN_AS_NODE = '1';
+  if (strippedKeys.length) {
+    logger.info(`[FCM] 已剔除 rustplus CLI 子进程中的失效旧代理变量（${strippedKeys.join(', ')}），其余代理环境保持继承。`);
+  }
+  return env;
+}
+
+function renderSteamAuthBridgeHtml(port) {
+  const callbackUrl = `http://localhost:${port}/callback`;
+  return `<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>RustPlus Pairing</title></head>
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;padding:24px">
+  <div>正在打开 Rust+ 登录页。若浏览器拦截弹窗，请允许后重试。</div>
+  <script>
+    const popupWindow = window.open("https://companion-rust.facepunch.com/login", "", "");
+    const handlerInterval = setInterval(function () {
+      if (!popupWindow || popupWindow.closed) return;
+      if (popupWindow.ReactNativeWebView === undefined) {
+        popupWindow.ReactNativeWebView = {
+          postMessage: function (message) {
+            clearInterval(handlerInterval);
+            const auth = JSON.parse(message);
+            window.location.href = ${JSON.stringify(callbackUrl)} + "?token=" + encodeURIComponent(auth.Token);
+            try { popupWindow.close(); } catch (_) {}
+          }
+        };
+      }
+    }, 250);
+  </script>
+</body>
+</html>`;
+}
+
+function formatAuthNetworkError(error, stageLabel) {
+  const message = String(error?.message || error || '').trim();
+  const lower = message.toLowerCase();
+  if (lower.includes('econnrefused') || lower.includes('econnreset') || lower.includes('client network socket disconnected')) {
+    return `${stageLabel}失败：当前网络无法连通授权服务，请检查网络代理、系统防火墙或科学上网设置。`;
+  }
+  if (lower.includes('timeout')) {
+    return `${stageLabel}超时：当前网络访问授权服务过慢，请稍后重试。`;
+  }
+  return `${stageLabel}失败：${message || '未知错误'}`;
+}
+
+async function registerWithRustCompanion(authToken, expoPushToken) {
+  return axios.post('https://companion-rust.facepunch.com:443/api/push/register', {
+    AuthToken: authToken,
+    DeviceId: 'rustplus.js',
+    PushKind: 3,
+    PushToken: expoPushToken,
+  }, {
+    timeout: 20_000,
+  });
+}
+
+async function completeRustAuthWithExistingPush(configFile = '', emitStatus = () => {}) {
+  const resolvedConfigFile = resolveRustplusConfigFile(configFile);
+  const configStore = createRustplusConfigStore({ configFile: resolvedConfigFile });
+  const current = configStore.read();
+  const expoPushToken = String(current?.expo_push_token || '').trim();
+  if (!expoPushToken) {
+    throw new Error('本地缺少 Expo 推送凭据，无法进入授权恢复流程');
+  }
+
+  let server = null;
+  let chrome = null;
+  let profileDir = '';
+  const cleanup = async () => {
+    if (server) {
+      await new Promise((resolve) => server.close(() => resolve())).catch(() => null);
+      server = null;
+    }
+    if (chrome?.kill) {
+      try { await chrome.kill(); } catch (_) {}
+      chrome = null;
+    }
+    if (profileDir) {
+      try { fs.rmSync(profileDir, { recursive: true, force: true }); } catch (_) {}
+      profileDir = '';
+    }
+  };
+
+  try {
+    const authToken = await new Promise((resolve, reject) => {
+      const app = express();
+      let settled = false;
+      const finish = async (fn) => {
+        if (settled) return;
+        settled = true;
+        try {
+          await cleanup();
+        } finally {
+          fn();
+        }
+      };
+
+      app.get('/', (_req, res) => {
+        const address = server?.address();
+        const port = Number(address?.port || 0);
+        res.type('html').send(renderSteamAuthBridgeHtml(port));
+      });
+
+      app.get('/callback', async (req, res) => {
+        const token = String(req.query?.token || '').trim();
+        if (!token) {
+          res.status(400).send('Token missing from request!');
+          return finish(() => reject(new Error('Token missing from request!')));
+        }
+        res.send('Steam Account successfully linked. You can close this window and return to the toolbox.');
+        return finish(() => resolve(token));
+      });
+
+      server = app.listen(0, async () => {
+        try {
+          const address = server.address();
+          const port = Number(address?.port || 0);
+          profileDir = fs.mkdtempSync(path.join(os.tmpdir(), 'rustplus-auth-'));
+          chrome = await ChromeLauncher.launch({
+            startingUrl: `http://localhost:${port}`,
+            chromeFlags: [
+              '--disable-web-security',
+              '--disable-popup-blocking',
+              '--disable-site-isolation-trials',
+              `--user-data-dir=${profileDir}`,
+            ],
+            handleSIGINT: false,
+          });
+          emitStatus({ type: 'browser-opened', configFile: resolvedConfigFile, reusedPushCredentials: true });
+          emitStatus({ type: 'waiting-login', configFile: resolvedConfigFile, reusedPushCredentials: true });
+        } catch (error) {
+          const message = String(error?.message || error || '');
+          await finish(() => reject(new Error(message.includes('Chrome') ? message : '未能启动本地授权浏览器，请确认 Google Chrome 已安装且可正常启动。')));
+        }
+      });
+    });
+
+    emitStatus({ type: 'registering-companion', configFile: resolvedConfigFile, reusedPushCredentials: true });
+    await registerWithRustCompanion(authToken, expoPushToken).catch((error) => {
+      throw new Error(formatAuthNetworkError(error, 'Rust Companion 注册'));
+    });
+    await configStore.patch({ rustplus_auth_token: authToken });
+    emitStatus({ type: 'credentials-ready', configFile: resolvedConfigFile, reusedPushCredentials: true });
+    return authToken;
+  } finally {
+    await cleanup();
+  }
 }
 
 function parsePairingPayload(input) {
@@ -321,6 +515,10 @@ async function registerFCM({ force = false, configFile = '', onStatus = null } =
   const runId = ++registerRunSequence;
   const existing = readRustplusConfig(configFile);
   const resolvedConfigFile = resolveRustplusConfigFile(configFile);
+  const strippedRuntimeProxyKeys = sanitizeProxyEnv(process.env);
+  if (strippedRuntimeProxyKeys.length) {
+    logger.info(`[FCM] 已清理当前进程中的失效旧代理变量（${strippedRuntimeProxyKeys.join(', ')}），保留用户当前有效代理。`);
+  }
   const emitStatus = (payload = {}) => {
     if (runId !== registerRunSequence) return;
     if (typeof onStatus === 'function') {
@@ -330,6 +528,25 @@ async function registerFCM({ force = false, configFile = '', onStatus = null } =
   if (!force && hasFcmCredentials(existing)) {
     logger.info('[FCM] 已检测到本地凭据，跳过注册。');
     emitStatus({ type: 'already-ready', configFile: resolvedConfigFile });
+    return;
+  }
+
+  if (!existing?.rustplus_auth_token && hasPushBootstrapCredentials(existing)) {
+    logger.info('[FCM] 已存在 FCM / Expo 凭据，跳过 Firebase 重注册，直接恢复 Rust+ 登录授权。');
+    emitStatus({ type: 'starting', configFile: resolvedConfigFile, reusedPushCredentials: true });
+    try {
+      await completeRustAuthWithExistingPush(resolvedConfigFile, emitStatus);
+      return;
+    } catch (error) {
+      logger.error('[FCM] Rust+ 授权恢复失败: ' + error.message);
+      emitStatus({ type: 'failed', configFile: resolvedConfigFile, message: error.message, reusedPushCredentials: true });
+      throw error;
+    }
+  }
+
+  if (force && hasReusablePairingCredentials(existing)) {
+    logger.info('[FCM] 已存在完整的 FCM / Expo / Rust+ 凭据，本次重绑直接复用现有凭据。');
+    emitStatus({ type: 'already-ready', configFile: resolvedConfigFile, reused: true });
     return;
   }
 
@@ -355,10 +572,7 @@ async function registerFCM({ force = false, configFile = '', onStatus = null } =
     await new Promise((resolve, reject) => {
       const proc = spawn(process.execPath, rustplusArgs('fcm-register', resolvedConfigFile), {
         stdio: ['ignore', 'pipe', 'pipe'],
-        env: {
-          ...process.env,
-          ELECTRON_RUN_AS_NODE: '1',
-        },
+        env: buildRustplusCliEnv(),
       });
       activeRegisterProc = proc;
       emitStatus({ type: 'browser-opened', configFile: resolvedConfigFile });
@@ -402,7 +616,20 @@ async function registerFCM({ force = false, configFile = '', onStatus = null } =
         }
         if (code === 0) resolve();
         else if (proc.__restartRequested) reject(new Error('FCM 注册已重启'));
-        else reject(new Error(`fcm-register 退出码: ${code}`));
+        else {
+          const rawLog = fs.existsSync(getFcmListenLastLogFile(resolvedConfigFile))
+            ? fs.readFileSync(getFcmListenLastLogFile(resolvedConfigFile), 'utf8')
+            : '';
+          if (rawLog.includes('firebaseinstallations.googleapis.com') && rawLog.toLowerCase().includes('econnreset')) {
+            reject(new Error('Firebase 注册失败：当前网络无法稳定连接 Google Firebase，请检查网络代理、VPN 或系统防火墙。'));
+            return;
+          }
+          if (rawLog.includes('firebaseinstallations.googleapis.com') && rawLog.toLowerCase().includes('econnrefused')) {
+            reject(new Error('Firebase 注册失败：请求被转发到了失效的本地代理，请检查系统代理设置。'));
+            return;
+          }
+          reject(new Error(`fcm-register 退出码: ${code}`));
+        }
       });
     });
 
@@ -488,6 +715,7 @@ function listenForPairing(onPairing, options = {}) {
     buffer = '';
     proc = spawn(process.execPath, rustplusArgs('fcm-listen', resolvedConfigFile), {
       stdio: ['ignore', 'pipe', 'pipe'],
+      env: buildRustplusCliEnv(),
     });
 
     onStatus({ type: 'listening', restartCount });

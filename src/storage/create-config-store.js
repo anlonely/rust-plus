@@ -436,6 +436,24 @@ function createConfigStore({ configDir } = {}) {
       return true;
     });
   }
+
+  async function replaceEventRules(serverId, nextRules = []) {
+    return rulesDb.withLock(async () => {
+      await rulesDb.read();
+      const sid = String(serverId || '').trim();
+      const preserved = (rulesDb.data.eventRules || []).filter((rule) => String(rule.serverId || '') !== sid);
+      const now = new Date().toISOString();
+      const normalized = nextRules.map((rule) => ({
+        ...rule,
+        serverId: sid,
+        updatedAt: now,
+        createdAt: rule?.createdAt || now,
+      }));
+      rulesDb.data.eventRules = preserved.concat(normalized);
+      await rulesDb.write();
+      return normalized;
+    });
+  }
   
   async function listCommandRules(serverId = null) {
     return rulesDb.withLock(async () => {
@@ -476,6 +494,24 @@ function createConfigStore({ configDir } = {}) {
       });
       await rulesDb.write();
       return rulesDb.data.commandRules.length < before;
+    });
+  }
+
+  async function replaceCommandRules(serverId, nextRules = []) {
+    return rulesDb.withLock(async () => {
+      await rulesDb.read();
+      const sid = String(serverId || '').trim();
+      const preserved = (rulesDb.data.commandRules || []).filter((rule) => String(rule.serverId || '') !== sid);
+      const now = new Date().toISOString();
+      const normalized = nextRules.map((rule) => ({
+        ...rule,
+        serverId: sid,
+        updatedAt: now,
+        createdAt: rule?.createdAt || now,
+      }));
+      rulesDb.data.commandRules = preserved.concat(normalized);
+      await rulesDb.write();
+      return normalized;
     });
   }
   
@@ -576,9 +612,11 @@ function createConfigStore({ configDir } = {}) {
     saveEventRule,
     removeEventRule,
     setEventRuleEnabled,
+    replaceEventRules,
     listCommandRules,
     saveCommandRule,
     removeCommandRule,
+    replaceCommandRules,
     listCallGroupsDb,
     saveCallGroupDb,
     removeCallGroupDb,

@@ -203,7 +203,7 @@
       "id": 343045591,
       "shortName": "aiming.module.mlrs",
       "nameEn": "MLRS Aiming Module",
-      "nameZh": "MLRS Aiming Module"
+      "nameZh": "多管火箭系统瞄准模块"
     },
     {
       "id": -1449152644,
@@ -401,19 +401,19 @@
       "id": 1055319033,
       "shortName": "ammo.grenadelauncher.buckshot",
       "nameEn": "40mm Shotgun Round",
-      "nameZh": "40mm Shotgun Round"
+      "nameZh": "40毫米霰弹"
     },
     {
       "id": 349762871,
       "shortName": "ammo.grenadelauncher.he",
       "nameEn": "40mm HE Grenade",
-      "nameZh": "40mm HE Grenade"
+      "nameZh": "40毫米榴弹"
     },
     {
       "id": 915408809,
       "shortName": "ammo.grenadelauncher.smoke",
       "nameEn": "40mm Smoke Grenade",
-      "nameZh": "40mm Smoke Grenade"
+      "nameZh": "40毫米烟雾弹"
     },
     {
       "id": -1023065463,
@@ -467,61 +467,61 @@
       "id": 588596902,
       "shortName": "ammo.handmade.shell",
       "nameEn": "Handmade Shell",
-      "nameZh": "Handmade Shell"
+      "nameZh": "手工弹药"
     },
     {
       "id": -2097376851,
       "shortName": "ammo.nailgun.nails",
       "nameEn": "Nailgun Nails",
-      "nameZh": "Nailgun Nails"
+      "nameZh": "钉枪弹药"
     },
     {
       "id": 385645417,
       "shortName": "ammo.paintball",
       "nameEn": "Paintball",
-      "nameZh": "Paintball"
+      "nameZh": "彩弹"
     },
     {
       "id": 785728077,
       "shortName": "ammo.pistol",
       "nameEn": "Pistol Bullet",
-      "nameZh": "Pistol Bullet"
+      "nameZh": "手枪弹药"
     },
     {
       "id": 51984655,
       "shortName": "ammo.pistol.fire",
       "nameEn": "Incendiary Pistol Bullet",
-      "nameZh": "Incendiary Pistol Bullet"
+      "nameZh": "可燃手枪弹药"
     },
     {
       "id": -1691396643,
       "shortName": "ammo.pistol.hv",
       "nameEn": "HV Pistol Ammo",
-      "nameZh": "HV Pistol Ammo"
+      "nameZh": "高速手枪弹药"
     },
     {
       "id": -1211166256,
       "shortName": "ammo.rifle",
       "nameEn": "5.56 Rifle Ammo",
-      "nameZh": "5.56 Rifle Ammo"
+      "nameZh": "5.56毫米步枪弹药"
     },
     {
       "id": -1321651331,
       "shortName": "ammo.rifle.explosive",
       "nameEn": "Explosive 5.56 Rifle Ammo",
-      "nameZh": "Explosive 5.56 Rifle Ammo"
+      "nameZh": "5.56毫米高爆弹药"
     },
     {
       "id": 605467368,
       "shortName": "ammo.rifle.incendiary",
       "nameEn": "Incendiary 5.56 Rifle Ammo",
-      "nameZh": "Incendiary 5.56 Rifle Ammo"
+      "nameZh": "5.56毫米可燃弹药"
     },
     {
       "id": 1712070256,
       "shortName": "ammo.rifle.hv",
       "nameEn": "HV 5.56 Rifle Ammo",
-      "nameZh": "HV 5.56 Rifle Ammo"
+      "nameZh": "5.56毫米高速弹药"
     },
     {
       "id": -742865266,
@@ -551,7 +551,7 @@
       "id": -17123659,
       "shortName": "ammo.rocket.smoke",
       "nameEn": "Smoke Rocket WIP!!!!",
-      "nameZh": ""
+      "nameZh": "烟雾火箭弹"
     },
     {
       "id": -1685290200,
@@ -1055,7 +1055,7 @@
       "id": -427072335,
       "shortName": "knightsarmour.helmet",
       "nameEn": "Knights armour helmet",
-      "nameZh": ""
+      "nameZh": "骑士头盔"
     },
     {
       "id": -1539025626,
@@ -1157,7 +1157,7 @@
       "id": 110116923,
       "shortName": "metal.facemask.icemask",
       "nameEn": "Ice Metal Facemask",
-      "nameZh": ""
+      "nameZh": "金属面罩 - 冰"
     },
     {
       "id": 355877490,
@@ -1181,7 +1181,7 @@
       "id": -1014934560,
       "shortName": "paintballoveralls.suit",
       "nameEn": "Paintball Overalls",
-      "nameZh": "Paintball Overalls"
+      "nameZh": "彩弹连衣裤"
     },
     {
       "id": 1992974553,
@@ -1205,7 +1205,7 @@
       "id": -945708533,
       "shortName": "knightsarmour.skirt",
       "nameEn": "Knights armour skirt plates",
-      "nameZh": ""
+      "nameZh": "骑士护裙"
     },
     {
       "id": 1850456855,
@@ -1313,13 +1313,13 @@
       "id": -797592358,
       "shortName": "hazmatsuit.diver",
       "nameEn": "Abyss Pack",
-      "nameZh": ""
+      "nameZh": "深渊潜水服"
     },
     {
       "id": -105415879,
       "shortName": "hazmatsuit.frontier",
       "nameEn": "Frontier Suit",
-      "nameZh": ""
+      "nameZh": "开拓者装"
     },
     {
       "id": 1266491000,
@@ -1337,13 +1337,13 @@
       "id": 861513346,
       "shortName": "hazmatsuit.lumberjack",
       "nameEn": "Lumberjack Suit",
-      "nameZh": ""
+      "nameZh": "伐木工人服"
     },
     {
       "id": 491263800,
       "shortName": "hazmatsuit.nomadsuit",
       "nameEn": "Nomad Suit",
-      "nameZh": ""
+      "nameZh": "游牧装"
     },
     {
       "id": 1065594600,
@@ -1391,7 +1391,7 @@
       "id": 468313189,
       "shortName": "hazmatsuittwitch",
       "nameEn": "Twitch Rivals Hazmat Suit",
-      "nameZh": ""
+      "nameZh": "Twitch Rivals防化服"
     },
     {
       "id": -902423513,
@@ -1445,7 +1445,7 @@
       "id": 547862680,
       "shortName": "knighttorso.armour",
       "nameEn": "Knights armour cuirass",
-      "nameZh": ""
+      "nameZh": "骑士胸甲"
     },
     {
       "id": 1110385766,
@@ -1457,7 +1457,7 @@
       "id": -1478855279,
       "shortName": "metal.plate.torso.icevest",
       "nameEn": "Ice Metal Chest Plate",
-      "nameZh": ""
+      "nameZh": "金属胸甲 - 冰"
     },
     {
       "id": -2002277461,
@@ -1925,7 +1925,7 @@
       "id": -1779203452,
       "shortName": "easel",
       "nameEn": "Portable Easel",
-      "nameZh": "Portable Easel"
+      "nameZh": "便携画架"
     },
     {
       "id": 1177596584,
@@ -2081,7 +2081,7 @@
       "id": 146221721,
       "shortName": "heavy.scientist.plushie",
       "nameEn": "Heavy Scientist Plushie",
-      "nameZh": "Heavy Scientist Plushie"
+      "nameZh": "重型科学家玩偶"
     },
     {
       "id": 1160881421,
@@ -2285,7 +2285,7 @@
       "id": -1310391395,
       "shortName": "legacyfurnace",
       "nameEn": "Legacy Furnace",
-      "nameZh": ""
+      "nameZh": "传统熔炉"
     },
     {
       "id": -1863559151,
@@ -2783,7 +2783,7 @@
       "id": -1104881824,
       "shortName": "rug.bear",
       "nameEn": "Bear Skin Rug",
-      "nameZh": "Bear Skin Rug"
+      "nameZh": "熊皮地毯"
     },
     {
       "id": -1985799200,
@@ -2795,7 +2795,7 @@
       "id": 445662288,
       "shortName": "scientist.plushie",
       "nameEn": "Scientist Plushie",
-      "nameZh": "Scientist Plushie"
+      "nameZh": "科学家玩偶"
     },
     {
       "id": 504109620,
@@ -2957,7 +2957,7 @@
       "id": 782422285,
       "shortName": "sofa.pattern",
       "nameEn": "Sofa - Pattern",
-      "nameZh": ""
+      "nameZh": "花卉沙发"
     },
     {
       "id": 1604092540,
@@ -3017,13 +3017,13 @@
       "id": 1488606552,
       "shortName": "cupboard.tool.retro",
       "nameEn": "Retro Tool Cupboard",
-      "nameZh": ""
+      "nameZh": "复古工具柜"
     },
     {
       "id": 1174957864,
       "shortName": "cupboard.tool.shockbyte",
       "nameEn": "Shockbyte Tool Cupboard",
-      "nameZh": ""
+      "nameZh": "Shockbyte工具柜"
     },
     {
       "id": -1478445584,
@@ -3725,13 +3725,13 @@
       "id": -946599114,
       "shortName": "sign.artistcanvas.l",
       "nameEn": "Artist Canvas Standing",
-      "nameZh": "Artist Canvas Standing"
+      "nameZh": "立式艺术家画布"
     },
     {
       "id": -946599113,
       "shortName": "sign.artistcanvas.m",
       "nameEn": "Artist Canvas Large",
-      "nameZh": "Artist Canvas Large"
+      "nameZh": "大型艺术家画布"
     },
     {
       "id": -946599131,
@@ -3743,25 +3743,25 @@
       "id": 1562867678,
       "shortName": "sign.artistcanvas.xl",
       "nameEn": "Artist Canvas XL",
-      "nameZh": "Artist Canvas XL"
+      "nameZh": "特大型艺术家画布"
     },
     {
       "id": 1609921845,
       "shortName": "sign.artistcanvas.xs",
       "nameEn": "Artist Canvas Small",
-      "nameZh": "Artist Canvas Small"
+      "nameZh": "小型艺术家画布"
     },
     {
       "id": -816769770,
       "shortName": "sign.artistcanvas.xxl",
       "nameEn": "Artist Canvas XXL",
-      "nameZh": "Artist Canvas XXL"
+      "nameZh": "超大型艺术家画布"
     },
     {
       "id": 242421166,
       "shortName": "lightup.large",
       "nameEn": "Light-Up Frame Large",
-      "nameZh": ""
+      "nameZh": "大型灯光框架"
     },
     {
       "id": -1294739579,
@@ -3785,19 +3785,19 @@
       "id": 1801656689,
       "shortName": "lightup.xl",
       "nameEn": "Light-Up Frame XL",
-      "nameZh": "Light-Up Frame XL"
+      "nameZh": "加大号发光画框"
     },
     {
       "id": 1447138977,
       "shortName": "lightup.xxl",
       "nameEn": "Light-Up Frame XXL",
-      "nameZh": "Light-Up Frame XXL"
+      "nameZh": "加加大号发光画框"
     },
     {
       "id": -996235148,
       "shortName": "goldframe.large",
       "nameEn": "Ornate Frame large",
-      "nameZh": "Ornate Frame large"
+      "nameZh": "大型华丽画框"
     },
     {
       "id": -1901993050,
@@ -3809,37 +3809,37 @@
       "id": -1836526520,
       "shortName": "goldframe.small",
       "nameEn": "Ornate Frame Small",
-      "nameZh": "Ornate Frame Small"
+      "nameZh": "小型华丽画框"
     },
     {
       "id": -1528767189,
       "shortName": "goldframe.standing",
       "nameEn": "Ornate Frame Standing",
-      "nameZh": "Ornate Frame Standing"
+      "nameZh": "竖向华丽画框"
     },
     {
       "id": -1430299277,
       "shortName": "goldframe.xl",
       "nameEn": "Ornate Frame XL",
-      "nameZh": "Ornate Frame XL"
+      "nameZh": "特大型金框"
     },
     {
       "id": -1322332389,
       "shortName": "goldframe.xxl",
       "nameEn": "Ornate Frame XXL",
-      "nameZh": "Ornate Frame XXL"
+      "nameZh": "超大型华丽画框"
     },
     {
       "id": -1039234836,
       "shortName": "paintabletarget.reactive",
       "nameEn": "Paintable Reactive Target",
-      "nameZh": "Paintable Reactive Target"
+      "nameZh": "可绘制标靶"
     },
     {
       "id": 738611016,
       "shortName": "window.paintable",
       "nameEn": "Paintable Window",
-      "nameZh": "Paintable Window"
+      "nameZh": "可绘制窗户"
     },
     {
       "id": -1094453063,
@@ -4127,13 +4127,13 @@
       "id": 1758333838,
       "shortName": "rockingchair.rockingchair2",
       "nameEn": "Teal",
-      "nameZh": ""
+      "nameZh": "蓝绿色"
     },
     {
       "id": 192249897,
       "shortName": "rockingchair.rockingchair3",
       "nameEn": "Green",
-      "nameZh": ""
+      "nameZh": "绿色"
     },
     {
       "id": -2073432256,
@@ -4169,19 +4169,19 @@
       "id": 301063058,
       "shortName": "wantedposter.wantedposter2",
       "nameEn": "Wanted Poster 2",
-      "nameZh": ""
+      "nameZh": "通缉令2"
     },
     {
       "id": -1265020883,
       "shortName": "wantedposter.wantedposter3",
       "nameEn": "Wanted Poster 3",
-      "nameZh": ""
+      "nameZh": "通缉令3"
     },
     {
       "id": 1463862472,
       "shortName": "wantedposter.wantedposter4",
       "nameEn": "Wanted Poster 4",
-      "nameZh": ""
+      "nameZh": "通缉令4"
     },
     {
       "id": -1344017968,
@@ -4751,7 +4751,7 @@
       "id": 3380160,
       "shortName": "movembermoustachecard",
       "nameEn": "Card Movember Moustache",
-      "nameZh": ""
+      "nameZh": "纸片大胡子"
     },
     {
       "id": -2047081330,
@@ -4781,7 +4781,7 @@
       "id": 2054391128,
       "shortName": "factorydoor",
       "nameEn": "Factory Door",
-      "nameZh": ""
+      "nameZh": "工厂门"
     },
     {
       "id": 920930831,
@@ -4829,7 +4829,7 @@
       "id": 1840570710,
       "shortName": "abovegroundpool",
       "nameEn": "Above Ground Pool",
-      "nameZh": "Above Ground Pool"
+      "nameZh": "大型游泳池"
     },
     {
       "id": -321431890,
@@ -4955,7 +4955,7 @@
       "id": 352321488,
       "shortName": "sunglasses",
       "nameEn": "Sunglasses",
-      "nameZh": ""
+      "nameZh": "太阳镜"
     },
     {
       "id": 722955039,
@@ -5009,7 +5009,7 @@
       "id": -243540612,
       "shortName": "twitchrivals2023desk",
       "nameEn": "Twitch Rivals Desk",
-      "nameZh": ""
+      "nameZh": "Twitch Rivals办公桌"
     },
     {
       "id": -739993590,
@@ -5759,7 +5759,7 @@
       "id": -1779183908,
       "shortName": "paper",
       "nameEn": "Paper",
-      "nameZh": ""
+      "nameZh": "纸"
     },
     {
       "id": -804769727,
@@ -5945,19 +5945,19 @@
       "id": 2021351233,
       "shortName": "radiationremovetea.advanced",
       "nameEn": "Advanced Rad. Removal Tea",
-      "nameZh": ""
+      "nameZh": "上等去辐射茶"
     },
     {
       "id": -496584751,
       "shortName": "radiationremovetea",
       "nameEn": "Rad. Removal Tea",
-      "nameZh": ""
+      "nameZh": "普通去辐射茶"
     },
     {
       "id": 1905387657,
       "shortName": "radiationremovetea.pure",
       "nameEn": "Pure Rad. Removal Tea",
-      "nameZh": ""
+      "nameZh": "纯正去辐射茶"
     },
     {
       "id": -1729415579,
@@ -6143,25 +6143,25 @@
       "id": 1176355476,
       "shortName": "concretehatchet",
       "nameEn": "Concrete Hatchet",
-      "nameZh": ""
+      "nameZh": "混凝土斧"
     },
     {
       "id": -1360171080,
       "shortName": "concretepickaxe",
       "nameEn": "Concrete Pickaxe",
-      "nameZh": ""
+      "nameZh": "混凝土镐"
     },
     {
       "id": -399173933,
       "shortName": "lumberjack.hatchet",
       "nameEn": "Prototype Hatchet",
-      "nameZh": ""
+      "nameZh": "野战斧"
     },
     {
       "id": 236677901,
       "shortName": "lumberjack.pickaxe",
       "nameEn": "Prototype Pickaxe",
-      "nameZh": ""
+      "nameZh": "野战镐"
     },
     {
       "id": 696029452,
@@ -6593,13 +6593,13 @@
       "id": -139037392,
       "shortName": "rifle.ak.diver",
       "nameEn": "Abyss Assault Rifle",
-      "nameZh": ""
+      "nameZh": "AK-47突击步枪 - 深渊"
     },
     {
       "id": -1335497659,
       "shortName": "rifle.ak.ice",
       "nameEn": "Ice Assault Rifle",
-      "nameZh": ""
+      "nameZh": "AK-47突击步枪 - 冰"
     },
     {
       "id": 2054929933,
@@ -6611,7 +6611,7 @@
       "id": 472505338,
       "shortName": "rifle.ak.med",
       "nameEn": "Medieval AR",
-      "nameZh": ""
+      "nameZh": "AK-47突击步枪 - 中世纪"
     },
     {
       "id": -2072273936,
@@ -6641,7 +6641,7 @@
       "id": -880412831,
       "shortName": "blunderbuss",
       "nameEn": "Blunderbuss",
-      "nameZh": ""
+      "nameZh": "前膛霰弹枪"
     },
     {
       "id": 1588298435,
@@ -6719,19 +6719,19 @@
       "id": 1046904719,
       "shortName": "diverhatchet",
       "nameEn": "Abyss Metal Hatchet",
-      "nameZh": ""
+      "nameZh": "深渊斧"
     },
     {
       "id": 1561022037,
       "shortName": "diverpickaxe",
       "nameEn": "Abyss Metal Pickaxe",
-      "nameZh": ""
+      "nameZh": "深渊镐"
     },
     {
       "id": 1846605708,
       "shortName": "divertorch",
       "nameEn": "Abyss Torch",
-      "nameZh": ""
+      "nameZh": "深渊火炬"
     },
     {
       "id": -765183617,
@@ -6767,7 +6767,7 @@
       "id": 1937380239,
       "shortName": "frontier_hatchet",
       "nameEn": "Frontier Hatchet",
-      "nameZh": ""
+      "nameZh": "开拓者斧"
     },
     {
       "id": 1914691295,
@@ -6881,7 +6881,7 @@
       "id": -73195037,
       "shortName": "legacy bow",
       "nameEn": "Legacy Bow",
-      "nameZh": ""
+      "nameZh": "传统猎弓"
     },
     {
       "id": -1812555177,
@@ -6893,7 +6893,7 @@
       "id": 533993281,
       "shortName": "rifle.lr300.space",
       "nameEn": "Space LR-300 Assault Rifle",
-      "nameZh": "Space LR-300 Assault Rifle"
+      "nameZh": "LR-300突击步枪 - 太空"
     },
     {
       "id": -2069578888,
@@ -7037,7 +7037,7 @@
       "id": -1315992997,
       "shortName": "rocket.launcher.dragon",
       "nameEn": "Dragon Rocket Launcher",
-      "nameZh": ""
+      "nameZh": "火箭发射器 - 龙"
     },
     {
       "id": 494161326,

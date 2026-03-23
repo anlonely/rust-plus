@@ -19,9 +19,11 @@ const {
   saveEventRule,
   removeEventRule,
   setEventRuleEnabled,
+  replaceEventRules,
   listCommandRules,
   saveCommandRule,
   removeCommandRule,
+  replaceCommandRules,
   listCallGroupsDb,
   saveCallGroupDb,
   removeCallGroupDb,
@@ -31,6 +33,10 @@ const RustClient           = require('../src/connection/client');
 const EventEngine          = require('../src/events/engine');
 const CommandParser        = require('../src/commands/parser');
 const { notify }           = require('../src/notify/service');
+const {
+  normalizeErrorText,
+  isRustProtocolCompatibilityError,
+} = require('../src/connection/protocol-compat');
 const {
   setGroup,
   listGroups,
@@ -47,6 +53,7 @@ const { toSafeExternalUrl } = require('../src/utils/security');
 const { consumeRateLimit, RateLimitError } = require('../src/utils/rate-limit');
 const { createTeamChatDispatcher } = require('../src/utils/team-chat-dispatcher');
 const { getItemById, matchItems } = require('../src/utils/item-catalog');
+const { packVendingOfferLines } = require('../src/utils/vending-watchlist');
 const { normalizeServerMapPayload } = require('../src/utils/server-map-payload');
 const { enrichMapDataWithRustMaps } = require('../src/utils/rustmaps');
 const { getConfigDir } = require('../src/utils/runtime-paths');
@@ -71,6 +78,7 @@ let teamChatSeenOrder = [];
 let lastTeamBroadcastAt = 0;
 let lastTeamPollAt = 0;
 let teamSyncStatusTimer = null;
+let compatibilityWarningShown = false;
 let activeServerId = null;
 let pairingNoNotificationTimer = null;
 const VERSION = '1.2.0';
@@ -533,9 +541,14 @@ function renderMessageTemplate(template, eventType, context = {}) {
   const vendingItemsArray = Array.isArray(context.vendingItems)
     ? context.vendingItems.map((name) => String(name || '').trim()).filter(Boolean)
     : [];
-  const vendingItems = vendingItemsArray.length
-    ? vendingItemsArray.map((name) => `[${name}]`).join('')
+  const vendingItemLines = packVendingOfferLines(vendingItemsArray, {
+    maxChars: Math.max(24, TEAM_CHAT_MAX_CHARS - 24),
+  });
+  const vendingItems = vendingItemLines.length
+    ? vendingItemLines.join('\n')
     : '[未知物品]';
+  const vendingStage = String(context.vendingStage || '').toLowerCase();
+  const vendingStatusLabel = vendingStage === 'update' ? '售货机上新' : '发现新售货机';
   const vendingItemIds = Array.isArray(context.vendingItemIds)
     ? context.vendingItemIds.map((id) => String(id)).filter(Boolean).join(',')
     : '';
@@ -696,6 +709,7 @@ function renderMessageTemplate(template, eventType, context = {}) {
     '{vendor_stage}': vendorStage,
     '{vendor_stage_text}': vendorStatusText,
     '{vendor_status_message}': vendorStatusMessage,
+    '{vending_status_label}': vendingStatusLabel,
     '{vending_items}': vendingItems,
     '{vending_item_ids}': vendingItemIds,
     '{deep_sea_stage}': deepSeaStage,
@@ -790,6 +804,11 @@ function startTeamSyncStatusTimer() {
     const now = Date.now();
     const hasBroadcast = lastTeamBroadcastAt && (now - lastTeamBroadcastAt) <= 90_000;
     const hasPoll = lastTeamPollAt && (now - lastTeamPollAt) <= 20_000;
+    const compatLimited = compatibilityWarningShown && !hasBroadcast && !hasPoll;
+    if (compatLimited) {
+      emitTeamSyncStatus('compatibility');
+      return;
+    }
     const mode = hasBroadcast && hasPoll ? 'hybrid'
       : (hasBroadcast ? 'broadcast' : (hasPoll ? 'polling' : 'stale'));
     emitTeamSyncStatus(mode);
@@ -827,8 +846,8 @@ function startTeamSyncPolling() {
     if (!rustClient?.connected) return;
     try {
       const team = await rustClient.getTeamInfo();
+      lastTeamPollAt = Date.now();
       if (team) {
-        lastTeamPollAt = Date.now();
         if (eventEngine?.ingestTeamSnapshot) {
           try { eventEngine.ingestTeamSnapshot(team?.teamInfo ? team.teamInfo : team); } catch (_) {}
         }
@@ -844,11 +863,16 @@ function startTeamSyncPolling() {
     try {
       const chat = await rustClient.getTeamChat();
       const list = chat?.teamChat?.messages || [];
+      lastTeamPollAt = Date.now();
       for (const msg of list) {
         const key = buildTeamChatSeenKey(msg);
         if (key && !rememberTeamChatKey(key)) continue;
-        lastTeamPollAt = Date.now();
         sendToRenderer('team:message', msg);
+        if (cmdParser?.ingestTeamMessage) {
+          Promise.resolve(cmdParser.ingestTeamMessage(msg)).catch((err) => {
+            logger.debug('[Main] 轮询队聊注入指令解析失败: ' + err.message);
+          });
+        }
       }
     } catch (_) {
       // ignore; do not spam logs on servers that limit getTeamChat
@@ -1492,7 +1516,7 @@ async function restoreCallGroups() {
 }
 
 function formatRustConnectionErrorMessage(error) {
-  const raw = String(error?.message || error || '未知错误').trim();
+  const raw = normalizeErrorText(error) || '未知错误';
   const lower = raw.toLowerCase();
   if (lower.includes('socket hang up')) {
     return '连接被服务器主动断开，当前服务器 Rust+ 配对可能已失效，请在游戏内 ESC -> Rust+ -> Pair with Server 重新配对。';
@@ -1504,6 +1528,10 @@ function formatRustConnectionErrorMessage(error) {
     return '服务器未接受当前请求，当前配对信息可能已失效，请重新配对。';
   }
   return raw || '未知错误';
+}
+
+function isNonFatalRustProtocolError(error) {
+  return isRustProtocolCompatibilityError(error);
 }
 
 let _startServicesSeq = 0;
@@ -1568,6 +1596,7 @@ async function startServices(serverConfig, options = {}) {
     }
   });
   rustClient.on('disconnected', () => {
+    compatibilityWarningShown = false;
     lastTeamBroadcastAt = 0;
     lastTeamPollAt = 0;
     stopTeamSyncPolling();
@@ -1580,6 +1609,14 @@ async function startServices(serverConfig, options = {}) {
     });
   });
   rustClient.on('error', (error) => {
+    if (isNonFatalRustProtocolError(error)) {
+      if (!compatibilityWarningShown) {
+        compatibilityWarningShown = true;
+        emitTeamSyncStatus('compatibility');
+      }
+      logger.warn('[Main] 已忽略非致命协议错误: ' + (normalizeErrorText(error) || 'unknown'));
+      return;
+    }
     const message = formatRustConnectionErrorMessage(error);
     sendToRenderer('notification', {
       type: 'error',
@@ -1909,6 +1946,10 @@ function setupIPC() {
           }
           if (type === 'waiting-login') {
             sendSteamAuthStatus('waiting-login', '正在等待 Steam 登录完成...');
+            return;
+          }
+          if (type === 'registering-companion') {
+            sendSteamAuthStatus('credentials-ready', '已拿到 Rust+ 登录凭证，正在写回并注册本地设备...');
             return;
           }
           if (type === 'credentials-ready') {
@@ -2511,12 +2552,12 @@ function setupIPC() {
       }
       const preset = getEventPreset(presetId);
       if (!preset) return { success: false, error: '事件预设不存在' };
+      const nextRules = [];
 
       if (shouldReplace) {
         const existingRules = await listEventRules(activeServerId);
         for (const rule of existingRules) {
           eventEngine?.removeRule(rule.id);
-          await removeEventRule(rule.id, activeServerId);
         }
       }
 
@@ -2531,7 +2572,12 @@ function setupIPC() {
           _meta: rule._meta || {},
         }, activeServerId);
         eventEngine?.addRule(hydrateRule(normalized));
-        await saveEventRule(normalized);
+        nextRules.push(normalized);
+      }
+      if (shouldReplace) {
+        await replaceEventRules(activeServerId, nextRules);
+      } else {
+        await Promise.all(nextRules.map((rule) => saveEventRule(rule)));
       }
       return { success: true, applied: (preset.eventRules || []).length };
     }
@@ -2544,8 +2590,7 @@ function setupIPC() {
       if (!preset) return { success: false, error: '指令预设不存在' };
 
       if (shouldReplace) {
-        const persisted = await listCommandRules(activeServerId);
-        for (const item of persisted) await removeCommandRule(item.id, activeServerId);
+        await replaceCommandRules(activeServerId, []);
         if (cmdParser) {
           cmdParser.restoreBuiltinCommands?.();
           for (const command of cmdParser.getCommands()) {
@@ -2556,6 +2601,7 @@ function setupIPC() {
       }
 
       const rulesToApply = buildSystemCommandRulesFromParser(activeServerId);
+      const nextRules = [];
       for (const rule of rulesToApply.length ? rulesToApply : (preset.commandRules || [])) {
         const keyword = String(rule.keyword || '').toLowerCase();
         if (!keyword) continue;
@@ -2577,7 +2623,12 @@ function setupIPC() {
           if (payload.type || payload.name || payload.meta) cmdParser.setCommandRule(payload);
           else cmdParser.setCommandEnabled(keyword, true);
         }
-        await saveCommandRule({ ...payload, deleted: false });
+        nextRules.push({ ...payload, deleted: false });
+      }
+      if (shouldReplace) {
+        await replaceCommandRules(activeServerId, nextRules);
+      } else {
+        await Promise.all(nextRules.map((rule) => saveCommandRule(rule)));
       }
       return { success: true, applied: (rulesToApply.length ? rulesToApply : (preset.commandRules || [])).length };
     }
