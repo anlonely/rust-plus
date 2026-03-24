@@ -1746,6 +1746,16 @@ input, textarea, select { font-family:inherit; }
         <div style="font-size:15px;font-weight:600;margin-bottom:16px">主题外观</div>
         <div id="theme-picker" style="display:flex;gap:16px;flex-wrap:wrap"></div>
       </div>
+      <div class="card" style="max-width:960px;margin-top:16px">
+        <div style="font-size:15px;font-weight:600;margin-bottom:8px">界面语言</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:12px">仅切换 GUI 界面文案，不影响游戏内消息、规则模板和事件通知内容。</div>
+        <div style="max-width:260px">
+          <select class="input" id="ui-language-select" onchange="setUILanguage(this.value)">
+            <option value="zh-CN">简体中文</option>
+            <option value="en-US">English</option>
+          </select>
+        </div>
+      </div>
     </div>
 
   </div><!-- /#main -->
@@ -2085,6 +2095,503 @@ input, textarea, select { font-family:inherit; }
 
 <script src="../../assets/server-map-geometry.js"></script>
 <script>
+const UI_LANGUAGE_KEY = 'rust-plus-ui-language';
+const UI_LANGUAGES = Object.freeze(['zh-CN', 'en-US']);
+const UI_I18N_SKIP_SELECTORS = [
+  '#team-chat-list',
+  '#notif-log',
+  '#log-panel',
+  '#help-doc-content',
+];
+const UI_TEXT = {
+  'en-US': {
+    '安静的Rust工具箱': 'AnJing Rust Toolbox',
+    '配对服务': 'Pairing Service',
+    '未连接': 'Disconnected',
+    '🏠 控制台': '🏠 Dashboard',
+    '基础设置': 'Setup',
+    '🔗 设备配对': '🔗 Pairing',
+    '🔧 设备管理': '🔧 Devices',
+    '🗺️ 服务器地图': '🗺️ Server Map',
+    '自动化逻辑': 'Automation',
+    '⚡ 事件逻辑': '⚡ Events',
+    '💬 指令逻辑': '💬 Commands',
+    '📞 呼叫组': '📞 Call Groups',
+    '🗨️ 队伍聊天': '🗨️ Team Chat',
+    '系统': 'System',
+    '📋 运行日志': '📋 Logs',
+    '📘 帮助文档': '📘 Help',
+    '⚙️ 系统设置': '⚙️ Settings',
+    '未登录': 'Not signed in',
+    '未连接到服务器': 'No server connected',
+    '🔄 更新': '🔄 Refresh',
+    '检测中...': 'Checking...',
+    '离线': 'Offline',
+    '暂无最近服务器': 'No recent servers',
+    '服务器信息': 'Server Info',
+    '服务器连接': 'Server Connection',
+    '队伍同步': 'Team Sync',
+    '连接': 'Connections',
+    '在线人数': 'Players',
+    '最大人数': 'Capacity',
+    '游戏时间': 'Game Time',
+    '地图大小': 'Map Size',
+    '连接健康': 'Connection Health',
+    '🔄 刷新': '🔄 Refresh',
+    '连接状态': 'Connection State',
+    '重连计数': 'Reconnect Count',
+    '心跳失败': 'Heartbeat Failures',
+    '最近活动：': 'Recent Activity:',
+    '重连定时器：': 'Reconnect Timer:',
+    '最后错误：': 'Last Error:',
+    '快捷操作': 'Quick Actions',
+    '设备配对': 'Pairing',
+    '配对游戏服务器': 'Pair game servers',
+    '事件逻辑': 'Events',
+    '自动化触发规则': 'Automation triggers',
+    '指令逻辑': 'Commands',
+    '自定义指令响应': 'Custom command responses',
+    '呼叫组': 'Call Groups',
+    '紧急呼叫配置': 'Emergency call setup',
+    '👥 队伍成员': '👥 Team Members',
+    '连接服务器后显示队伍成员': 'Team members appear after connecting.',
+    '⚙️ 换服/加开关': '⚙️ Switch Server / Pair Devices',
+    '进入游戏重新配对服务器或添加新开关': 'Open the game to re-pair a server or add a switch.',
+    '进入配对 →': 'Open Pairing →',
+    '❓ 无响应？': '❓ No Response?',
+    '如果无法配对服务器，点击重新连接': 'If pairing fails, reconnect and try again.',
+    '🔄 重新连接': '🔄 Reconnect',
+    '🔔 最近通知': '🔔 Recent Notifications',
+    '清空': 'Clear',
+    '暂无通知记录': 'No notifications yet',
+    '🔗 设备配对': '🔗 Pairing',
+    '服务器配对流程': 'Server Pairing Flow',
+    '注册 FCM 推送通道': 'Register FCM Push Channel',
+    '首次使用需要完成 Steam 账号登录授权': 'First-time use requires Steam authorization.',
+    '打开 Rust 游戏进入服务器': 'Open Rust and enter the server',
+    '确保已在目标服务器中': 'Make sure you are inside the target server.',
+    '游戏内按 ESC → Rust+ → Pair with Server': 'In game: ESC → Rust+ → Pair with Server',
+    '程序自动接收推送并保存服务器信息；若无新推送，请先在 Rust+ 官方 App 中取消旧配对再重新配对': 'The app will receive the push and save the server. If nothing arrives, remove the old pairing in the official Rust+ app and pair again.',
+    '🔗 开始配对': '🔗 Start Pairing',
+    '♻️ 重绑推送凭据': '♻️ Rebind Push Credentials',
+    '已配对服务器': 'Paired Servers',
+    '暂无配对服务器': 'No paired servers',
+    '绑定智能设备（开关/警报器）': 'Pair Smart Devices (Switches / Alarms)',
+    '设备管理': 'Device Management',
+    '已绑定设备': 'Paired Devices',
+    '游戏内使用 Wire Tool 配对设备': 'Use the Wire Tool in game to pair devices.',
+    '未连接服务器': 'No server connected',
+    '＋ 添加事件规则': '＋ Add Event Rule',
+    '应用预设': 'Apply Preset',
+    '全部禁用': 'Disable All',
+    '全部启用': 'Enable All',
+    '暂无事件规则，点击「添加事件规则」开始': 'No event rules. Click “Add Event Rule” to begin.',
+    '＋ 添加指令': '＋ Add Command',
+    '暂无可用指令': 'No commands available',
+    '＋ 新建呼叫组': '＋ New Call Group',
+    '暂无呼叫组': 'No call groups',
+    '实时队伍消息': 'Live Team Messages',
+    '暂无队伍聊天消息': 'No team chat messages yet',
+    '输入消息，按 Enter 发送': 'Type a message and press Enter',
+    '发送': 'Send',
+    '仅在已连接服务器时可发送队伍消息': 'Team messages can only be sent while connected.',
+    '实时日志': 'Live Logs',
+    '👥 队伍: 0': '👥 Team: 0',
+    '🏪 售货机: 0': '🏪 Vending: 0',
+    '🕒 更新: -': '🕒 Updated: -',
+    '🔄 刷新地图': '🔄 Refresh Map',
+    '搜索售货机商品（中英文模糊匹配）': 'Search vending items (fuzzy match in CN/EN)',
+    '售货机': 'Vending',
+    '隐藏缺货': 'Hide Out of Stock',
+    '地标': 'Monuments',
+    '网格': 'Grid',
+    '自动刷新': 'Auto Refresh',
+    '未连接服务器，无法加载地图': 'No server connected. Map unavailable.',
+    '指令 / 事件 / 变量说明': 'Commands / Events / Variables',
+    '加载中...': 'Loading...',
+    '主题外观': 'Theme',
+    '界面语言': 'Interface Language',
+    '仅切换 GUI 界面文案，不影响游戏内消息、规则模板和事件通知内容。': 'Only switches GUI copy. In-game messages, rule templates, and event notices are unchanged.',
+    '售货机详情': 'Vending Details',
+    '关闭': 'Close',
+    '只需要完成 Steam 登录': 'Only complete Steam sign-in',
+    '桌面版会打开本地授权窗口，检测到 Rust+ 凭证后自动回写到工具箱。': 'Desktop opens a local auth window and writes Rust+ credentials back automatically.',
+    '当前状态': 'Current Status',
+    '等待开始': 'Ready to Start',
+    '刷新资料': 'Refresh Profile',
+    '开始 Steam 登录': 'Start Steam Login',
+    '注销登录': 'Sign Out',
+    '服务器需要重新配对': 'Server Needs Re-pairing',
+    '当前服务器虽然已连接，但 Rust+ 数据请求被拒绝。': 'The server is connected, but Rust+ data requests are being rejected.',
+    '这通常意味着当前服务器配对信息已经失效，需要在游戏里重新执行 Pair with Server。': 'This usually means the current server pairing has expired. Pair again in game.',
+    '下一步': 'Next Steps',
+    '保持当前 Steam 登录有效': 'Keep the current Steam login valid',
+    '进入游戏并打开目标服务器': 'Open the game and join the target server',
+    '1. 保持当前 Steam 登录有效': '1. Keep the current Steam login valid',
+    '2. 进入游戏并打开目标服务器': '2. Open the game and join the target server',
+    '3. 按': '3. Press',
+    '稍后处理': 'Later',
+    '去重新配对': 'Re-pair Now',
+    '添加事件规则': 'Add Event Rule',
+    '规则名称': 'Rule Name',
+    '例如：警报器触发通知': 'Example: Alarm Trigger Alert',
+    '事件类型': 'Event Type',
+    '警报器': 'Alarms',
+    '队伍': 'Team',
+    '载具': 'Vehicles',
+    '油井': 'Oil Rig',
+    '存储监视器': 'Storage Monitors',
+    '时间': 'Time',
+    '冷却时间（秒）': 'Cooldown (seconds)',
+    '动作': 'Actions',
+    '桌面通知': 'Desktop Notification',
+    '发送到团队聊天': 'Send to Team Chat',
+    '呼叫组联动': 'Trigger Call Group',
+    '设备控制（开关）': 'Device Control (Switch)',
+    '通知消息（支持变量：{event} {time}）': 'Notification Message (supports {event} {time})',
+    '例如：🚁 武装直升机进入地图！注意隐蔽': 'Example: 🚁 Patrol helicopter entered the map. Stay covered.',
+    '取消': 'Cancel',
+    '保存规则': 'Save Rule',
+    '保存指令': 'Save Command',
+    '添加指令': 'Add Command',
+    '指令类型': 'Command Type',
+    '指令AI问答': 'AI Q&A',
+    '查询售货机': 'Query Vending',
+    '查看服务器信息': 'Server Info',
+    '指令翻译': 'Translate',
+    '深海状态测试': 'Deep Sea Status',
+    '倒计时设置': 'Set Countdown',
+    '倒计时查询': 'Query Countdown',
+    '防空': 'SAM Control',
+    '更改队长': 'Change Leader',
+    '查询货船': 'Query Cargo',
+    '查询武装直升机': 'Query Heli',
+    '关键字': 'Keyword',
+    '例如：ai / shj / fwq': 'Example: ai / shj / fwq',
+    '回复内容': 'Response',
+    '例如：有人查询了深海状态，请留意': 'Example: Someone queried deep sea status. Stay alert.',
+    '保存指令': 'Save Command',
+    '添加 / 编辑呼叫组': 'Add / Edit Call Group',
+    '呼叫组名称': 'Call Group Name',
+    '例如：核心成员组': 'Example: Core Team',
+    '成员列表': 'Members',
+    '张三,+8613800000001&#10;李四,+8613900000002': 'Name,+1234567890',
+    '保存修改': 'Save Changes',
+    '检测到新设备配对': 'New Device Pairing Detected',
+    '请确认设备信息后保存。默认名称可直接修改。': 'Confirm the device details before saving. You can edit the default name.',
+    '设备 Entity ID': 'Device Entity ID',
+    '设备类型': 'Device Type',
+    '设备名称': 'Device Name',
+    '例如：大门总开关': 'Example: Main Gate Switch',
+    '确认': 'Confirm',
+    '复制直连': 'Copy Connect URL',
+    '删除': 'Delete',
+    '1. 游戏内手持': '1. Hold',
+    'Wire Tool（电线工具）': 'Wire Tool',
+    '2. 对准目标设备按': '2. Aim at the target device and press',
+    'E 键': 'E',
+    '3. 选择': '3. Select',
+    '4. 程序自动接收并保存 Entity ID': '4. The toolbox receives and stores the Entity ID automatically',
+    '服务器未连接，无法加载设备': 'Server not connected. Devices unavailable.',
+    '服务器未连接，无法加载事件规则': 'Server not connected. Event rules unavailable.',
+    '× 关闭': '× Close',
+    '警报通电（触发）': 'Alarm Powered (Trigger)',
+    '警报断电（解除）': 'Alarm Off (Clear)',
+    '队友上线': 'Teammate Online',
+    '队友下线': 'Teammate Offline',
+    '队友死亡': 'Teammate Died',
+    '队友重生': 'Teammate Respawned',
+    '队友挂机': 'Teammate AFK',
+    '队友恢复活动': 'Teammate Active Again',
+    '在线人数联动启停规则': 'Online Count Auto Toggle',
+    '武装直升机整合（进入/巡逻/离开/坠落）': 'Patrol Helicopter Combined (enter/patrol/leave/crash)',
+    '军用运输直升机整合（进入/巡逻/离开）': 'CH47 Combined (enter/patrol/leave)',
+    '货船事件整合（进入/离开/航行/停靠）': 'Cargo Ship Combined (enter/leave/sailing/dock)',
+    '新售货机出现': 'New Vending Machine',
+    '流浪商人整合（进入/移动/停留/离开）': 'Traveling Vendor Combined (enter/move/stay/leave)',
+    '石油事件整合（大小石油重装/解锁）': 'Oil Rig Combined (heavy/unlock)',
+    '物品数量高于阈值': 'Item Count Above Threshold',
+    '物品数量变化': 'Item Count Changed',
+    '指定物品清空': 'Tracked Item Emptied',
+    '容器完全清空': 'Container Emptied',
+    '容器已满': 'Container Full',
+    '工具柜维护时间': 'TC Upkeep Time',
+    '整点报时': 'Hourly Tick',
+    '天黑/天亮提醒（5分钟/1分钟）': 'Day/Night Reminder (5m/1m)',
+    '深海整合（开启/关闭）': 'Deep Sea Combined (open/close)',
+    '指令关键词': 'Command Keyword',
+    '权限': 'Permission',
+    '全员': 'Everyone',
+    '仅队长': 'Leader Only',
+    '保存': 'Save',
+    '新建呼叫组': 'New Call Group',
+    '这是系统内置的团队聊天配置。不可删除，仅用于控制全部发送到团队聊天的全局发送间隔。': 'This is the built-in team chat settings group. It cannot be deleted and only controls the global send interval for all team chat messages.',
+    '组名称': 'Group Name',
+    '团队聊天发送间隔（秒）': 'Team Chat Send Interval (seconds)',
+    '对全部发送到团队聊天生效。事件逻辑和指令逻辑里如果自定义了冷却时间，会优先使用自定义值。': 'This applies to all team chat sends. Custom cooldowns in event or command rules take priority.',
+    '电话配置（语音通知）': 'Phone Settings (voice notification)',
+    '电话成员（每行一个：名字,+86手机号）': 'Phone Members (one per line: name,+countrycode number)',
+    'KOOK 配置': 'KOOK Settings',
+    '教程': 'Guide',
+    '当前使用 Webhook 推送，不需要 KOOK Bot Token。': 'Uses Webhook delivery. A KOOK Bot Token is not required.',
+    'Discord 配置': 'Discord Settings',
+    '当前使用 Webhook 推送，不需要 Discord Bot Token。': 'Uses Webhook delivery. A Discord Bot Token is not required.',
+    '启用此呼叫组': 'Enable This Call Group',
+    '禁用后仍会保留配置，但事件和指令联动不会触发该呼叫组。': 'Configuration is preserved when disabled, but event and command automation will not trigger this group.',
+    '刷新中...': 'Refreshing...',
+    '准备中': 'Preparing',
+    '已打开授权窗口': 'Auth Window Opened',
+    '等待登录': 'Waiting for Sign-in',
+    '等待重新打开': 'Waiting to Reopen',
+    '凭证已捕获': 'Credentials Captured',
+    '本地已登录': 'Logged In Locally',
+    '同步资料中': 'Syncing Profile',
+    '同步完成': 'Sync Complete',
+    '刷新中': 'Refreshing',
+    '资料同步失败': 'Profile Sync Failed',
+    '登录失败': 'Sign-in Failed',
+    '已登录': 'Signed In',
+    '已启动授权流程': 'Auth Flow Started',
+    '打开 Steam 登录页': 'Open Steam Sign-in Page',
+    '正在检测 Rust+ 凭证': 'Detecting Rust+ Credentials',
+    '已检测 Rust+ 凭证': 'Rust+ Credentials Detected',
+    '同步 Steam 资料': 'Sync Steam Profile',
+    '桌面端已经创建本地授权链路，等待外部登录窗口接管。': 'Desktop created the local auth bridge and is waiting for the login window.',
+    '点击“开始 Steam 登录”后，工具箱会先准备本地授权链路。': 'When you click “Start Steam Login”, the toolbox prepares the local auth bridge first.',
+    '你刚刚关闭了登录页。点击“重新打开登录页”后会再次拉起授权窗口。': 'You closed the login page. Click “Reopen Login Page” to continue.',
+    '授权窗口已启动，等待你在其中完成 Steam 登录。': 'The auth window is open and waiting for Steam sign-in.',
+    '准备完成后会自动拉起 Rust+ 的 Steam 登录页。': 'Rust+ sign-in opens automatically after preparation finishes.',
+    '本地已经拿到 Rust+ 登录凭证，正在刷新工具箱状态。': 'Rust+ credentials were captured locally. Refreshing toolbox state.',
+    '请在登录页完成 Steam 登录，工具箱会继续等待并自动捕获 Rust+ 凭证。': 'Complete Steam sign-in in the login page. The toolbox will capture Rust+ credentials automatically.',
+    '完成 Steam 登录后，本地授权链路会自动捕获 Rust+ 凭证。': 'After Steam sign-in, the local auth bridge will capture Rust+ credentials automatically.',
+    'Steam 资料已同步完成，可以直接继续配对和后续管理。': 'Steam profile sync is complete. You can continue with pairing and management.',
+    '本地凭证已写入，正在刷新 Steam 昵称、头像和在线状态。': 'Local credentials are written. Refreshing Steam name, avatar, and status.',
+    '拿到本地凭证后会自动同步 Steam 资料。': 'Steam profile sync starts automatically after local credentials are ready.',
+    '等待开始': 'Ready to Start',
+    '兼容受限': 'Limited Compatibility',
+    '仅轮询': 'Polling Only',
+    '仅广播': 'Broadcast Only',
+    '广播 + 轮询': 'Broadcast + Polling',
+    '数据同步正常': 'Data Sync Normal',
+    '服务运行正常': 'Service Healthy',
+    '当前服务器返回了非标准 Rust+ 消息，队伍同步能力受限': 'This server returns non-standard Rust+ payloads. Team sync is limited.',
+    '近期未收到队伍同步数据': 'No recent team sync data received.',
+    '当前服务器：': 'Current Server: ',
+    '已连接 ✓': 'Connected ✓',
+    '已连接': 'Connected',
+    '正在拉取服务器数据...': 'Loading server data...',
+    '配对服务正常 ✓': 'Pairing Service Healthy ✓',
+    '配对服务异常': 'Pairing Service Error',
+    '运行中': 'Running',
+    '在线': 'Online',
+    '连接中': 'Connecting',
+    'Steam 已连接到本地工具箱': 'Steam is connected to the local toolbox',
+    '本地凭证已经写入工具箱，右侧会显示当前同步状态。需要更新资料时直接点“刷新资料”。': 'Local credentials are already saved. Use “Refresh Profile” to update status on the right.',
+    '请先完成 Steam 登录': 'Complete Steam sign-in first',
+    '已登录（未获取到 SteamID）': 'Signed in (SteamID unavailable)',
+    'Steam 资料已刷新': 'Steam profile refreshed',
+    '已刷新本地登录状态': 'Local login state refreshed',
+    '已刷新，但未解析到 SteamID': 'Refreshed, but SteamID was not parsed',
+    'Steam 资料刷新失败': 'Steam profile refresh failed',
+    '未获取到 Steam 状态': 'Steam status unavailable',
+    '初始化失败': 'Initialization failed',
+    '程序初始化完成': 'Initialization complete',
+    'Rust 工具箱界面已加载': 'Rust toolbox UI loaded',
+    '暗夜蓝': 'Midnight Blue',
+    '极简白': 'Minimal White',
+    '赛博朋克': 'Cyberpunk',
+    '落日熔金': 'Sunset Gold',
+    '简体中文': 'Simplified Chinese',
+    'English': 'English',
+  }
+};
+const UI_PATTERNS = {
+  'en-US': [
+    [/^最近服务器（(\d+)）$/, (_, count) => `Recent Servers (${count})`],
+    [/^👥 队伍:\s*(.+)$/, (_, value) => `👥 Team: ${value}`],
+    [/^🏪 售货机:\s*(.+)$/, (_, value) => `🏪 Vending: ${value}`],
+    [/^🕒 更新:\s*(.+)$/, (_, value) => `🕒 Updated: ${value}`],
+    [/^Steam\s+(\d+)$/, (_, id) => `Steam ${id}`],
+    [/^初始化失败:\s*(.+)$/, (_, value) => `Initialization failed: ${value}`],
+    [/^刷新失败：\s*(.+)$/, (_, value) => `Refresh failed: ${value}`],
+    [/^保存失败：\s*(.+)$/, (_, value) => `Save failed: ${value}`],
+    [/^删除失败：\s*(.+)$/, (_, value) => `Delete failed: ${value}`],
+    [/^发送失败:\s*(.+)$/, (_, value) => `Send failed: ${value}`],
+    [/^操作失败：\s*(.+)$/, (_, value) => `Operation failed: ${value}`],
+    [/^Steam 资料刷新失败:\s*(.+)$/, (_, value) => `Steam profile refresh failed: ${value}`],
+    [/^资料已刷新：\s*(.+)$/, (_, value) => `Profile refreshed: ${value}`],
+    [/^授权失败：\s*(.+)$/, (_, value) => `Authorization failed: ${value}`],
+    [/^(\d+)\s*·\s*资料获取失败$/, (_, id) => `${id} · Profile fetch failed`],
+    [/^服务器连接异常$/, () => 'Server Connection Error'],
+    [/^运行异常$/, () => 'Runtime Error'],
+  ],
+};
+const uiTextNodeCache = new WeakMap();
+let uiApplyingTranslations = false;
+
+function normalizeUILanguage(lang) {
+  return UI_LANGUAGES.includes(String(lang || '')) ? String(lang) : 'zh-CN';
+}
+
+function getStoredUILanguage() {
+  try {
+    return normalizeUILanguage(localStorage.getItem(UI_LANGUAGE_KEY) || 'zh-CN');
+  } catch (_) {
+    return 'zh-CN';
+  }
+}
+
+function shouldSkipUILocalization(node) {
+  if (!node || !(node.parentElement instanceof HTMLElement)) return true;
+  const tag = String(node.parentElement.tagName || '').toUpperCase();
+  if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'NOSCRIPT') return true;
+  return UI_I18N_SKIP_SELECTORS.some((selector) => node.parentElement.closest(selector));
+}
+
+function translateUICore(text, lang = state.uiLanguage) {
+  const source = String(text || '');
+  if (!source || lang === 'zh-CN') return source;
+  const exact = UI_TEXT?.[lang]?.[source];
+  if (exact) return exact;
+  const rules = UI_PATTERNS?.[lang] || [];
+  for (const [pattern, replacer] of rules) {
+    if (!pattern.test(source)) continue;
+    return source.replace(pattern, replacer);
+  }
+  return source;
+}
+
+function uiText(text) {
+  return translateUICore(text, state.uiLanguage);
+}
+
+function translateUITextNodeValue(text, lang = state.uiLanguage) {
+  const raw = String(text || '');
+  if (!raw.trim()) return raw;
+  const leading = raw.match(/^\s*/)?.[0] || '';
+  const trailing = raw.match(/\s*$/)?.[0] || '';
+  const core = raw.trim();
+  return `${leading}${translateUICore(core, lang)}${trailing}`;
+}
+
+function applyUIAttributeTranslation(root, attrName) {
+  const elements = [];
+  if (root instanceof HTMLElement && root.hasAttribute?.(attrName)) elements.push(root);
+  if (root?.querySelectorAll) {
+    root.querySelectorAll(`[${attrName}]`).forEach((el) => elements.push(el));
+  }
+  const datasetKey = attrName === 'placeholder'
+    ? 'i18nOrigPlaceholder'
+    : attrName === 'title'
+      ? 'i18nOrigTitle'
+      : attrName === 'aria-label'
+        ? 'i18nOrigAriaLabel'
+        : '';
+  if (!datasetKey) return;
+  elements.forEach((el) => {
+    if (!(el instanceof HTMLElement)) return;
+    const current = el.getAttribute(attrName);
+    if (current == null) return;
+    if (!el.dataset[datasetKey] || /[\u4e00-\u9fff]/.test(current) || state.uiLanguage === 'zh-CN') {
+      el.dataset[datasetKey] = current;
+    }
+    const original = el.dataset[datasetKey] || current;
+    const next = state.uiLanguage === 'zh-CN' ? original : translateUICore(original, state.uiLanguage);
+    if (next !== current) el.setAttribute(attrName, next);
+  });
+}
+
+function applyUILanguage(root = document.body) {
+  if (!root || uiApplyingTranslations) return;
+  uiApplyingTranslations = true;
+  try {
+    document.documentElement.lang = state.uiLanguage === 'en-US' ? 'en' : 'zh-CN';
+    document.title = state.uiLanguage === 'en-US' ? 'AnJing Rust Toolbox' : '安静的Rust工具箱';
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    const textNodes = [];
+    while (walker.nextNode()) textNodes.push(walker.currentNode);
+    for (const node of textNodes) {
+      if (shouldSkipUILocalization(node)) continue;
+      if (!node.data || !node.data.trim()) continue;
+      if (state.uiLanguage === 'zh-CN') {
+        const original = uiTextNodeCache.get(node);
+        if (typeof original === 'string' && original !== node.data) node.data = original;
+        continue;
+      }
+      if (/[\u4e00-\u9fff]/.test(node.data) || !uiTextNodeCache.has(node)) {
+        uiTextNodeCache.set(node, node.data);
+      }
+      const original = uiTextNodeCache.get(node) || node.data;
+      const translated = translateUITextNodeValue(original, state.uiLanguage);
+      if (translated !== node.data) node.data = translated;
+    }
+    applyUIAttributeTranslation(root, 'placeholder');
+    applyUIAttributeTranslation(root, 'title');
+    applyUIAttributeTranslation(root, 'aria-label');
+    const langSelect = document.getElementById('ui-language-select');
+    if (langSelect) langSelect.value = state.uiLanguage;
+    renderStaticUILocalizedFields();
+  } finally {
+    uiApplyingTranslations = false;
+  }
+}
+
+function renderStaticUILocalizedFields() {
+  const labelPairing = document.getElementById('label-pairing');
+  const labelServer = document.getElementById('label-server');
+  if (labelPairing) labelPairing.textContent = state.connected ? (state.currentServer?.name || uiText('配对服务')) : uiText('配对服务');
+  if (labelServer && !state.connected) labelServer.textContent = uiText('未连接');
+  const navMap = {
+    dashboard: '🏠 控制台',
+    pairing: '🔗 设备配对',
+    devices: '🔧 设备管理',
+    servermap: '🗺️ 服务器地图',
+    events: '⚡ 事件逻辑',
+    commands: '💬 指令逻辑',
+    callgroups: '📞 呼叫组',
+    teamchat: '🗨️ 队伍聊天',
+    logs: '📋 运行日志',
+    help: '📘 帮助文档',
+    settings: '⚙️ 系统设置',
+  };
+  Object.entries(navMap).forEach(([pageId, label]) => {
+    const el = document.querySelector(`.nav-item[data-page="${pageId}"]`);
+    const icon = el?.querySelector('.icon');
+    if (el && icon) {
+      const textNode = [...el.childNodes].find((node) => node.nodeType === Node.TEXT_NODE && node.textContent.trim());
+      if (textNode) textNode.textContent = ` ${uiText(label.replace(/^[^\s]+\s/, `${icon.textContent} `)).replace(icon.textContent + ' ', '')}`;
+    }
+  });
+  const sectionLabels = document.querySelectorAll('.sidebar-section');
+  if (sectionLabels[0]) sectionLabels[0].textContent = uiText('基础设置');
+  if (sectionLabels[1]) sectionLabels[1].textContent = uiText('自动化逻辑');
+  if (sectionLabels[2]) sectionLabels[2].textContent = uiText('系统');
+  const pageTitleMap = {
+    'page-teamchat': '🗨️ 队伍聊天',
+    'page-logs': '📋 运行日志',
+    'page-help': '📘 帮助文档',
+    'page-settings': '⚙️ 系统设置',
+  };
+  Object.entries(pageTitleMap).forEach(([id, label]) => {
+    const title = document.querySelector(`#${id} .page-title`);
+    if (title) title.textContent = uiText(label);
+  });
+  const serverMapTitle = document.querySelector('#page-servermap .page-title > span:first-child');
+  if (serverMapTitle) serverMapTitle.textContent = uiText('🗺️ 服务器地图');
+}
+
+function setUILanguage(lang) {
+  state.uiLanguage = normalizeUILanguage(lang);
+  try {
+    localStorage.setItem(UI_LANGUAGE_KEY, state.uiLanguage);
+  } catch (_) {}
+  renderSettingsPage();
+  setPairingStatus(state.pairingStatus?.ok !== false, state.pairingStatus?.subText || null);
+  updateTeamSyncStatus(state.teamSyncStatus || { mode: 'offline' });
+  updateConnectionUI(state.connected, state.currentServer?.name || '');
+  applyUILanguage(document.body);
+}
+
 // ═══════════════════════════════════════════════
 // 全局状态
 // ═══════════════════════════════════════════════
@@ -2110,6 +2617,8 @@ const state = {
   steamAuthAutoStarted: false,
   steamAuthPhase: 'idle',
   steamAuthMessage: '',
+  pairingStatus: { ok: true, subText: null },
+  teamSyncStatus: { mode: 'offline' },
   helpDocLoaded: false,
   healthPollTimer: null,
   mapPollTimer: null,
@@ -2133,6 +2642,7 @@ const state = {
   serverDataIssueLogged: '',
   serverRepairPromptShownFor: '',
   mapResizeHandlerBound: false,
+  uiLanguage: getStoredUILanguage(),
   serverMapLayout: { renderedRect: null, mapContext: null },
   serverMapSettings: {
     showVending: true,
@@ -2887,6 +3397,7 @@ function navigate(pageId, el) {
     refreshServerMap(false);
     syncServerMapPolling();
   }
+  applyUILanguage(document.body);
 }
 
 // ═══════════════════════════════════════════════
@@ -3296,10 +3807,10 @@ function updateConnectionUI(connected, serverName) {
     state.serverDataIssueLogged = '';
     state.serverRepairPromptShownFor = '';
     dot.classList.add('online');
-    label.textContent = serverName || '已连接';
-    stVal.textContent = '已连接 ✓';
+    label.textContent = serverName || uiText('已连接');
+    stVal.textContent = uiText('已连接 ✓');
     stVal.style.color = 'var(--green)';
-    stSub.textContent = '正在拉取服务器数据...';
+    stSub.textContent = uiText('正在拉取服务器数据...');
     document.getElementById('server-info-card').style.display = 'block';
     document.getElementById('health-info-card').style.display = 'block';
     refreshAllServerData();
@@ -3314,11 +3825,11 @@ function updateConnectionUI(connected, serverName) {
     state.serverMapLayout = { renderedRect: null, mapContext: null };
     state.serverRepairPromptShownFor = '';
     dot.classList.remove('online');
-    label.textContent = '未连接';
-    stVal.textContent = '未连接';
+    label.textContent = uiText('未连接');
+    stVal.textContent = uiText('未连接');
     stVal.style.color = 'var(--text2)';
     stSub.textContent = '-';
-    document.getElementById('server-name-title').textContent = '未连接到服务器';
+    document.getElementById('server-name-title').textContent = uiText('未连接到服务器');
     document.getElementById('server-info-card').style.display = 'none';
     document.getElementById('health-info-card').style.display = 'none';
     stopHealthPolling();
@@ -3331,41 +3842,42 @@ function updateConnectionUI(connected, serverName) {
 }
 
 function updateTeamSyncStatus(status = {}) {
+  state.teamSyncStatus = { ...(status || {}), mode: status?.mode || 'offline' };
   const mode = status?.mode || 'offline';
   const val = document.getElementById('st-team-sync');
   const sub = document.getElementById('st-team-sync-sub');
   if (!val || !sub) return;
   if (mode === 'hybrid') {
-    val.textContent = '广播 + 轮询';
+    val.textContent = uiText('广播 + 轮询');
     val.style.color = 'var(--green)';
-    sub.textContent = '实时广播正常，轮询兜底可用';
+    sub.textContent = uiText('实时广播正常，轮询兜底可用');
     return;
   }
   if (mode === 'broadcast') {
-    val.textContent = '仅广播';
+    val.textContent = uiText('仅广播');
     val.style.color = 'var(--blue)';
-    sub.textContent = '服务器主动推送队伍数据';
+    sub.textContent = uiText('服务器主动推送队伍数据');
     return;
   }
   if (mode === 'polling') {
-    val.textContent = '仅轮询';
+    val.textContent = uiText('仅轮询');
     val.style.color = 'var(--orange)';
-    sub.textContent = '广播缺失，使用轮询兜底';
+    sub.textContent = uiText('广播缺失，使用轮询兜底');
     return;
   }
   if (mode === 'compatibility') {
-    val.textContent = '兼容受限';
+    val.textContent = uiText('兼容受限');
     val.style.color = 'var(--orange)';
-    sub.textContent = '当前服务器返回了非标准 Rust+ 消息，队伍同步能力受限';
+    sub.textContent = uiText('当前服务器返回了非标准 Rust+ 消息，队伍同步能力受限');
     return;
   }
   if (mode === 'stale') {
-    val.textContent = '同步停滞';
+    val.textContent = uiText('同步停滞');
     val.style.color = 'var(--red)';
-    sub.textContent = '近期未收到队伍同步数据';
+    sub.textContent = uiText('近期未收到队伍同步数据');
     return;
   }
-  val.textContent = '离线';
+  val.textContent = uiText('离线');
   val.style.color = 'var(--text2)';
   sub.textContent = '-';
 }
@@ -3387,14 +3899,14 @@ async function refreshAllServerData() {
 
   if (infoOk || teamOk) {
     state.serverDataIssue = '';
-    stVal.textContent = '已连接 ✓';
+    stVal.textContent = uiText('已连接 ✓');
     stVal.style.color = 'var(--green)';
-    stSub.textContent = '数据同步正常';
+    stSub.textContent = uiText('数据同步正常');
     return;
   }
 
-  state.serverDataIssue = issue || '已连接，但当前未返回任何 Rust+ 数据';
-  stVal.textContent = '已连接（需重配）';
+  state.serverDataIssue = issue || uiText('已连接，但当前未返回任何 Rust+ 数据');
+  stVal.textContent = uiText('已连接（需重配）');
   stVal.style.color = 'var(--orange)';
   stSub.textContent = state.serverDataIssue;
   if (state.serverDataIssueLogged !== state.serverDataIssue) {
@@ -3415,7 +3927,7 @@ function setButtonDisabled(id, disabled) {
 
 function updateScopedPageState() {
   const connected = !!state.connected && !!state.currentServer?.id;
-  const scopeText = connected ? `当前服务器：${state.currentServer.name || state.currentServer.id}` : '未连接服务器';
+  const scopeText = connected ? `${uiText('当前服务器：')}${state.currentServer.name || state.currentServer.id}` : uiText('未连接服务器');
   const eventsScope = document.getElementById('events-scope-label');
   const cmdScope = document.getElementById('commands-scope-label');
   if (eventsScope) eventsScope.textContent = scopeText;
@@ -3438,13 +3950,13 @@ function formatAgo(ms) {
 async function refreshConnectionHealth() {
   const h = await rustAPI.getServerHealth().catch(() => null);
   if (!h) return;
-  const stateText = h.connected ? '在线' : (h.connecting ? '连接中' : '离线');
+  const stateText = h.connected ? uiText('在线') : (h.connecting ? uiText('连接中') : uiText('离线'));
   document.getElementById('h-state').textContent = stateText;
   document.getElementById('h-state').style.color = h.connected ? 'var(--green)' : (h.connecting ? 'var(--orange)' : 'var(--red)');
   document.getElementById('h-retry').textContent = String(h.reconnectCount ?? 0);
   document.getElementById('h-heartbeat').textContent = String(h.heartbeatFailures ?? 0);
   document.getElementById('h-activity').textContent = formatAgo(h.lastActivityAgoMs);
-  document.getElementById('h-reconnect-timer').textContent = h.hasReconnectTimer ? '运行中' : '无';
+  document.getElementById('h-reconnect-timer').textContent = h.hasReconnectTimer ? uiText('运行中') : uiText('无');
   document.getElementById('h-last-error').textContent = h.lastError || '-';
 }
 
@@ -3462,6 +3974,7 @@ function stopHealthPolling() {
 }
 
 function setPairingStatus(ok, subText = null) {
+  state.pairingStatus = { ok: !!ok, subText };
   const dot   = document.getElementById('dot-pairing');
   const label = document.getElementById('label-pairing');
   const stVal = document.getElementById('st-pairing');
@@ -3469,14 +3982,14 @@ function setPairingStatus(ok, subText = null) {
 
   if (ok) {
     dot.classList.add('online');
-    stVal.textContent = '配对服务正常 ✓';
+    stVal.textContent = uiText('配对服务正常 ✓');
     stVal.style.color = 'var(--green)';
-    stSub.textContent = subText || '服务运行正常';
+    stSub.textContent = subText || uiText('服务运行正常');
   } else {
     dot.classList.remove('online');
-    stVal.textContent = '配对服务异常';
+    stVal.textContent = uiText('配对服务异常');
     stVal.style.color = 'var(--red)';
-    stSub.textContent = subText || '检查网络连接';
+    stSub.textContent = subText || uiText('检查网络连接');
   }
 }
 
@@ -6988,6 +7501,7 @@ function setTheme(themeId) {
 
 function renderSettingsPage() {
   const picker = document.getElementById('theme-picker');
+  const langSelect = document.getElementById('ui-language-select');
   if (!picker) return;
   const current = localStorage.getItem('rust-plus-theme') || 'dark';
   const previewBorder = (t) => t.id === 'light' ? '#d0d5e0' : t.id === 'cyberpunk' ? 'rgba(0,240,255,.15)' : t.id === 'sunset' ? 'rgba(255,160,64,.15)' : 'rgba(255,255,255,.08)';
@@ -7010,6 +7524,8 @@ function renderSettingsPage() {
       <div class="label" style="background:${t.card};color:${previewLabel(t)}">${t.name}</div>
     </div>
   `).join('');
+  if (langSelect) langSelect.value = state.uiLanguage;
+  applyUILanguage(document.body);
 }
 
 // ── 启动 ─────────────────────────────────────
@@ -7018,6 +7534,7 @@ function renderSettingsPage() {
   const saved = localStorage.getItem('rust-plus-theme');
   if (saved && saved !== 'dark') document.documentElement.setAttribute('data-theme', saved);
 })();
+applyUILanguage(document.body);
 syncWindowControlsVisibility();
 setTeamChatComposerEnabled(false);
 init();

@@ -80,8 +80,8 @@ function parseClockSeconds(raw, fallbackSeconds) {
   return hh * 3600 + mm * 60;
 }
 
-const FIXED_DAY_START_SECONDS = parseClockSeconds(process.env.RUST_DAY_START_HHMM, 7 * 3600 + 30 * 60);   // 07:30
-const FIXED_NIGHT_START_SECONDS = parseClockSeconds(process.env.RUST_NIGHT_START_HHMM, 19 * 3600 + 30 * 60); // 19:30
+const FIXED_DAY_START_SECONDS = parseClockSeconds(process.env.RUST_DAY_START_HHMM, null);
+const FIXED_NIGHT_START_SECONDS = parseClockSeconds(process.env.RUST_NIGHT_START_HHMM, null);
 
 function toHourSeconds(raw, fallbackHour = 0) {
   const n = Number(raw);
@@ -101,8 +101,12 @@ function formatHHMM(totalSeconds) {
 
 function formatDayNight(gameSeconds, sunriseRaw = null, sunsetRaw = null) {
   const sec = ((Math.floor(gameSeconds) % 86400) + 86400) % 86400;
-  const dayStart = FIXED_DAY_START_SECONDS || toHourSeconds(sunriseRaw, 7.5);
-  const nightStart = FIXED_NIGHT_START_SECONDS || toHourSeconds(sunsetRaw, 19.5);
+  const dayStart = FIXED_DAY_START_SECONDS != null
+    ? FIXED_DAY_START_SECONDS
+    : toHourSeconds(sunriseRaw, 7.5);
+  const nightStart = FIXED_NIGHT_START_SECONDS != null
+    ? FIXED_NIGHT_START_SECONDS
+    : toHourSeconds(sunsetRaw, 19.5);
   const isDay = sec >= dayStart && sec < nightStart;
   const target = isDay ? nightStart : dayStart;
   const remain = isDay
