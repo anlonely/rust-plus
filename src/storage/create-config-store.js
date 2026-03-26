@@ -48,6 +48,17 @@ function createConfigStore({ configDir } = {}) {
   const CONFIG_DIR = String(configDir || '').trim();
   if (!CONFIG_DIR) throw new Error('configDir 不能为空');
 
+  const DEFAULT_AI_SETTINGS = Object.freeze({
+    provider: 'anthropic',
+    baseUrl: '',
+    authToken: '',
+    model: '',
+    modelName: 'Custom AI Model',
+    modelDescription: 'Anthropic-compatible endpoint for ai/fy commands.',
+    disableExperimentalBetas: true,
+    timeoutMs: 30000,
+  });
+
   // ── 数据库初始化 ──────────────────────────────
   const serversDb = new JsonDb(path.join(CONFIG_DIR, 'servers.json'), { servers: [] });
   const devicesDb = new JsonDb(path.join(CONFIG_DIR, 'devices.json'), { devices: [] });
@@ -285,6 +296,44 @@ function createConfigStore({ configDir } = {}) {
       const base = rulesDb.data.appState.deepSea || {};
       const next = { ...base, ...patch, updatedAt: new Date().toISOString() };
       rulesDb.data.appState.deepSea = next;
+      await rulesDb.write();
+      return next;
+    });
+  }
+
+  function normalizeAiSettings(raw = {}) {
+    const source = raw && typeof raw === 'object' ? raw : {};
+    const timeoutMs = Math.max(3000, parseInt(source.timeoutMs, 10) || DEFAULT_AI_SETTINGS.timeoutMs);
+    return {
+      provider: String(source.provider || DEFAULT_AI_SETTINGS.provider).trim() || DEFAULT_AI_SETTINGS.provider,
+      baseUrl: String(source.baseUrl || DEFAULT_AI_SETTINGS.baseUrl).trim() || DEFAULT_AI_SETTINGS.baseUrl,
+      authToken: String(source.authToken || DEFAULT_AI_SETTINGS.authToken).trim() || DEFAULT_AI_SETTINGS.authToken,
+      model: String(source.model || DEFAULT_AI_SETTINGS.model).trim() || DEFAULT_AI_SETTINGS.model,
+      modelName: String(source.modelName || DEFAULT_AI_SETTINGS.modelName).trim() || DEFAULT_AI_SETTINGS.modelName,
+      modelDescription: String(source.modelDescription || DEFAULT_AI_SETTINGS.modelDescription).trim() || DEFAULT_AI_SETTINGS.modelDescription,
+      disableExperimentalBetas: source.disableExperimentalBetas !== false,
+      timeoutMs,
+    };
+  }
+
+  async function getAiSettings() {
+    return rulesDb.withLock(async () => {
+      await rulesDb.read();
+      const raw = rulesDb.data?.appState?.aiSettings || {};
+      return normalizeAiSettings(raw);
+    });
+  }
+
+  async function updateAiSettings(patch = {}) {
+    return rulesDb.withLock(async () => {
+      await rulesDb.read();
+      rulesDb.data.appState ||= {};
+      const current = normalizeAiSettings(rulesDb.data.appState.aiSettings || {});
+      const next = normalizeAiSettings({
+        ...current,
+        ...(patch && typeof patch === 'object' ? patch : {}),
+      });
+      rulesDb.data.appState.aiSettings = next;
       await rulesDb.write();
       return next;
     });
@@ -625,6 +674,8 @@ function createConfigStore({ configDir } = {}) {
     updateCallControlState,
     getDeepSeaState,
     saveDeepSeaState,
+    getAiSettings,
+    updateAiSettings,
   };
 }
 

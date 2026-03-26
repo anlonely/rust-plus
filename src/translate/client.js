@@ -4,17 +4,13 @@
 // 支持：RPM 限频 + 返回长度限制
 // ─────────────────────────────────────────────
 
-const https = require('https');
 const logger = require('../utils/logger');
 const { consumeRateLimit, RateLimitError } = require('../utils/rate-limit');
+const { getAiSettings } = require('../ai/runtime-config');
+const { requestAnthropicMessage, extractMessageText } = require('../ai/anthropic-client');
 
-const GEMINI_MODEL = process.env.GEMINI_TRANSLATE_MODEL || 'gemini-2.5-flash';
-const GEMINI_API_KEY =
-  process.env.GEMINI_API_KEY
-  || process.env.GOOGLE_API_KEY;
 const TRANSLATE_RPM_LIMIT = Math.max(1, parseInt(process.env.FY_TRANSLATE_RPM || '15', 10) || 15);
 const RATE_WINDOW_MS = 60_000;
-const GEMINI_TIMEOUT_MS = Math.max(3_000, parseInt(process.env.GEMINI_TIMEOUT_MS || '15000', 10) || 15000);
 
 function enforceRateLimit() {
   consumeRateLimit('gemini_shared_ai_fy', {
@@ -46,48 +42,14 @@ function detectLang(text) {
   return chineseChars / raw.length > 0.3 ? 'zh' : 'en';
 }
 
-function postJson(hostname, path, body) {
-  return new Promise((resolve, reject) => {
-    const payload = JSON.stringify(body);
-    const req = https.request({
-      hostname,
-      path,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(payload),
-      },
-    }, (res) => {
-      let data = '';
-      res.on('data', (c) => { data += c; });
-      res.on('end', () => {
-        try {
-          const json = data ? JSON.parse(data) : {};
-          if (res.statusCode >= 400) {
-            reject(new Error(json?.error?.message || `Gemini HTTP ${res.statusCode}`));
-            return;
-          }
-          resolve(json);
-        } catch (e) {
-          reject(e);
-        }
-      });
-    });
-    req.setTimeout(GEMINI_TIMEOUT_MS, () => req.destroy(new Error(`Gemini 请求超时（${GEMINI_TIMEOUT_MS}ms）`)));
-    req.on('error', reject);
-    req.write(payload);
-    req.end();
-  });
-}
-
-async function geminiTranslate(text, { maxChars = 80 } = {}) {
-  if (!GEMINI_API_KEY) throw new Error('GEMINI_API_KEY 未配置');
+async function anthropicTranslate(text, { maxChars = 80 } = {}) {
+  const settings = await getAiSettings();
   enforceRateLimit();
 
   const srcLang = detectLang(text);
   const targetLabel = srcLang === 'zh' ? '英文' : '中文';
   const safeLimit = Math.max(8, Number(maxChars) || 80);
-  logger.debug(`[Translate] Gemini "${String(text).slice(0, 30)}" -> ${targetLabel}, max=${safeLimit}`);
+  logger.debug(`[Translate] ${settings.model || 'unknown-model'} "${String(text).slice(0, 30)}" -> ${targetLabel}, max=${safeLimit}`);
 
   const prompt = [
     '你是 Rust 游戏队伍聊天翻译器。',
@@ -96,31 +58,20 @@ async function geminiTranslate(text, { maxChars = 80 } = {}) {
     `文本：${String(text || '')}`,
   ].join('\n');
 
-  const res = await postJson(
-    'generativelanguage.googleapis.com',
-    `/v1beta/models/${encodeURIComponent(GEMINI_MODEL)}:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`,
-    {
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: {
-        temperature: 0.1,
-        topP: 0.8,
-        maxOutputTokens: 192,
-      },
-    },
-  );
-
-  const raw = (res?.candidates || [])
-    .flatMap((c) => c?.content?.parts || [])
-    .map((p) => p?.text || '')
-    .join(' ')
-    .trim();
+  const res = await requestAnthropicMessage(settings, {
+    system: '你是 Rust 游戏队伍聊天翻译器。',
+    userText: prompt,
+    maxOutputTokens: 192,
+    temperature: 0.1,
+  });
+  const raw = extractMessageText(res);
   if (!raw) throw new Error('翻译服务未返回内容');
 
   return clampChars(normalizeOneLine(raw), safeLimit);
 }
 
 async function translate(text, options = {}) {
-  return geminiTranslate(text, options);
+  return anthropicTranslate(text, options);
 }
 
-module.exports = { translate, geminiTranslate, detectLang, RateLimitError };
+module.exports = { translate, anthropicTranslate, detectLang, RateLimitError };

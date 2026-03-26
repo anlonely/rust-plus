@@ -27,6 +27,8 @@ const {
   listCallGroupsDb,
   saveCallGroupDb,
   removeCallGroupDb,
+  getAiSettings,
+  updateAiSettings,
 } = require('../src/storage/config');
 const { registerFCM, listenForPairing } = require('../src/pairing/fcm');
 const RustClient           = require('../src/connection/client');
@@ -58,9 +60,12 @@ const { normalizeServerMapPayload } = require('../src/utils/server-map-payload')
 const { enrichMapDataWithRustMaps } = require('../src/utils/rustmaps');
 const { getConfigDir } = require('../src/utils/runtime-paths');
 const { normalizeEventRuleInput, normalizeCommandRuleInput, normalizeCallGroupInput } = require('../src/utils/web-config-rules');
+const { setAiSettingsProvider } = require('../src/ai/runtime-config');
 const TEAM_CHAT_MAX_CHARS = Math.max(32, Number(process.env.RUST_TEAM_MESSAGE_MAX_CHARS || 128) || 128);
 const TEAM_CHAT_RPM_LIMIT = Math.max(1, Number(process.env.GUI_TEAM_CHAT_RPM || 20) || 20);
 const FALLBACK_TEAM_CHAT_INTERVAL_MS = 3_000;
+
+setAiSettingsProvider(() => getAiSettings());
 
 let mainWindow = null;
 let tray = null;
@@ -1644,7 +1649,7 @@ async function startServices(serverConfig, options = {}) {
   eventEngine.bind(rustClient);
   cmdParser.bind(rustClient);
   const boundDevices = await listDevices(activeServerId);
-  await Promise.all(boundDevices.map((d) => subscribeEntityBroadcast(d.entityId, 'startup')));
+  await ensureDeviceBroadcastSubscriptions(activeServerId, 'startup');
   boundDevices.forEach((d) => {
     const t = String(d?.type || '').toLowerCase();
     if (t === 'switch') {
@@ -1750,6 +1755,32 @@ async function subscribeEntityBroadcast(entityId, source = 'manual') {
   } catch (e) {
     logger.debug(`[Main] 订阅设备广播失败(${source}) entityId=${id}: ${e.message}`);
     return false;
+  }
+}
+
+async function subscribeEntityBroadcastWithRetry(entityId, source = 'manual', { attempts = 3, delayMs = 1200 } = {}) {
+  const totalAttempts = Math.max(1, Number(attempts) || 1);
+  const waitMs = Math.max(0, Number(delayMs) || 0);
+  for (let index = 0; index < totalAttempts; index += 1) {
+    if (await subscribeEntityBroadcast(entityId, `${source}#${index + 1}`)) return true;
+    if (index < totalAttempts - 1 && waitMs > 0) {
+      await new Promise((resolve) => setTimeout(resolve, waitMs));
+    }
+  }
+  return false;
+}
+
+async function ensureDeviceBroadcastSubscriptions(serverId, source = 'startup') {
+  const sid = String(serverId || '').trim();
+  if (!sid || !rustClient?.connected) return;
+  const devices = await listDevices(sid).catch(() => []);
+  if (!Array.isArray(devices) || !devices.length) return;
+  const results = await Promise.allSettled(
+    devices.map((device) => subscribeEntityBroadcastWithRetry(device?.entityId, `${source}:${sid}`)),
+  );
+  const failed = results.filter((result) => result.status === 'fulfilled' ? !result.value : true).length;
+  if (failed > 0) {
+    logger.warn(`[Main] 设备广播补订阅未完全成功: ${devices.length - failed}/${devices.length}`);
   }
 }
 
@@ -1917,6 +1948,7 @@ function setupIPC() {
       servers,
       devices: connected && currentServer?.id ? await listDevices(currentServer.id) : [],
       groups: listGroups(),
+      aiSettings: await getAiSettings(),
       connected,
       currentServer,
       steam: await getSteamProfileStatus({ fetchRemote: false }),
@@ -1996,6 +2028,15 @@ function setupIPC() {
     const res = await logoutSteam();
     if (!res?.success) return { success: false, reason: res?.reason || '注销失败' };
     return { success: true, steam: await getSteamProfileStatus({ fetchRemote: false }) };
+  });
+  ipcMain.handle('settings:ai:get', async () => getAiSettings());
+  ipcMain.handle('settings:ai:set', async (_, settings) => {
+    try {
+      const next = await updateAiSettings(settings || {});
+      return { success: true, settings: next };
+    } catch (e) {
+      return { success: false, error: e?.message || '保存 AI 设置失败' };
+    }
   });
 
   ipcMain.handle('server:list', async () => listServers());
@@ -2182,7 +2223,7 @@ function setupIPC() {
   ipcMain.handle('device:register', async (_, opts) => {
     await registerDevice(opts);
     if (cmdParser && rustClient?.connected && String(opts?.serverId || '') === String(activeServerId || '')) {
-      await subscribeEntityBroadcast(opts?.entityId, 'device-register');
+      await subscribeEntityBroadcastWithRetry(opts?.entityId, 'device-register');
       const t = String(opts?.type || '').toLowerCase();
       if (t === 'switch') {
         cmdParser.registerSwitch(opts.entityId, opts.alias);
@@ -2193,7 +2234,7 @@ function setupIPC() {
   ipcMain.handle('device:update', async (_, { entityId, updates }) => {
     const updated = await updateDevice(entityId, updates || {}, activeServerId || null);
     if (updated && cmdParser) {
-      await subscribeEntityBroadcast(updated.entityId, 'device-update');
+      await subscribeEntityBroadcastWithRetry(updated.entityId, 'device-update');
       const t = String(updated?.type || '').toLowerCase();
       if (t === 'switch') {
         cmdParser.registerSwitch(updated.entityId, updated.alias);

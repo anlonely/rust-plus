@@ -62,6 +62,7 @@ const { hydrateRule } = require('./event-actions');
 const { applyPersistedCommandRules } = require('./runtime-sync');
 const { createTeamChatDispatcher } = require('../src/utils/team-chat-dispatcher');
 const { createRustplusConfigStore } = require('../src/storage/rustplus-config');
+const { setAiSettingsProvider } = require('../src/ai/runtime-config');
 const {
   normalizeErrorText,
   isRustProtocolCompatibilityError,
@@ -408,6 +409,8 @@ function replaceCommandRules(...args) { return getConfigStore().replaceCommandRu
 function listCallGroupsDb(...args) { return getConfigStore().listCallGroupsDb(...args); }
 function saveCallGroupDb(...args) { return getConfigStore().saveCallGroupDb(...args); }
 function removeCallGroupDb(...args) { return getConfigStore().removeCallGroupDb(...args); }
+function getAiSettings(...args) { return getConfigStore().getAiSettings(...args); }
+function updateAiSettings(...args) { return getConfigStore().updateAiSettings(...args); }
 
 function setGroup(...args) { return currentContext().callGroupsService.setGroup(...args); }
 function listGroups(...args) { return currentContext().callGroupsService.listGroups(...args); }
@@ -437,6 +440,14 @@ function registerFCM(options = {}) {
     configFile: options?.configFile || currentContext().rustplusConfigFile,
   });
 }
+
+setAiSettingsProvider(() => {
+  try {
+    return getAiSettings();
+  } catch (_) {
+    return null;
+  }
+});
 
 function listenForPairing(onPairing, options = {}) {
   const ctx = currentContext();
@@ -1482,6 +1493,7 @@ async function bootstrapRuntimeForConnectedServer(serverConfig) {
   runtimeState.cmdParser.bind(runtimeState.rustClient);
 
   const boundDevices = await listDevices(serverConfig.id);
+  await ensureRuntimeDeviceBroadcastSubscriptions(serverConfig.id, 'startup');
   for (const device of boundDevices) {
     if (String(device?.type || '').toLowerCase() === 'switch') {
       runtimeState.cmdParser.registerSwitch(device.entityId, device.alias);
@@ -1560,6 +1572,45 @@ async function sendTeamChatWithGuards(rawMessage) {
       return { success: false, error: err.message, statusCode: 429 };
     }
     return { success: false, error: String(err?.message || err || '发送失败') };
+  }
+}
+
+async function subscribeRuntimeEntityBroadcast(entityId, source = 'manual') {
+  if (!runtimeState.rustClient?.connected) return false;
+  const id = Number(entityId);
+  if (!Number.isFinite(id)) return false;
+  try {
+    await runtimeState.rustClient.getEntityInfo(id);
+    return true;
+  } catch (err) {
+    logger.debug(`[Web] 订阅设备广播失败(${source}) entityId=${id}: ${err?.message || err}`);
+    return false;
+  }
+}
+
+async function subscribeRuntimeEntityBroadcastWithRetry(entityId, source = 'manual', { attempts = 3, delayMs = 1200 } = {}) {
+  const totalAttempts = Math.max(1, Number(attempts) || 1);
+  const waitMs = Math.max(0, Number(delayMs) || 0);
+  for (let index = 0; index < totalAttempts; index += 1) {
+    if (await subscribeRuntimeEntityBroadcast(entityId, `${source}#${index + 1}`)) return true;
+    if (index < totalAttempts - 1 && waitMs > 0) {
+      await new Promise((resolve) => setTimeout(resolve, waitMs));
+    }
+  }
+  return false;
+}
+
+async function ensureRuntimeDeviceBroadcastSubscriptions(serverId, source = 'startup') {
+  const sid = String(serverId || '').trim();
+  if (!sid || !runtimeState.rustClient?.connected) return;
+  const devices = await listDevices(sid).catch(() => []);
+  if (!Array.isArray(devices) || !devices.length) return;
+  const results = await Promise.allSettled(
+    devices.map((device) => subscribeRuntimeEntityBroadcastWithRetry(device?.entityId, `${source}:${sid}`)),
+  );
+  const failed = results.filter((result) => result.status === 'fulfilled' ? !result.value : true).length;
+  if (failed > 0) {
+    logger.warn(`[Web] 设备广播补订阅未完全成功: ${devices.length - failed}/${devices.length}`);
   }
 }
 
@@ -1779,6 +1830,7 @@ const invokeIpc = createIpcInvoker({
       servers,
       devices: connected && currentServer?.id ? await listDevices(currentServer.id) : [],
       groups: listGroups(),
+      aiSettings: await getAiSettings(),
       connected,
       currentServer,
       currentServerId: connected ? String(runtime.currentServerId || currentServer?.id || '') : '',
@@ -1791,6 +1843,15 @@ const invokeIpc = createIpcInvoker({
   },
 
   'steam:status': async () => getSteamProfileStatus({ fetchRemote: true }),
+  'settings:ai:get': async () => getAiSettings(),
+  'settings:ai:set': async (args) => {
+    try {
+      const next = await updateAiSettings(args[0] || {});
+      return { success: true, settings: next };
+    } catch (err) {
+      return { success: false, error: err?.message || '保存 AI 设置失败' };
+    }
+  },
   'steam:beginAuth': async () => {
     try {
       await registerFCM({ force: true });
@@ -1944,6 +2005,7 @@ const invokeIpc = createIpcInvoker({
     const opts = args[0] || {};
     await registerDevice(opts);
     if (runtimeState.cmdParser && runtimeState.rustClient?.connected && String(opts?.serverId || '') === String(runtime.currentServerId || '')) {
+      await subscribeRuntimeEntityBroadcastWithRetry(opts?.entityId, 'device-register');
       const t = String(opts?.type || '').toLowerCase();
       if (t === 'switch') runtimeState.cmdParser.registerSwitch(opts.entityId, opts.alias);
     }
@@ -1953,6 +2015,7 @@ const invokeIpc = createIpcInvoker({
     const payload = args[0] || {};
     const updated = await updateDevice(payload.entityId, payload.updates || {}, runtime.currentServerId || null);
     if (updated && runtimeState.cmdParser) {
+      await subscribeRuntimeEntityBroadcastWithRetry(updated.entityId, 'device-update');
       const t = String(updated?.type || '').toLowerCase();
       if (t === 'switch') runtimeState.cmdParser.registerSwitch(updated.entityId, updated.alias);
       else runtimeState.cmdParser.unregisterSwitch(updated.entityId);

@@ -75,6 +75,8 @@ contextBridge.exposeInMainWorld('rustAPI', {
   steamBeginAuth: ()          => ipcRenderer.invoke('steam:beginAuth'),
   steamLogout:    ()          => ipcRenderer.invoke('steam:logout'),
   getHelpDoc:     ()          => ipcRenderer.invoke('docs:getHelp'),
+  getAISettings:  ()          => ipcRenderer.invoke('settings:ai:get'),
+  saveAISettings: (settings)  => ipcRenderer.invoke('settings:ai:set', settings),
 
   // ── 事件监听（主进程 → 渲染进程）────────
   on: (channel, callback) => {

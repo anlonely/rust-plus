@@ -1756,6 +1756,49 @@ input, textarea, select { font-family:inherit; }
           </select>
         </div>
       </div>
+      <div class="card" style="max-width:960px;margin-top:16px">
+        <div style="font-size:15px;font-weight:600;margin-bottom:8px">AI 配置</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:12px">用于指令逻辑中的 <code>ai</code> 与 <code>fy</code> 调用。支持自定义 Anthropic 兼容接口配置。</div>
+        <div class="form-row">
+          <div style="flex:1">
+            <div class="form-label">Base URL</div>
+            <input class="input" id="ai-base-url" placeholder="https://your-api.example.com">
+          </div>
+          <div style="width:180px">
+            <div class="form-label">超时（ms）</div>
+            <input class="input" id="ai-timeout-ms" type="number" min="3000" step="1000" placeholder="30000">
+          </div>
+        </div>
+        <div class="form-row">
+          <div style="flex:1">
+            <div class="form-label">Auth Token</div>
+            <input class="input" id="ai-auth-token" type="password" placeholder="API Token">
+          </div>
+        </div>
+        <div class="form-row">
+          <div style="flex:1">
+            <div class="form-label">模型 ID</div>
+            <input class="input" id="ai-model" placeholder="your-model-id">
+          </div>
+          <div style="flex:1">
+            <div class="form-label">模型显示名</div>
+            <input class="input" id="ai-model-name" placeholder="Custom AI Model">
+          </div>
+        </div>
+        <div class="form-row">
+          <div style="flex:1">
+            <div class="form-label">模型描述</div>
+            <input class="input" id="ai-model-description" placeholder="Anthropic-compatible endpoint for ai/fy commands.">
+          </div>
+        </div>
+        <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);margin-top:4px">
+          <input type="checkbox" id="ai-disable-betas" style="accent-color:var(--blue)">
+          禁用实验性 betas
+        </label>
+        <div class="modal-footer" style="padding:0;margin-top:14px">
+          <button class="btn btn-primary" onclick="saveAISettings()">保存 AI 配置</button>
+        </div>
+      </div>
     </div>
 
   </div><!-- /#main -->
@@ -2620,6 +2663,7 @@ const state = {
   pairingStatus: { ok: true, subText: null },
   teamSyncStatus: { mode: 'offline' },
   helpDocLoaded: false,
+  aiSettings: null,
   healthPollTimer: null,
   mapPollTimer: null,
   serverMap: null,
@@ -2660,6 +2704,16 @@ const state = {
     dragOriginX: 0,
     dragOriginY: 0,
   },
+};
+const DEFAULT_AI_SETTINGS = {
+  provider: 'anthropic',
+  baseUrl: '',
+  authToken: '',
+  model: '',
+  modelName: 'Custom AI Model',
+  modelDescription: 'Anthropic-compatible endpoint for ai/fy commands.',
+  disableExperimentalBetas: true,
+  timeoutMs: 30000,
 };
 const TEAM_CHAT_SETTINGS_GROUP_ID = '__team_chat_settings__';
 const SERVER_MAP_MAX_ZOOM = 2.0;
@@ -3412,6 +3466,7 @@ async function init() {
     state.connected  = data.connected  || false;
     state.currentServer = data.currentServer || null;
     state.steam = data.steam || null;
+    state.aiSettings = data.aiSettings || { ...DEFAULT_AI_SETTINGS };
 
     if (state.currentServer) {
       document.getElementById('server-name-title').textContent = state.currentServer.name || '';
@@ -7525,7 +7580,41 @@ function renderSettingsPage() {
     </div>
   `).join('');
   if (langSelect) langSelect.value = state.uiLanguage;
+  const ai = { ...DEFAULT_AI_SETTINGS, ...(state.aiSettings || {}) };
+  const setValue = (id, value) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.value = value == null ? '' : String(value);
+  };
+  setValue('ai-base-url', ai.baseUrl);
+  setValue('ai-auth-token', ai.authToken);
+  setValue('ai-model', ai.model);
+  setValue('ai-model-name', ai.modelName);
+  setValue('ai-model-description', ai.modelDescription);
+  setValue('ai-timeout-ms', ai.timeoutMs);
+  const disableEl = document.getElementById('ai-disable-betas');
+  if (disableEl) disableEl.checked = ai.disableExperimentalBetas !== false;
   applyUILanguage(document.body);
+}
+
+async function saveAISettings() {
+  const payload = {
+    baseUrl: document.getElementById('ai-base-url')?.value || '',
+    authToken: document.getElementById('ai-auth-token')?.value || '',
+    model: document.getElementById('ai-model')?.value || '',
+    modelName: document.getElementById('ai-model-name')?.value || '',
+    modelDescription: document.getElementById('ai-model-description')?.value || '',
+    timeoutMs: Number(document.getElementById('ai-timeout-ms')?.value || 30000),
+    disableExperimentalBetas: !!document.getElementById('ai-disable-betas')?.checked,
+  };
+  const res = await rustAPI.saveAISettings(payload).catch((e) => ({ success: false, error: e?.message || '保存失败' }));
+  if (!res?.success) {
+    toast('error', res?.error || '保存 AI 设置失败');
+    return;
+  }
+  state.aiSettings = res.settings || { ...DEFAULT_AI_SETTINGS, ...payload };
+  renderSettingsPage();
+  toast('success', 'AI 配置已保存');
 }
 
 // ── 启动 ─────────────────────────────────────

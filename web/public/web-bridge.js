@@ -236,6 +236,8 @@
     steamBeginAuth: () => invoke('steam:beginAuth'),
     steamLogout: () => invoke('steam:logout'),
     getHelpDoc: () => invoke('docs:getHelp'),
+    getAISettings: () => invoke('settings:ai:get'),
+    saveAISettings: (settings) => invoke('settings:ai:set', settings),
 
     getMapData: () => invoke('map:getData'),
     getMapMarkers: () => invoke('map:getMarkers'),
