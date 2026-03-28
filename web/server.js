@@ -61,8 +61,9 @@ const { createIpcInvoker } = require('./ipc-invoke');
 const { hydrateRule } = require('./event-actions');
 const { applyPersistedCommandRules } = require('./runtime-sync');
 const { createTeamChatDispatcher } = require('../src/utils/team-chat-dispatcher');
+const { withRetry, ensureAll } = require('../src/utils/broadcast-subscription');
 const { createRustplusConfigStore } = require('../src/storage/rustplus-config');
-const { setAiSettingsProvider } = require('../src/ai/runtime-config');
+const { setAiSettingsProvider, maskAiSettingsForDisplay } = require('../src/ai/runtime-config');
 const {
   normalizeErrorText,
   isRustProtocolCompatibilityError,
@@ -1588,30 +1589,12 @@ async function subscribeRuntimeEntityBroadcast(entityId, source = 'manual') {
   }
 }
 
-async function subscribeRuntimeEntityBroadcastWithRetry(entityId, source = 'manual', { attempts = 3, delayMs = 1200 } = {}) {
-  const totalAttempts = Math.max(1, Number(attempts) || 1);
-  const waitMs = Math.max(0, Number(delayMs) || 0);
-  for (let index = 0; index < totalAttempts; index += 1) {
-    if (await subscribeRuntimeEntityBroadcast(entityId, `${source}#${index + 1}`)) return true;
-    if (index < totalAttempts - 1 && waitMs > 0) {
-      await new Promise((resolve) => setTimeout(resolve, waitMs));
-    }
-  }
-  return false;
-}
+const subscribeRuntimeEntityBroadcastWithRetry = (entityId, source = 'manual', options = {}) =>
+  withRetry(subscribeRuntimeEntityBroadcast, entityId, source, options);
 
 async function ensureRuntimeDeviceBroadcastSubscriptions(serverId, source = 'startup') {
-  const sid = String(serverId || '').trim();
-  if (!sid || !runtimeState.rustClient?.connected) return;
-  const devices = await listDevices(sid).catch(() => []);
-  if (!Array.isArray(devices) || !devices.length) return;
-  const results = await Promise.allSettled(
-    devices.map((device) => subscribeRuntimeEntityBroadcastWithRetry(device?.entityId, `${source}:${sid}`)),
-  );
-  const failed = results.filter((result) => result.status === 'fulfilled' ? !result.value : true).length;
-  if (failed > 0) {
-    logger.warn(`[Web] 设备广播补订阅未完全成功: ${devices.length - failed}/${devices.length}`);
-  }
+  if (!runtimeState.rustClient?.connected) return;
+  await ensureAll(listDevices, subscribeRuntimeEntityBroadcast, serverId, source, logger);
 }
 
 async function buildItemCatalogMap(rawIds) {
@@ -1830,7 +1813,7 @@ const invokeIpc = createIpcInvoker({
       servers,
       devices: connected && currentServer?.id ? await listDevices(currentServer.id) : [],
       groups: listGroups(),
-      aiSettings: await getAiSettings(),
+      aiSettings: maskAiSettingsForDisplay(await getAiSettings()),
       connected,
       currentServer,
       currentServerId: connected ? String(runtime.currentServerId || currentServer?.id || '') : '',
@@ -1843,11 +1826,11 @@ const invokeIpc = createIpcInvoker({
   },
 
   'steam:status': async () => getSteamProfileStatus({ fetchRemote: true }),
-  'settings:ai:get': async () => getAiSettings(),
+  'settings:ai:get': async () => maskAiSettingsForDisplay(await getAiSettings()),
   'settings:ai:set': async (args) => {
     try {
       const next = await updateAiSettings(args[0] || {});
-      return { success: true, settings: next };
+      return { success: true, settings: maskAiSettingsForDisplay(next) };
     } catch (err) {
       return { success: false, error: err?.message || '保存 AI 设置失败' };
     }

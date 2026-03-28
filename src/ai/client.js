@@ -1,7 +1,7 @@
 // src/ai/client.js
 // ─────────────────────────────────────────────
 // P4：AI 问答客户端
-// 使用与 fy 相同的 Gemini API（2.5 Flash）
+// 使用可配置的 Anthropic 兼容 API
 // ─────────────────────────────────────────────
 
 const logger = require('../utils/logger');
@@ -9,7 +9,7 @@ const { consumeRateLimit } = require('../utils/rate-limit');
 const { getAiSettings } = require('./runtime-config');
 const { requestAnthropicMessage, extractMessageText } = require('./anthropic-client');
 
-const GEMINI_SHARED_RPM_LIMIT = Math.max(1, parseInt(process.env.FY_TRANSLATE_RPM || '15', 10) || 15);
+const AI_SHARED_RPM_LIMIT = Math.max(1, parseInt(process.env.FY_TRANSLATE_RPM || '15', 10) || 15);
 
 function normalizeOneLine(text) {
   return String(text || '')
@@ -28,18 +28,12 @@ function clampChars(text, maxChars) {
 
 async function askAnthropic(question, systemPrompt = '', { maxChars = 96 } = {}) {
   const settings = await getAiSettings();
-  consumeRateLimit('gemini_shared_ai_fy', {
-    limit: GEMINI_SHARED_RPM_LIMIT,
+  consumeRateLimit('ai_shared_rpm', {
+    limit: AI_SHARED_RPM_LIMIT,
     windowMs: 60_000,
-    message: `请求过于频繁：每分钟最多 ${GEMINI_SHARED_RPM_LIMIT} 次，请稍后再试`,
+    message: `请求过于频繁：每分钟最多 ${AI_SHARED_RPM_LIMIT} 次，请稍后再试`,
   });
   const safeLimit = Math.max(8, Number(maxChars) || 96);
-  const prompt = [
-    systemPrompt || '你是 Rust 游戏助手。',
-    `请用简洁中文回答，最多 ${safeLimit} 个字符。`,
-    '不要输出 Markdown，不要分段，只返回答案正文。',
-    `问题：${String(question || '')}`,
-  ].join('\n');
 
   logger.debug(`[AI] ${settings.model || 'unknown-model'} 问答: ${String(question || '').slice(0, 50)}...`);
   const res = await requestAnthropicMessage(settings, {

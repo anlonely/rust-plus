@@ -2705,16 +2705,6 @@ const state = {
     dragOriginY: 0,
   },
 };
-const DEFAULT_AI_SETTINGS = {
-  provider: 'anthropic',
-  baseUrl: '',
-  authToken: '',
-  model: '',
-  modelName: 'Custom AI Model',
-  modelDescription: 'Anthropic-compatible endpoint for ai/fy commands.',
-  disableExperimentalBetas: true,
-  timeoutMs: 30000,
-};
 const TEAM_CHAT_SETTINGS_GROUP_ID = '__team_chat_settings__';
 const SERVER_MAP_MAX_ZOOM = 2.0;
 
@@ -3466,7 +3456,7 @@ async function init() {
     state.connected  = data.connected  || false;
     state.currentServer = data.currentServer || null;
     state.steam = data.steam || null;
-    state.aiSettings = data.aiSettings || { ...DEFAULT_AI_SETTINGS };
+    state.aiSettings = data.aiSettings || {};
 
     if (state.currentServer) {
       document.getElementById('server-name-title').textContent = state.currentServer.name || '';
@@ -7580,7 +7570,7 @@ function renderSettingsPage() {
     </div>
   `).join('');
   if (langSelect) langSelect.value = state.uiLanguage;
-  const ai = { ...DEFAULT_AI_SETTINGS, ...(state.aiSettings || {}) };
+  const ai = state.aiSettings || {};
   const setValue = (id, value) => {
     const el = document.getElementById(id);
     if (!el) return;
@@ -7607,12 +7597,20 @@ async function saveAISettings() {
     timeoutMs: Number(document.getElementById('ai-timeout-ms')?.value || 30000),
     disableExperimentalBetas: !!document.getElementById('ai-disable-betas')?.checked,
   };
+  if (payload.baseUrl && !/^https?:\/\/.+/.test(payload.baseUrl)) {
+    toast('error', 'Base URL 格式不正确，需以 http:// 或 https:// 开头');
+    return;
+  }
+  if (payload.timeoutMs < 3000 || payload.timeoutMs > 120000) {
+    toast('error', '超时时间需在 3000~120000ms 之间');
+    return;
+  }
   const res = await rustAPI.saveAISettings(payload).catch((e) => ({ success: false, error: e?.message || '保存失败' }));
   if (!res?.success) {
     toast('error', res?.error || '保存 AI 设置失败');
     return;
   }
-  state.aiSettings = res.settings || { ...DEFAULT_AI_SETTINGS, ...payload };
+  state.aiSettings = res.settings || payload;
   renderSettingsPage();
   toast('success', 'AI 配置已保存');
 }

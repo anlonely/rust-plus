@@ -25,6 +25,25 @@ function normalizeAiSettings(raw = {}) {
   };
 }
 
+function maskSecret(secret = '') {
+  const value = String(secret || '').trim();
+  if (!value) return '';
+  if (value.length <= 4) return '••••';
+  return `••••${value.slice(-4)}`;
+}
+
+function isMaskedSecret(secret = '') {
+  return /^••••.+$/.test(String(secret || ''));
+}
+
+function maskAiSettingsForDisplay(raw = {}) {
+  const settings = normalizeAiSettings(raw);
+  return {
+    ...settings,
+    authToken: maskSecret(settings.authToken),
+  };
+}
+
 function setAiSettingsProvider(provider) {
   settingsProvider = typeof provider === 'function' ? provider : null;
 }
@@ -41,6 +60,8 @@ async function getAiSettings() {
 module.exports = {
   DEFAULT_AI_SETTINGS,
   normalizeAiSettings,
+  maskAiSettingsForDisplay,
+  isMaskedSecret,
   setAiSettingsProvider,
   getAiSettings,
 };

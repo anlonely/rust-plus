@@ -1,6 +1,6 @@
 // src/translate/client.js
 // ─────────────────────────────────────────────
-// P4：翻译服务（Gemini 2.5 Flash）
+// P4：翻译服务（Anthropic 兼容 API）
 // 支持：RPM 限频 + 返回长度限制
 // ─────────────────────────────────────────────
 
@@ -13,7 +13,7 @@ const TRANSLATE_RPM_LIMIT = Math.max(1, parseInt(process.env.FY_TRANSLATE_RPM ||
 const RATE_WINDOW_MS = 60_000;
 
 function enforceRateLimit() {
-  consumeRateLimit('gemini_shared_ai_fy', {
+  consumeRateLimit('ai_shared_rpm', {
     limit: TRANSLATE_RPM_LIMIT,
     windowMs: RATE_WINDOW_MS,
     message: `请求过于频繁：每分钟最多 ${TRANSLATE_RPM_LIMIT} 次，请稍后再试`,
